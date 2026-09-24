@@ -4,7 +4,7 @@
 
 ### Issue tracker
 
-Issues are cards on the Trello board `DM-Realm`, accessed via the `trello` MCP server. See `docs/agents/issue-tracker.md`.
+Issues are cards on the Trello board `DM Realm` (https://trello.com/b/LsoFRUO2/dm-realm), accessed via the `trello` MCP server. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
