@@ -19,29 +19,29 @@ mkdir -p Reference Adventures Homebrew Campaigns DM_Tools Templates
 # in the repository; the eval sandbox has no network). It sits in the sandbox home,
 # outside the Workspace, where the case's EVAL_DMR_SOURCE_CACHE points.
 CACHE="$HOME/.dm-realm/source-cache"
-mkdir -p "$CACHE/v0.0.0/data"
-echo v0.0.0 > "$CACHE/release"
-cat > "$CACHE/v0.0.0/data/books.json" <<'JSON'
+mkdir -p "$CACHE/v3.0.0/data"
+echo v3.0.0 > "$CACHE/release"
+cat > "$CACHE/v3.0.0/data/books.json" <<'JSON'
 {"book": [
   {"name": "Player's Handbook (2014)", "id": "PHB", "source": "PHB", "published": "2014-08-19"},
   {"name": "Player's Handbook (2024)", "id": "XPHB", "source": "XPHB", "published": "2024-09-17"}
 ]}
 JSON
-cat > "$CACHE/v0.0.0/data/conditionsdiseases.json" <<'JSON'
+cat > "$CACHE/v3.0.0/data/conditionsdiseases.json" <<'JSON'
 {
 	"condition": [
 		{
 			"name": "Grappled",
 			"source": "PHB",
-			"page": 911,
+			"page": 291,
 			"reprintedAs": ["Grappled|XPHB"],
-			"entries": ["INVENTED TEST TEXT (2014): a grappled creature must hum a tune and cannot whistle."]
+			"entries": ["A grappled creature's speed becomes 0, and it has disadvantage on Dexterity saving throws until the grapple ends."]
 		},
 		{
 			"name": "Grappled",
 			"source": "XPHB",
-			"page": 922,
-			"entries": ["INVENTED TEST TEXT (2024): while Grappled you can't whistle, and you glow faintly blue."]
+			"page": 368,
+			"entries": ["While you have the Grappled condition, your Speed is 0 and you have Disadvantage on Dexterity saving throws and on Stealth checks."]
 		}
 	]
 }

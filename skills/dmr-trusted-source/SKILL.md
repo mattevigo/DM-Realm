@@ -21,6 +21,10 @@ DMR_SOURCE_CACHE="${CLAUDE_PLUGIN_DATA}/source-cache" sh "<this skill's base dir
 - `release` instead of `file …` prints the pinned release.
 - **Exit 3** means the Trusted Source cannot be reached and the file is not cached: tell the DM so and stop. The answer comes from the Trusted Source or not at all.
 
+## Refreshing
+
+The Source Cache stays on its pinned release, even when a newer one exists, until the DM asks to update it ("update the source cache"). Then run the helper with `refresh`: it moves the pin to the latest release and fetches every cached file again from it, or says the cache is already up to date. Report the old and the new release. A refresh changes no note in any Workspace; if it exits 3, the cache stays on the old release — say so.
+
 ## Where things are
 
 | Material | File (`data/…`) | Key |

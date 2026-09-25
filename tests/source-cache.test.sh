@@ -64,4 +64,35 @@ printf '{"tag_name": "v1.1.0"}\n' > "$MIRROR/latest.json"
 OUT=$(HOME="$TMP/home" EVAL_DMR_SOURCE_CACHE="~/.dm-realm/source-cache" helper file data/conditionsdiseases.json) || fail "eval override: exit $?"
 [ "$OUT" = "$TMP/home/.dm-realm/source-cache/v1.1.0/data/conditionsdiseases.json" ] || fail "eval override: got '$OUT'"
 
+# refresh: moves the pin to the latest release and re-fetches every cached file from it.
+export DMR_SOURCE_CACHE="$TMP/cache2"
+mkdir -p "$MIRROR/raw/v1.0.0/data/spells" "$MIRROR/raw/v1.1.0/data/spells"
+printf '{"condition":[{"name":"Dazzled","source":"TEST","page":1}]}\n' > "$MIRROR/raw/v1.0.0/data/conditionsdiseases.json"
+printf '{"spell":[{"name":"Spark","source":"TEST","page":10}]}\n' > "$MIRROR/raw/v1.0.0/data/spells/spells-test.json"
+printf '{"spell":[{"name":"Spark","source":"TEST","page":20}]}\n' > "$MIRROR/raw/v1.1.0/data/spells/spells-test.json"
+printf '{"tag_name": "v1.0.0"}\n' > "$MIRROR/latest.json"
+helper file data/conditionsdiseases.json >/dev/null && helper file data/spells/spells-test.json >/dev/null || fail "refresh setup"
+OUT=$(helper refresh) || fail "refresh up to date: exit $?"
+case "$OUT" in *"up to date"*v1.0.0*) ;; *) fail "refresh up to date: got '$OUT'";; esac
+printf '{"tag_name": "v1.1.0"}\n' > "$MIRROR/latest.json"
+OUT=$(helper refresh) || fail "refresh: exit $?"
+case "$OUT" in *v1.0.0*v1.1.0*) ;; *) fail "refresh: should report old and new release, got '$OUT'";; esac
+[ "$(helper release)" = "v1.1.0" ] || fail "refresh: pin should be v1.1.0"
+grep -q '"page":2' "$DMR_SOURCE_CACHE/v1.1.0/data/conditionsdiseases.json" 2>/dev/null || fail "refresh: conditions not re-fetched from v1.1.0"
+grep -q '"page":20' "$DMR_SOURCE_CACHE/v1.1.0/data/spells/spells-test.json" 2>/dev/null || fail "refresh: spells not re-fetched from v1.1.0"
+[ ! -e "$DMR_SOURCE_CACHE/v1.0.0" ] || fail "refresh: old release copy should be gone"
+
+# refresh that cannot complete keeps the old pin and the old files intact.
+printf '{"tag_name": "v1.2.0"}\n' > "$MIRROR/latest.json"   # v1.2.0 has no raw files
+OUT=$(helper refresh 2>&1); CODE=$?
+[ "$CODE" -eq 3 ] || fail "refresh failing: expected exit 3, got $CODE"
+[ "$(helper release)" = "v1.1.0" ] || fail "refresh failing: pin must stay v1.1.0"
+[ -f "$DMR_SOURCE_CACHE/v1.1.0/data/spells/spells-test.json" ] || fail "refresh failing: old files must stay"
+[ ! -e "$DMR_SOURCE_CACHE/v1.2.0" ] || fail "refresh failing: left a partial release"
+
+# file:// endpoints may start with ~/ (evals pass them from case.yaml).
+rm -rf "$TMP/home2"; mkdir -p "$TMP/home2/m"; cp "$MIRROR/latest.json" "$TMP/home2/m/latest.json"
+OUT=$(HOME="$TMP/home2" DMR_SOURCE_CACHE="$TMP/cache3" DMR_SOURCE_API="file://~/m/latest.json" helper release) || fail "file ~: exit $?"
+[ "$OUT" = "v1.2.0" ] || fail "file ~: got '$OUT'"
+
 [ "$FAILS" -eq 0 ] && echo "source-cache: all pass" || { echo "source-cache: $FAILS failure(s)"; exit 1; }
