@@ -1,10 +1,16 @@
 # DM Realm Workspace Config — fields documented in docs/structure.md#workspace-config.
-# Fill it in before Setup.
+# Written by Setup from the DM's answers.
 
 # The Workspace Language: every folder name, file name and note in the Workspace
 # is written in it. Any language, named in any language (English, Italiano, Deutsch…).
 # Fixed after Setup.
 language: English
+
+# The Edition: the D&D rules the Workspace follows, 2014 or 2024.
+# Decides which official rules material is Reference, the default folder names and
+# which Official Translations apply.
+# Fixed after Setup.
+edition:   # 2014 or 2024 — Setup asks, recommending 2024; no default
 
 # Names of the six top-level folders, by neutral key. Leave a name empty to use
 # the agent's translation of the default English name into the Workspace Language.

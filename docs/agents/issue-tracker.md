@@ -11,7 +11,6 @@ Issues and specs for this repo live as **cards** on the Trello board **`DM Realm
 ## What the MCP server can't do
 
 - **Create or rename labels.** Labels are managed by a human in the Trello UI; the agent can only attach/detach existing ones (find their ARIs with `trelloReadBoard` `list_labels`). If a label a skill needs is missing, stop and ask the user to create it.
-- **Write comments.** Comments can be read, not posted. Record the agent's comments by appending to the card description instead (see below).
 - **Assign members.** Claiming a card is done by moving it to `In progress`.
 
 ## Conventions
@@ -19,13 +18,9 @@ Issues and specs for this repo live as **cards** on the Trello board **`DM Realm
 - **Create an issue**: `trelloWriteCard` `create` in `Backlog`; name = issue title, desc = issue body (markdown).
 - **Read an issue**: `trelloReadCard` `get` — description, labels, list and comments. Add `trelloReadChecklist` for checklists.
 - **List issues**: `trelloReadCard` `list_by_board` (grouped by list) or `list_by_list`; `trelloSearch` `search_cards` with `label:` / `list:` qualifiers for filtering.
-- **Comment on an issue**: `trelloWriteCard` `update` the description, appending under a `## Comments` heading at the bottom:
-
-      **YYYY-MM-DD (agent):** <comment>
-
-  Keep the existing description intact; append only.
+- **Comment on an issue**: `trelloWriteCard` `add_comment` on the card. Older cards may also carry description-level comments under a `## Comments` heading; leave them as they are.
 - **Apply / remove labels**: `trelloWriteCard` `attach_label` / `detach_label`.
-- **Close**: append the outcome as a comment, then `move` the card to `Done` and `mark_done`. For `wontfix`, attach the label, append the reason, and `archive` the card.
+- **Close**: add the outcome as a comment, then `move` the card to `Done` and `mark_done`. For `wontfix`, attach the label, add the reason as a comment, and `archive` the card.
 
 ## Blocking
 
@@ -52,4 +47,4 @@ Used by `/wayfinder`. The **map** is a single card with **child** cards as ticke
 - **Blocking**: the `Blocked by:` line described above.
 - **Frontier query**: the map's child cards in `Backlog` or `Ready` with no unfinished blocker; first in checklist order wins.
 - **Claim**: move the card to `In progress`. This is the session's first write.
-- **Resolve**: append the answer as a comment, move the card to `Done`, tick its item in the map's checklist (`update_item` `checked: true`), then append a context pointer (gist + link) to the map's Decisions-so-far.
+- **Resolve**: add the answer as a comment, move the card to `Done`, tick its item in the map's checklist (`update_item` `checked: true`), then append a context pointer (gist + link) to the map's Decisions-so-far.
