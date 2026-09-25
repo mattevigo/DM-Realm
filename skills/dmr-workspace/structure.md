@@ -218,9 +218,9 @@ A single note at the root of DM Tools (`dm_tools.translation_glossary`), one row
 
 | English     | Translation      | Source                         | Key (folders only)   |
 | ----------- | ---------------- | ------------------------------ | -------------------- |
-| `<English>` | `<translation>`  | Official Translation / fallback | `<key>` or empty    |
+| `<English>` | `<translation>`  | Official Translation / fallback / DM's choice | `<key>` or empty |
 
-Names the DM chooses — a Campaign's name, a Session's title, an invented NPC — are the DM's words, not game terms, and are not recorded.
+Names the DM chooses — a Campaign's name, a Session's title, an invented NPC — are the DM's words, not game terms, and are not recorded. The one exception is a top-level folder the DM named: its row records the name with the source *DM's choice*, so the Glossary lists every top-level folder in use.
 
 In an English Workspace nothing is translated, so there is no Translation Glossary.
 
