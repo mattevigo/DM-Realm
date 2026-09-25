@@ -1,0 +1,18 @@
+# DM Realm Workspace Config — fields documented in docs/structure.md#workspace-config.
+# Fill it in before Setup.
+
+# The Workspace Language: every folder name, file name and note in the Workspace
+# is written in it. Any language, named in any language (English, Italiano, Deutsch…).
+# Fixed after Setup.
+language: English
+
+# Names of the six top-level folders, by neutral key. Leave a name empty to use
+# the agent's translation of the default English name into the Workspace Language.
+# Each name is a single folder name directly under the Workspace root, never a path.
+folders:
+  reference:   # default: Reference
+  adventures:  # default: Adventures
+  homebrew:    # default: Homebrew
+  campaigns:   # default: Campaigns
+  dm_tools:    # default: DM_Tools
+  templates:   # default: Templates
