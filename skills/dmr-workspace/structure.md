@@ -226,6 +226,11 @@ In an English Workspace nothing is translated, so there is no Translation Glossa
 
 Setup has happened once the top-level folders exist. From then on neither the Workspace Language nor the Edition can change: if `language` or `edition` in the Workspace Config is edited, the agent does not act on it, keeps working in the Setup language and Edition, and tells the DM that changing it is not supported.
 
+Because the Workspace Config can be edited, the values in use are read from the Workspace itself:
+
+- **Workspace Language** — the top-level folder names on disk and, in a non-English Workspace, the Translation Glossary.
+- **Edition** — the [source property](#source-property) of the notes imported from the Trusted Source: a book of the 2024 Edition (see [Edition](#edition)) means 2024, an earlier one 2014. Off-Edition notes, which carry an Edition callout, do not count. With no imported note yet, nothing but the Workspace Config records the Edition, so its `edition` stands.
+
 ### Name rules
 
 - Words in file and folder names are joined with underscores: `Magic_Missile.md`, `Magic_Items`. Apostrophes become underscores too: `L_Imboscata`.

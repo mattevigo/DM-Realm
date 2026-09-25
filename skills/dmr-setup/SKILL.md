@@ -15,16 +15,22 @@ Turn the current folder into a DM Realm Workspace, leaving everything already in
    - **Already a Workspace** — `workspace-config.yml` at the root, next to top-level folders: this is a re-run; follow [Re-run](#re-run) instead of the steps below.
    - **Anything else** — notes or other files outside a Workspace: refuse and write nothing. When it holds Markdown notes, tell the DM it looks like an existing vault, and that migrating a vault into a Workspace is a separate skill DM Realm does not have yet.
 3. **Workspace Language.** Use the language the DM's request names. When it names none, ask which language the Workspace will be written in — every folder, file and note, fixed for good after Setup — and end your turn. The language comes only from the DM's explicit words, never from the language their request is written in. If the chosen language is not English, tell the DM this version of Setup supports English Workspaces only, and stop.
-4. **Preview.** Show exactly what Setup will create: `workspace-config.yml` with the content below, and the six top-level folders — `Reference`, `Adventures`, `Homebrew`, `Campaigns`, `DM_Tools`, `Templates` — empty.
-5. **Confirmation.** Continue on an explicit go-ahead from the DM: one already in the request ("go ahead", "proceed", "create it") counts. Otherwise ask for it and end your turn; nothing is written before it.
-6. **Create.** Write `workspace-config.yml` at the folder root, then create the six folders with `mkdir`. The Workspace starts with exactly these seven entries: no subfolders, no notes, and no Translation Glossary (an English Workspace has none).
-7. **Report** what was created.
+4. **Edition.** Use the Edition the DM's request names (2014 or 2024; "2024 rules", "5.5e" and "One D&D" mean 2024, "5e 2014" means 2014). When it names none, ask it in one message and end your turn:
+   - **2024** (recommended) — the 2024 Player's Handbook, Dungeon Master's Guide and Monster Manual.
+   - **2014** — the 2014 core books and the books that follow them.
+
+   Say that the Edition decides which official rules material the Workspace imports, and that it cannot be changed after Setup. Choose it only from the DM's explicit answer.
+5. **Preview.** Show exactly what Setup will create: `workspace-config.yml` with the content below — Workspace Language and Edition included — and the six top-level folders — `Reference`, `Adventures`, `Homebrew`, `Campaigns`, `DM_Tools`, `Templates` — empty.
+6. **Confirmation.** Continue on an explicit go-ahead from the DM: one already in the request ("go ahead", "proceed", "create it") counts. Otherwise ask for it and end your turn; nothing is written before it.
+7. **Create.** Write `workspace-config.yml` at the folder root, then create the six folders with `mkdir`. The Workspace starts with exactly these seven entries: no subfolders, no notes, and no Translation Glossary (an English Workspace has none).
+8. **Report** what was created.
 
 The Workspace Config Setup writes:
 
 ```yaml
 # DM Realm Workspace Config — written by Setup; fields in the dmr-workspace rules.
 language: English
+edition: 2024   # or 2014, as the DM chose
 folders:
   reference: Reference
   adventures: Adventures
@@ -40,9 +46,9 @@ Done when the folder holds `workspace-config.yml` and the six empty top-level fo
 
 A Workspace is set up once. A re-run reports on it and writes nothing: renaming folders and repairing settings are not in this version.
 
-1. **Find the Workspace Language in use** from the Workspace itself: the top-level folder names on disk and, in a non-English Workspace, the Translation Glossary in DM Tools. The config's `language` line may have been edited since Setup, so it does not decide.
+1. **Find the Workspace Language and Edition in use** from the Workspace itself, as structure.md's "Fixed after Setup" says: the config's `language` and `edition` lines may have been edited since Setup.
 2. **Answer the DM:**
-   - When the config's `language` or the DM's request names another language, say that changing the Workspace Language is not supported and the Workspace stays in the language in use. If the config was edited, offer to put its `language` line back; change it only on the DM's yes.
-   - Otherwise say the folder is already a DM Realm Workspace in that language, and Setup has nothing to create.
+   - When the config or the DM's request names another language or Edition than the one in use, say that changing it is not supported and the Workspace keeps the one in use. If the config was edited, offer to put that line back; change it only on the DM's yes.
+   - Otherwise say the folder is already a DM Realm Workspace in that language and Edition, and Setup has nothing to create.
 
-Done when the DM knows the Workspace's language in use and the folder is exactly as it was.
+Done when the DM knows the Workspace's language and Edition in use and the folder is exactly as it was.

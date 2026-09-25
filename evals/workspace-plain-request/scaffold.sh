@@ -4,6 +4,7 @@ set -e
 cat > workspace-config.yml <<'YML'
 # DM Realm Workspace Config — written by Setup; fields in the dmr-workspace rules.
 language: English
+edition: 2024
 folders:
   reference: Reference
   adventures: Adventures
