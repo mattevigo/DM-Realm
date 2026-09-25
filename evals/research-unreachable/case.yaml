@@ -1,0 +1,15 @@
+schema_version: "1.1"
+name: research-unreachable
+description: With the Trusted Source unreachable and nothing cached, a rules question gets no answer from memory or from another site.
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 15
+  timeout_seconds: 240
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Bash, WebFetch, WebSearch]
+  env:
+    EVAL_DMR_SOURCE_CACHE: "~/.dm-realm/source-cache"
+    EVAL_DMR_SOURCE_API: http://127.0.0.1:9/latest
+    EVAL_DMR_SOURCE_RAW: http://127.0.0.1:9/raw
+  prompt: |
+    How does the Grappled condition work?

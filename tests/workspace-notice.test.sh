@@ -19,6 +19,7 @@ WS="$TMP/ws"; mkdir -p "$WS"
 cat > "$WS/workspace-config.yml" <<'YML'
 # DM Realm Workspace Config — written by Setup; fields in the dmr-workspace rules.
 language: English
+edition: 2024
 folders:
   reference: Reference
   adventures: Adventures
@@ -34,11 +35,14 @@ for name in Reference Adventures Homebrew Campaigns DM_Tools Templates; do
   expect_contains workspace "$OUT" "$name"
 done
 expect_contains workspace "$OUT" "dmr-workspace"
+expect_contains workspace "$OUT" "Edition: 2024"
+expect_contains workspace "$OUT" "dmr-trusted-source"
 
 # Custom names and trailing comments are read from the config, not assumed
 WS2="$TMP/ws2"; mkdir -p "$WS2"
 cat > "$WS2/workspace-config.yml" <<'YML'
 language: Italiano   # fixed after Setup
+edition: "2014"
 folders:
   reference: Riferimento
   adventures: Avventure
@@ -51,6 +55,7 @@ OUT=$(run_hook "$WS2")
 expect_contains custom "$OUT" "Italiano"
 expect_contains custom "$OUT" "Partite"
 expect_contains custom "$OUT" "Strumenti_DM"
+expect_contains custom "$OUT" "Edition: 2014"
 case "$OUT" in *"fixed after Setup"*|*'"Partite"'*) echo "FAIL custom: comment or quotes leaked"; FAILS=$((FAILS+1));; esac
 
 # Not a Workspace: no output at all, exit 0

@@ -178,6 +178,8 @@ DM Realm never ships any of this data, not even as examples or eval fixtures; it
 
 ### Source Cache
 
+The agent reaches the Trusted Source only through the Source Cache, with the `dmr-trusted-source` skill.
+
 - **One per machine, outside every Workspace**, shared by all the Workspaces on it. It holds only the English data; translations live in each Workspace's Translation Glossary.
 - **Pinned to one release** of the Trusted Source. Each file is fetched from that release the first time it is needed, so every cached file is from the same release. The first import or research that needs data creates it; Setup does not.
 - **Refreshed only when the DM asks**: the pin moves to the latest release and the files already cached are fetched again. A refresh changes no note, in any Workspace.
