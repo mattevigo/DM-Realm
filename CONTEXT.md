@@ -19,7 +19,7 @@ The language chosen at Setup; every folder name, file name, frontmatter key and 
 _Avoid_: Locale
 
 **Edition**:
-The D&D rules a Workspace follows — 2014 or 2024 — chosen at Setup and fixed after it. It decides which official rules material is Reference (Adventures and Setting lore are not tied to an Edition), the default folder names, and which Official Translations apply.
+The D&D rules a Workspace follows — 2014 or 2024 — chosen at Setup and fixed once the first official rules material is imported into Reference. It decides which official rules material is Reference (Adventures and Setting lore are not tied to an Edition), the default folder names, and which Official Translations apply.
 _Avoid_: Ruleset, version, 5e/5.5e
 
 **Off-Edition Material**:

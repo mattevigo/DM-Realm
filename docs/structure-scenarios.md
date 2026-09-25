@@ -125,8 +125,8 @@ Expected: The Italian Official Translation of "Races" as the 2014 Italian books 
 **S36.** A 2014 Workspace. The DM asks for the Weapon Mastery property *Topple*. What does the agent do?
 Expected: 2014 has no Weapon Masteries, so *Topple* is Off-Edition Material and a player option: ask the DM's consent. If agreed, create Reference › Equipment › Weapon_Masteries with it, marked with the Edition callout (2024).
 
-**S37.** After Setup, the DM changes `edition` in the Workspace Config from 2024 to 2014. What does the agent do?
-Expected: Refuse to act on it: the Edition is fixed after Setup. The agent keeps working in 2024 and tells the DM.
+**S37.** After Setup, in a Workspace whose Reference holds rules notes imported from 2024 books, the DM changes `edition` in the Workspace Config from 2024 to 2014. What does the agent do?
+Expected: Refuse to act on it: the Edition became fixed with the first rules material imported, and those notes' source says 2024. The agent keeps working in 2024 and tells the DM.
 
 **S38.** What does Setup ask the DM, and does it fetch any official data?
 Expected: First the Workspace Language, then (in that language) the Edition: 2014 or 2024, with 2024 recommended, no default, and a warning that it cannot change later. It writes the Workspace Config and creates the six top-level folders. It does not touch the Source Cache.
@@ -165,3 +165,6 @@ Expected: As a fallback in the Translation Glossary, so its first occurrence in 
 
 **S49.** The DM asks to check for updates. The Source Cache is pinned to an older release than the latest. What does the agent do?
 Expected: It does not refresh on its own. It says which release the cache is pinned to and that a newer one exists, offers to refresh first, and then compares the imported notes against the cache's release.
+
+**S50.** Right after Setup, before anything is imported, the DM changes `edition` in the Workspace Config from 2024 to 2014. What does the agent do?
+Expected: Work in 2014: the Edition is fixed only once the first rules material is imported, so until then the Workspace Config's `edition` is the Edition. Nothing needs changing.

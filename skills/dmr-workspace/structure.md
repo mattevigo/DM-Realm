@@ -143,7 +143,7 @@ Blank starting notes, one per kind of note, copied when a new note is created. N
 
 ## Edition
 
-The Edition — 2014 or 2024 — is chosen at Setup and recorded in the [Workspace Config](#workspace-config). Setup offers both, recommends 2024, sets no default, and says the choice cannot be changed later. It is [fixed after Setup](#fixed-after-setup).
+The Edition — 2014 or 2024 — is chosen at Setup and recorded in the [Workspace Config](#workspace-config). Setup offers both, recommends 2024, sets no default, and says the choice becomes permanent once official rules material is imported. It becomes fixed with the first rules material imported into Reference (see [Fixed after Setup](#fixed-after-setup)).
 
 The Edition decides:
 
@@ -226,12 +226,15 @@ In an English Workspace nothing is translated, so there is no Translation Glossa
 
 ### Fixed after Setup
 
-Setup has happened once the top-level folders exist. From then on neither the Workspace Language nor the Edition can change: if `language` or `edition` in the Workspace Config is edited, the agent does not act on it, keeps working in the Setup language and Edition, and tells the DM that changing it is not supported.
+- **The Workspace Language** is fixed once Setup has happened, that is once the top-level folders exist.
+- **The Edition** is fixed once the first rules material is imported into Reference. Until then nothing in the Workspace depends on it, and the Workspace Config's `edition` is the Edition.
+
+Once fixed, if `language` or `edition` in the Workspace Config is edited, the agent does not act on it, keeps working in the value in use, and tells the DM that changing it is not supported.
 
 Because the Workspace Config can be edited, the values in use are read from the Workspace itself:
 
 - **Workspace Language** — the top-level folder names on disk and, in a non-English Workspace, the Translation Glossary.
-- **Edition** — the [source property](#source-property) of the rules material imported into Reference: a book of the 2024 Edition (see [Edition](#edition)) means 2024, an earlier one 2014. Only rules material counts — not Setting lore, not Adventure notes, which come from books of either Edition, and not Off-Edition notes, which carry an Edition callout. With no such note yet, nothing but the Workspace Config records the Edition, so its `edition` stands.
+- **Edition** — the [source property](#source-property) of the rules material imported into Reference: a book of the 2024 Edition (see [Edition](#edition)) means 2024, an earlier one 2014. Only rules material counts — not Setting lore, not Adventure notes, which come from books of either Edition, and not Off-Edition notes, which carry an Edition callout. With no such note yet, the Edition is not fixed and the Workspace Config's `edition` is the Edition.
 
 ### Name rules
 
@@ -247,7 +250,7 @@ Because the Workspace Config can be edited, the values in use are read from the 
 | Field                | Meaning                                                                                        |
 | -------------------- | ---------------------------------------------------------------------------------------------- |
 | `language`           | The Workspace Language, as its name in any language (`English`, `Italiano`, `Deutsch`…). Fixed after Setup. |
-| `edition`            | The Edition: `2014` or `2024`. Fixed after Setup.                                             |
+| `edition`            | The Edition: `2014` or `2024`. Fixed once rules material is imported.                         |
 | `folders.<key>`      | The name of the top-level folder with that key (`reference`, `adventures`, `homebrew`, `campaigns`, `dm_tools`, `templates`). Empty means the agent's translation of the default English name. |
 
 - **A top-level folder name is a single folder name directly under the Workspace root** — never a path (`Games/Active`, `../Games`), never empty after the [name rules](#name-rules) are applied, never the same as another top-level folder. On an invalid name the agent writes nothing and asks the DM for a valid one.

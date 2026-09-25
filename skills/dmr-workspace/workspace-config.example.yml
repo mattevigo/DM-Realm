@@ -10,7 +10,7 @@ language: English
 # The Edition: the D&D rules the Workspace follows, 2014 or 2024.
 # Decides which official rules material is Reference, the default folder names and
 # which Official Translations apply.
-# Fixed after Setup.
+# Fixed once official rules material is imported into Reference.
 edition:   # 2014 or 2024 — Setup asks, recommending 2024; no default
 
 # Names of the six top-level folders, by neutral key. Leave a name empty to use
