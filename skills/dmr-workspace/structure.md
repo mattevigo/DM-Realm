@@ -21,7 +21,7 @@ The only other things at the root are the Workspace Config (`workspace-config.ym
 | `dm_tools`   | DM_Tools     | not a Scope | Setup   | Aids for running the game that belong to no single Campaign              |
 | `templates`  | Templates    | not a Scope | Setup   | Blank starting notes                                                     |
 
-These six are fixed: the DM may rename them in the Workspace Config, but may not add or remove a top-level folder. Material that seems to need a new one belongs inside an existing one (maps of a Campaign go in its Attachments, a reusable map in Homebrew Setting).
+These six are fixed: the DM may rename them — by re-running Setup, which moves the folder, rewrites the links into it and updates the Workspace Config (an edit to the Config alone takes effect at that re-run) — but may not add or remove a top-level folder. Material that seems to need a new one belongs inside an existing one (maps of a Campaign go in its Attachments, a reusable map in Homebrew Setting).
 
 Inside the top-level folders the DM is free to add, rename or remove subfolders. The subfolders documented below are the defaults the agent uses when it places a note and the DM has not organised that part differently.
 

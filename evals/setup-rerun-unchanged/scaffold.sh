@@ -14,3 +14,8 @@ folders:
   templates: Templates
 YML
 mkdir -p Reference Adventures Homebrew Campaigns DM_Tools Templates
+
+mkdir -p .obsidian
+printf '{"useMarkdownLinks": false, "newLinkFormat": "shortest"}\n' > .obsidian/app.json
+printf '{"templates": true}\n' > .obsidian/core-plugins.json
+printf '{"folder": "%s"}\n' Templates > .obsidian/templates.json

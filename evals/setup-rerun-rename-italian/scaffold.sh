@@ -1,9 +1,9 @@
 #!/bin/sh
-# Starting state: an Italian Workspace whose Workspace Config was hand-edited to Spanish after Setup.
+# Starting state: an Italian 2024 Workspace set up by DM Realm, with its Translation Glossary.
 set -e
 cat > workspace-config.yml <<'YML'
 # DM Realm Workspace Config — written by Setup; fields in the dmr-workspace rules.
-language: Español
+language: Italiano
 edition: 2024
 folders:
   reference: Riferimento

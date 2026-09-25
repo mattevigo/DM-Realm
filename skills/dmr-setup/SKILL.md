@@ -2,7 +2,7 @@
 name: dmr-setup
 description: Set up the current folder as a DM Realm Workspace.
 disable-model-invocation: true
-allowed-tools: Read, Glob, Write, Bash(ls:*), Bash(mkdir:*), Bash(python3:*), Skill
+allowed-tools: Read, Glob, Write, Edit, Bash(ls:*), Bash(mkdir:*), Bash(python3:*), Skill
 ---
 
 # Setup
@@ -41,11 +41,20 @@ Done when the folder holds `workspace-config.yml`, the six empty top-level folde
 
 ## Re-run
 
-A Workspace is set up once. A re-run reports on it, and the folder stays as it is — the one exception is restoring an edited Config line, on the DM's yes. Renaming folders and repairing settings are not in this version.
+A Workspace is set up once. A re-run keeps its Workspace Language and Edition, renames top-level folders when the DM asks, restores the Obsidian settings DM Realm needs, and asks before recreating a missing folder. Speak the Workspace Language in use.
 
-1. **Find the Workspace Language and Edition in use** from the Workspace itself, as structure.md's "Fixed after Setup" says: the config's `language` and `edition` lines may have been edited since Setup.
-2. **Answer the DM:**
-   - When the config or the DM's request names another language or Edition than the one in use, say that changing it is not supported and the Workspace keeps the one in use. If the config was edited, offer to put that line back; change it only on the DM's yes.
-   - Otherwise say the folder is already a DM Realm Workspace in that language and Edition, and Setup has nothing to create.
+1. **Find the Workspace Language and Edition in use** from the Workspace itself, as structure.md's "Fixed after Setup" says: the config's `language` and `edition` lines may have been edited since Setup. When the config or the DM's request names another language or Edition than the one in use, say that changing it is not supported and the Workspace keeps the one in use; if the config was edited, offer to put that line back, and change it only on the DM's yes.
+2. **Compare the six top-level folders** on disk with the Workspace Config:
+   - **Renamed** — the DM asks to rename a folder, or the Config names a folder that is not on disk while an unlisted folder is (the DM edited the Config): that is a rename to the new name.
+   - **Missing** — a folder the Config names is on disk under no name: tell the DM and ask whether to recreate it; create it (`mkdir`) only on their yes.
+3. **Rename**, one folder at a time. Preview it — the folder, its new name, and that every link into it will be rewritten — and continue only on an explicit go-ahead (one already in the request counts). Then run the helper next to this file:
 
-Done when the DM knows the Workspace's language and Edition in use and the folder is exactly as it was.
+   ```sh
+   python3 "<this skill's base directory>/workspace-folders.py" rename . <key> "<new name>"            # add --from "<name on disk>" when the Config already has the new name
+   ```
+
+   It checks the name as structure.md requires (exit 2: say why and ask for another), moves the folder, rewrites every link whose path starts with the old name, updates the Workspace Config and, for the Templates folder, Obsidian's template folder. In a non-English Workspace, then update that folder's row in the Translation Glossary: the name in use, with the source *DM's choice* in the Workspace Language.
+4. **Repair Obsidian settings**: run `python3 "<this skill's base directory>/obsidian-settings.py" merge . "<Templates folder name in use>"`. It restores only DM Realm's keys that drifted and rewrites nothing that is right.
+5. **Report** what changed — renamed folders and rewritten notes, restored settings, recreated folders — or that the Workspace was already in order.
+
+Done when every change the DM confirmed is made, the Obsidian settings are as DM Realm needs them, and nothing else in the Workspace changed.

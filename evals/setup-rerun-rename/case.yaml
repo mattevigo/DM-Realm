@@ -1,0 +1,11 @@
+schema_version: "1.1"
+name: setup-rerun-rename
+description: Renaming Campaigns moves the folder, rewrites path links into it and updates the Workspace Config.
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 25
+  timeout_seconds: 400
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    /dm-realm:dmr-setup rename the Campaigns folder to Games, go ahead

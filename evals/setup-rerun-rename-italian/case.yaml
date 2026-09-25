@@ -1,0 +1,11 @@
+schema_version: "1.1"
+name: setup-rerun-rename-italian
+description: In an Italian Workspace, renaming a top-level folder updates its Translation Glossary row to the name in use.
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 25
+  timeout_seconds: 400
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    /dm-realm:dmr-setup rinomina la cartella Campagne in Partite, procedi

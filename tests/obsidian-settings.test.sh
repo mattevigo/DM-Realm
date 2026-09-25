@@ -44,6 +44,20 @@ OUT=$(python3 "$HELPER" merge "$W" Templates 2>&1); CODE=$?
 [ "$(cat "$W/.obsidian/app.json")" = '{"vimMode": true,' ] || fail "broken: app.json was rewritten"
 [ ! -e "$W/.obsidian/templates.json" ] || fail "broken: wrote templates.json anyway"
 
+# Already as DM Realm needs it: no file is rewritten, and it says so.
+W="$TMP/fresh"
+stamps() { python3 -c "import os,sys; print([os.stat(p).st_mtime_ns for p in sorted(sys.argv[1:])])" "$W/.obsidian"/*.json; }
+before=$(stamps); sleep 0.1
+OUT=$(python3 "$HELPER" merge "$W" Modelli) || fail "no-op: exit $?"
+[ "$before" = "$(stamps)" ] || fail "no-op: files were rewritten"
+case "$OUT" in *"already"*) ;; *) fail "no-op: should say the settings are already right: $OUT";; esac
+
+# Drift: it names what it restored.
+printf '{"useMarkdownLinks": true, "newLinkFormat": "shortest", "vimMode": true}' > "$W/.obsidian/app.json"
+OUT=$(python3 "$HELPER" merge "$W" Modelli) || fail "drift: exit $?"
+case "$OUT" in *"app.json"*) ;; *) fail "drift: should name app.json: $OUT";; esac
+case "$OUT" in *"templates.json"*) fail "drift: templates.json was already right but is named: $OUT";; esac
+
 # Version: the higher of the installer version and the newest downloaded app package.
 APP="$TMP/Info.plist"; CONF="$TMP/obsidian-config"; mkdir -p "$CONF"
 cat > "$APP" <<'PL'

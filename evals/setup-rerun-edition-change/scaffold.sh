@@ -24,3 +24,8 @@ source: XPHB p. 364, v2.36.1
 
 (Invented placeholder text for this test; not official content.)
 MD
+
+mkdir -p .obsidian
+printf '{"useMarkdownLinks": false, "newLinkFormat": "shortest"}\n' > .obsidian/app.json
+printf '{"templates": true}\n' > .obsidian/core-plugins.json
+printf '{"folder": "%s"}\n' Templates > .obsidian/templates.json

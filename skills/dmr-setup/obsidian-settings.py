@@ -5,7 +5,8 @@
       Merge DM Realm's keys into <workspace>/.obsidian/ and leave every other
       setting as it is: wikilinks with the shortest-path format (app.json), the
       Templates core plugin on (core-plugins.json, always the object form) and the
-      template folder (templates.json). Writes no other file.
+      template folder (templates.json). Writes no other file, and rewrites none that is
+      already right; prints which files it set.
       Exit 2, touching nothing, when an existing file is not valid JSON.
 
   obsidian-settings.py version
@@ -61,13 +62,20 @@ def merge(workspace, templates_folder):
     core["templates"] = True
     templates["folder"] = templates_folder
 
-    os.makedirs(config, exist_ok=True)
+    changed = []
     for name, data in (("app.json", app), ("core-plugins.json", core), ("templates.json", templates)):
+        if os.path.exists(paths[name]) and load(paths[name], None) == data:
+            continue  # already as DM Realm needs it: leave the file untouched
+        os.makedirs(config, exist_ok=True)
         with open(paths[name], "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
             f.write("\n")
-    print("Obsidian settings merged: wikilinks, shortest-path links, Templates plugin on, "
-          f"template folder '{templates_folder}'.")
+        changed.append(name)
+    if changed:
+        print(f"Obsidian settings set in {', '.join(changed)}: wikilinks, shortest-path links, "
+              f"Templates plugin on, template folder '{templates_folder}'.")
+    else:
+        print("Obsidian settings already as DM Realm needs them; nothing changed.")
     return 0
 
 
