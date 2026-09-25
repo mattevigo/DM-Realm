@@ -1,0 +1,11 @@
+schema_version: "1.1"
+name: setup-rerun-language-change
+description: Re-running Setup in an Italian Workspace whose config says Spanish refuses the language change and changes nothing.
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 12
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Bash]
+  prompt: |
+    /dm-realm:dmr-setup

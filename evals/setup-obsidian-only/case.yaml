@@ -1,0 +1,11 @@
+schema_version: "1.1"
+name: setup-obsidian-only
+description: A folder holding only Obsidian settings is set up like an empty one.
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 15
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Bash]
+  prompt: |
+    /dm-realm:dmr-setup set up an English workspace, default names, go ahead
