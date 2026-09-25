@@ -35,13 +35,13 @@ cat > "$CACHE/v3.0.0/data/conditionsdiseases.json" <<'JSON'
 			"source": "PHB",
 			"page": 291,
 			"reprintedAs": ["Grappled|XPHB"],
-			"entries": ["A grappled creature's speed becomes 0, and it has disadvantage on Dexterity saving throws until the grapple ends."]
+			"entries": ["While grappled, a creature has a speed of 0 and disadvantage on Dexterity saving throws until the grapple ends."]
 		},
 		{
 			"name": "Grappled",
 			"source": "XPHB",
 			"page": 368,
-			"entries": ["While you have the Grappled condition, your Speed is 0 and you have Disadvantage on Dexterity saving throws and on Stealth checks."]
+			"entries": ["A Grappled creature has Speed 0 and Disadvantage on Dexterity saving throws and on Stealth checks."]
 		}
 	]
 }

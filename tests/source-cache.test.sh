@@ -36,8 +36,13 @@ OUT=$(helper file data/conditionsdiseases.json) || fail "cached: exit $?"
 grep -q '"page":1' "$OUT" 2>/dev/null || fail "cached: should still serve the pinned v1.0.0 copy"
 [ "$(helper release)" = "v1.0.0" ] || fail "cached: the pin must not move on its own"
 
-# Unreachable and not cached: exit 3, a message naming the Trusted Source, no file.
+# A path the pinned release does not have: exit 4, not "unreachable".
 OUT=$(helper file data/spells/spells-test.json 2>&1); CODE=$?
+[ "$CODE" -eq 4 ] || fail "missing: expected exit 4, got $CODE ($OUT)"
+case "$OUT" in *"not in"*v1.0.0*) ;; *) fail "missing: message should say the file is not in v1.0.0: $OUT";; esac
+
+# Unreachable and not cached: exit 3, a message naming the Trusted Source, no file.
+OUT=$(DMR_SOURCE_RAW="http://127.0.0.1:9/raw" helper file data/spells/spells-test.json 2>&1); CODE=$?
 [ "$CODE" -eq 3 ] || fail "unreachable: expected exit 3, got $CODE"
 case "$OUT" in *"Trusted Source"*) ;; *) fail "unreachable: message should name the Trusted Source: $OUT";; esac
 [ ! -e "$DMR_SOURCE_CACHE/v1.0.0/data/spells/spells-test.json" ] || fail "unreachable: left a partial file"
@@ -83,12 +88,28 @@ grep -q '"page":20' "$DMR_SOURCE_CACHE/v1.1.0/data/spells/spells-test.json" 2>/d
 [ ! -e "$DMR_SOURCE_CACHE/v1.0.0" ] || fail "refresh: old release copy should be gone"
 
 # refresh that cannot complete keeps the old pin and the old files intact.
-printf '{"tag_name": "v1.2.0"}\n' > "$MIRROR/latest.json"   # v1.2.0 has no raw files
-OUT=$(helper refresh 2>&1); CODE=$?
+printf '{"tag_name": "v1.2.0"}\n' > "$MIRROR/latest.json"
+OUT=$(DMR_SOURCE_RAW="http://127.0.0.1:9/raw" helper refresh 2>&1); CODE=$?
 [ "$CODE" -eq 3 ] || fail "refresh failing: expected exit 3, got $CODE"
 [ "$(helper release)" = "v1.1.0" ] || fail "refresh failing: pin must stay v1.1.0"
 [ -f "$DMR_SOURCE_CACHE/v1.1.0/data/spells/spells-test.json" ] || fail "refresh failing: old files must stay"
 [ ! -e "$DMR_SOURCE_CACHE/v1.2.0" ] || fail "refresh failing: left a partial release"
+
+# A cached file the new release no longer has is dropped, not a reason to stay behind.
+mkdir -p "$MIRROR/raw/v1.2.0/data"
+cp "$MIRROR/raw/v1.1.0/data/conditionsdiseases.json" "$MIRROR/raw/v1.2.0/data/"
+OUT=$(helper refresh) || fail "refresh dropped file: exit $?"
+[ "$(helper release)" = "v1.2.0" ] || fail "refresh dropped file: pin should be v1.2.0"
+case "$OUT" in *"spells/spells-test.json"*) ;; *) fail "refresh dropped file: should name the dropped file: $OUT";; esac
+[ -f "$DMR_SOURCE_CACHE/v1.2.0/data/conditionsdiseases.json" ] || fail "refresh dropped file: kept files must be re-fetched"
+
+# No cache directory given at all: refuse rather than guess one.
+OUT=$(env -u DMR_SOURCE_CACHE -u CLAUDE_PLUGIN_DATA -u EVAL_DMR_SOURCE_CACHE sh -c 'cd "$1" && sh "$2" release' _ "$WS" "$HELPER" 2>&1); CODE=$?
+[ "$CODE" -eq 2 ] || fail "no cache dir: expected exit 2, got $CODE"
+
+# EVAL_ overrides win for every setting (the eval runner sets only EVAL_*).
+OUT=$(EVAL_DMR_SOURCE_API="file://$TMP/nowhere.json" DMR_SOURCE_CACHE="$TMP/cache4" helper release 2>&1); CODE=$?
+[ "$CODE" -eq 3 ] || fail "eval precedence: EVAL_DMR_SOURCE_API should win, got exit $CODE"
 
 # file:// endpoints may start with ~/ (evals pass them from case.yaml).
 rm -rf "$TMP/home2"; mkdir -p "$TMP/home2/m"; cp "$MIRROR/latest.json" "$TMP/home2/m/latest.json"

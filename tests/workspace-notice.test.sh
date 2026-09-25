@@ -58,6 +58,19 @@ expect_contains custom "$OUT" "Strumenti_DM"
 expect_contains custom "$OUT" "Edition: 2014"
 case "$OUT" in *"fixed after Setup"*|*'"Partite"'*) echo "FAIL custom: comment or quotes leaked"; FAILS=$((FAILS+1));; esac
 
+# Empty values followed by a comment (as in the example config) never leak the comment.
+WS3="$TMP/ws3"; mkdir -p "$WS3"
+cat > "$WS3/workspace-config.yml" <<'YML'
+language: English
+edition:   # 2014 or 2024
+folders:
+  reference:   # default: Reference
+  adventures: Adventures
+YML
+OUT=$(run_hook "$WS3")
+case "$OUT" in *"#"*|*"default: Reference"*) echo "FAIL empty: comment leaked into: $OUT"; FAILS=$((FAILS+1));; esac
+expect_contains empty "$OUT" "Adventures"
+
 # Not a Workspace: no output at all, exit 0
 NO="$TMP/plain"; mkdir -p "$NO"
 OUT=$(run_hook "$NO"); CODE=$?

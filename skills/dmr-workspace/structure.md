@@ -231,7 +231,7 @@ Setup has happened once the top-level folders exist. From then on neither the Wo
 Because the Workspace Config can be edited, the values in use are read from the Workspace itself:
 
 - **Workspace Language** — the top-level folder names on disk and, in a non-English Workspace, the Translation Glossary.
-- **Edition** — the [source property](#source-property) of the notes imported from the Trusted Source: a book of the 2024 Edition (see [Edition](#edition)) means 2024, an earlier one 2014. Off-Edition notes, which carry an Edition callout, do not count. With no imported note yet, nothing but the Workspace Config records the Edition, so its `edition` stands.
+- **Edition** — the [source property](#source-property) of the rules material imported into Reference: a book of the 2024 Edition (see [Edition](#edition)) means 2024, an earlier one 2014. Only rules material counts — not Setting lore, not Adventure notes, which come from books of either Edition, and not Off-Edition notes, which carry an Edition callout. With no such note yet, nothing but the Workspace Config records the Edition, so its `edition` stands.
 
 ### Name rules
 
@@ -242,7 +242,7 @@ Because the Workspace Config can be edited, the values in use are read from the 
 
 ## Workspace Config
 
-`workspace-config.yml` at the Workspace root. Setup writes it from the DM's answers; the agent reads it whenever it needs the Workspace Language, the Edition or a top-level folder's name.
+`workspace-config.yml` at the Workspace root. Setup writes it from the DM's answers; the agent reads it for the top-level folder names, and for the Workspace Language and Edition it records — confirmed against the Workspace itself as [Fixed after Setup](#fixed-after-setup) says.
 
 | Field                | Meaning                                                                                        |
 | -------------------- | ---------------------------------------------------------------------------------------------- |

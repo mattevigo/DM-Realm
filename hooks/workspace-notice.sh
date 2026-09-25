@@ -9,10 +9,12 @@ CWD=$(printf '%s' "$INPUT" | sed -n 's/.*"cwd"[[:space:]]*:[[:space:]]*"\([^"]*\
 CONFIG="$CWD/workspace-config.yml"
 [ -f "$CONFIG" ] || exit 0
 
-# Value of a "key: value" line: comment, surrounding quotes and spaces removed.
+# Value of a "key: value" line: comment, surrounding quotes and spaces removed;
+# "(not set)" when empty.
 value() {
-  sed -n "s/^[[:space:]]*$1:[[:space:]]*//p" "$CONFIG" | head -n 1 |
-    sed 's/[[:space:]]#.*$//; s/[[:space:]]*$//; s/^"\(.*\)"$/\1/; s/^'"'"'\(.*\)'"'"'$/\1/'
+  v=$(sed -n "s/^[[:space:]]*$1:[[:space:]]*//p" "$CONFIG" | head -n 1 |
+    sed 's/^#.*$//; s/[[:space:]]#.*$//; s/[[:space:]]*$//; s/^"\(.*\)"$/\1/; s/^'"'"'\(.*\)'"'"'$/\1/')
+  printf '%s' "${v:-(not set)}"
 }
 
 LANGUAGE=$(value language)
@@ -24,10 +26,11 @@ for key in reference adventures homebrew campaigns dm_tools templates; do
 done
 
 cat <<NOTICE
-This folder is a DM Realm Workspace (its Workspace Config is workspace-config.yml).
+This folder is a DM Realm Workspace. Its Workspace Config (workspace-config.yml) records:
 Workspace Language: ${LANGUAGE}
 Edition: ${EDITION}
 Top-level folders, by key:${FOLDERS}
+(The dmr-workspace rules, "Fixed after Setup", say how to confirm the language and Edition in use.)
 Before writing, moving, renaming or linking any note or folder here, load the dmr-workspace skill and follow its rules.
-Official D&D material (rules questions, rules text, stat blocks) comes only from the Trusted Source: load the dmr-trusted-source skill before answering or writing any.
+For official D&D material — a rules question, rules text, a stat block — load the dmr-trusted-source skill first.
 NOTICE

@@ -25,7 +25,7 @@ for tag in v3.0.0 v3.1.0; do
   page=368; [ "$tag" = v3.1.0 ] && page=369
   cat > "$DMR/mirror/raw/$tag/data/conditionsdiseases.json" <<JSON
 {"condition": [{"name": "Grappled", "source": "XPHB", "page": $page,
-  "entries": ["While you have the Grappled condition, your Speed is 0 and you have Disadvantage on Dexterity saving throws and on Stealth checks."]}]}
+  "entries": ["A Grappled creature has Speed 0 and Disadvantage on Dexterity saving throws and on Stealth checks."]}]}
 JSON
   printf '{"book": [{"name": "Player'"'"'s Handbook (2024)", "id": "XPHB", "source": "XPHB", "published": "2024-09-17"}]}\n' > "$DMR/mirror/raw/$tag/data/books.json"
 done

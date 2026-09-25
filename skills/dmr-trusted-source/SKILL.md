@@ -7,7 +7,7 @@ allowed-tools: Read, Grep, Bash(sh:*), Bash(DMR_SOURCE_CACHE=*)
 
 # Trusted Source
 
-Official D&D material comes only from the Trusted Source, read through the Source Cache. The rules — no other source, no memory, what the Edition decides, never shipping data — are in the `dmr-workspace` skill's structure.md, sections "Edition" and "Official data"; load `dmr-workspace` first if it is not loaded yet. This skill is how to reach the data.
+How to reach the Trusted Source through the Source Cache. The rules that govern it — sources, the Edition, Off-Edition Material, research, refreshing — are in the `dmr-workspace` skill's structure.md, sections "Edition" and "Official data"; load `dmr-workspace` first and follow them.
 
 ## Getting a file
 
@@ -19,11 +19,9 @@ DMR_SOURCE_CACHE="${CLAUDE_PLUGIN_DATA}/source-cache" sh "<this skill's base dir
 
 - It prints the local path of the file, fetched from the pinned release the first time it is needed; read that path with Read and Grep.
 - `release` instead of `file …` prints the pinned release.
-- **Exit 3** means the Trusted Source cannot be reached and the file is not cached: tell the DM so and stop. The answer comes from the Trusted Source or not at all.
-
-## Refreshing
-
-The Source Cache stays on its pinned release, even when a newer one exists, until the DM asks to update it ("update the source cache"). Then run the helper with `refresh`: it moves the pin to the latest release and fetches every cached file again from it, or says the cache is already up to date. Report the old and the new release. A refresh changes no note in any Workspace; if it exits 3, the cache stays on the old release — say so.
+- `refresh` updates the Source Cache — run it only when the DM asks. It prints the old and the new release (or that the cache is up to date) and any cached file the new release no longer has; report that to the DM.
+- **Exit 4**: the pinned release has no such file — check the path against the table below.
+- **Exit 3**: the Trusted Source cannot be reached and the file is not cached (or a refresh could not complete, and the cache stays on its release): tell the DM so and stop there.
 
 ## Where things are
 
@@ -42,11 +40,11 @@ The Source Cache stays on its pinned release, even when a newer one exists, unti
 ## Finding the entry for the Edition
 
 1. Grep the file for `"name": "<English name>"`, then Read the lines around each match: each entry has `source` (a book code) and `page`.
-2. Take the entry from a book of the Workspace's Edition (Workspace Config `edition`): 2024 books are those `books.json` dates on or after the 2024 Player's Handbook (XPHB, 2024-09-17) — XPHB, XDMG, XMM…; 2014 books are the earlier ones — PHB, DMG, MM…. A 2014 entry's `reprintedAs` names its 2024 version.
-3. Only when the Edition has no version of it is the other Edition's entry used, and then say so (Off-Edition Material).
+2. Take the entry from a book of the Workspace's Edition in use (structure.md, "Fixed after Setup"). A book's Edition follows its `published` date in `books.json`, as structure.md's "Edition" section defines it; a 2014 entry's `reprintedAs` names its 2024 version.
+3. When the Edition has no version of it, structure.md's "Off-Edition Material" decides what happens.
 
-## Answering a rules question
+## Citing
 
-Answer from the entry, in the Workspace Language, and name its book and page, e.g. "Player's Handbook (2024), p. 367 (XPHB)". Render 5etools tags as plain text: `{@condition incapacitated}` → incapacitated, `{@dc 15}` → DC 15, `{@damage 2d6}` → 2d6. Writing a note is a separate request; answering creates none.
+Name the entry's book and page, e.g. "Player's Handbook (2024), p. 367 (XPHB)". Render 5etools tags as plain text: `{@condition incapacitated}` → incapacitated, `{@dc 15}` → DC 15, `{@damage 2d6}` → 2d6.
 
-Done when every rules statement in the answer comes from an entry you read, cited by book and page.
+Done when every rules statement you give comes from an entry you read, cited by book and page.

@@ -8,19 +8,20 @@
 #   source-cache.sh refresh            move the pin to the latest release and fetch every
 #                                      cached file again from it (only when the DM asks)
 #
+# Exit 4: the pinned release has no such file.
 # Exit 3: the Trusted Source is unreachable (and the file is not cached, or a refresh
 #         could not complete: the old release stays pinned and intact).
-# Exit 2: bad usage (a path outside data/, a cache inside a Workspace).
+# Exit 2: bad usage (a path outside data/, no cache directory, a cache inside a Workspace).
 #
-# DMR_SOURCE_CACHE  cache directory (default: $CLAUDE_PLUGIN_DATA/source-cache);
-#   EVAL_DMR_SOURCE_CACHE overrides it in evals, whose sandbox cannot write plugin data.
-# DMR_SOURCE_API / DMR_SOURCE_RAW  mirror endpoints, overridden only by tests
-#   (EVAL_-prefixed too: `claude plugin eval` passes only EVAL_* variables from case.yaml).
+# DMR_SOURCE_CACHE  cache directory (default: $CLAUDE_PLUGIN_DATA/source-cache).
+# DMR_SOURCE_API / DMR_SOURCE_RAW  mirror endpoints, overridden only by tests.
+# EVAL_DMR_SOURCE_*  win over all of the above: `claude plugin eval` passes only EVAL_*
+#   variables from case.yaml, and its sandbox can neither write plugin data nor go online.
 
-API=${DMR_SOURCE_API:-${EVAL_DMR_SOURCE_API:-https://api.github.com/repos/5etools-mirror-3/5etools-src/releases/latest}}
-RAW=${DMR_SOURCE_RAW:-${EVAL_DMR_SOURCE_RAW:-https://raw.githubusercontent.com/5etools-mirror-3/5etools-src}}
+API=${EVAL_DMR_SOURCE_API:-${DMR_SOURCE_API:-https://api.github.com/repos/5etools-mirror-3/5etools-src/releases/latest}}
+RAW=${EVAL_DMR_SOURCE_RAW:-${DMR_SOURCE_RAW:-https://raw.githubusercontent.com/5etools-mirror-3/5etools-src}}
 CACHE=${EVAL_DMR_SOURCE_CACHE:-${DMR_SOURCE_CACHE:-${CLAUDE_PLUGIN_DATA:+$CLAUDE_PLUGIN_DATA/source-cache}}}
-CACHE=${CACHE:-$HOME/.local/share/dm-realm/source-cache}
+[ -n "$CACHE" ] || { echo "source-cache: no Source Cache directory: set DMR_SOURCE_CACHE." >&2; exit 2; }
 case "$CACHE" in
   \~/*) CACHE="$HOME/${CACHE#\~/}" ;;
   /*) ;;
@@ -41,9 +42,15 @@ while [ "$dir" != "/" ] && [ -n "$dir" ]; do
   dir=$(dirname "$dir")
 done
 
-fetch() { # url dest: download atomically; fail without leaving a partial file
-  mkdir -p "$(dirname "$2")" || return 1
-  curl -fsSL --max-time 60 "$1" -o "$2.part" 2>/dev/null && mv "$2.part" "$2" || { rm -f "$2.part"; return 1; }
+fetch() { # url dest: download atomically. Returns 0 done, 4 no such file, 3 unreachable.
+  mkdir -p "$(dirname "$2")" || return 3
+  code=$(curl -sSL --max-time 60 -w '%{http_code}' "$1" -o "$2.part" 2>/dev/null); rc=$?
+  if [ "$rc" -eq 0 ] && { [ "$code" = 200 ] || [ "$code" = 000 ]; }; then
+    mv "$2.part" "$2" && return 0
+  fi
+  rm -f "$2.part"
+  { [ "$code" = 404 ] || [ "$rc" -eq 37 ]; } && return 4   # 37: file:// path missing
+  return 3
 }
 
 latest_release() {
@@ -75,7 +82,12 @@ case "${1:-}" in
     tag=$(pinned_release) || exit $?
     local_file="$CACHE/$tag/$path"
     if [ ! -f "$local_file" ]; then
-      fetch "$RAW/$tag/$path" "$local_file" || unreachable "$path is not in the Source Cache"
+      fetch "$RAW/$tag/$path" "$local_file"
+      case $? in
+        0) ;;
+        4) die 4 "$path is not in the Trusted Source release $tag." ;;
+        *) unreachable "$path is not in the Source Cache" ;;
+      esac
     fi
     printf '%s\n' "$local_file"
     ;;
@@ -87,17 +99,22 @@ case "${1:-}" in
       echo "Source Cache up to date: $old is the latest release."
       exit 0
     fi
-    count=0
+    count=0 dropped=""
     list="$CACHE/.refresh-list"
     (cd "$CACHE/$old" 2>/dev/null && find data -type f ! -name '*.part') > "$list"
     while IFS= read -r f; do
-      fetch "$RAW/$new/$f" "$CACHE/$new/$f" || { rm -rf "$CACHE/$new" "$list"; unreachable "the refresh to $new could not fetch $f; the Source Cache stays on $old"; }
-      count=$((count+1))
+      fetch "$RAW/$new/$f" "$CACHE/$new/$f"
+      case $? in
+        0) count=$((count+1)) ;;
+        4) dropped="$dropped $f" ;;
+        *) rm -rf "$CACHE/$new" "$list"; unreachable "the refresh to $new could not fetch $f; the Source Cache stays on $old" ;;
+      esac
     done < "$list"
     rm -f "$list"
     printf '%s\n' "$new" > "$CACHE/release"
     rm -rf "$CACHE/$old"
     echo "Source Cache refreshed: $old -> $new ($count file(s) fetched again)."
+    [ -z "$dropped" ] || echo "No longer in $new, dropped:$dropped"
     ;;
   *)
     die 2 "usage: source-cache.sh release | file data/<path> | refresh"
