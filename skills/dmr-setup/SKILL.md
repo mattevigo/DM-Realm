@@ -2,7 +2,7 @@
 name: dmr-setup
 description: Set up the current folder as a DM Realm Workspace.
 disable-model-invocation: true
-allowed-tools: Read, Glob, Write, Bash(ls:*), Bash(mkdir:*), Skill
+allowed-tools: Read, Glob, Write, Bash(ls:*), Bash(mkdir:*), Bash(python3:*), Skill
 ---
 
 # Setup
@@ -19,15 +19,23 @@ Turn the current folder into a DM Realm Workspace, in any Workspace Language, le
 5. **Folder names.** For each of the six top-level folders:
    - **Named by the DM** (in the request or an answer): use that name exactly, after checking it as structure.md's "Workspace Config" requires — a single folder name, not empty after the name rules, not a duplicate. An invalid name: say why, ask for another, and end your turn; the folder stays as it is.
    - **Otherwise**: its default English name, translated into the Workspace Language as structure.md's "Translating a term" says (Official Translation, else a faithful fallback), with the name rules applied. In English, the default name itself.
-6. **Preview.** Show exactly what Setup will create: `workspace-config.yml` with its content — Workspace Language, Edition and every folder name; the six top-level folders, each empty; and, in a non-English Workspace, the Translation Glossary with its rows. Unless the request already settled the names ("default names", or names given), invite the DM to rename any folder.
+6. **Preview.** Show exactly what Setup will create: `workspace-config.yml` with its content — Workspace Language, Edition and every folder name; the six top-level folders, each empty; in a non-English Workspace, the Translation Glossary with its rows; and the Obsidian settings Setup merges (below). Unless the request already settled the names ("default names", or names given), invite the DM to rename any folder.
 7. **Confirmation.** Continue on an explicit go-ahead from the DM: one already in the request ("go ahead", "proceed", "procedi", "create it") counts. Otherwise ask for it and end your turn; the folder stays as it is until then.
 8. **Create.**
    1. Write `workspace-config.yml` at the folder root in the example's format, every value filled in (each folder name written out).
    2. Create the six folders with `mkdir`.
    3. In a non-English Workspace, write the Translation Glossary note at the root of the DM Tools folder, its name translated from `Translation_Glossary`, in the format structure.md's "Translation Glossary" gives: one row per top-level folder (English name, name in use, source, key).
+   4. Merge the Obsidian settings with the helper next to this file, passing the Templates folder's name in use:
+
+      ```sh
+      python3 "<this skill's base directory>/obsidian-settings.py" merge . "<Templates folder name>"
+      ```
+
+      It sets wikilinks with shortest-path links, turns the Templates core plugin on and points it at the Templates folder, and leaves every other Obsidian setting as the DM had it. On exit 2 (a settings file that is not valid JSON) it changed nothing: name the file for the DM and go on. Without `python3`, make the same three changes by hand with Read and Write — `app.json`: `useMarkdownLinks: false`, `newLinkFormat: "shortest"`; `core-plugins.json`, always a JSON object: `templates: true`; `templates.json`: `folder` — keeping every other key.
 
    These are the whole new Workspace; an English Workspace has no Translation Glossary.
-9. **Report** what was created, in the Workspace Language.
+9. **Check Obsidian** with `python3 "<this skill's base directory>/obsidian-settings.py" version`: it prints the version found, the version found and that it is older than the one DM Realm was built for, or that none was found. This never stops Setup.
+10. **Report**, in the Workspace Language: what was created; the Obsidian version found (with a warning to update when it is older), or that Obsidian was not found and can be installed later; and the one step left to the DM — open this folder in Obsidian with **Open folder as vault**.
 
 Done when the folder holds `workspace-config.yml`, the six empty top-level folders and, in a non-English Workspace, the Translation Glossary — and nothing else of Setup's.
 
