@@ -1,6 +1,6 @@
 # DM Realm
 
-A general-purpose way to run D&D 2024 campaigns as Markdown notes, in the style of "DM Workspace" but usable by any DM, for any setting, in any language.
+A general-purpose way to run D&D 5th-edition campaigns (2014 or 2024 rules) as Markdown notes, in the style of "DM Workspace" but usable by any DM, for any setting, in any language.
 
 ## Language
 
@@ -15,22 +15,40 @@ One DM's collection of notes, organised into Scopes, set up once in a single Wor
 _Avoid_: Vault, repo, project
 
 **Workspace Language**:
-The language chosen at Setup; every folder name, file name, frontmatter key and generated note in the Workspace is written in it. Fixed after Setup. The Workspace's own documentation and the official sources are in English; the agent translates from them into the Workspace Language.
+The language chosen at Setup; every folder name, file name, frontmatter key and generated note in the Workspace is written in it. Fixed after Setup. DM Realm's documentation and the official sources are in English; the agent translates from them into the Workspace Language.
 _Avoid_: Locale
 
+**Edition**:
+The D&D rules a Workspace follows — 2014 or 2024 — chosen at Setup and fixed after it. It decides which official rules material is Reference (Adventures and Setting lore are not tied to an Edition), the default folder names, and which Official Translations apply.
+_Avoid_: Ruleset, version, 5e/5.5e
+
+**Off-Edition Material**:
+Official rules material of the Edition the Workspace did not choose, as the Trusted Source dates its book. It enters only to fill a gap — something needed by name that the Edition has no version of — never in bulk, is always marked, and a player option (spell, feat, class, species…) needs the DM's informed consent first.
+_Avoid_: Legacy, cross-edition content
+
 **Workspace Config**:
-The file recording the Workspace Language and the names of the top-level folders, written by Setup from the DM's answers. It is the only DM Realm file in a Workspace, and its presence is what makes a folder a Workspace.
+The file recording the Workspace Language, the Edition and the names of the top-level folders, written by Setup from the DM's answers. It is the only DM Realm file in a Workspace, and its presence is what makes a folder a Workspace.
 _Avoid_: Settings, preferences
 
 **Setup**:
-The one-time act that turns the documented, language-neutral structure into concrete folders named in the Workspace Language and prepares the Workspace for Obsidian. It starts by asking the DM for the Workspace Language, and is conducted in that language from then on.
+The one-time act that turns the documented, language-neutral structure into concrete folders named in the Workspace Language and prepares the Workspace for Obsidian. It starts by asking the DM for the Workspace Language, and is conducted in that language from then on; it then asks for the Edition.
 _Avoid_: Init, bootstrap, install, configure the environment
 
 **Official Translation**:
-The publisher's own translation of a game term into the Workspace Language. Always preferred; when none exists, the term is translated as faithfully as possible instead.
+The publisher's own translation of a game term into the Workspace Language, as printed in the books of the Workspace's Edition. Always preferred; when none exists, the term is translated as faithfully as possible instead.
 
 **Translation Glossary**:
 The single Workspace note recording, for each game term, the translation chosen and whether it is an Official Translation or a fallback, so every note translates it the same way.
+
+### Official data
+
+**Trusted Source**:
+The 5etools data, as published in its public source mirror: the only source from which official material is imported, translated and researched. Official material it does not contain cannot be Reference or Adventure content.
+_Avoid_: The books, compendium, SRD, 5e.tools website
+
+**Source Cache**:
+The local copy of the Trusted Source that DM Realm keeps outside every Workspace and shares among them, pinned to one release and refreshed only when the DM asks. It holds only the English data; a Workspace's translation choices live in its Translation Glossary.
+_Avoid_: Download, mirror, local data
 
 ### Scopes
 
@@ -39,7 +57,7 @@ The kind of content a note is — Reference, Adventure, Homebrew or Campaign —
 _Avoid_: Context, category
 
 **Reference**:
-Official D&D 2024 material, imported faithfully from the published books, with no knowledge of any Campaign.
+Official material imported faithfully from the Trusted Source, with no knowledge of any Campaign. Its rules material is of the Workspace's Edition, with Off-Edition Material only filling a gap; Setting lore comes from any book.
 _Avoid_: World, Mondo, compendium
 
 **Homebrew**:

@@ -61,7 +61,7 @@ Expected: (a) DM Tools › Random_Tables; (b) inside that Campaign.
 **S16.** A magic item invented for Campaign A (in its `Homebrew_Magic_Items`) is now also used in Campaign B. What should the agent do?
 Expected: Move it to Homebrew › Magic_Items and remove everything in it that refers to Campaign A (links and mentions). Campaign A and B notes link to it there.
 
-**S17.** Where does the official Weapon Mastery property *Topple* go?
+**S17.** In a 2024 Workspace, where does the official Weapon Mastery property *Topple* go?
 Expected: Reference › Equipment › Weapon_Masteries.
 
 **S18.** A DM sets up a fresh Workspace and starts one Campaign. Which folders exist before any other note is written?
@@ -88,7 +88,7 @@ Expected: It translates it as faithfully as it can (it may search the web for an
 Expected: Use the Glossary's translation unchanged, without re-translating it. If the Glossary records it as a fallback, its first occurrence in this note also shows the English original.
 
 **S25.** Where does the agent read the Workspace Language and the top-level folder names?
-Expected: `workspace-config.yml` at the Workspace root: `language`, and `folders` with one entry per top-level folder key.
+Expected: `workspace-config.yml` at the Workspace root: `language`, `edition`, and `folders` with one entry per top-level folder key.
 
 **S26.** The DM sets the Campaigns folder name to `Games/Active` in the Workspace Config. What happens?
 Expected: Not valid: a top-level folder name must be a single folder name directly under the Workspace root, never a path. The agent asks the DM for a single name.
@@ -101,3 +101,67 @@ Expected: English. The keys never appear in the Workspace as folder or file name
 
 **S29.** In an Italian Workspace, the agent creates the note for Session 3, "The Ambush". What is the file name?
 Expected: The Session number pattern is kept but the words are in Italian: `Sessione_03_<translated title>.md` (e.g. `Sessione_03_L_Imboscata.md`), in the Campaign's Sessions folder under its Italian name.
+
+## Edition
+
+**S30.** A 2024 Workspace. The DM asks for the *Fireball* note; the Trusted Source has it in both the 2014 and the 2024 Player's Handbook. Which one is imported, and what does the note record?
+Expected: The 2024 (XPHB) version, into Reference › Spells › Level_3. Its frontmatter records the source: book code, page and release (e.g. `XPHB p. 239, v2.36.1`).
+
+**S31.** A 2024 Workspace runs a 2014 Adventure. One of its encounters uses the 2014 *Goblin*, which the 2024 Monster Manual reprints. What does the Encounter note link to?
+Expected: The 2024 Goblin in Reference Monsters. The 2014 Goblin is not imported: the Edition has a version, so there is no gap.
+
+**S32.** Same Workspace and Adventure. Another encounter uses a 2014 monster that no 2024 book reprints. What does the agent do?
+Expected: Import it into Reference Monsters as Off-Edition Material, without asking (it is not a player option), with a callout at the top naming its Edition (2014). The Encounter links to it.
+
+**S33.** A 2024 Workspace. The DM asks to import *Silvery Barbs*, a spell from a 2021 book that no 2024 book reprints. What does the agent do?
+Expected: The book is 2014 by the Trusted Source's dating, so the spell is Off-Edition Material and a player option: even though the DM named it, the agent says it is Off-Edition (2014) and asks the DM's consent first. If the DM agrees, it goes in Reference › Spells › Level_1, marked with the Edition callout.
+
+**S34.** A 2024 Workspace. The DM needs a monster printed only in *Mordenkainen Presents: Monsters of the Multiverse*. Is it Reference, and is anything special done?
+Expected: It is 2014 material (the book predates the 2024 Player's Handbook), so it enters Reference Monsters as Off-Edition Material filling a gap, marked, without asking. If the 2024 Monster Manual reprints it, the 2024 version is used instead.
+
+**S35.** An Italian 2014 Workspace, folder names empty in the Workspace Config. The agent writes the first official species note. What is its folder called?
+Expected: The Italian Official Translation of "Races" as the 2014 Italian books name it — not of "Species". Its path is the translated Reference folder › that name, and the choice is recorded in the Translation Glossary.
+
+**S36.** A 2014 Workspace. The DM asks for the Weapon Mastery property *Topple*. What does the agent do?
+Expected: 2014 has no Weapon Masteries, so *Topple* is Off-Edition Material and a player option: ask the DM's consent. If agreed, create Reference › Equipment › Weapon_Masteries with it, marked with the Edition callout (2024).
+
+**S37.** After Setup, the DM changes `edition` in the Workspace Config from 2024 to 2014. What does the agent do?
+Expected: Refuse to act on it: the Edition is fixed after Setup. The agent keeps working in 2024 and tells the DM.
+
+**S38.** What does Setup ask the DM, and does it fetch any official data?
+Expected: First the Workspace Language, then (in that language) the Edition: 2014 or 2024, with 2024 recommended, no default, and a warning that it cannot change later. It writes the Workspace Config and creates the six top-level folders. It does not touch the Source Cache.
+
+## Official data
+
+**S39.** The DM pastes the text of a monster from their own copy of a book and asks the agent to add it to Reference. The Trusted Source does not have that monster. What does the agent do?
+Expected: Refuse to add it: official material the Trusted Source does not contain cannot be in the Workspace, and the agent does not copy the pasted text anywhere. The DM may write their own version as Homebrew.
+
+**S40.** The DM asks for a spell that is not in the Source Cache, and the Trusted Source cannot be reached. What does the agent do?
+Expected: Stop, tell the DM, and write nothing — no note from memory and no other site.
+
+**S41.** The DM asks "how does the Grappled condition work?". What does the agent do?
+Expected: Answer from the Source Cache in the Workspace's Edition, naming the book and page. It creates no note unless the DM asks for one.
+
+**S42.** Where is the Source Cache, and is it part of the Workspace?
+Expected: Outside every Workspace, one per machine, shared by all the Workspaces on it. It is not in the Workspace: the Workspace Config stays the only DM Realm file there.
+
+**S43.** The DM refreshes the Source Cache while working in Workspace A. What changes in Workspace B's notes?
+Expected: Nothing. Each imported note keeps the release it records. When the DM asks, in B, to check for updates, the agent compares each note's entry in its recorded release with the cached release, lists the notes whose official content changed, and re-imports the ones the DM approves.
+
+**S44.** The DM once added a line of their own to the Reference note *Fireball*. An update check finds an erratum to *Fireball*. What does the agent do?
+Expected: Warn that the note differs from its recorded import and offer to move the DM's line where it belongs (a House Rule, Homebrew, or a Campaign note linking to *Fireball*). Then, if the DM approves, replace the official content wholesale and record the new release.
+
+**S45.** The DM asks for a starter pack of official spells bundled with DM Realm, so a new Workspace works offline from day one. What is the answer?
+Expected: DM Realm never ships Trusted Source data; it is only fetched on the DM's machine, into the Source Cache.
+
+**S46.** A 2024 Workspace. The DM starts running *Curse of Strahd*, a 2014 Adventure. Is its content imported, and how is it marked?
+Expected: Imported normally into Adventures, with no Edition callout and no consent: Adventures are not tied to an Edition. The rules material it points to follows the Edition — its creatures link to their 2024 versions, and only those without one enter Reference as Off-Edition Material.
+
+**S47.** A 2024 Workspace. The DM wants the official Forgotten Realms lore from a 2015 book. Where does it go, and is it Off-Edition Material?
+Expected: Reference › Setting › its Forgotten Realms subfolder. It is not Off-Edition Material and has no callout: Setting lore is not tied to an Edition.
+
+**S48.** Italian Workspace. The agent believes a term's Italian name is the official one but is not sure. How is it recorded?
+Expected: As a fallback in the Translation Glossary, so its first occurrence in each note shows the English original. Only a term the agent is sure the Italian books of the Edition use is an Official Translation.
+
+**S49.** The DM asks to check for updates. The Source Cache is pinned to an older release than the latest. What does the agent do?
+Expected: It does not refresh on its own. It says which release the cache is pinned to and that a newer one exists, offers to refresh first, and then compares the imported notes against the cache's release.
