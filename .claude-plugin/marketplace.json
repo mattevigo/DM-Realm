@@ -1,0 +1,14 @@
+{
+  "name": "dm-realm",
+  "owner": {
+    "name": "Matteo Vigoni"
+  },
+  "description": "DM Realm: Claude Code plugin for D&D Dungeon Masters' Obsidian Workspaces.",
+  "plugins": [
+    {
+      "name": "dm-realm",
+      "source": "./",
+      "description": "Set up and maintain D&D 5th-edition campaign Workspaces as Markdown notes for Obsidian, in any language."
+    }
+  ]
+}

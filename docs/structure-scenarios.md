@@ -1,11 +1,11 @@
 # Structure scenarios
 
-Placement and linking questions that the Workspace documentation must answer in exactly one correct way. Re-run them after every change to `docs/structure.md`, `workspace-config.yml`, `CONTEXT.md` or `docs/adr/`.
+Placement and linking questions that the Workspace documentation must answer in exactly one correct way. Re-run them after every change to `skills/dmr-workspace/` (the Workspace rules), `CONTEXT.md` or `docs/adr/`.
 
 ## How to run
 
 1. Start a fresh agent that has not seen this file.
-2. Give it only `CONTEXT.md`, `docs/adr/`, `docs/structure.md` and `workspace-config.yml`.
+2. Give it only `CONTEXT.md`, `docs/adr/`, `skills/dmr-workspace/structure.md` and `skills/dmr-workspace/workspace-config.example.yml`.
 3. Ask it each **Question** below, verbatim, one list at a time, and have it answer from the documentation alone, citing the section it relied on.
 4. Compare each answer with **Expected**. A scenario passes only if the answer matches and the agent found no competing reading. If it fails, fix the documentation, not the scenario — unless the scenario itself contradicts the spec.
 

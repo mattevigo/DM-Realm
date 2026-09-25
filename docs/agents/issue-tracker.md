@@ -1,6 +1,6 @@
 # Issue tracker: Trello
 
-Issues and specs for this repo live as **cards** on the Trello board **`DM Realm`** — https://trello.com/b/LsoFRUO2/dm-realm (board ARI `ari:cloud:trello::board/workspace/60d3afb18e9c90173f526fb8/6ab525353b9b49dc6a4fb3c0`). Use the tools of the `trello` MCP server (configured in `.mcp.json`) for all operations. Reference a card by its URL (or short link); write tools need the card's ARI, so resolve it with `trelloReadCard` `get` first.
+Issues and specs for this repo live as **cards** on the Trello board **`DM Realm`** — https://trello.com/b/LsoFRUO2/dm-realm (board ARI `ari:cloud:trello::board/workspace/60d3afb18e9c90173f526fb8/6ab525353b9b49dc6a4fb3c0`). Use the tools of the `trello` MCP server for all operations. It is registered for this project in local scope (`claude mcp add --scope local --transport http trello https://mcp.trello.com/v1`), never in a checked-in `.mcp.json`: the repository is the `dm-realm` plugin, and a root `.mcp.json` would ship Trello to every DM who installs it. Reference a card by its URL (or short link); write tools need the card's ARI, so resolve it with `trelloReadCard` `get` first.
 
 ## Board layout
 

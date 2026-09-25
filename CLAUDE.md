@@ -16,4 +16,11 @@ Single-context: one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agent
 
 ## Workspace
 
-Before placing, naming or linking any note, read `docs/structure.md` (folders, Scopes, link rules, language and names) and `workspace-config.yml` (Workspace Language and top-level folder names). When these docs change, re-run the scenarios in `docs/structure-scenarios.md` (it lists which changes need a re-run).
+This repository is the `dm-realm` Claude Code plugin and its own marketplace (ADR 0002). It is not a Workspace: Workspaces are other folders that `/dm-realm:dmr-setup` sets up.
+
+The Workspace rules (folders, Scopes, link rules, Edition, official data, language and names) live in exactly one place: the agent-only `dmr-workspace` skill, in `skills/dmr-workspace/structure.md`. Every `dmr-` skill loads `dmr-workspace` before touching a Workspace; never copy its rules elsewhere. When the rules change, re-run the scenarios in `docs/structure-scenarios.md` (it lists which changes need a re-run).
+
+## Plugin development
+
+- **Manual loop:** make an empty folder, run `claude --plugin-dir <path to this repo>` in it, then `/dm-realm:dmr-setup`. After editing a skill or hook, run `/reload-plugins` in that session.
+- **Evals:** cases live in `evals/<case>/` (`case.yaml` or `prompt.md` + `graders/`). Run the suite from the repo root with `claude plugin eval . --trust-plugin --scaffold --allow-tools Write Bash --judge-model sonnet --no-publish` (add `--runs 1 --ablation none` for a cheap pilot, `--case <glob>` for one case). Cases list `Write` and `Bash` in `allowed_tools` and the flag grants them: the runner ignores a skill's own `allowed-tools`. `file_exists` and `target: files` see created files only, never empty folders, so folder checks grade the `trace` with an `llm` grader. Scaffold scripts only prepare a case's starting folder; they never contain Trusted Source data (ADR 0003).

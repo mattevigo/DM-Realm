@@ -1,6 +1,6 @@
 # Workspace structure
 
-How a DM Realm Workspace is organised: which folders exist, what each holds, and what each note may link to. This document is in English and independent of any Workspace Language and Edition. Terms follow [CONTEXT.md](../CONTEXT.md); the Scope rule is [ADR 0001](adr/0001-scope-by-top-level-folder.md), and where official material comes from is [ADR 0003](adr/0003-official-material-comes-only-from-5etools.md).
+How a DM Realm Workspace is organised: which folders exist, what each holds, and what each note may link to. This document is in English and independent of any Workspace Language and Edition. Terms follow [CONTEXT.md](../../CONTEXT.md); the Scope rule is [ADR 0001](../../docs/adr/0001-scope-by-top-level-folder.md), and where official material comes from is [ADR 0003](../../docs/adr/0003-official-material-comes-only-from-5etools.md).
 
 Every folder has a **neutral key** (e.g. `reference.monsters`) and a **default English name**. Keys are English identifiers used only in this documentation and in the [Workspace Config](#workspace-config); they never appear as folder or file names. In a Workspace, the agent writes every folder and file name in the Workspace Language, translated from the default English name (see [Language and names](#language-and-names)); the six top-level folder names can instead be set in the Workspace Config.
 
@@ -8,7 +8,7 @@ Every folder has a **neutral key** (e.g. `reference.monsters`) and a **default E
 
 The Workspace root is the folder the DM opens in Obsidian. Every note lives inside one of the six top-level folders; no note lives at the root.
 
-The only other things at the root are the Workspace Config (`workspace-config.yml`, the only DM Realm file in a Workspace — [ADR 0002](adr/0002-dm-realm-is-a-plugin-separate-from-the-workspace.md)) and dot-folders such as `.obsidian/`. They are not notes, not top-level folders, and are never translated.
+The only other things at the root are the Workspace Config (`workspace-config.yml`, the only DM Realm file in a Workspace — [ADR 0002](../../docs/adr/0002-dm-realm-is-a-plugin-separate-from-the-workspace.md)) and dot-folders such as `.obsidian/`. They are not notes, not top-level folders, and are never translated.
 
 ## Top-level folders
 
@@ -27,7 +27,7 @@ Inside the top-level folders the DM is free to add, rename or remove subfolders.
 
 ## Scope
 
-A note's Scope is the top-level folder it lives in, and nothing else ([ADR 0001](adr/0001-scope-by-top-level-folder.md)). There is no Scope property in frontmatter. Moving a note to another top-level folder changes its Scope, and its links must then obey the new Scope's rules.
+A note's Scope is the top-level folder it lives in, and nothing else ([ADR 0001](../../docs/adr/0001-scope-by-top-level-folder.md)). There is no Scope property in frontmatter. Moving a note to another top-level folder changes its Scope, and its links must then obey the new Scope's rules.
 
 Each Adventure and each Campaign is a separate unit: "the same Adventure" means the Adventure folder the note is in, and another Adventure's notes are as foreign to it as a Campaign's.
 
@@ -166,7 +166,7 @@ Official rules material of the other Edition enters only to fill a gap:
 
 ### Trusted Source
 
-The Trusted Source is the 5etools data as published in its public source mirror (`5etools-mirror-3/5etools-src` on GitHub), not the 5e.tools website ([ADR 0003](adr/0003-official-material-comes-only-from-5etools.md)). It is the only source for:
+The Trusted Source is the 5etools data as published in its public source mirror (`5etools-mirror-3/5etools-src` on GitHub), not the 5e.tools website ([ADR 0003](../../docs/adr/0003-official-material-comes-only-from-5etools.md)). It is the only source for:
 
 - **Importing** Reference and Adventure content. Official material it does not contain cannot be in the Workspace. The DM may write their own version as Homebrew; the agent never copies official text into it.
 - **Translating** official text: the English original is always the Trusted Source's.

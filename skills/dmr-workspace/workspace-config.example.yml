@@ -1,5 +1,6 @@
-# DM Realm Workspace Config — fields documented in docs/structure.md#workspace-config.
-# Written by Setup from the DM's answers.
+# EXAMPLE ONLY — not a Workspace Config. Setup writes the real one as
+# `workspace-config.yml` at a Workspace root, from the DM's answers.
+# Fields documented in structure.md#workspace-config (next to this file).
 
 # The Workspace Language: every folder name, file name and note in the Workspace
 # is written in it. Any language, named in any language (English, Italiano, Deutsch…).
