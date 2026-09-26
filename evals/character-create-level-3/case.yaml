@@ -1,0 +1,20 @@
+schema_version: "1.1"
+name: character-create-level-3
+description: "Created above level 1, a Character is one note with every level's choices and no past Builds."
+tags: [character]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 60
+  timeout_seconds: 1200
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  env:
+    EVAL_DMR_SOURCE_CACHE: "~/.dm-realm/source-cache"
+    EVAL_DMR_SOURCE_API: http://127.0.0.1:9/latest
+    EVAL_DMR_SOURCE_RAW: http://127.0.0.1:9/raw
+  prompt: |
+    Create a level 3 character for Carla: Ossian, a Medium Mothfolk Lamplighter with the Lantern Keeper background.
+    Standard array: the highest score in Wisdom, then Dexterity, Constitution, Intelligence, Charisma, and Strength last.
+    From the background, +2 Wisdom and +1 Constitution. Skills: Religion and Stealth. Cantrip: Spark Wick.
+    Prepared spells: Soft Light, Glimmerlance and Whisper Veil. Path of the Wick at level 2.
+    Fixed hit points at every level. He takes the class and background equipment packages.
