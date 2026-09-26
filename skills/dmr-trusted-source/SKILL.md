@@ -34,6 +34,7 @@ DMR_SOURCE_CACHE="${CLAUDE_PLUGIN_DATA}/source-cache" sh "<this skill's base dir
 | Rules glossary entries, optional and variant rules | `variantrules.json`; the ones 5etools extracts from books (e.g. the XDMG's) in `generated/gendata-variantrules.json` | `variantrule` |
 | Senses, skills | `senses.json`, `skills.json` | `sense`, `skill` |
 | Spells | `spells/spells-<book>.json` (e.g. `spells-xphb.json`, `spells-phb.json`); `spells/index.json` lists the books | `spell` |
+| Which classes have a spell (class spell lists) | `spells/sources.json` | by book, then spell name: `class` |
 | Monsters | `bestiary/bestiary-<book>.json` (e.g. `bestiary-xmm.json`, or an Adventure's code); `bestiary/index.json` lists the books; `bestiary/template.json` holds the templates copies apply | `monster`; `monsterTemplate` |
 | Magic items and special gear; mundane gear, weapons and Weapon Mastery properties | `items.json`; `items-base.json` | `item`; `baseitem`, `itemMastery` |
 | Generic magic variants ("+1 Weapon", "Flame Tongue") | `magicvariants.json` (book and page under `inherits`) | `magicvariant` |
@@ -42,6 +43,7 @@ DMR_SOURCE_CACHE="${CLAUDE_PLUGIN_DATA}/source-cache" sh "<this skill's base dir
 | Classes and subclasses | `class/class-<name>.json`; `class/index.json` | `class`, `subclass` |
 | Class options (Maneuvers, Eldritch Invocations, Metamagic, 2014 Fighting Styles…) | `optionalfeatures.json` | `optionalfeature` |
 | Books, Adventures and their publication dates | `books.json`, `adventures.json` | `book`, `adventure` |
+| A book's own text: character creation and advancement (ability score methods, point costs, hit points, proficiency bonus) and other rules no entry holds | `book/book-<book>.json` (e.g. `book-xphb.json`) | `data`: sections by `name` |
 
 ## Finding the entry for the Edition
 
