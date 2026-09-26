@@ -3,4 +3,4 @@ type: regex
 target: trace
 match: not_contains
 ---
-DM Realm Workspace
+This folder is a DM Realm Workspace\. Its Workspace Config

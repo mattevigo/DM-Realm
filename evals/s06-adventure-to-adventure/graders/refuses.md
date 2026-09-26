@@ -2,4 +2,4 @@
 type: llm
 ---
 
-- The reply declines to link Sildar from the Glasstaff note, explaining that an Adventure's notes may link only to Reference and to the same Adventure.
+- The reply does not add the link, and explains that the Workspace rules forbid a link from one Adventure's note to another Adventure's note. Offering to record the rivalry somewhere else (e.g. in a Campaign note) is fine.
