@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s09-no-scope-property
+description: "Structure scenario S09: a note never gets a Scope property; its folder is its Scope."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Create a reusable homebrew monster: the Glass Stalker, a CR 3 ambush predator made of living glass.

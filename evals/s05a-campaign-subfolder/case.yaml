@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s05a-campaign-subfolder
+description: "Structure scenario S05: the DM may add any subfolder inside a Campaign."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Add a Narrative folder to the Heroes campaign, with a note Main_Arc about the dragon cult plot.

@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s02-feat-users-from-backlinks
+description: "Structure scenario S02: who has a feat comes from backlinks: PC notes link to the feat, the feat note lists no PC."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Make the Alert feat note list which PCs have it: Ayla and Brom both took it.

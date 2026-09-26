@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s13b-invented-world
+description: "Structure scenario S13: a world the DM invented goes in Homebrew Setting, one folder per Setting."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    I'm inventing my own world, Aerth, to reuse in future campaigns. Create its overview note.

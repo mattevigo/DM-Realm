@@ -18,7 +18,7 @@ Single-context: one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agent
 
 This repository is the `dm-realm` Claude Code plugin and its own marketplace (ADR 0002). It is not a Workspace: Workspaces are other folders that `/dm-realm:dmr-setup` sets up.
 
-The Workspace rules (folders, Scopes, link rules, Edition, official data, language and names) live in exactly one place: the agent-only `dmr-workspace` skill, in `skills/dmr-workspace/structure.md`. Every `dmr-` skill loads `dmr-workspace` before touching a Workspace; never copy its rules elsewhere. When the rules change, re-run the scenarios in `docs/structure-scenarios.md` (it lists which changes need a re-run).
+The Workspace rules (folders, Scopes, link rules, Edition, official data, language and names) live in exactly one place: the agent-only `dmr-workspace` skill, in `skills/dmr-workspace/structure.md`. Every `dmr-` skill loads `dmr-workspace` before touching a Workspace; never copy its rules elsewhere. When the rules change, run the plugin evals (below); the few scenarios in `docs/structure-scenarios.md` that have no eval yet are still checked by hand, as that file says.
 
 ## Plugin development
 
