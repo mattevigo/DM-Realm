@@ -1,0 +1,16 @@
+schema_version: "1.1"
+name: transfer-2014-asks
+description: "Transfer 2014 → 2024: options with a 2024 version are mapped to it; each Off-Edition player option is asked about before anything is written."
+tags: [character, transfer, scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 80
+  timeout_seconds: 1500
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  env:
+    EVAL_DMR_SOURCE_CACHE: "~/.dm-realm/source-cache"
+    EVAL_DMR_SOURCE_API: http://127.0.0.1:9/latest
+    EVAL_DMR_SOURCE_RAW: http://127.0.0.1:9/raw
+  prompt: |
+    Transfer Pip Ashwick from my old vault: .old-vault/Pip_Ashwick.md.

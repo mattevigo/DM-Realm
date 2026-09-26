@@ -1,7 +1,7 @@
 schema_version: "1.1"
 name: character-backstory-generic
 description: "A backstory naming a Campaign-only place, kept generic on the DM's choice: the name is left out and listed."
-tags: [character]
+tags: [character, scenario]
 context:
   scaffold_script: scaffold.sh
 execution:

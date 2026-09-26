@@ -172,6 +172,10 @@ cat > "$D/items-base.json" <<'JSON'
    "weight": 8, "value": 1000},
   {"name": "Tinderbox", "source": "EMBC", "page": 160, "type": "G|EMBC", "rarity": "none", "weight": 1, "value": 50}
 ],
+ "itemProperty": [
+  {"abbreviation": "F", "source": "EMBC", "page": 146, "name": "Finesse",
+   "entries": ["When you make an attack with a Finesse weapon, use your choice of your Strength or Dexterity modifier for the attack and damage rolls."]}
+],
  "itemMastery": [
   {"name": "Snare", "source": "EMBC", "page": 216,
    "entries": ["If you hit a creature with this weapon, you can reduce its Speed by 15 feet until the start of your next turn."]}

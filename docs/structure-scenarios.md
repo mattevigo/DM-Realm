@@ -63,6 +63,19 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S59 | s59-invented-villain-split |
 | S60 | s60-realms-town-in-world |
 | S61 | s61-character-backstory-world-place |
+| S62 | character-create (a new Character: its folder and note, `player`, links to Reference, a missing note imported) |
+| S63 | character-create-level-3, character-create-asks-choices (a Character created above level 1: one note, no past Builds, each level's choices asked) |
+| S64 | character-level-up (the current Build kept as the next past Build, numbered in order) |
+| S65 | character-rebuild (a rebuild at the same level keeps a past Build) |
+| S66 | character-update-attune (attuning recomputes the numbers, no past Build); a Campaign-only item gained is S53 |
+| S67 | character-retired |
+| S68 | character-backstory-campaign-place-asks, character-backstory-generic (a backstory naming a Campaign-only place) |
+| S69 | transfer-old-vault (story dropped and listed, no official text, options linked) |
+| S70 | transfer-2014-asks, transfer-2014-replaced (Transfer 2014 → 2024: reprints, consent, a refused option replaced) |
+| S71 | transfer-italian (Transfer English → Italian, through the Translation Glossary) |
+| S72 | transfer-preview (nothing written before the go-ahead, the source unchanged) |
+| S73 | transfer-name-clash |
+| S74 | transfer-past-builds (past Builds as history: plain-text options, no links) |
 
 ## How to run the manual scenarios
 
