@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+WS_LANG=en WS_EDITION=2014
+. "$(dirname "$0")/../_fixtures/import-workspace.sh"
+. "$(dirname "$0")/../_fixtures/import-cache.sh"

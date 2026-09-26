@@ -61,9 +61,15 @@ Official material, imported faithfully from the Trusted Source. Its rules materi
 
 | Key                                  | Default name      | Created    | Holds                                                                                  |
 | ------------------------------------ | ----------------- | ---------- | -------------------------------------------------------------------------------------- |
-| `reference.rules`                    | Rules             | first note | Official rules and rule quick-references (e.g. Conditions, Actions)                    |
-| `reference.classes`                  | Classes           | first note | Classes and their subclasses                                                           |
-| `reference.species`                  | Species (2024) / Races (2014) | first note | Species (Races in 2014)                                                    |
+| `reference.rules`                    | Rules             | first note | Official rules: Rules Glossary entries, optional and variant rules, statuses, senses, skills |
+| `reference.rules.conditions`         | Conditions        | first note | Conditions, one note each                                                              |
+| `reference.rules.actions`            | Actions           | first note | Actions (Dash, Grapple…), one note each                                                |
+| `reference.classes`                  | Classes           | first note | One folder per class, and the class options                                            |
+| `reference.classes.<class>`          | `<Class name>`    | first note | The class note and one note per subclass                                               |
+| `reference.classes.options`          | Options           | first note | One subfolder per kind of class option                                                 |
+| `reference.classes.options.<kind>`   | `<Kind>` (e.g. Eldritch_Invocations, Maneuvers) | first note | Class options of that kind, one note each                |
+| `reference.species`                  | Species (2024) / Races (2014) | first note | One folder per species (race in 2014)                                      |
+| `reference.species.<species>`        | `<Species name>`  | first note | The species note and, in 2014, one note per named subrace                              |
 | `reference.backgrounds`              | Backgrounds       | first note | Backgrounds                                                                            |
 | `reference.feats`                    | Feats             | first note | Feats                                                                                  |
 | `reference.spells`                   | Spells            | first note | One subfolder per spell level, and nothing else                                        |
@@ -74,6 +80,20 @@ Official material, imported faithfully from the Trusted Source. Its rules materi
 | `reference.magic_items`              | Magic_Items       | first note | Magic items                                                                            |
 | `reference.monsters`                 | Monsters          | first note | Every official stat block, including one printed only in an Adventure                  |
 | `reference.setting`                  | Setting           | first note | Lore of official Settings — geography, pantheon, history — one subfolder per Setting   |
+
+**One note per entry.** An Import brings one Trusted Source entry into one note, in the folder of its kind:
+
+- **Rules.** Conditions go in Rules › Conditions and actions in Rules › Actions. Every other entry of the rules data — Rules Glossary entries, optional and variant rules, statuses (Bloodied, Concentration, Surprised), senses, skills — goes directly in Rules. Diseases, traps and hazards are not imported.
+- **Classes.** The class note, Classes › `<Class>` › `<Class>`, holds the class table and every class feature to level 20, including the optional class features the class lists from another book, each headed with that book and page ("(optional; TCE p. 42)"); its source property stays the class's own book. Each subclass is its own note beside it, holding only what the subclass adds. Importing a subclass on its own creates its class's folder but not the class note.
+- **A 2014 subclass listed again under the 2024 class** (the Trusted Source copies every 2014 subclass there) still has its own book's Edition: in a 2024 Workspace it is Off-Edition Material, and its note goes in the folder of the Edition's class.
+- **Class options** — Fighting Styles (2014), Maneuvers, Eldritch Invocations, Metamagic and the other kinds — are one note each in Classes › Options › `<Kind>`. 2024 Fighting Styles are feats, in Feats. A class or subclass note names its options in plain text; importing it does not import them.
+- **Species.** The same pattern as classes: Races › Dwarf › Dwarf, and beside it one note per named 2014 subrace (Hill_Dwarf), holding only what the subrace adds. An unnamed 2014 subrace is part of its race's note. 2024 species have no subraces: a lineage is part of its species' note, so asking for a 2024 lineage (Drow) imports its species (Elf).
+- **Magic items.** A specific item the Trusted Source builds from a generic variant and a base item ("+1 Longsword", "Flame Tongue Greatsword") is not an entry: asking for one imports the generic variant ("+1 Weapon", "Flame Tongue") into Magic_Items, and the agent says so ([ADR 0007](../../docs/adr/0007-an-import-renders-only-what-the-data-contains.md)). Its DMG or XDMG copy follows the Edition like any other entry.
+- **Mechanics only.** The Trusted Source's lore text about an entry (its "fluff") and its images are not imported.
+- **One entry at a time.** The one set an Import brings in on request is every Condition, or every Action, of the Edition, one note each; any other bulk request is declined.
+- **No links between Reference notes.** A note names other entries (a monster's spells, a class's options) in plain text, so it never depends on what else was imported.
+
+The note's own format is in [Imported notes](#imported-notes).
 
 ### Adventures — `adventures`
 
@@ -179,7 +199,7 @@ Official rules material of the other Edition enters only to fill a gap:
 - **A gap** is something needed by name — the DM asks for it, or a note being imported links to it — that the Edition has no version of. When the Edition has a version (the Trusted Source records the reprint), that version is used instead: a 2014 Adventure run in a 2024 Workspace links its goblins to the 2024 Goblin in Reference Monsters.
 - **Never in bulk**: only the thing needed, one at a time.
 - **Player options** — classes, subclasses, species, backgrounds, feats, spells, Weapon Mastery properties — need the DM's consent for each one before import, even when the DM asked for it by name: the agent says it is Off-Edition and which Edition it belongs to, and asks. Monsters and items do not.
-- **Marked**: the note opens with a callout, in the Workspace Language, naming the Edition it belongs to. It goes in the folder its kind has in the Edition, which it creates if the Edition has none (Weapon_Masteries in a 2014 Workspace).
+- **Marked**: the note carries the Edition callout ([Imported notes](#imported-notes)). It goes in the folder its kind has in the Edition, which it creates if the Edition has none (Weapon_Masteries in a 2014 Workspace).
 
 ## Official data
 
@@ -187,7 +207,7 @@ Official rules material of the other Edition enters only to fill a gap:
 
 The Trusted Source is the 5etools data as published in its public source mirror (`5etools-mirror-3/5etools-src` on GitHub), not the 5e.tools website ([ADR 0003](../../docs/adr/0003-official-material-comes-only-from-5etools.md)). It is the only source for:
 
-- **Importing** Reference and Adventure content. Official material it does not contain cannot be in the Workspace. The DM may write their own version as Homebrew; the agent never copies official text into it.
+- **Importing** Reference and Adventure content. Official material it does not contain cannot be in the Workspace. The DM may write their own version as Homebrew; the agent never copies official text into it. Text the DM copied from a published book, PDF or site is official text, whether or not the Trusted Source has it.
 - **Translating** official text: the English original is always the Trusted Source's.
 - **Research**: when the DM asks a rules question, the agent answers from the Source Cache in the Workspace's Edition and names the book and page. Answering creates no note unless the DM asks for one.
 
@@ -205,7 +225,15 @@ The agent reaches the Trusted Source only through the Source Cache, with the `dm
 
 ### Source property
 
-Every note imported from the Trusted Source records its source in a frontmatter property: book code, page and release, e.g. `XPHB p. 239, v2.36.1`. Its key, like every frontmatter key, is in the Workspace Language.
+Every note imported from the Trusted Source records its source in a frontmatter property: book code, page and release, e.g. `XPHB p. 239, v2.36.1`. Its key, like every frontmatter key, is in the Workspace Language, recorded in the Translation Glossary like a term.
+
+### Imported notes
+
+- **Its file name** is the entry's name translated into the Workspace Language (see [Translating a term](#translating-a-term)), with the [name rules](#name-rules) applied: `Fireball.md`, `Palla_di_Fuoco.md`.
+- **Its frontmatter** holds only the source property.
+- **Its body** starts with the translated name as a `#` heading, then the entry's text, translated faithfully: every paragraph, list, table and number, nothing added. A monster's stat lines are one section of the note.
+- **An Off-Edition note** has, right under its heading, an Obsidian callout in the Workspace Language naming the Edition it belongs to: `> [!warning] Off-Edition Material (2014)`.
+- **It is found by its path.** The translated name comes from the Translation Glossary, so an entry always gets the same path. When a note is already at that path, an Import of the entry writes nothing and tells the DM; replacing it is the [update check](#checking-for-updates).
 
 ### Checking for updates
 
