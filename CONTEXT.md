@@ -83,6 +83,10 @@ _Avoid_: PC, player character, hero, sheet
 A Character's game statistics at one moment — species, class and level, abilities, features, spells, equipment. A Character has one current Build; before a level-up or rebuild the current one is kept as a past Build.
 _Avoid_: Sheet, version, snapshot
 
+**Transfer**:
+Bringing an existing Character into the Workspace from outside it — another Workspace or an old vault's note — keeping its identity and Build but none of its table's story, and none of its official text, which comes from Reference instead.
+_Avoid_: Import (which is only from the Trusted Source), copy, migrate
+
 **Campaign**:
 One ongoing game with its own party of Characters, Sessions and story; what actually happened at the table, including what happened to its Characters. May run any number of Adventures, and may draw on every other Scope.
 
