@@ -6,6 +6,8 @@ The top-level folders are therefore fixed (the DM may rename them in the Workspa
 
 *Amended by [ADR 0004](0004-characters-are-a-scope-above-campaigns.md): Character is a fifth Scope, in a seventh top-level folder.*
 
+*Amended by [ADR 0005](0005-the-dms-world-is-a-scope-apart-from-homebrew.md): World is a sixth Scope, in an eighth top-level folder.*
+
 ## Considered Options
 
 - **A `context-scope` frontmatter property on every note.** Rejected: it duplicates what the folder already says, can drift from the note's location, and needs a fourth pseudo-value for DM Tools. The folder is the single source of truth.

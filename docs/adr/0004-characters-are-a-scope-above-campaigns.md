@@ -2,6 +2,8 @@
 
 A Character lives in a seventh top-level folder, Characters, not inside the Campaign it plays in, because a Character can outlive or leave a Campaign (a sequel, a one-shot, a retired Character who comes back). Characters is a Scope: a Character note may link to Reference, Adventures, Homebrew and other Characters, but never to a Campaign, and never mentions one. So a Character carries no table's story into another Campaign, as Homebrew doesn't. What happened to a Character at a table (the belt attuned in Session 21) is written in that Campaign, linking to the Character; the Character's backlinks give its history. This amends [ADR 0001](0001-scope-by-top-level-folder.md): the top-level folders are seven, still fixed.
 
+*Amended by [ADR 0005](0005-the-dms-world-is-a-scope-apart-from-homebrew.md): World is a sixth Scope, in an eighth top-level folder; a Character may link to it.*
+
 ## Considered Options
 
 - **Characters inside each Campaign** (the earlier `Campaigns/<campaign>/Characters`). Rejected: a Character playing in a second Campaign belongs to the first one's folder, and its sheet collects that Campaign's story.

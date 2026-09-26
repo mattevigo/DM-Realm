@@ -53,15 +53,15 @@ _Avoid_: Download, mirror, local data
 ### Scopes
 
 **Scope**:
-The kind of content a note is — Reference, Adventure, Homebrew, Character or Campaign — given by the top-level folder it lives in, and deciding what that note may link to.
+The kind of content a note is — Reference, Adventure, Homebrew, World, Character or Campaign — given by the top-level folder it lives in, and deciding what that note may link to.
 _Avoid_: Context, category
 
 **Reference**:
 Official material imported faithfully from the Trusted Source, with no knowledge of any Campaign. Its rules material is of the Workspace's Edition, with Off-Edition Material only filling a gap; Setting lore comes from any book.
-_Avoid_: World, Mondo, compendium
+_Avoid_: Compendium
 
 **Homebrew**:
-DM-authored material that is not official and is meant to be reused across Campaigns. Homebrew made for a single Campaign belongs to that Campaign instead.
+DM-authored game material with mechanics — rules, classes, species, backgrounds, feats, spells, items, monsters — that is not official and is meant to be reused across Campaigns. Homebrew made for a single Campaign belongs to that Campaign instead. Story elements with no mechanics are World.
 _Avoid_: Custom, house content
 
 **Adventure**:
@@ -69,8 +69,11 @@ An official published adventure — its places, NPCs and items as the book descr
 _Avoid_: Module, scenario
 
 **Setting**:
-The lore of a game world — geography, pantheon, history. An official Setting is Reference; a world the DM invented is Homebrew; how a Campaign has changed it belongs to that Campaign.
-_Avoid_: World, Mondo
+The lore of a game world — geography, pantheon, history. An official Setting is Reference; the DM's own lore is World; how a Campaign has changed it belongs to that Campaign.
+
+**World**:
+The story elements the DM invented and reuses across Campaigns — places, NPCs, factions, pantheon, history — of a world the DM invented or added to an official Setting. No mechanics (those are Homebrew) and no table's story (that is a Campaign's).
+_Avoid_: Homebrew Setting, lore, Mondo
 
 **House Rules**:
 Homebrew changes to the official rules, applying to every Campaign in the Workspace.
