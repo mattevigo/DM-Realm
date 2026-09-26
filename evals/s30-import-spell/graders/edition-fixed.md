@@ -1,5 +1,6 @@
 ---
 type: llm
+focus: last_message
 ---
 
 Pass only if the reply tells the DM both of these:

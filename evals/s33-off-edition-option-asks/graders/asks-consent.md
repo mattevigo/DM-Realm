@@ -1,5 +1,6 @@
 ---
 type: llm
+focus: last_message
 ---
 
 Pass only if all of these hold for the reply:
