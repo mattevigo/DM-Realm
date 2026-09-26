@@ -1,6 +1,6 @@
 schema_version: "1.1"
-name: character-rebuild
-description: "A rebuild at the same level keeps the current Build as the first past Build, _01, then changes the note."
+name: character-backstory-promoted
+description: "A backstory naming a place that exists only in a Campaign, promoted to World on the DM's go-ahead: the World note is stripped of the Campaign and the backstory links to it."
 tags: [character, scenario]
 context:
   scaffold_script: scaffold.sh
@@ -13,4 +13,4 @@ execution:
     EVAL_DMR_SOURCE_API: http://127.0.0.1:9/latest
     EVAL_DMR_SOURCE_RAW: http://127.0.0.1:9/raw
   prompt: |
-    Rebuild Wren as an Emberkin instead of a Mothfolk. Everything else stays as it is.
+    Add to Wren's backstory that she grew up at the Gull's Rest, the inn on the coast. If the Gull's Rest needs moving to World, go ahead.

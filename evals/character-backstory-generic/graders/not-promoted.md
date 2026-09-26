@@ -1,5 +1,7 @@
 ---
-type: file_exists
-path: World/Orsenna/Places/Gulls_Rest.md
-exists: false
+type: regex
+target: files
+match: count:0
+flags: m
 ---
+^World/

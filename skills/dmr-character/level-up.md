@@ -7,8 +7,8 @@ A level-up adds a level. A rebuild changes the species, class, background or abi
    - **A level-up**: for each level gained, in order, what the class table and the class's features give at that level — hit points (the DM's roll or the fixed value), subclass, feat or Ability Score Improvement, new cantrips and spells, feature options. Only the real choices are the DM's; everything else follows from the class data.
    - **A rebuild**: each changed part, as [create.md](create.md) collects it (species, class, background, ability score method and increases), and every choice that depends on it (skills, feats, spells the new class does not have).
 
-   A choice the DM's request already makes counts. For every other one, **ask once, then stop**: one message with each open choice and its options by name, and end your turn. An Off-Edition option the DM names is asked about in the same message. Write nothing until every choice is made, and check each against the Trusted Source rules (prerequisites, counts, the score cap).
-3. **Keep the past Build.** Its number is one more than the highest in Past_Builds, two digits, from 01: `Past_Builds/<Character>_<NN>.md` (the Past_Builds folder name translated as structure.md says; create it with `mkdir -p` when it is the first). Copy the whole note there (`cp`), then change only:
+   Ask for the open ones as SKILL.md's "Choices" says.
+3. **Keep the past Build**, at the next past Build path structure.md's Characters section gives. Copy the whole note there (`cp`), then change only:
    - the frontmatter: keep `player` and `level`, drop `status`;
    - right under the `#` heading, a callout in the Workspace Language naming the level and linking to the current note: `> [!info] Past Build: level 3. The current Build is [[Wren]].`
 
