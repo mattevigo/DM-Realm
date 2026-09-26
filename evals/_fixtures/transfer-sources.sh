@@ -127,6 +127,15 @@ level: 1
 | Wisdom | 18 | +4 |
 | Charisma | 10 | +0 |
 
+### Proficiencies
+
+- **Saving throws:** Dexterity, Wisdom
+- **Skills:** Insight, Perception (Lantern Keeper); Religion, Stealth (Lamplighter)
+
+### Features
+
+- [[Lantern_Keeper|Lantern Keeper]]: [[Night_Owl|Night Owl]]
+
 ### Spells
 
 - **Cantrips:** [[Spark_Wick|Spark Wick]]
