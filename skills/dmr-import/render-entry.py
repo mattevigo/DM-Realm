@@ -18,7 +18,7 @@ and what placing its note needs (spell level, class, race, option kind…).
 Exit 2: bad usage. Exit 3 and 4: passed through from the Source Cache helper
 (the Trusted Source is unreachable; no such file). Exit 5: no such entry.
 Exit 6: a copied entry uses a `_copy` modifier this helper does not support.
-Exit 7: a malformed entry that cannot be rendered. Exit 8: several entries match.
+Exit 7: a malformed entry, or one that cannot be rendered. Exit 8: several entries match.
 Nothing is printed on stdout on any error.
 """
 import json
@@ -144,11 +144,13 @@ def copied_entry(key, copy, path):
         return found, path
     folder = os.path.dirname(path)
     index = load_optional(f"{folder}/index.json") if folder != "data" else {}
+    wanted = (copy.get("source"), copy.get("className"))  # bestiary/spells by book, class by class
     for src, name in index.items():
-        if same(src, copy.get("source")):
+        if any(same(src, w) for w in wanted if w):
             other = f"{folder}/{name}"
             found = look(load(other))
             if found is not None:
+                add_features(load(other))  # a copied subclass keeps its features there
                 return found, other
     raise Failure(7, f"'{copy.get('name')}' ({copy.get('source')}), which this entry copies, "
                      f"is not in the Trusted Source.")
@@ -226,11 +228,13 @@ def js_replace(template):
             elif c == "$" and nxt == "&":
                 out, i = out + m.group(0), i + 2
             elif c == "$" and nxt.isdigit():
-                j = i + 1
-                while j < len(template) and template[j].isdigit() and int(template[i + 1:j + 1]) <= len(m.groups()):
-                    j += 1
-                n = int(template[i + 1:j])
-                out, i = out + (m.group(n) or ""), j
+                two = template[i + 1:i + 3]
+                if len(two) == 2 and two.isdigit() and 0 < int(two) <= len(m.groups()):
+                    out, i = out + (m.group(int(two)) or ""), i + 3
+                elif 0 < int(nxt) <= len(m.groups()):
+                    out, i = out + (m.group(int(nxt)) or ""), i + 2
+                else:  # no such group: JavaScript keeps the text as is
+                    out, i = out + c, i + 1
             elif c == "$" and nxt == "<" and ">" in template[i:]:
                 j = template.index(">", i)
                 out, i = out + (m.group(template[i + 2:j]) or ""), j + 1
@@ -379,7 +383,7 @@ def split_top(s, sep):
 
 
 def tag_text(tag, body):
-    parts = [text(p) for p in split_top(body, "|")]
+    parts = [plain(p) for p in split_top(body, "|")]
     first = parts[0].strip()
     shown = parts[1] if len(parts) > 1 and parts[1] else None
     if tag in ("b", "bold"):
@@ -427,8 +431,8 @@ def tag_text(tag, body):
     return parts[i] if len(parts) > i and parts[i] else parts[0]
 
 
-def text(s):
-    """A string with every 5etools tag ({@tag …}) rendered as plain text."""
+def plain(s):
+    """s with every 5etools tag ({@tag …}) rendered as plain text."""
     s = str(s)
     out, i = "", 0
     while i < len(s):
@@ -464,12 +468,17 @@ def render_entries(entries, depth=0):
     return blocks
 
 
+def code(value):
+    """The first part of a 5etools reference (`longsword|xphb` -> `longsword`)."""
+    return str(value).split("|")[0]
+
+
 def uid_name(uid):
-    return text(str(uid).split("|")[0])
+    return plain(code(uid))
 
 
 def with_period(name):
-    name = text(name).strip()
+    name = plain(name).strip()
     return name if name.endswith((".", ":", "!", "?")) else name + "."
 
 
@@ -489,8 +498,8 @@ def children(entry):
 def named_blocks(name, content, depth):
     """A named block: its name inline before a leading paragraph, else as a heading."""
     if content and isinstance(content[0], str) and name:
-        return [f"***{with_period(name)}*** {text(content[0])}"] + render_entries(content[1:], depth + 1)
-    heading = [f"{'#' * min(depth + 2, 6)} {text(name)}"] if name else []
+        return [f"***{with_period(name)}*** {plain(content[0])}"] + render_entries(content[1:], depth + 1)
+    heading = [f"{'#' * min(depth + 2, 6)} {plain(name)}"] if name else []
     return heading + render_entries(content, depth + 1 if name else depth)
 
 
@@ -500,12 +509,12 @@ def quoted(blocks):
 
 def inline(entry):
     if isinstance(entry, (str, int, float)):
-        return text(entry)
+        return plain(entry)
     if not isinstance(entry, dict):
         malformed(f"unexpected {json.dumps(entry)[:80]}")
     kind = entry.get("type")
     if kind == "link":
-        return text(entry.get("text", ""))
+        return plain(entry.get("text", ""))
     if kind in ("inline", "inlineBlock"):
         return "".join(inline(e) for e in children(entry))
     if kind == "bonus":
@@ -536,7 +545,7 @@ def list_lines(items, pad=""):
         if isinstance(item, dict) and item.get("type") in ("item", "itemSub", "itemSpell"):
             content = children(item)
             name = f"**{with_period(item['name'])}** " if item.get("name") else ""
-            head = name + (text(content[0]) if content and isinstance(content[0], str) else "")
+            head = name + (plain(content[0]) if content and isinstance(content[0], str) else "")
             rest = content[1:] if content and isinstance(content[0], str) else content
         else:
             blocks = render_entry(item, 3)
@@ -572,8 +581,8 @@ def table_blocks(table):
     for r in rows:
         r = r + [""] * (width - len(r))
         lines.append("| " + " | ".join(cell(c) for c in r) + " |")
-    blocks = [f"**{text(table['caption'])}**"] if table.get("caption") else []
-    return blocks + ["\n".join(lines)] + [text(f) for f in table.get("footnotes", [])]
+    blocks = [f"**{plain(table['caption'])}**"] if table.get("caption") else []
+    return blocks + ["\n".join(lines)] + [plain(f) for f in table.get("footnotes", [])]
 
 
 def attributes(entry):
@@ -582,7 +591,7 @@ def attributes(entry):
 
 def render_entry(entry, depth):
     if isinstance(entry, (str, int, float)):
-        return [text(entry)]
+        return [plain(entry)]
     if not isinstance(entry, dict):
         malformed(f"unexpected {json.dumps(entry)[:80]}")
     kind = entry.get("type", "entries")
@@ -598,26 +607,23 @@ def render_entry(entry, depth):
         return table_blocks(entry)
     if kind == "tableGroup":
         return [b for t in entry.get("tables", []) for b in table_blocks(t)]
-    if kind in ("inset", "insetReadaloud"):
-        head = [f"**{text(entry['name'])}**"] if entry.get("name") else []
-        return [quoted(head + render_entries(children(entry), depth + 1))]
-    if kind in ("variant", "variantInner", "variantSub"):
+    if kind in ("inset", "insetReadaloud", "variant", "variantInner", "variantSub"):
         label = "Variant: " if kind == "variant" else ""
-        head = [f"**{label}{text(entry['name'])}**"] if entry.get("name") else []
+        head = [f"**{label}{plain(entry['name'])}**"] if entry.get("name") else []
         return [quoted(head + render_entries(children(entry), depth + 1))]
     if kind == "quote":
-        by = ", ".join(x for x in (text(entry.get("by", "")),
-                                   f"*{text(entry['from'])}*" if entry.get("from") else "") if x)
+        by = ", ".join(x for x in (plain(entry.get("by", "")),
+                                   f"*{plain(entry['from'])}*" if entry.get("from") else "") if x)
         return [quoted(render_entries(children(entry), depth) + ([f"— {by}"] if by else []))]
     if kind in ("inline", "inlineBlock", "link", "cell"):
         return [inline(entry)]
     if kind == "abilityDc":
-        return [f"**{text(entry['name'])} save DC** = 8 + your proficiency bonus + your {attributes(entry)} modifier"]
+        return [f"**{plain(entry['name'])} save DC** = 8 + your proficiency bonus + your {attributes(entry)} modifier"]
     if kind == "abilityAttackMod":
-        return [f"**{text(entry['name'])} attack modifier** = your proficiency bonus + your {attributes(entry)} modifier"]
+        return [f"**{plain(entry['name'])} attack modifier** = your proficiency bonus + your {attributes(entry)} modifier"]
     if kind == "abilityGeneric":
-        name = f"**{text(entry['name'])}** = " if entry.get("name") else ""
-        return [name + text(entry.get("text", ""))]
+        name = f"**{plain(entry['name'])}** = " if entry.get("name") else ""
+        return [name + plain(entry.get("text", ""))]
     if kind == "hr":
         return ["---"]
     if kind in ("image", "gallery"):
@@ -629,7 +635,7 @@ def render_entry(entry, depth):
         return named_blocks(feature["name"], feature.get("entries", []), depth)
     if kind in ("statblock", "statblockInline"):
         data = entry.get("data") or {}
-        return [text(entry.get("displayName") or entry.get("name") or data.get("name", ""))]
+        return [plain(entry.get("displayName") or entry.get("name") or data.get("name", ""))]
     if "entries" in entry or "entry" in entry:
         return named_blocks(entry.get("name"), children(entry), depth)
     if "items" in entry:
@@ -657,15 +663,17 @@ def casting_time(times):
     for t in times or []:
         unit = TIME_UNITS.get(t.get("unit"), t.get("unit", ""))
         s = plural(t.get("number", 1), unit)
-        out.append(s + (f", {text(t['condition'])}" if t.get("condition") else ""))
+        out.append(s + (f", {plain(t['condition'])}" if t.get("condition") else ""))
     return " or ".join(out)
+
+
+SINGULAR = {"feet": "foot", "miles": "mile"}
 
 
 def distance(d):
     kind, amount = d.get("type"), d.get("amount")
-    if kind in ("feet", "miles"):
-        unit = {"feet": "foot", "miles": "mile"}[kind]
-        return f"{amount} {unit}" if amount == 1 else f"{amount} {'feet' if kind == 'feet' else 'miles'}"
+    if kind in SINGULAR:
+        return f"{amount} {SINGULAR[kind] if amount == 1 else kind}"
     return str(kind).capitalize()
 
 
@@ -674,7 +682,7 @@ def spell_range(r):
     if kind == "point":
         return distance(d)
     if kind in AREAS:
-        unit = {"feet": "foot", "miles": "mile"}.get(d.get("type"), d.get("type"))
+        unit = SINGULAR.get(d.get("type"), d.get("type"))
         return f"Self ({d.get('amount')}-{unit} {kind})"
     return str(kind).capitalize()
 
@@ -684,7 +692,7 @@ def components(c):
     m = c.get("m")
     if m:
         m = m.get("text") if isinstance(m, dict) else m
-        out.append(f"M ({text(m)})" if isinstance(m, str) else "M")
+        out.append(f"M ({plain(m)})" if isinstance(m, str) else "M")
     if c.get("r"):
         out.append("R")
     return ", ".join(out)
@@ -790,7 +798,7 @@ def alignment(values):
     out = []
     for v in values:
         if isinstance(v, dict) and v.get("special"):
-            out.append(text(v["special"]))
+            out.append(plain(v["special"]))
         elif isinstance(v, dict):
             s = alignment(v.get("alignment", []))
             out.append(f"{s} ({v['chance']}%)" if v.get("chance") else s)
@@ -815,13 +823,13 @@ def armor_class(acs):
     out = []
     for ac in acs or []:
         if isinstance(ac, dict) and ac.get("special"):
-            out.append(text(ac["special"]))
+            out.append(plain(ac["special"]))
         elif isinstance(ac, dict):
             s = str(ac.get("ac"))
             if ac.get("from"):
-                s += f" ({', '.join(text(f) for f in ac['from'])})"
+                s += f" ({', '.join(plain(f) for f in ac['from'])})"
             if ac.get("condition"):
-                s += f" {text(ac['condition'])}"
+                s += f" {plain(ac['condition'])}"
             out.append(s)
         else:
             out.append(str(ac))
@@ -830,7 +838,7 @@ def armor_class(acs):
 
 def hit_points(hp):
     if hp.get("special"):
-        return text(hp["special"])
+        return plain(hp["special"])
     return f"{hp.get('average')} ({hp.get('formula')})"
 
 
@@ -843,7 +851,7 @@ def speed(speeds):
         if v is True:
             s = "equal to its walking speed"
         elif isinstance(v, dict):
-            s = f"{v.get('number')} ft." + (f" {text(v['condition'])}" if v.get("condition") else "")
+            s = f"{v.get('number')} ft." + (f" {plain(v['condition'])}" if v.get("condition") else "")
         else:
             s = f"{v} ft."
         out.append(s if mode == "walk" else f"{mode} {s}")
@@ -860,17 +868,17 @@ def bonuses(values, names):
 
 
 def damage_list(items, key):
-    groups, plain = [], []
+    groups, simple = [], []
     for it in items or []:
         if isinstance(it, str):
-            plain.append(text(it))
+            simple.append(plain(it))
         elif it.get("special"):
-            groups.append(text(it["special"]))
+            groups.append(plain(it["special"]))
         else:
-            inner = and_join(text(x) for x in it.get(key, []) if isinstance(x, str))
-            groups.append(" ".join(x for x in (text(it.get("preNote", "")), inner,
-                                               text(it.get("note", ""))) if x))
-    return "; ".join(([", ".join(plain)] if plain else []) + groups)
+            inner = and_join(plain(x) for x in it.get(key, []) if isinstance(x, str))
+            groups.append(" ".join(x for x in (plain(it.get("preNote", "")), inner,
+                                               plain(it.get("note", ""))) if x))
+    return "; ".join(([", ".join(simple)] if simple else []) + groups)
 
 
 def challenge(cr):
@@ -917,7 +925,7 @@ def gear(items):
 
 
 def spell_names(spells):
-    return ", ".join(text(s["entry"] if isinstance(s, dict) else s) for s in spells)
+    return ", ".join(plain(s["entry"] if isinstance(s, dict) else s) for s in spells)
 
 
 def frequency(label, per):
@@ -957,11 +965,12 @@ def render_monster(key, m):
     kind = f"{' or '.join(SIZES.get(s, s) for s in m['size'])} {creature_type(m['type'])}"
     align = alignment(m.get("alignment"))
     if m.get("alignmentPrefix"):
-        align = text(m["alignmentPrefix"]) + align
+        align = plain(m["alignmentPrefix"]) + align
     core = [f"**Armor Class** {armor_class(m['ac'])}", f"**Hit Points** {hit_points(m['hp'])}",
             f"**Speed** {speed(m.get('speed', {}))}"]
-    if initiative(m):
-        core.append(f"**Initiative** {initiative(m)}")
+    init = initiative(m)
+    if init:
+        core.append(f"**Initiative** {init}")
     abilities = ["STR", "DEX", "CON", "INT", "WIS", "CHA"]
     scores = [m.get(a.lower(), 10) for a in abilities]
     table = "\n".join(["| " + " | ".join(abilities) + " |", "|" + " --- |" * 6,
@@ -979,9 +988,9 @@ def render_monster(key, m):
             details.append(f"**{label}** {damage_list(m[field], inner)}")
     if m.get("gear"):
         details.append(f"**Gear** {gear(m['gear'])}")
-    senses = [text(s) for s in m.get("senses") or []] + [f"passive Perception {m.get('passive', 10)}"]
+    senses = [plain(s) for s in m.get("senses") or []] + [f"passive Perception {m.get('passive', 10)}"]
     details.append(f"**Senses** {', '.join(senses)}")
-    details.append(f"**Languages** {', '.join(text(x) for x in m.get('languages') or []) or '—'}")
+    details.append(f"**Languages** {', '.join(plain(x) for x in m.get('languages') or []) or '—'}")
     if m.get("cr") is not None:
         details.append(f"**Challenge** {challenge(m['cr'])}")
 
@@ -1020,10 +1029,6 @@ PROPERTIES = {"A": "Ammunition", "AF": "Ammunition", "BF": "Burst Fire", "F": "F
               "L": "Light", "LD": "Loading", "R": "Reach", "RLD": "Reload", "S": "Special",
               "T": "Thrown", "2H": "Two-Handed", "V": "Versatile"}
 NOT_MAGIC = (None, "none", "unknown")
-
-
-def code(value):
-    return str(value).split("|")[0]
 
 
 def generic_variant(variant):
@@ -1076,7 +1081,7 @@ def cost(cp):
 def weapon_property(p, item):
     note = ""
     if isinstance(p, dict):
-        p, note = p.get("uid", ""), text(p.get("note", ""))
+        p, note = p.get("uid", ""), plain(p.get("note", ""))
     name = PROPERTIES.get(code(p), code(p))
     extra = []
     if code(p) == "V" and item.get("dmg2"):
@@ -1105,7 +1110,7 @@ def item_kind(key, item):
         label += f", {item['rarity']}"
     attune = item.get("reqAttune")
     if attune:
-        label += " (requires attunement" + (f" {text(attune)}" if isinstance(attune, str) else "") + ")"
+        label += " (requires attunement" + (f" {plain(attune)}" if isinstance(attune, str) else "") + ")"
     return label
 
 
@@ -1136,7 +1141,7 @@ def render_item(key, item):
         applies = []
         for req in item.get("requires") or []:
             for k, v in req.items():
-                applies.append(text(v) if k == "name" else f"any {k}" if v is True else f"{k} {text(v)}")
+                applies.append(plain(v) if k == "name" else f"any {k}" if v is True else f"{k} {plain(v)}")
         stats.append(f"**Applies to:** {' or '.join(applies) or 'any item'}")
     return [f"# {item['name']}", f"*{item_kind(key, item)}*", "\n".join(stats)] \
         + render_entries(item.get("entries", []))
@@ -1158,7 +1163,7 @@ def option_kind(entry):
     for t in entry.get("featureType", []):
         if t in OPTION_KINDS:
             return OPTION_KINDS[t]
-    return ("Class Option", "Other Options")
+    return ("Class Option", None)
 
 
 def ability_increase(abilities):
@@ -1185,7 +1190,7 @@ def prerequisite(alternatives):
             elif k == "ability":
                 parts.append(" or ".join(f"{ABILITIES.get(a, a)} {n} or higher" for d in v for a, n in d.items()))
             elif k in ("race", "background"):
-                parts.append(" or ".join(text(r.get("displayEntry") or r.get("name", "")) for r in v))
+                parts.append(" or ".join(plain(r.get("displayEntry") or r.get("name", "")) for r in v))
             elif k == "feat":
                 parts.append(" or ".join(uid_name(f) for f in v))
             elif k == "spellcasting":
@@ -1195,17 +1200,17 @@ def prerequisite(alternatives):
             elif k == "proficiency":
                 parts.append(" or ".join(f"proficiency with {w} {kind}" for d in v for kind, w in d.items()))
             elif k in ("other", "otherSummary"):
-                parts.append(text(v.get("entry", "") if isinstance(v, dict) else v))
+                parts.append(plain(v.get("entry", "") if isinstance(v, dict) else v))
             elif k == "campaign":
                 parts.append(" or ".join(f"{c} Campaign" for c in v))
             elif k == "note":
                 continue
             elif isinstance(v, str):
-                parts.append(text(v))
+                parts.append(plain(v))
             elif isinstance(v, list) and all(isinstance(x, str) for x in v):
                 parts.append(" or ".join(uid_name(x) for x in v))
         if alt.get("note"):
-            parts.append(text(alt["note"]))
+            parts.append(plain(alt["note"]))
         out.append(", ".join(parts))
     return "; or ".join(out)
 
@@ -1216,11 +1221,6 @@ def mentions_increase(entries):
 
 def render_feat(key, feat):
     blocks = [f"# {feat['name']}"]
-    if key == "class":
-        facts.update({"class": entry["name"], "class_source": entry["source"]})
-    if key == "subclass":
-        facts.update({"class": entry.get("className"), "class_source": entry.get("classSource"),
-                      "short_name": entry.get("shortName")})
     if key == "optionalfeature":
         blocks.append(f"*{option_kind(feat)[0]}*")
     elif feat.get("category") in FEAT_CATEGORIES:
@@ -1258,8 +1258,14 @@ def render_race(key, race, data=None):
     return [f"# {title}", "\n".join(stats)] + render_entries(entries)
 
 
-# The file being rendered: class and subclass features are looked up in it.
+# Class and subclass features, looked up by uid: those of the file being rendered and
+# of any file a copied entry came from.
 _features = {"classFeature": [], "subclassFeature": []}
+
+
+def add_features(data):
+    for k in _features:
+        _features[k].extend(f for f in data.get(k, []) if isinstance(f, dict))
 
 
 def unpack_feature_uid(uid, subclass):
@@ -1285,7 +1291,7 @@ def class_feature(uid, subclass=False):
 
 
 def proficiency_list(items):
-    return ", ".join(text(i.get("full") or i.get("proficiency", "")) if isinstance(i, dict) else text(i)
+    return ", ".join(plain(i.get("full") or i.get("proficiency", "")) if isinstance(i, dict) else plain(i)
                      for i in items)
 
 
@@ -1369,7 +1375,7 @@ def render_class(key, cls):
     if equipment.get("entries"):
         stats.append(f"**Starting Equipment:** {' '.join(inline(e) for e in equipment['entries'])}")
     elif equipment.get("default"):
-        stats.append("**Starting Equipment:** " + "; ".join(text(e) for e in equipment["default"]))
+        stats.append("**Starting Equipment:** " + "; ".join(plain(e) for e in equipment["default"]))
     return [f"# {cls['name']}", "\n".join(stats), "## Class Table"] + class_table(cls) \
         + features_by_level(cls.get("classFeatures", []), False, cls["source"])
 
@@ -1381,8 +1387,7 @@ RENDERERS = {"spell": render_spell, "monster": render_monster,
 
 
 def render(key, entry, data):
-    for k in _features:
-        _features[k] = [f for f in data.get(k, []) if isinstance(f, dict)]
+    add_features(data)
     if key in ("race", "subrace"):
         blocks = render_race(key, entry, data)
     else:
@@ -1474,3 +1479,6 @@ if __name__ == "__main__":
     except Failure as e:
         print(f"render-entry: {e}", file=sys.stderr)
         sys.exit(e.code)
+    except (re.error, KeyError, IndexError, TypeError, ValueError, AttributeError) as e:
+        print(f"render-entry: cannot render the entry ({type(e).__name__}: {e}).", file=sys.stderr)
+        sys.exit(7)

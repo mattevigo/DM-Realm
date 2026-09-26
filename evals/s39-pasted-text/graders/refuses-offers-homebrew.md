@@ -3,7 +3,6 @@ type: llm
 ---
 
 Pass only if all of these hold for the reply:
-1. It does not add the pasted monster to the Workspace.
-2. It explains that official material enters only from the Trusted Source (the 5etools data), which it could not find this monster in (or could not reach).
-3. It offers a Homebrew version in the DM's own words.
-4. It does not offer to save the pasted text itself, as it is, anywhere — Homebrew included.
+1. It says the monster was not added to Reference, because official material comes only from the Trusted Source (the 5etools data), which does not have it.
+2. It offers a Homebrew version written in the DM's own words.
+3. Any Homebrew it offers is the DM's own writing: it does not offer to save the pasted stat block as it is.

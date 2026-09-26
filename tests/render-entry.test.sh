@@ -703,6 +703,44 @@ has "unsupported modifier" "$(cat "$TMP/err")" "addSkills"
 render data/bestiary/bestiary-drk.json "Lost Hound" DRK >/dev/null; CODE=$?
 [ "$CODE" -eq 7 ] || fail "missing copied entry: expected exit 7, got $CODE"
 
+# JavaScript replacement strings: $n past the regex's groups, and $0, stay literal text.
+python3 - "$DATA/bestiary/bestiary-drk.json" <<'PY'
+import json, sys
+p = sys.argv[1]; d = json.load(open(p))
+d["monster"] += [
+  {"name": "Dollar Hound", "source": "DRK", "page": 56, "_copy": {"name": "Quill Hound", "source": "TOR", "_mod": {
+     "trait": {"mode": "replaceTxt", "replace": "(smell)", "with": "$1 ($5, $0, $$)"}}}},
+  {"name": "Lookbehind Hound", "source": "DRK", "page": 57, "_copy": {"name": "Quill Hound", "source": "TOR", "_mod": {
+     "trait": {"mode": "replaceTxt", "replace": "(?<=the )hound(?", "with": "x"}}}}]
+json.dump(d, open(p, "w"))
+PY
+OUT=$(render data/bestiary/bestiary-drk.json "Dollar Hound" DRK) || fail "js replacement: exit $?: $(cat "$TMP/err")"
+has "js replacement" "$OUT" 'rely on smell ($5, $0, $).'
+render data/bestiary/bestiary-drk.json "Lookbehind Hound" DRK >/dev/null; CODE=$?
+[ "$CODE" -eq 7 ] || fail "bad regex: expected exit 7, got $CODE ($(cat "$TMP/err"))"
+
+# A subclass copied from another class's file, found through class/index.json.
+seed class/index.json <<'JSON'
+{"lamplighter": "class-lamplighter.json", "wickwright": "class-wickwright.json"}
+JSON
+seed class/class-wickwright.json <<'JSON'
+{"class": [{"name": "Wickwright", "source": "CNR", "page": 130}],
+ "subclass": [{"name": "Path of Tallow", "shortName": "Tallow", "source": "CNR", "page": 131, "className": "Wickwright", "classSource": "CNR",
+   "_copy": {"name": "Path of the Wick", "shortName": "Wick", "source": "CNR", "className": "Lamplighter", "classSource": "CNR"}}]}
+JSON
+OUT=$(render data/class/class-wickwright.json "Path of Tallow" CNR) || fail "class copy across files: exit $?: $(cat "$TMP/err")"
+has "class copy across files" "$OUT" "Wick intro."
+
+# An option kind the helper has no name for gives no folder name of its own.
+python3 - "$DATA/optionalfeatures.json" <<'PY'
+import json, sys
+p = sys.argv[1]; d = json.load(open(p))
+d["optionalfeature"].append({"name": "Odd Knack", "source": "TOR", "page": 47, "featureType": ["ZZ"], "entries": ["Odd."]})
+json.dump(d, open(p, "w"))
+PY
+OUT=$(render data/optionalfeatures.json "Odd Knack" TOR --meta) || fail "unknown option kind: exit $?"
+has "unknown option kind" "$OUT" '"option_kind": null'
+
 # A 2014 subclass listed again under the 2024 version of its class.
 python3 - "$DATA/class/class-lamplighter.json" <<'PY'
 import json, sys
