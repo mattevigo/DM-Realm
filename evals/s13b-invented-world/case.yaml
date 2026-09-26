@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: s13b-invented-world
-description: "Structure scenario S13: a world the DM invented goes in Homebrew Setting, one folder per Setting."
+description: "Structure scenario S13: a world the DM invented goes in World, one folder per world."
 tags: [scenario]
 context:
   scaffold_script: scaffold.sh

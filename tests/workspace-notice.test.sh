@@ -24,6 +24,7 @@ folders:
   reference: Reference
   adventures: Adventures
   homebrew: Homebrew
+  world: World
   characters: Characters
   campaigns: Campaigns
   dm_tools: DM_Tools
@@ -32,7 +33,7 @@ YML
 OUT=$(run_hook "$WS")
 expect_contains workspace "$OUT" "DM Realm Workspace"
 expect_contains workspace "$OUT" "English"
-for name in Reference Adventures Homebrew Characters Campaigns DM_Tools Templates; do
+for name in Reference Adventures Homebrew World Characters Campaigns DM_Tools Templates; do
   expect_contains workspace "$OUT" "$name"
 done
 expect_contains workspace "$OUT" "dmr-workspace"
@@ -48,6 +49,7 @@ folders:
   reference: Riferimento
   adventures: Avventure
   homebrew: Homebrew
+  world: Mondo   # DM's choice
   characters: Eroi   # DM's choice
   campaigns: "Partite"   # DM's choice
   dm_tools: Strumenti_DM
@@ -56,6 +58,7 @@ YML
 OUT=$(run_hook "$WS2")
 expect_contains custom "$OUT" "Italiano"
 expect_contains custom "$OUT" "Partite"
+expect_contains custom "$OUT" "- world: Mondo"
 expect_contains custom "$OUT" "- characters: Eroi"
 expect_contains custom "$OUT" "Strumenti_DM"
 expect_contains custom "$OUT" "Edition: 2014"

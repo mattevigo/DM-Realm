@@ -18,15 +18,17 @@ folders:
   reference: Reference
   adventures: Adventures
   homebrew: Homebrew
+  world: World
   characters: Characters
   campaigns: Campaigns   # the campaigns
   dm_tools: DM_Tools
   templates: Templates
 YML
-  mkdir -p "$W/Reference" "$W/Adventures" "$W/Homebrew" "$W/Characters/Ayla" "$W/Campaigns/Heroes/Sessions" "$W/DM_Tools/Checklists" "$W/Templates" "$W/.obsidian"
+  mkdir -p "$W/Reference" "$W/Adventures" "$W/Homebrew" "$W/World/Aerth/Places" "$W/Characters/Ayla" "$W/Campaigns/Heroes/Sessions" "$W/DM_Tools/Checklists" "$W/Templates" "$W/.obsidian"
   printf '# Session 1\n' > "$W/Campaigns/Heroes/Sessions/Session_01.md"
   printf '# Ayla\n' > "$W/Characters/Ayla/Ayla.md"
-  printf '# Heroes\n\nParty: [[Characters/Ayla/Ayla|Ayla]].\n' > "$W/Campaigns/Heroes/README.md"
+  printf '# Port Thief\n' > "$W/World/Aerth/Places/Port_Thief.md"
+  printf '# Heroes\n\nParty: [[Characters/Ayla/Ayla|Ayla]]. Starts in [[World/Aerth/Places/Port_Thief|Port Thief]].\n' > "$W/Campaigns/Heroes/README.md"
   cat > "$W/DM_Tools/Checklists/Prep.md" <<'MD'
 ---
 campaign: "[[Campaigns/Heroes/README]]"
@@ -62,8 +64,15 @@ OUT=$(python3 "$HELPER" rename "$W" characters Party) || fail "characters: exit 
 grep -qF '[[Party/Ayla/Ayla|Ayla]]' "$W/Campaigns/Heroes/README.md" || fail "characters: link not rewritten: $(cat "$W/Campaigns/Heroes/README.md")"
 grep -q '^  characters: Party' "$W/workspace-config.yml" || fail "characters: config not updated"
 
+# Renaming World: the key is known, the folder moves and links into it are rewritten.
+new_ws 8
+OUT=$(python3 "$HELPER" rename "$W" world Mondo) || fail "world: exit $? ($OUT)"
+[ -f "$W/Mondo/Aerth/Places/Port_Thief.md" ] && [ ! -e "$W/World" ] || fail "world: folder not moved"
+grep -qF '[[Mondo/Aerth/Places/Port_Thief|Port Thief]]' "$W/Campaigns/Heroes/README.md" || fail "world: link not rewritten: $(cat "$W/Campaigns/Heroes/README.md")"
+grep -q '^  world: Mondo' "$W/workspace-config.yml" || fail "world: config not updated"
+
 # Invalid names change nothing: a path, empty after the name rules, a duplicate.
-for bad in "Games/Active" "::" "Homebrew" "Characters"; do
+for bad in "Games/Active" "::" "Homebrew" "Characters" "World"; do
   new_ws 3
   OUT=$(python3 "$HELPER" rename "$W" campaigns "$bad" 2>&1); CODE=$?
   [ "$CODE" -eq 2 ] || fail "invalid '$bad': expected exit 2, got $CODE"

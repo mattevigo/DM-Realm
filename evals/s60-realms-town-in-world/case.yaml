@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s60-realms-town-in-world
+description: "Structure scenario S60: a town the DM invented in an official Setting goes in World, under the Setting's Reference name."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    I invented a town in the Forgotten Realms: Saltmere, a fishing village north of Neverwinter. Add it.
