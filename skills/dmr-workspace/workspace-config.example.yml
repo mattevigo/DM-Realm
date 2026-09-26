@@ -13,13 +13,14 @@ language: English
 # Fixed once official rules material is imported into Reference.
 edition:   # 2014 or 2024 — Setup asks, recommending 2024; no default
 
-# Names of the six top-level folders, by neutral key. Leave a name empty to use
+# Names of the seven top-level folders, by neutral key. Leave a name empty to use
 # the agent's translation of the default English name into the Workspace Language.
 # Each name is a single folder name directly under the Workspace root, never a path.
 folders:
   reference:   # default: Reference
   adventures:  # default: Adventures
   homebrew:    # default: Homebrew
+  characters:  # default: Characters
   campaigns:   # default: Campaigns
   dm_tools:    # default: DM_Tools
   templates:   # default: Templates

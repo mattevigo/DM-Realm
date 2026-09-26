@@ -9,11 +9,12 @@ folders:
   reference: Riferimento
   adventures: Avventure
   homebrew: Homebrew
+  characters: Personaggi
   campaigns: Campagne
   dm_tools: Strumenti_DM
   templates: Modelli
 YML
-mkdir -p Riferimento Avventure Homebrew Campagne Strumenti_DM Modelli
+mkdir -p Riferimento Avventure Homebrew Personaggi Campagne Strumenti_DM Modelli
 cat > Strumenti_DM/Glossario_Traduzioni.md <<'MD'
 # Glossario delle traduzioni
 
@@ -22,6 +23,7 @@ cat > Strumenti_DM/Glossario_Traduzioni.md <<'MD'
 | Reference | Riferimento | fallback | reference |
 | Adventures | Avventure | Traduzione Ufficiale | adventures |
 | Homebrew | Homebrew | fallback | homebrew |
+| Characters | Personaggi | Traduzione Ufficiale | characters |
 | Campaigns | Campagne | Traduzione Ufficiale | campaigns |
 | DM_Tools | Strumenti_DM | fallback | dm_tools |
 | Templates | Modelli | fallback | templates |

@@ -9,8 +9,9 @@ folders:
   reference: Reference
   adventures: Adventures
   homebrew: Homebrew
+  characters: Characters
   campaigns: Campaigns
   dm_tools: DM_Tools
   templates: Templates
 YML
-mkdir -p Reference Adventures Homebrew Campaigns DM_Tools Templates
+mkdir -p Reference Adventures Homebrew Characters Campaigns DM_Tools Templates

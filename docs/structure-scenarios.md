@@ -10,7 +10,7 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S02 | s02-feat-users-from-backlinks |
 | S03 | s03-adventure-to-session-link |
 | S04 | s04-homebrew-links |
-| S05 | s05a-campaign-subfolder, s05b-no-seventh-top-level-folder |
+| S05 | s05a-campaign-subfolder, s05b-no-eighth-top-level-folder |
 | S06 | s06-adventure-to-adventure |
 | S07 | s07-homebrew-to-dm-tools |
 | S08 | s08-table-events-in-campaign |
@@ -38,6 +38,11 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S43 | refresh-to-latest |
 | S45 | — (a policy: DM Realm ships no Trusted Source data; tests/source-cache.test.sh and every eval use invented entries) |
 | S49 | research-no-refresh (partly: the update check itself waits for the import skill) |
+| S51 | s51-character-refuses-session-link |
+| S52 | s52-character-event-in-session |
+| S53 | s53a-character-campaign-item-asks, s53b-character-campaign-item-promoted |
+| S54 | s54-campaign-readme-party |
+| S55 | s55-feat-users-current-builds |
 
 S23 has no reliable eval: whether a term has an Official Translation depends on the model's knowledge, so a case could not tell a right answer from a wrong one.
 

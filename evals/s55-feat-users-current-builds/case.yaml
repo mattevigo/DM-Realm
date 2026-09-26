@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s55-feat-users-current-builds
+description: "Structure scenario S55: who has a feat is answered from current Character notes only, never from a past Build."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Which of my characters have the Alert feat?

@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s54-campaign-readme-party
+description: "Structure scenario S54: a Campaign's README lists its party by linking to the Characters; the Characters stay unchanged and the Campaign gets no Characters folder."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Ayla and Brom play in the Heroes campaign. Add them to its overview.

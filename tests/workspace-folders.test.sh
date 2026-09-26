@@ -18,12 +18,15 @@ folders:
   reference: Reference
   adventures: Adventures
   homebrew: Homebrew
+  characters: Characters
   campaigns: Campaigns   # the campaigns
   dm_tools: DM_Tools
   templates: Templates
 YML
-  mkdir -p "$W/Reference" "$W/Adventures" "$W/Homebrew" "$W/Campaigns/Heroes/Sessions" "$W/DM_Tools/Checklists" "$W/Templates" "$W/.obsidian"
+  mkdir -p "$W/Reference" "$W/Adventures" "$W/Homebrew" "$W/Characters/Ayla" "$W/Campaigns/Heroes/Sessions" "$W/DM_Tools/Checklists" "$W/Templates" "$W/.obsidian"
   printf '# Session 1\n' > "$W/Campaigns/Heroes/Sessions/Session_01.md"
+  printf '# Ayla\n' > "$W/Characters/Ayla/Ayla.md"
+  printf '# Heroes\n\nParty: [[Characters/Ayla/Ayla|Ayla]].\n' > "$W/Campaigns/Heroes/README.md"
   cat > "$W/DM_Tools/Checklists/Prep.md" <<'MD'
 ---
 campaign: "[[Campaigns/Heroes/README]]"
@@ -52,8 +55,15 @@ new_ws 2
 python3 "$HELPER" rename "$W" templates Blueprints >/dev/null || fail "templates: exit $?"
 grep -q '"folder": "Blueprints"' "$W/.obsidian/templates.json" && grep -q '"dateFormat": "YYYY"' "$W/.obsidian/templates.json" || fail "templates: templates.json not updated: $(cat "$W/.obsidian/templates.json")"
 
+# Renaming Characters: the key is known, the folder moves and links into it are rewritten.
+new_ws 7
+OUT=$(python3 "$HELPER" rename "$W" characters Party) || fail "characters: exit $? ($OUT)"
+[ -f "$W/Party/Ayla/Ayla.md" ] && [ ! -e "$W/Characters" ] || fail "characters: folder not moved"
+grep -qF '[[Party/Ayla/Ayla|Ayla]]' "$W/Campaigns/Heroes/README.md" || fail "characters: link not rewritten: $(cat "$W/Campaigns/Heroes/README.md")"
+grep -q '^  characters: Party' "$W/workspace-config.yml" || fail "characters: config not updated"
+
 # Invalid names change nothing: a path, empty after the name rules, a duplicate.
-for bad in "Games/Active" "::" "Homebrew"; do
+for bad in "Games/Active" "::" "Homebrew" "Characters"; do
   new_ws 3
   OUT=$(python3 "$HELPER" rename "$W" campaigns "$bad" 2>&1); CODE=$?
   [ "$CODE" -eq 2 ] || fail "invalid '$bad': expected exit 2, got $CODE"

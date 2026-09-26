@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s53a-character-campaign-item-asks
+description: "Structure scenario S53: a Character cannot link to a Campaign's homebrew; the agent asks before promoting it and changes nothing yet."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Ayla now carries the Emberglass Ring. Add it to her character note.

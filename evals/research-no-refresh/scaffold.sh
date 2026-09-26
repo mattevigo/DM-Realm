@@ -11,11 +11,12 @@ folders:
   reference: Reference
   adventures: Adventures
   homebrew: Homebrew
+  characters: Characters
   campaigns: Campaigns
   dm_tools: DM_Tools
   templates: Templates
 YML
-mkdir -p Reference Adventures Homebrew Campaigns DM_Tools Templates
+mkdir -p Reference Adventures Homebrew Characters Campaigns DM_Tools Templates
 
 DMR="$HOME/.dm-realm"
 mkdir -p "$DMR/source-cache/v3.0.0/data" "$DMR/mirror/raw/v3.0.0/data" "$DMR/mirror/raw/v3.1.0/data"

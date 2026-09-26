@@ -17,7 +17,7 @@ import os
 import re
 import sys
 
-KEYS = ["reference", "adventures", "homebrew", "campaigns", "dm_tools", "templates"]
+KEYS = ["reference", "adventures", "homebrew", "characters", "campaigns", "dm_tools", "templates"]
 BREAKS_LINKS = '#^[]|\\:*?"<>'
 
 

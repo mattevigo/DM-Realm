@@ -8,12 +8,13 @@ folders:
   reference: Riferimento
   adventures: Avventure
   homebrew: Homebrew
+  characters: Personaggi
   campaigns: Campagne
   dm_tools: Strumenti_DM
   templates: Modelli
 YML
-mkdir -p Riferimento Avventure Homebrew Strumenti_DM Modelli .obsidian
-mkdir -p Campagne/Eroi/Personaggi Campagne/Eroi/PNG Campagne/Eroi/Sessioni Campagne/Eroi/Luoghi Campagne/Eroi/Missioni Campagne/Eroi/Fazioni Campagne/Eroi/Allegati
+mkdir -p Riferimento Avventure Homebrew Personaggi Strumenti_DM Modelli .obsidian
+mkdir -p Campagne/Eroi/PNG Campagne/Eroi/Sessioni Campagne/Eroi/Luoghi Campagne/Eroi/Missioni Campagne/Eroi/Fazioni Campagne/Eroi/Allegati
 printf '# Eroi\n\nUna campagna sul confine settentrionale.\n' > Campagne/Eroi/README.md
 cat > Strumenti_DM/Glossario_Traduzioni.md <<'MD'
 # Glossario delle traduzioni
@@ -23,10 +24,10 @@ cat > Strumenti_DM/Glossario_Traduzioni.md <<'MD'
 | Reference | Riferimento | fallback | reference |
 | Adventures | Avventure | Traduzione Ufficiale | adventures |
 | Homebrew | Homebrew | fallback | homebrew |
+| Characters | Personaggi | Traduzione Ufficiale | characters |
 | Campaigns | Campagne | Traduzione Ufficiale | campaigns |
 | DM_Tools | Strumenti_DM | fallback | dm_tools |
 | Templates | Modelli | fallback | templates |
-| Characters | Personaggi | Traduzione Ufficiale | campaigns.<campaign>.characters |
 | NPCs | PNG | Traduzione Ufficiale | campaigns.<campaign>.npcs |
 | Sessions | Sessioni | fallback | campaigns.<campaign>.sessions |
 | Places | Luoghi | fallback | campaigns.<campaign>.places |

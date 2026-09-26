@@ -8,12 +8,13 @@ folders:
   reference: Reference
   adventures: Adventures
   homebrew: Homebrew
+  characters: Characters
   campaigns: Campaigns
   dm_tools: DM_Tools
   templates: Templates
 YML
-mkdir -p Reference Adventures Homebrew DM_Tools Templates .obsidian
-mkdir -p Campaigns/Heroes/Characters Campaigns/Heroes/NPCs Campaigns/Heroes/Sessions Campaigns/Heroes/Places Campaigns/Heroes/Quests Campaigns/Heroes/Factions Campaigns/Heroes/Attachments
+mkdir -p Reference Adventures Homebrew Characters DM_Tools Templates .obsidian
+mkdir -p Campaigns/Heroes/NPCs Campaigns/Heroes/Sessions Campaigns/Heroes/Places Campaigns/Heroes/Quests Campaigns/Heroes/Factions Campaigns/Heroes/Attachments
 printf '# Heroes\n\nA campaign on the northern border.\n' > Campaigns/Heroes/README.md
 printf '{"useMarkdownLinks": false, "newLinkFormat": "shortest"}\n' > .obsidian/app.json
 printf '{"templates": true}\n' > .obsidian/core-plugins.json
@@ -36,8 +37,11 @@ printf '# Session Prep\n\n- [ ] Review last session\n' > DM_Tools/Checklists/Ses
 printf '# Session 3: Into the Keep\n\nThe party reached the keep.\n' > Campaigns/Heroes/Sessions/Session_03_Into_the_Keep.md
 printf '# Session 5: Fire\n\nA fight broke out in town.\n' > Campaigns/Heroes/Sessions/Session_05_Fire.md
 printf '# Session 8: Ambush\n\nThe cultists struck on the road.\n' > Campaigns/Heroes/Sessions/Session_08_Ambush.md
-printf '# Ayla\n\nElf ranger. Feats: Alert.\n' > Campaigns/Heroes/Characters/Ayla.md
-printf '# Brom\n\nDwarf fighter. Feats: Alert.\n' > Campaigns/Heroes/Characters/Brom.md
+mkdir -p Characters/Ayla Characters/Brom Characters/Durga/Past_Builds
+printf '# Ayla\n\nElf ranger. Feats: Alert.\n' > Characters/Ayla/Ayla.md
+printf '# Brom\n\nDwarf fighter. Feats: Alert.\n' > Characters/Brom/Brom.md
+printf '# Durga\n\nOrc barbarian, level 5. Feats: Savage Attacker.\n\n## Equipment\n\n- Greataxe\n' > Characters/Durga/Durga.md
+printf '# Durga (level 4)\n\nOrc barbarian, level 4. Feats: [[Alert]].\n' > Characters/Durga/Past_Builds/Durga_01.md
 mkdir -p Campaigns/Heroes/Homebrew_Magic_Items Campaigns/Villains
 printf '# Emberglass Ring\n\nFound by [[Ayla]] during the Heroes campaign. Stores one fire spell.\n' > Campaigns/Heroes/Homebrew_Magic_Items/Emberglass_Ring.md
 printf '# Villains\n\nA second campaign, from the villains'"'"' side.\n' > Campaigns/Villains/README.md

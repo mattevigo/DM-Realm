@@ -20,7 +20,7 @@ value() {
 LANGUAGE=$(value language)
 EDITION=$(value edition)
 FOLDERS=""
-for key in reference adventures homebrew campaigns dm_tools templates; do
+for key in reference adventures homebrew characters campaigns dm_tools templates; do
   FOLDERS="$FOLDERS
 - $key: $(value "$key")"
 done

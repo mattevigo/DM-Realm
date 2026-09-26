@@ -10,11 +10,12 @@ folders:
   reference: Reference
   adventures: Adventures
   homebrew: Homebrew
+  characters: Characters
   campaigns: Campaigns
   dm_tools: DM_Tools
   templates: Templates
 YML
-mkdir -p Reference/Rules Adventures Homebrew Campaigns DM_Tools Templates
+mkdir -p Reference/Rules Adventures Homebrew Characters Campaigns DM_Tools Templates
 cat > Reference/Rules/Grappled.md <<'MD'
 ---
 source: XPHB p. 364, v2.36.1

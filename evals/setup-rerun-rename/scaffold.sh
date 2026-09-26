@@ -10,11 +10,12 @@ folders:
   reference: Reference
   adventures: Adventures
   homebrew: Homebrew
+  characters: Characters
   campaigns: Campaigns
   dm_tools: DM_Tools
   templates: Templates
 YML
-mkdir -p Reference Adventures Homebrew Campaigns/Heroes/Sessions DM_Tools/Checklists Templates .obsidian
+mkdir -p Reference Adventures Homebrew Characters Campaigns/Heroes/Sessions DM_Tools/Checklists Templates .obsidian
 printf '# Session 1\n\nThe party meets in Phandalin.\n' > Campaigns/Heroes/Sessions/Session_01.md
 printf '# Prep\n\nLast time: [[Campaigns/Heroes/Sessions/Session_01|Session 1]].\nRecap: [Session 1](Campaigns/Heroes/Sessions/Session_01.md)\n' > DM_Tools/Checklists/Prep.md
 printf '{"useMarkdownLinks": false, "newLinkFormat": "shortest"}\n' > .obsidian/app.json
