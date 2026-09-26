@@ -1,6 +1,6 @@
 schema_version: "1.1"
-name: s05b-no-eighth-top-level-folder
-description: "Structure scenario S05: no eighth top-level folder; material goes inside an existing one."
+name: s05b-no-ninth-top-level-folder
+description: "Structure scenario S05: no ninth top-level folder; material goes inside an existing one."
 tags: [scenario]
 context:
   scaffold_script: scaffold.sh

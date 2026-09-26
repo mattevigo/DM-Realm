@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s57-homebrew-refuses-world-link
+description: "Structure scenario S57: a Homebrew note never links to World; the tie is written in the World note, linking to the Homebrew note."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    In my homebrew spell Tidecall, add a link to Sethra, the goddess of my world Orsenna who grants it.

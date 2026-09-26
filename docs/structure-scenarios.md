@@ -10,7 +10,7 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S02 | s02-feat-users-from-backlinks |
 | S03 | s03-adventure-to-session-link |
 | S04 | s04-homebrew-links |
-| S05 | s05a-campaign-subfolder, s05b-no-eighth-top-level-folder |
+| S05 | s05a-campaign-subfolder, s05b-no-ninth-top-level-folder |
 | S06 | s06-adventure-to-adventure |
 | S07 | s07-homebrew-to-dm-tools |
 | S08 | s08-table-events-in-campaign |
@@ -57,6 +57,12 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S53 | s53a-character-campaign-item-asks, s53b-character-campaign-item-promoted |
 | S54 | s54-campaign-readme-party |
 | S55 | s55-feat-users-current-builds |
+| S56 | s56a-campaign-npc-to-world-asks, s56b-campaign-npc-to-world-promoted |
+| S57 | s57-homebrew-refuses-world-link |
+| S58 | s58-world-refuses-session-link |
+| S59 | s59-invented-villain-split |
+| S60 | s60-realms-town-in-world |
+| S61 | s61-character-backstory-world-place |
 
 ## How to run the manual scenarios
 
@@ -71,7 +77,7 @@ Placement, linking and official-data questions that the Workspace rules must ans
 Expected: Reference Monsters. The Adventure's notes (e.g. its NPCs or Encounters) link to it.
 
 **S13.** Where do these go: (a) the official lore of the Forgotten Realms; (b) a world the DM invented; (c) the fact that, in one Campaign, the PCs' actions made a Realms city fall?
-Expected: (a) Reference Setting; (b) Homebrew Setting; (c) that Campaign (e.g. its Places), linking to the Reference note.
+Expected: (a) Reference Setting; (b) World, in a folder named after the world; (c) that Campaign (e.g. its Places), linking to the Reference note.
 
 **S21.** The DM starts running a published Adventure, *The Sunken Keep*. Where does the Adventure's content go, and where does an item unique to that Adventure go?
 Expected: Adventures › The_Sunken_Keep, with README, Places, NPCs, Items and Encounters; the unique item goes in its Items (an official magic item from the DMG stays in Reference Magic_Items).

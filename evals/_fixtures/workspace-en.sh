@@ -1,24 +1,8 @@
 # Shared starting state, sourced by case scaffolds: an English 2024 Workspace fresh
 # from Setup, with one Campaign "Heroes". Every note here is INVENTED test content.
-cat > workspace-config.yml <<'YML'
-# DM Realm Workspace Config — written by Setup; fields in the dmr-workspace rules.
-language: English
-edition: 2024
-folders:
-  reference: Reference
-  adventures: Adventures
-  homebrew: Homebrew
-  characters: Characters
-  campaigns: Campaigns
-  dm_tools: DM_Tools
-  templates: Templates
-YML
-mkdir -p Reference Adventures Homebrew Characters DM_Tools Templates .obsidian
+. "$(dirname "$0")/../_fixtures/workspace-setup.sh"
 mkdir -p Campaigns/Heroes/NPCs Campaigns/Heroes/Sessions Campaigns/Heroes/Places Campaigns/Heroes/Quests Campaigns/Heroes/Factions Campaigns/Heroes/Attachments
-printf '# Heroes\n\nA campaign on the northern border.\n' > Campaigns/Heroes/README.md
-printf '{"useMarkdownLinks": false, "newLinkFormat": "shortest"}\n' > .obsidian/app.json
-printf '{"templates": true}\n' > .obsidian/core-plugins.json
-printf '{"folder": "Templates"}\n' > .obsidian/templates.json
+printf '# Heroes\n\nA campaign on the northern border of Orsenna, the DM'"'"'s own world.\n' > Campaigns/Heroes/README.md
 
 # Stub notes the scenario cases act on. Official ones are INVENTED placeholders with a
 # source property, standing in for imported material (ADR 0003: no real data here).
@@ -34,7 +18,7 @@ printf '# Sildar\n\nA knight of the Lords'"'"' Alliance.\n' > Adventures/The_Los
 mkdir -p Homebrew/Monsters DM_Tools/Checklists
 printf '# Ash Wraith\n\nA spirit of cinders, reusable in any campaign.\n' > Homebrew/Monsters/Ash_Wraith.md
 printf '# Session Prep\n\n- [ ] Review last session\n' > DM_Tools/Checklists/Session_Prep.md
-printf '# Session 3: Into the Keep\n\nThe party reached the keep.\n' > Campaigns/Heroes/Sessions/Session_03_Into_the_Keep.md
+printf '# Session 3: Into the Keep\n\nThe party reached the keep. On the way they met [[Campaigns/Heroes/NPCs/Mira_Vell|Mira Vell]].\n' > Campaigns/Heroes/Sessions/Session_03_Into_the_Keep.md
 printf '# Session 5: Fire\n\nA fight broke out in town.\n' > Campaigns/Heroes/Sessions/Session_05_Fire.md
 printf '# Session 8: Ambush\n\nThe cultists struck on the road.\n' > Campaigns/Heroes/Sessions/Session_08_Ambush.md
 mkdir -p Characters/Ayla Characters/Brom Characters/Durga/Past_Builds
@@ -45,3 +29,10 @@ printf '# Durga (level 4)\n\nOrc barbarian, level 4. Feats: [[Alert]].\n' > Char
 mkdir -p Campaigns/Heroes/Homebrew_Magic_Items Campaigns/Villains
 printf '# Emberglass Ring\n\nFound by [[Ayla]] during the Heroes campaign. Stores one fire spell.\n' > Campaigns/Heroes/Homebrew_Magic_Items/Emberglass_Ring.md
 printf '# Villains\n\nA second campaign, from the villains'"'"' side.\n' > Campaigns/Villains/README.md
+printf '# Mira Vell\n\nInnkeeper of the Gull'"'"'s Rest in [[Porto_Ladro]]. Met the party in Session 3; owes [[Ayla]] a favour.\n' > Campaigns/Heroes/NPCs/Mira_Vell.md
+
+# The DM's own world, Orsenna, and a homebrew spell with no world in it.
+mkdir -p World/Orsenna/Places World/Orsenna/Pantheon Homebrew/Spells/Level_2
+printf '# Porto Ladro\n\nA harbour town of smugglers on the Orsenna coast.\n' > World/Orsenna/Places/Porto_Ladro.md
+printf '# Sethra\n\nGoddess of the tides, worshipped along the coast.\n' > World/Orsenna/Pantheon/Sethra.md
+printf '# Tidecall\n\n2nd-level evocation. A wave strikes a 20-foot line: 3d8 bludgeoning damage.\n' > Homebrew/Spells/Level_2/Tidecall.md

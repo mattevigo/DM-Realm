@@ -3,20 +3,7 @@
 # stand-in for the Trusted Source mirror whose latest release is v3.1.0. Every entry is
 # INVENTED (ADR 0003); cache and mirror sit in the sandbox home, outside the Workspace.
 set -e
-cat > workspace-config.yml <<'YML'
-# DM Realm Workspace Config — written by Setup; fields in the dmr-workspace rules.
-language: English
-edition: 2024
-folders:
-  reference: Reference
-  adventures: Adventures
-  homebrew: Homebrew
-  characters: Characters
-  campaigns: Campaigns
-  dm_tools: DM_Tools
-  templates: Templates
-YML
-mkdir -p Reference Adventures Homebrew Characters Campaigns DM_Tools Templates
+. "$(dirname "$0")/../_fixtures/workspace-setup.sh"
 
 DMR="$HOME/.dm-realm"
 mkdir -p "$DMR/source-cache/v3.0.0/data" "$DMR/mirror/raw/v3.0.0/data" "$DMR/mirror/raw/v3.1.0/data"

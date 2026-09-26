@@ -1,12 +1,12 @@
 # Workspace structure
 
-How a DM Realm Workspace is organised: which folders exist, what each holds, and what each note may link to. This document is in English and independent of any Workspace Language and Edition. Terms follow [CONTEXT.md](../../CONTEXT.md); the Scope rule is [ADR 0001](../../docs/adr/0001-scope-by-top-level-folder.md), Characters as a Scope is [ADR 0004](../../docs/adr/0004-characters-are-a-scope-above-campaigns.md), and where official material comes from is [ADR 0003](../../docs/adr/0003-official-material-comes-only-from-5etools.md).
+How a DM Realm Workspace is organised: which folders exist, what each holds, and what each note may link to. This document is in English and independent of any Workspace Language and Edition. Terms follow [CONTEXT.md](../../CONTEXT.md); the Scope rule is [ADR 0001](../../docs/adr/0001-scope-by-top-level-folder.md), Characters as a Scope is [ADR 0004](../../docs/adr/0004-characters-are-a-scope-above-campaigns.md), World as a Scope is [ADR 0005](../../docs/adr/0005-the-dms-world-is-a-scope-apart-from-homebrew.md), and where official material comes from is [ADR 0003](../../docs/adr/0003-official-material-comes-only-from-5etools.md).
 
-Every folder has a **neutral key** (e.g. `reference.monsters`) and a **default English name**. Keys are English identifiers used only in this documentation and in the [Workspace Config](#workspace-config); they never appear as folder or file names. In a Workspace, the agent writes every folder and file name in the Workspace Language, translated from the default English name (see [Language and names](#language-and-names)); the seven top-level folder names can instead be set in the Workspace Config.
+Every folder has a **neutral key** (e.g. `reference.monsters`) and a **default English name**. Keys are English identifiers used only in this documentation and in the [Workspace Config](#workspace-config); they never appear as folder or file names. In a Workspace, the agent writes every folder and file name in the Workspace Language, translated from the default English name (see [Language and names](#language-and-names)); the eight top-level folder names can instead be set in the Workspace Config.
 
 ## Workspace root
 
-The Workspace root is the folder the DM opens in Obsidian. Every note lives inside one of the seven top-level folders; no note lives at the root.
+The Workspace root is the folder the DM opens in Obsidian. Every note lives inside one of the eight top-level folders; no note lives at the root.
 
 The only other things at the root are the Workspace Config (`workspace-config.yml`, the only DM Realm file in a Workspace — [ADR 0002](../../docs/adr/0002-dm-realm-is-a-plugin-separate-from-the-workspace.md)) and dot-folders such as `.obsidian/`. They are not notes, not top-level folders, and are never translated.
 
@@ -16,13 +16,14 @@ The only other things at the root are the Workspace Config (`workspace-config.ym
 | ------------ | ------------ | ----------- | ------- | ------------------------------------------------------------------------ |
 | `reference`  | Reference    | Reference   | Setup   | Official material imported from the Trusted Source; its rules material from the Workspace's Edition |
 | `adventures` | Adventures   | Adventure   | Setup   | One folder per official published Adventure                              |
-| `homebrew`   | Homebrew     | Homebrew    | Setup   | DM-authored material reused across Campaigns                             |
+| `homebrew`   | Homebrew     | Homebrew    | Setup   | DM-authored game material with mechanics, reused across Campaigns        |
+| `world`      | World        | World       | Setup   | Story elements the DM invented and reuses across Campaigns, one folder per world |
 | `characters` | Characters   | Character   | Setup   | One folder per Character, kept apart from every Campaign                 |
 | `campaigns`  | Campaigns    | Campaign    | Setup   | One folder per Campaign                                                  |
 | `dm_tools`   | DM_Tools     | not a Scope | Setup   | Aids for running the game that belong to no single Campaign              |
 | `templates`  | Templates    | not a Scope | Setup   | Blank starting notes                                                     |
 
-These seven are fixed: the DM may rename them — by re-running Setup, which moves the folder, rewrites the links into it and updates the Workspace Config (an edit to the Config alone takes effect at that re-run) — but may not add or remove a top-level folder. Material that seems to need a new one belongs inside an existing one (maps of a Campaign go in its Attachments, a reusable map in Homebrew Setting).
+These eight are fixed: the DM may rename them — by re-running Setup, which moves the folder, rewrites the links into it and updates the Workspace Config (an edit to the Config alone takes effect at that re-run) — but may not add or remove a top-level folder. Material that seems to need a new one belongs inside an existing one (maps of a Campaign go in its Attachments, a reusable map of the DM's world in that world's folder in World).
 
 Inside the top-level folders the DM is free to add, rename or remove subfolders. The subfolders documented below are the defaults the agent uses when it places a note and the DM has not organised that part differently.
 
@@ -36,20 +37,21 @@ Each Adventure and each Campaign is a separate unit: "the same Adventure" means 
 
 A link is any wikilink, Markdown link or embed to another note or file in the Workspace, in the body or in frontmatter.
 
-| From ↓ / to → | Reference | Adventures             | Homebrew | Characters | Campaigns | DM Tools | Templates |
-| ------------- | --------- | ---------------------- | -------- | ---------- | --------- | -------- | --------- |
-| **Reference** | yes       | no                     | no       | no         | no        | no       | no        |
-| **Adventure** | yes       | its own Adventure only | no       | no         | no        | no       | no        |
-| **Homebrew**  | yes       | no                     | yes      | no         | no        | no       | no        |
-| **Character** | yes       | yes (any)              | yes      | yes        | no        | no       | no        |
-| **Campaign**  | yes       | yes (any)              | yes      | yes        | yes (any) | yes      | yes       |
-| **DM Tools**  | yes       | yes (any)              | yes      | yes        | yes (any) | yes      | yes       |
+| From ↓ / to → | Reference | Adventures             | Homebrew | World | Characters | Campaigns | DM Tools | Templates |
+| ------------- | --------- | ---------------------- | -------- | ----- | ---------- | --------- | -------- | --------- |
+| **Reference** | yes       | no                     | no       | no    | no         | no        | no       | no        |
+| **Adventure** | yes       | its own Adventure only | no       | no    | no         | no        | no       | no        |
+| **Homebrew**  | yes       | no                     | yes      | no    | no         | no        | no       | no        |
+| **World**     | yes       | no                     | yes      | yes   | no         | no        | no       | no        |
+| **Character** | yes       | yes (any)              | yes      | yes   | yes        | no        | no       | no        |
+| **Campaign**  | yes       | yes (any)              | yes      | yes   | yes        | yes (any) | yes      | yes       |
+| **DM Tools**  | yes       | yes (any)              | yes      | yes   | yes        | yes (any) | yes      | yes       |
 
-- **Knowledge follows links.** A note that may not link to a Scope does not mention its content either, linked or not. Reference, Adventure and Homebrew notes never name a Campaign, a Character or anything that happened at a table. Character notes never name a Campaign, a Session or anything that happened at a table.
+- **Knowledge follows links.** A note that may not link to a Scope does not mention its content either, linked or not. Reference, Adventure, Homebrew and World notes never name a Campaign, a Character or anything that happened at a table; Homebrew notes never name a World note's content, and World notes never name an Adventure's. Character notes never name a Campaign, a Session or anything that happened at a table.
 - **Forbidden links are refused.** When a forbidden link is asked for, the agent does not write it, says why, and writes the fact on the side that is allowed to link, pointing the other way.
 - **"Who uses this" comes from backlinks.** Which Characters have a feat, who owns an item, which Session a monster appeared in: never written into the feat, item or monster note. The Character and Campaign notes link to it, and the target's backlinks answer the question. Only current Character notes count: a past Build (in a Character's Past_Builds) describes the Character as it was, so it never says who has something today.
-- **What happened at the table belongs to the Campaign.** Events go in the Session note. A lasting change to something from another Scope — an Adventure's tavern burned down, a Setting's city conquered — goes in a Campaign note about it (e.g. in the Campaign's Places) that links to the original. The original note stays as published.
-- **What happened to a Character belongs to the Campaign too.** An item attuned in Session 21, a wound, an oath: the agent writes it in that Campaign's notes (usually the Session note), linking to the Character, and leaves the Character note unchanged, even when asked to note it "on" the Character. The Character's backlinks give its history. The Character note changes only when the DM asks to change the Build itself (a level gained, an item added to its equipment), and even then it names no Campaign or Session.
+- **What happened at the table belongs to the Campaign.** Events go in the Session note. A lasting change to something from another Scope — an Adventure's tavern burned down, a Setting's city conquered, a town of the DM's World sacked — goes in a Campaign note about it (e.g. in the Campaign's Places) that links to the original. The original note stays as it was.
+- **What happened to a Character belongs to the Campaign too.** An item attuned in Session 21, a wound, an oath: the agent writes it in that Campaign's notes (usually the Session note), linking to the Character, and leaves the Character note unchanged, even when asked to note it "on" the Character. The Character's backlinks give its history. The Character note changes only when the DM asks to change the Character itself — its identity, its backstory, or its Build (a level gained, an item added to its equipment) — and even then it names no Campaign or Session.
 
 ## Folders
 
@@ -112,17 +114,36 @@ Monster stat blocks are the one exception: a monster printed in an Adventure —
 
 ### Homebrew — `homebrew`
 
-DM-authored game material meant to be reused across Campaigns. Homebrew is something that exists in play — a rule, class, spell, item, monster, place; an aid only the DM uses to run the game is DM Tools. Homebrew made for one Campaign belongs to that Campaign (see [Campaigns](#campaigns--campaigns)).
+DM-authored game material with mechanics, meant to be reused across Campaigns: rules, classes, species, backgrounds, feats, spells, items, monsters. Only material with mechanics is Homebrew: a story element with none — a place, an NPC, a faction, a god — is [World](#world--world), and an aid only the DM uses to run the game is DM Tools. Homebrew made for one Campaign belongs to that Campaign (see [Campaigns](#campaigns--campaigns)).
 
-It mirrors Reference's type folders — Classes, Species (Races in 2014), Backgrounds, Feats, Spells (with the same level subfolders), Equipment (with Weapon_Masteries), Magic_Items, Monsters, Setting — under the keys `homebrew.<type>`, with House Rules in place of Rules:
+It mirrors Reference's rules type folders — Classes, Species (Races in 2014), Backgrounds, Feats, Spells (with the same level subfolders), Equipment (with Weapon_Masteries), Magic_Items, Monsters — under the keys `homebrew.<type>`, with House Rules in place of Rules:
 
 | Key                   | Default name | Created    | Holds                                                                         |
 | --------------------- | ------------ | ---------- | ----------------------------------------------------------------------------- |
 | `homebrew.house_rules`| House_Rules  | first note | Changes to the official rules; they apply to every Campaign in the Workspace  |
-| `homebrew.setting`    | Setting      | first note | Worlds the DM invented, one subfolder per Setting                             |
 | `homebrew.<type>`     | as Reference | first note | The DM's own material of that type                                            |
 
 Every Homebrew subfolder is created by its first note; an empty Workspace has none.
+
+Homebrew never links to or names World, so it stays usable in any world: a homebrew spell granted by an invented god says nothing of the god; the god's World note links to the spell.
+
+### World — `world`
+
+The story elements the DM invented and reuses across Campaigns — places, NPCs, factions, pantheon, history — of a world the DM invented, or added to an official Setting. No mechanics (those are Homebrew) and no table's story (that is a Campaign's). A Setting's lore has three homes: the official lore is Reference Setting, the DM's own is World, and how a Campaign has changed either belongs to that Campaign.
+
+| Key                     | Default name   | Created    | Holds                                              |
+| ----------------------- | -------------- | ---------- | -------------------------------------------------- |
+| `world.<world>`         | `<World name>` | first note | One world, and notes about the whole of it (an overview, a map) |
+| `world.<world>.places`  | Places         | first note | Its places, one note each                          |
+| `world.<world>.npcs`    | NPCs           | first note | Its NPCs                                           |
+| `world.<world>.factions`| Factions       | first note | Its factions and organisations                     |
+| `world.<world>.pantheon`| Pantheon       | first note | Its gods                                           |
+| `world.<world>.history` | History        | first note | Its eras and events                                |
+
+- **A world's folder name.** A world the DM invented is named in the DM's words: not translated and not in the Translation Glossary, with the [name rules](#name-rules) applied — Aerth is `Aerth/` in every Workspace Language. The DM's additions to an official Setting use the name that Setting's subfolder has in Reference › Setting (or would have, as [Translating a term](#translating-a-term) gives it), so the two sit side by side: a town the DM invented in the Forgotten Realms is World › Forgotten_Realms › Places, while the official lore stays in Reference › Setting › Forgotten_Realms.
+- **Links point into World, never out of it to a table** (see [Link rules](#link-rules)). A Character's backstory links to the World place it comes from; the place does not name the Character. What a Campaign did to a World place is written in that Campaign, linking to it.
+- **An invented villain is split.** Who they are is an NPC note in World; their stat block is a monster in Homebrew › Monsters. The World note links to the stat block, never the other way.
+- **A Campaign's place, NPC or faction becomes World** by [Promotion](#campaigns--campaigns), when another Campaign or a Character's backstory needs it.
 
 ### Characters — `characters`
 
@@ -158,6 +179,7 @@ One folder per Campaign: everything that happens at that table, and everything m
 - **Anything else the Campaign needs** goes in a subfolder the DM adds (e.g. Narrative, Finances). Notes about running this one Campaign — the DM's personal notes, a to-do board — live here, not in DM Tools.
 - **The party is linked, not kept here.** A Campaign has no Characters folder: its Characters live in the Characters folder, and the Campaign's README lists its party by linking to them.
 - **Promotion.** When Campaign homebrew is wanted in a second Campaign, the agent moves it to the matching Homebrew folder, removes every link to and mention of the first Campaign — and of its Characters — from it (anything worth keeping moves into that Campaign's notes), and updates the links to it.
+- **Promotion to World.** When a Campaign's Places, NPCs or Factions note is wanted by a second Campaign, or by a Character's backstory (which cannot link to a Campaign), the agent asks the DM to promote it to World; on a yes it moves the note to the matching World folder (World › `<world>` › Places, NPCs or Factions, in the world the Campaign is set in — the agent asks when it cannot tell), removes from it every link to and mention of the Campaign, its Characters and its Sessions, as for Homebrew (anything worth keeping moves into that Campaign's notes), and updates the links to it. Until then the note stays in the Campaign, and a Character does not name it.
 - **A Character gaining Campaign homebrew** (an item it now carries, a spell it learns) cannot link to it where it is. The agent says so and asks the DM to promote it; on a yes it promotes it as above and the Character note links to the Homebrew note. Until then the Character note does not name it; the Campaign's notes record who holds it.
 
 ### DM Tools — `dm_tools`
@@ -176,9 +198,9 @@ Blank starting notes, one per kind of note, copied when a new note is created. N
 
 ## Folder creation
 
-- **Setup** creates the seven top-level folders and nothing else. It does not touch the Source Cache. (The Translation Glossary note appears with its first entry — usually at Setup, when the top-level folder names are translated.)
+- **Setup** creates the eight top-level folders and nothing else. It does not touch the Source Cache. (The Translation Glossary note appears with its first entry — usually at Setup, when the top-level folder names are translated.)
 - **Starting a Campaign** creates its folder with the core listed above.
-- **Every other folder** — including an Adventure's folder and all its subfolders, and a Character's folder — is created when the first note that belongs in it is written. The agent never creates empty folders in advance.
+- **Every other folder** — including an Adventure's folder and all its subfolders, a Character's folder and a world's folder — is created when the first note that belongs in it is written. The agent never creates empty folders in advance.
 
 ## Edition
 
@@ -267,7 +289,7 @@ A single note at the root of DM Tools (`dm_tools.translation_glossary`), one row
 | ----------- | ---------------- | ------------------------------ | -------------------- |
 | `<English>` | `<translation>`  | Official Translation / fallback / DM's choice | `<key>` or empty |
 
-Names the DM chooses — a Campaign's name, a Session's title, an invented NPC, a Character's name — are the DM's words, not game terms, and are not recorded. The one exception is a top-level folder the DM named: its row records the name with the source *DM's choice*, so the Glossary lists every top-level folder in use.
+Names the DM chooses — a Campaign's name, a Session's title, an invented NPC, a Character's name, an invented world's name — are the DM's words, not game terms, and are not recorded. The one exception is a top-level folder the DM named: its row records the name with the source *DM's choice*, so the Glossary lists every top-level folder in use.
 
 In an English Workspace nothing is translated, so there is no Translation Glossary.
 
@@ -298,6 +320,6 @@ Because the Workspace Config can be edited, the values in use are read from the 
 | -------------------- | ---------------------------------------------------------------------------------------------- |
 | `language`           | The Workspace Language, as its name in any language (`English`, `Italiano`, `Deutsch`…). Fixed after Setup. |
 | `edition`            | The Edition: `2014` or `2024`. Fixed once rules material is imported.                         |
-| `folders.<key>`      | The name of the top-level folder with that key (`reference`, `adventures`, `homebrew`, `characters`, `campaigns`, `dm_tools`, `templates`). Empty means the agent's translation of the default English name. |
+| `folders.<key>`      | The name of the top-level folder with that key (`reference`, `adventures`, `homebrew`, `world`, `characters`, `campaigns`, `dm_tools`, `templates`). Empty means the agent's translation of the default English name. |
 
 - **A top-level folder name is a single folder name directly under the Workspace root** — never a path (`Games/Active`, `../Games`), never empty after the [name rules](#name-rules) are applied, never the same as another top-level folder. On an invalid name the agent writes nothing and asks the DM for a valid one.

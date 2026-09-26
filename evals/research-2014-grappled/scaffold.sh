@@ -1,20 +1,8 @@
 #!/bin/sh
 # Starting state: an English 2014 Workspace fresh from Setup.
 set -e
-cat > workspace-config.yml <<'YML'
-# DM Realm Workspace Config — written by Setup; fields in the dmr-workspace rules.
-language: English
-edition: 2014
-folders:
-  reference: Reference
-  adventures: Adventures
-  homebrew: Homebrew
-  characters: Characters
-  campaigns: Campaigns
-  dm_tools: DM_Tools
-  templates: Templates
-YML
-mkdir -p Reference Adventures Homebrew Characters Campaigns DM_Tools Templates
+WS_EDITION=2014
+. "$(dirname "$0")/../_fixtures/workspace-setup.sh"
 
 # A Source Cache seeded with INVENTED entries (ADR 0003: no real Trusted Source data
 # in the repository; the eval sandbox has no network). It sits in the sandbox home,
