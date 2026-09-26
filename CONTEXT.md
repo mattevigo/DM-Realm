@@ -15,7 +15,7 @@ One DM's collection of notes, organised into Scopes, set up once in a single Wor
 _Avoid_: Vault, repo, project
 
 **Workspace Language**:
-The language chosen at Setup; every folder name, file name, frontmatter key and generated note in the Workspace is written in it. Fixed after Setup. DM Realm's documentation and the official sources are in English; the agent translates from them into the Workspace Language.
+The language chosen at Setup; every folder name, file name, frontmatter key and generated note in the Workspace is written in it, except the keys an Obsidian plugin reads, which stay English ([ADR 0006](docs/adr/0006-keys-a-plugin-reads-stay-in-english.md)). Fixed after Setup. DM Realm's documentation and the official sources are in English; the agent translates from them into the Workspace Language.
 _Avoid_: Locale
 
 **Edition**:
