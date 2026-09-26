@@ -53,7 +53,7 @@ _Avoid_: Download, mirror, local data
 ### Scopes
 
 **Scope**:
-The kind of content a note is — Reference, Adventure, Homebrew or Campaign — given by the top-level folder it lives in, and deciding what that note may link to.
+The kind of content a note is — Reference, Adventure, Homebrew, Character or Campaign — given by the top-level folder it lives in, and deciding what that note may link to.
 _Avoid_: Context, category
 
 **Reference**:
@@ -75,8 +75,16 @@ _Avoid_: World, Mondo
 **House Rules**:
 Homebrew changes to the official rules, applying to every Campaign in the Workspace.
 
+**Character**:
+A player's character, kept apart from every Campaign so it can play in any of them: its identity and its current Build, with no knowledge of what happened at any table. NPCs are never Characters.
+_Avoid_: PC, player character, hero, sheet
+
+**Build**:
+A Character's game statistics at one moment — species, class and level, abilities, features, spells, equipment. A Character has one current Build; before a level-up or rebuild the current one is kept as a past Build.
+_Avoid_: Sheet, version, snapshot
+
 **Campaign**:
-One ongoing game with its own party, Sessions and story; what actually happened at the table. May run any number of Adventures, and may draw on every other Scope.
+One ongoing game with its own party of Characters, Sessions and story; what actually happened at the table, including what happened to its Characters. May run any number of Adventures, and may draw on every other Scope.
 
 **Template**:
 A blank starting note for a kind of content, copied when a new note is created. Not a Scope.
