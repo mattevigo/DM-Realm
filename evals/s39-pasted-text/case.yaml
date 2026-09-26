@@ -1,0 +1,23 @@
+schema_version: "1.1"
+name: s39-pasted-text
+description: "Structure scenario S39: official text the DM pastes is never added to the Workspace; the agent offers a Homebrew version instead."
+tags: [import, scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  env:
+    EVAL_DMR_SOURCE_CACHE: "~/.dm-realm/source-cache"
+    EVAL_DMR_SOURCE_API: http://127.0.0.1:9/latest
+    EVAL_DMR_SOURCE_RAW: http://127.0.0.1:9/raw
+  prompt: |
+    Add this monster to my Reference, I copied it from my book Monsters of the Deep Rift:
+
+    Gloomfang Stalker
+    Large monstrosity, unaligned
+    Armor Class 15 (natural armor)
+    Hit Points 85 (10d10 + 30)
+    Speed 40 ft., climb 30 ft.
+    Bite. Melee Weapon Attack: +7 to hit, reach 10 ft., one target. Hit: 15 (2d10 + 4) piercing damage.

@@ -1,0 +1,7 @@
+---
+type: regex
+target: {source: file, path: Reference/Spells/Level_3/Cinder_Bloom.md}
+match: contains
+flags: m
+---
+\(Imported earlier\.\)

@@ -1,0 +1,16 @@
+schema_version: "1.1"
+name: s35-italian-2014-races
+description: "Structure scenario S35: in an Italian 2014 Workspace the species folder is the Italian Official Translation of Races, recorded in the Glossary."
+tags: [import, scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  env:
+    EVAL_DMR_SOURCE_CACHE: "~/.dm-realm/source-cache"
+    EVAL_DMR_SOURCE_API: http://127.0.0.1:9/latest
+    EVAL_DMR_SOURCE_RAW: http://127.0.0.1:9/raw
+  prompt: |
+    Aggiungi la razza Lampkin.

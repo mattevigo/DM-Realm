@@ -9,6 +9,8 @@ allowed-tools: Read, Grep, Bash(sh:*), Bash(DMR_SOURCE_CACHE=*)
 
 How to reach the Trusted Source through the Source Cache. The rules that govern it — sources, the Edition, Off-Edition Material, research, refreshing — are in the `dmr-workspace` skill's structure.md, sections "Edition" and "Official data"; load `dmr-workspace` first and follow them.
 
+**Writing an entry into the Workspace is an Import**: invoke the `dmr-import` skill, whose helper renders the entry. An entry's text is never written from the raw data by hand.
+
 ## Getting a file
 
 Every file comes from the Source Cache helper next to this file, `source-cache.sh`. Run it with the cache directory below:
@@ -27,20 +29,24 @@ DMR_SOURCE_CACHE="${CLAUDE_PLUGIN_DATA}/source-cache" sh "<this skill's base dir
 
 | Material | File (`data/…`) | Key |
 | --- | --- | --- |
-| Conditions, diseases | `conditionsdiseases.json` | `condition`, `disease` |
+| Conditions, statuses, diseases | `conditionsdiseases.json` | `condition`, `status`, `disease` |
 | Actions (Grapple, Dash…) | `actions.json` | `action` |
-| Rules glossary entries | `variantrules.json` | `variantrule` |
+| Rules glossary entries, optional and variant rules | `variantrules.json`; the ones 5etools extracts from books (e.g. the XDMG's) in `generated/gendata-variantrules.json` | `variantrule` |
+| Senses, skills | `senses.json`, `skills.json` | `sense`, `skill` |
 | Spells | `spells/spells-<book>.json` (e.g. `spells-xphb.json`, `spells-phb.json`); `spells/index.json` lists the books | `spell` |
-| Monsters | `bestiary/bestiary-<book>.json` (e.g. `bestiary-xmm.json`); `bestiary/index.json` lists the books | `monster` |
-| Magic items; mundane gear and weapons | `items.json`; `items-base.json` | `item`; `baseitem`, `itemMastery` |
-| Feats, species, backgrounds | `feats.json`, `races.json`, `backgrounds.json` | `feat`, `race`, `background` |
+| Monsters | `bestiary/bestiary-<book>.json` (e.g. `bestiary-xmm.json`, or an Adventure's code); `bestiary/index.json` lists the books; `bestiary/template.json` holds the templates copies apply | `monster`; `monsterTemplate` |
+| Magic items and special gear; mundane gear, weapons and Weapon Mastery properties | `items.json`; `items-base.json` | `item`; `baseitem`, `itemMastery` |
+| Generic magic variants ("+1 Weapon", "Flame Tongue") | `magicvariants.json` (book and page under `inherits`) | `magicvariant` |
+| Feats, backgrounds | `feats.json`, `backgrounds.json` | `feat`, `background` |
+| Species (races) and subraces | `races.json` | `race`, `subrace` |
 | Classes and subclasses | `class/class-<name>.json`; `class/index.json` | `class`, `subclass` |
-| Books and their publication dates | `books.json` | `book` |
+| Class options (Maneuvers, Eldritch Invocations, Metamagic, 2014 Fighting Styles…) | `optionalfeatures.json` | `optionalfeature` |
+| Books, Adventures and their publication dates | `books.json`, `adventures.json` | `book`, `adventure` |
 
 ## Finding the entry for the Edition
 
 1. Grep the file for `"name": "<English name>"`, then Read the lines around each match: each entry has `source` (a book code) and `page`.
-2. Take the entry from a book of the Workspace's Edition in use (structure.md, "Fixed after Setup"). A book's Edition follows its `published` date in `books.json`, as structure.md's "Edition" section defines it; a 2014 entry's `reprintedAs` names its 2024 version.
+2. Take the entry from a book of the Workspace's Edition in use (structure.md, "Fixed after Setup"). A book's Edition follows its `published` date in `books.json` (an Adventure's in `adventures.json`), as structure.md's "Edition" section defines it. A 2014 entry's `reprintedAs` names its 2024 version (`"Goblin Warrior|XMM"`, sometimes under another name); to go from a 2024 entry back to the 2014 one it reprints, Grep for `"<Name>|<BOOK>"` inside `reprintedAs`.
 3. When the Edition has no version of it, structure.md's "Off-Edition Material" decides what happens.
 
 ## Citing

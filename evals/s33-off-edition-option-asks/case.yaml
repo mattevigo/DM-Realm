@@ -1,0 +1,16 @@
+schema_version: "1.1"
+name: s33-off-edition-option-asks
+description: "Structure scenario S33: an Off-Edition player option asked for by name needs the DM's consent first; nothing is written before it."
+tags: [import, scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  env:
+    EVAL_DMR_SOURCE_CACHE: "~/.dm-realm/source-cache"
+    EVAL_DMR_SOURCE_API: http://127.0.0.1:9/latest
+    EVAL_DMR_SOURCE_RAW: http://127.0.0.1:9/raw
+  prompt: |
+    Add the Silver Hush spell.
