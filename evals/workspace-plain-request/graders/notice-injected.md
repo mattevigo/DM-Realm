@@ -3,4 +3,4 @@ type: regex
 target: trace
 match: contains
 ---
-This folder is a DM Realm Workspace
+This folder is a DM Realm Workspace\. Its Workspace Config
