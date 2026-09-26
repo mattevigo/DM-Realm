@@ -59,18 +59,67 @@ case "$OUT" in *"app.json"*) ;; *) fail "drift: should name app.json: $OUT";; es
 case "$OUT" in *"templates.json"*) fail "drift: templates.json was already right but is named: $OUT";; esac
 
 # Version: the higher of the installer version and the newest downloaded app package.
+# Run in an empty environment with a fake HOME and PATH, so the machine's own
+# Obsidian is never seen; each case adds only its fake installation.
+PY=$(python3 -c 'import sys; print(sys.executable)')  # the interpreter itself, not a shim
+BIN="$TMP/bin"; mkdir -p "$BIN"
+version() { env -i HOME="$TMP/home" PATH="$BIN" DMR_OBSIDIAN_PLIST="$TMP/none.plist" "$@" "$PY" "$HELPER" version; }
+fake() { printf '#!/bin/sh\n%s\n' "$2" > "$BIN/$1"; chmod +x "$BIN/$1"; }
+
 APP="$TMP/Info.plist"; CONF="$TMP/obsidian-config"; mkdir -p "$CONF"
 cat > "$APP" <<'PL'
 <?xml version="1.0" encoding="UTF-8"?>
 <plist version="1.0"><dict><key>CFBundleShortVersionString</key><string>1.12.7</string></dict></plist>
 PL
 touch "$CONF/obsidian-1.13.2.asar" "$CONF/obsidian-1.13.10.asar" "$CONF/obsidian.json"
-OUT=$(DMR_OBSIDIAN_PLIST="$APP" DMR_OBSIDIAN_CONFIG="$CONF" python3 "$HELPER" version) || fail "version: exit $?"
+OUT=$(version DMR_OBSIDIAN_PLIST="$APP" DMR_OBSIDIAN_CONFIG="$CONF") || fail "version: exit $?"
 [ "$OUT" = "found 1.13.10" ] || fail "version: expected 'found 1.13.10', got '$OUT'"
 rm "$CONF"/obsidian-1.13.*.asar
-OUT=$(DMR_OBSIDIAN_PLIST="$APP" DMR_OBSIDIAN_CONFIG="$CONF" python3 "$HELPER" version)
+OUT=$(version DMR_OBSIDIAN_PLIST="$APP" DMR_OBSIDIAN_CONFIG="$CONF")
 [ "$OUT" = "found 1.12.7, older than 1.13.7" ] || fail "version older: got '$OUT'"
-OUT=$(DMR_OBSIDIAN_PLIST="$TMP/none.plist" DMR_OBSIDIAN_CONFIG="$TMP/none" python3 "$HELPER" version); CODE=$?
+OUT=$(version); CODE=$?
 [ "$OUT" = "not found" ] && [ "$CODE" -eq 0 ] || fail "version none: got '$OUT' exit $CODE"
+
+# Linux installers: a fresh install has no downloaded package yet, so the installer
+# version comes from the package manager, or from an AppImage's file name.
+fake dpkg-query 'echo "install ok installed 1.13.7"'
+OUT=$(version); [ "$OUT" = "found 1.13.7" ] || fail "version deb: got '$OUT'"
+fake dpkg-query 'echo "hold ok installed 1.13.7"'
+OUT=$(version); [ "$OUT" = "found 1.13.7" ] || fail "version deb held: got '$OUT'"
+fake dpkg-query 'echo "deinstall ok config-files 1.13.7"'
+OUT=$(version); [ "$OUT" = "not found" ] || fail "version deb removed: got '$OUT'"
+rm "$BIN/dpkg-query"
+
+fake pacman 'echo "obsidian 1.13.7-1"'
+OUT=$(version); [ "$OUT" = "found 1.13.7" ] || fail "version pacman: got '$OUT'"
+rm "$BIN/pacman"
+
+fake snap 'printf "Name      Version  Rev  Tracking       Publisher     Notes\nobsidian  1.12.4   52   latest/stable  obsidianmd*   classic\n"'
+OUT=$(version); [ "$OUT" = "found 1.12.4, older than 1.13.7" ] || fail "version snap: got '$OUT'"
+rm "$BIN/snap"
+
+# Flatpak keeps its downloaded packages in its own config folder.
+fake flatpak 'printf "Obsidian - Markdown-based knowledge base\n\n          ID: md.obsidian.Obsidian\n     Version: 1.12.4\n     Runtime: org.freedesktop.Platform/x86_64/24.08\n"'
+OUT=$(version); [ "$OUT" = "found 1.12.4, older than 1.13.7" ] || fail "version flatpak: got '$OUT'"
+mkdir -p "$TMP/home/.var/app/md.obsidian.Obsidian/config/obsidian"
+touch "$TMP/home/.var/app/md.obsidian.Obsidian/config/obsidian/obsidian-1.13.8.asar"
+OUT=$(version); [ "$OUT" = "found 1.13.8" ] || fail "version flatpak updated: got '$OUT'"
+rm -rf "$TMP/home/.var"
+
+# Package managers translate their labels: an Italian desktop must still be read.
+fake flatpak '[ "${LC_ALL:-}" = C ] && echo "     Version: 1.13.7" || echo "    Versione: 1.13.7"'
+OUT=$(version LANG=it_IT.UTF-8 LC_ALL=it_IT.UTF-8); [ "$OUT" = "found 1.13.7" ] || fail "version flatpak Italian: got '$OUT'"
+rm "$BIN/flatpak"
+
+# A command that fails (package not installed) counts as no installation.
+fake flatpak 'echo "error: md.obsidian.Obsidian/*unspecified*/*unspecified* not installed" >&2; exit 1'
+OUT=$(version); [ "$OUT" = "not found" ] || fail "version flatpak absent: got '$OUT'"
+rm "$BIN/flatpak"
+
+mkdir -p "$TMP/home/Applications"; touch "$TMP/home/Applications/Obsidian-1.11.5.AppImage"
+OUT=$(version); [ "$OUT" = "found 1.11.5, older than 1.13.7" ] || fail "version AppImage: got '$OUT'"
+touch "$TMP/home/Applications/Obsidian-1.13.7-arm64.AppImage"
+OUT=$(version); [ "$OUT" = "found 1.13.7" ] || fail "version AppImage arm64: got '$OUT'"
+rm -rf "$TMP/home/Applications"
 
 [ "$FAILS" -eq 0 ] && echo "obsidian-settings: all pass" || { echo "obsidian-settings: $FAILS failure(s)"; exit 1; }
