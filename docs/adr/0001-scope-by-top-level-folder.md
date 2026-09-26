@@ -4,6 +4,8 @@ A note's Scope (Reference, Adventure, Homebrew, Campaign) is decided solely by t
 
 The top-level folders are therefore fixed (the DM may rename them in the Workspace Config but not add or remove them), while everything inside them is up to the DM.
 
+*Amended by [ADR 0004](0004-characters-are-a-scope-above-campaigns.md): Character is a fifth Scope, in a seventh top-level folder.*
+
 ## Considered Options
 
 - **A `context-scope` frontmatter property on every note.** Rejected: it duplicates what the folder already says, can drift from the note's location, and needs a fourth pseudo-value for DM Tools. The folder is the single source of truth.
