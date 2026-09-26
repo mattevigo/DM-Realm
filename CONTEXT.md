@@ -50,6 +50,10 @@ _Avoid_: The books, compendium, SRD, 5e.tools website
 The local copy of the Trusted Source that DM Realm keeps outside every Workspace and shares among them, pinned to one release and refreshed only when the DM asks. It holds only the English data; a Workspace's translation choices live in its Translation Glossary.
 _Avoid_: Download, mirror, local data
 
+**Import**:
+Bringing one official entry from the Trusted Source into the Workspace as a note, translated into the Workspace Language — into Reference, or into an Adventure. It is the only way official material enters a Workspace.
+_Avoid_: Download, copy, Transfer (which is only for Characters)
+
 ### Scopes
 
 **Scope**:
