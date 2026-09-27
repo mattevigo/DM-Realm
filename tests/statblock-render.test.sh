@@ -26,6 +26,10 @@ entry = index["files"]["app.css"]
 open(sys.argv[2], "wb").write(data[base + int(entry["offset"]):base + int(entry["offset"]) + entry["size"]])
 PY
 
+# The helper will not write while Obsidian runs: a fake pgrep says it is closed.
+mkdir -p "$TMP/bin"; printf '#!/bin/sh\nexit 1\n' > "$TMP/bin/pgrep"; chmod +x "$TMP/bin/pgrep"
+PATH="$TMP/bin:$PATH"; export PATH
+
 # DM Realm's layouts as Setup installs them: in English, in Italian (the words the Italian
 # books use), and with labels far longer than any real one.
 layouts() { # <name> <python dict of labels>

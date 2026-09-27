@@ -89,9 +89,15 @@ expect_contains "plugin, no data.json" "$OUT" "dmr-setup"
 printf '{"default": "basic-5e-layout", "layouts": []}' > "$PLUGIN/data.json"
 OUT=$(run_hook "$WS")
 expect_contains "plugin unconfigured" "$OUT" "Fantasy Statblocks is installed but not configured"
-python3 "$(dirname "$HOOK")/../skills/dmr-setup/statblocks-settings.py" merge "$WS" 2024 >/dev/null
+mkdir -p "$TMP/bin"; printf '#!/bin/sh\nexit 1\n' > "$TMP/bin/pgrep"; chmod +x "$TMP/bin/pgrep"   # Obsidian closed
+PATH="$TMP/bin:$PATH" python3 "$(dirname "$HOOK")/../skills/dmr-setup/statblocks-settings.py" merge "$WS" 2024 >/dev/null
 OUT=$(run_hook "$WS")
-case "$OUT" in *"not configured"*) echo "FAIL plugin configured: still says not configured"; FAILS=$((FAILS+1));; esac
+case "$OUT" in *"Fantasy Statblocks"*) echo "FAIL plugin configured: still mentions the plugin: $OUT"; FAILS=$((FAILS+1));; esac
+# Layouts from an older DM Realm: the notice says they are out of date.
+python3 -c "import json,sys; p=sys.argv[1]; d=json.load(open(p)); d['layouts'][0]['dmRealmRevision']='000000000000'; json.dump(d, open(p,'w'))" "$PLUGIN/data.json"
+OUT=$(run_hook "$WS")
+expect_contains "plugin outdated" "$OUT" "older version"
+expect_contains "plugin outdated" "$OUT" "dmr-setup"
 
 # Not a Workspace: no output at all, exit 0
 NO="$TMP/plain"; mkdir -p "$NO"
