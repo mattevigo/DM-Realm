@@ -281,9 +281,7 @@ seed bestiary/bestiary-cnr.json <<'JSON'
 ]}
 JSON
 OUT=$(render data/bestiary/bestiary-tor.json "Quill Hound" TOR) || fail "monster: exit $?: $(cat "$TMP/err")"
-has monster "$OUT" "# Quill Hound
-
-## Stat Block
+has monster "$OUT" "## Stat Block
 
 *Medium beast, unaligned*
 
@@ -324,7 +322,116 @@ has monster "$OUT" "# Quill Hound
 **Legendary Action Uses:** 2
 
 ***Bristle.*** The hound bristles."
+
+# --- Stat block fences: the monster's Fantasy Statblocks view, keys in English ---------
+# The fence sits right under the heading, before the Markdown stat block it is derived from.
+has fence "$OUT" '# Quill Hound
+
+```statblock
+name: Quill Hound
+size: Medium
+type: beast
+alignment: unaligned
+ac: 13
+ac_class: natural armor
+hp: 22
+hit_dice: 4d8 + 4
+speed: 40 ft., climb 20 ft., fly 30 ft. (hover)
+initiative: 2
+stats: [12, 15, 12, 3, 12, 7]
+saves:
+  - Dexterity: 4
+skillsaves:
+  - Perception: 3
+  - Sleight of Hand: 4
+damage_vulnerabilities: fire
+damage_resistances: cold; bludgeoning, piercing, and slashing from nonmagical attacks
+damage_immunities: poison
+condition_immunities: poisoned; charmed (while asleep)
+senses: darkvision 60 ft., passive Perception 13
+languages: understands Common but can'"'"'t speak
+cr: "1"
+traits:
+  - name: Keen Smell
+    desc: The hound has advantage on Wisdom (Perception) checks that rely on smell.
+  - name: Innate Spellcasting
+    desc: "The hound'"'"'s spellcasting ability is Wisdom (DC 11).\n\n- At will: dancing sparks\n- 3/day: blink step\n- 1/day each: hush, glow"
+actions:
+  - name: Quill Spray (Recharge 5–6)
+    desc: "*Ranged Weapon Attack:* +4 to hit, range 20/60 ft. *Hit:* 5 (1d6 + 2) piercing damage."
+legendary_description: "Legendary Action Uses: 2"
+legendary_actions:
+  - name: Bristle
+    desc: The hound bristles.
+```
+
+## Stat Block'
+# Every value is valid YAML: the fence parses back to what the stat block says.
+FENCE=$(printf '%s\n' "$OUT" | sed -n '/^```statblock$/,/^```$/p' | sed '1d;$d')
+# yaml_json: YAML on stdin as JSON, with whichever YAML parser the machine has.
+if python3 -c 'import yaml' 2>/dev/null; then
+  yaml_json() { python3 -c 'import json, sys, yaml; print(json.dumps(yaml.safe_load(sys.stdin)))'; }
+elif command -v ruby >/dev/null && ruby -ryaml -rjson -e '' 2>/dev/null; then
+  yaml_json() { ruby -ryaml -rjson -e 'puts JSON.generate(YAML.safe_load(STDIN.read))'; }
+else
+  yaml_json() { echo "no YAML parser: fence YAML not checked" >&2; echo null; }
+fi
+printf '%s\n' "$FENCE" | yaml_json | python3 -c '
+import json, sys
+d = json.load(sys.stdin)
+if d is not None:
+    assert d["cr"] == "1" and d["stats"][1] == 15 and d["saves"] == [{"Dexterity": 4}], d
+    assert d["languages"] == "understands Common but can'"'"'t speak", d["languages"]
+    assert d["traits"][1]["desc"].endswith("1/day each: hush, glow"), d["traits"][1]
+    assert d["legendary_description"] == "Legendary Action Uses: 2", d
+' || fail "fence: not the YAML it should be"
+# The Workspace Edition sets the default layout; only an Off-Edition monster names its own.
+OUT=$(render data/bestiary/bestiary-tor.json "Quill Hound" TOR --edition 2014) || fail "fence edition: exit $?: $(cat "$TMP/err")"
+hasnt "fence same edition" "$OUT" "layout:"
+OUT=$(render data/bestiary/bestiary-tor.json "Quill Hound" TOR --edition 2024) || fail "fence off-edition: exit $?: $(cat "$TMP/err")"
+has "fence off-edition" "$OUT" '```statblock
+name: Quill Hound
+layout: DM Realm Monster 2014
+size: Medium'
+render data/bestiary/bestiary-tor.json "Quill Hound" TOR --edition 2020 >/dev/null; CODE=$?
+[ "$CODE" -eq 2 ] || fail "fence bad edition: expected exit 2, got $CODE"
+# Text that YAML would read as a number, a boolean or null is quoted.
+python3 - "$DATA/bestiary/bestiary-tor.json" <<'PY'
+import json, sys
+p = sys.argv[1]; d = json.load(open(p))
+d["monster"].append({"name": "Odd Cipher", "source": "TOR", "page": 11, "size": ["T"], "type": "construct",
+  "ac": [10], "hp": {"average": 1, "formula": "1d4 - 1"}, "passive": 10, "cr": "0",
+  "languages": ["0x1F"], "senses": ["0o17"], "trait": [{"name": "Yes", "entries": ["null"]}]})
+json.dump(d, open(p, "w"))
+PY
+OUT=$(render data/bestiary/bestiary-tor.json "Odd Cipher" TOR) || fail "fence quoting: exit $?: $(cat "$TMP/err")"
+has "fence quoting" "$OUT" 'senses: 0o17, passive Perception 10'
+has "fence quoting" "$OUT" 'languages: "0x1F"'
+has "fence quoting" "$OUT" 'cr: "0"'
+has "fence quoting" "$OUT" '  - name: "Yes"
+    desc: "null"'
+# Only monsters have game statistics: no other entry gets a fence.
+OUT=$(render data/conditionsdiseases.json Dazzled CNR --edition 2024)
+hasnt "no fence" "$OUT" '```statblock'
+
 OUT=$(render data/bestiary/bestiary-tor.json "Lantern Warden" TOR) || fail "monster 2: exit $?: $(cat "$TMP/err")"
+has "fence special" "$OUT" '```statblock
+name: Lantern Warden
+size: Small or Medium
+type: humanoid (lampkin, hedge wizard)
+alignment: any evil alignment
+ac: 15
+hp: equal to the lantern'"'"'s light
+speed: 30 ft.
+initiative: 2
+stats: [8, 14, 10, 16, 10, 11]
+senses: passive Perception 10
+languages: Common
+cr: "5"
+traits:
+  - name: Spellcasting
+    desc: "The warden casts spells:\n\n- Cantrips (at will): spark\n- 1st level (4 slots): glow, hush\n\nIt prefers light."
+```'
 has "monster 2" "$OUT" "*Small or Medium humanoid (lampkin, hedge wizard), any evil alignment*"
 has "monster 2" "$OUT" "**Armor Class** 15
 **Hit Points** equal to the lantern's light
@@ -340,6 +447,36 @@ has "monster 2" "$OUT" "***Spellcasting.*** The warden casts spells:
 It prefers light."
 OUT=$(render data/bestiary/bestiary-cnr.json "Ember Moth" CNR) || fail "monster 2024: exit $?: $(cat "$TMP/err")"
 has "monster 2024" "$OUT" "*Tiny beast or elemental, neutral*"
+has "fence 2024" "$OUT" '```statblock
+name: Ember Moth
+size: Tiny
+type: beast or elemental
+alignment: neutral
+ac: 12
+hp: 3
+hit_dice: 1d4 + 1
+speed: 5 ft., fly 40 ft.
+initiative: 4
+stats: [2, 15, 12, 2, 10, 6]
+gear: ember lamp, moth dust (2)
+senses: passive Perception 10
+languages: "—"
+cr: 1/4
+actions:
+  - name: Singe
+    desc: "*Melee Attack Roll:* +4, reach 5 ft. *Hit:* 1d4 fire damage."
+  - name: Spellcasting
+    desc: "The moth casts:\n\n- At will: glow"
+bonus_actions:
+  - name: Flit
+    desc: The moth moves.
+reactions:
+  - name: Flare
+    desc: "*Trigger:* A creature hits the moth. *Response:* It flares."
+```'
+OUT=$(render data/bestiary/bestiary-cnr.json "Ember Moth" CNR --edition 2014) || fail "fence 2024 off-edition: exit $?"
+has "fence 2024 off-edition" "$OUT" 'layout: DM Realm Monster 2024'
+OUT=$(render data/bestiary/bestiary-cnr.json "Ember Moth" CNR)
 has "monster 2024" "$OUT" "**Speed** 5 ft., fly 40 ft.
 **Initiative** +4 (14)"
 has "monster 2024" "$OUT" "**Gear** ember lamp, moth dust (2)"

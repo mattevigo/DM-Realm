@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Render one Trusted Source entry as English Markdown, for an Import.
 
-  render-entry.py <data file> <name> <source> [--key <key>] [--class-source <source>] [--meta]
+  render-entry.py <data file> <name> <source> [--key <key>] [--class-source <source>]
+                  [--edition 2014|2024] [--meta]
 
 <data file> is a Source Cache path (`data/spells/spells-xphb.json`); the file, and
 any file a copied entry comes from, is fetched through the Source Cache helper
@@ -11,7 +12,10 @@ kind when the file holds several (`subclass`, `itemMastery`…); --class-source 
 a subclass under one version of its class (`XPHB`), or a subrace under one race.
 
 Prints the entry's Markdown: `# <name>`, then its text, deterministically, with
-5etools tags as plain text. --meta prints JSON facts about the entry instead: its
+5etools tags as plain text. A monster also gets its stat block, a Fantasy Statblocks
+fence (```statblock) with the plugin's English keys, under the heading; --edition is the
+Workspace's Edition, and a monster of the other one names its own Edition's layout
+(without --edition, no layout is named). --meta prints JSON facts about the entry instead: its
 key, source property (`XPHB p. 12, v2.36.1`), Edition by its book's date, reprints,
 and what placing its note needs (spell level, class, race, option kind…).
 
@@ -898,20 +902,23 @@ def challenge(cr):
     return s[:-1] + f"; PB +{pb})" if pb and s.endswith(")") else s
 
 
-def initiative(monster):
+def initiative_bonus(monster):
+    """The initiative bonus the entry states (2024), else None."""
     init = monster.get("initiative")
     if isinstance(init, (int, float)):
-        bonus = int(init)
-    elif isinstance(init, dict):
+        return int(init)
+    if isinstance(init, dict):
         if "initiative" in init:
-            bonus = int(init["initiative"])
-        else:
-            cr = monster.get("cr", {})
-            pb = proficiency_bonus(cr.get("cr") if isinstance(cr, dict) else cr) or 2
-            bonus = modifier(monster.get("dex", 10)) + init.get("proficiency", 0) * pb
-    else:
-        return None
-    return f"{signed(bonus)} ({10 + bonus})"
+            return int(init["initiative"])
+        cr = monster.get("cr", {})
+        pb = proficiency_bonus(cr.get("cr") if isinstance(cr, dict) else cr) or 2
+        return modifier(monster.get("dex", 10)) + init.get("proficiency", 0) * pb
+    return None
+
+
+def initiative(monster):
+    bonus = initiative_bonus(monster)
+    return None if bonus is None else f"{signed(bonus)} ({10 + bonus})"
 
 
 def gear(items):
@@ -936,7 +943,8 @@ def frequency(label, per):
     return lines
 
 
-def spellcasting_blocks(sc):
+def spell_lines(sc):
+    """A spellcasting block's spells, one line per frequency or level."""
     lines = []
     if sc.get("will"):
         lines.append(f"- At will: {spell_names(sc['will'])}")
@@ -954,8 +962,12 @@ def spellcasting_blocks(sc):
         lines.append(f"- {label}: {spell_names(spells.get('spells', []))}")
     if sc.get("ritual"):
         lines.append(f"- Rituals: {spell_names(sc['ritual'])}")
+    return ["\n".join(lines)] if lines else []
+
+
+def spellcasting_blocks(sc):
     blocks = named_blocks(sc.get("name", "Spellcasting"), sc.get("headerEntries", []), 3)
-    return blocks + (["\n".join(lines)] if lines else []) + render_entries(sc.get("footerEntries", []), 3)
+    return blocks + spell_lines(sc) + render_entries(sc.get("footerEntries", []), 3)
 
 
 def render_monster(key, m):
@@ -1012,6 +1024,141 @@ def render_monster(key, m):
         if m.get(field) or casting.get(field):
             blocks.extend([f"### {title}"] + section)
     return blocks
+
+
+# --- Stat block fence (Fantasy Statblocks): keys in English, values to translate ------
+
+# The layout of each Edition's monsters; an Off-Edition monster names its own.
+MONSTER_LAYOUTS = {"2014": "DM Realm Monster 2014", "2024": "DM Realm Monster 2024"}
+FENCE_SECTIONS = (("trait", "traits"), ("action", "actions"), ("bonus", "bonus_actions"),
+                  ("reaction", "reactions"), ("legendary", "legendary_actions"), ("mythic", "mythic_actions"))
+PLAIN_SCALAR = re.compile(r"[^\W_][\w ,.()/;'’+–—-]*(?<! )")
+YAML_AMBIGUOUS = re.compile(r"(?i)(true|false|yes|no|on|off|null|~|0x[\da-f_]+|0o?[0-7_]+|[-+]?(\d[\d_]*)?(\.\d*)?([e][-+]?\d+)?)")
+
+
+def yaml_scalar(value):
+    """A YAML scalar: numbers as they are, strings plain when that is unambiguous, else quoted."""
+    if isinstance(value, bool) or not isinstance(value, (int, str)):
+        malformed(f"a stat block value is not text or a number: {value!r}")
+    if isinstance(value, int):
+        return str(value)
+    if PLAIN_SCALAR.fullmatch(value) and not YAML_AMBIGUOUS.fullmatch(value):
+        return value
+    return json.dumps(value, ensure_ascii=False)
+
+
+def bonus_value(value):
+    """A bonus such as "+4" as the number 4, for the table tools; any other text as it is."""
+    text = str(value).strip().replace("−", "-")
+    return int(text) if re.fullmatch(r"[-+]?\d+", text) else plain(value)
+
+
+def fence_items(items):
+    out = []
+    for item in items:
+        if isinstance(item, dict) and "name" in item:
+            out.append({"name": plain(item["name"]),
+                        "desc": "\n\n".join(render_entries(children(item), 3))})
+        else:
+            out.append({"name": "", "desc": "\n\n".join(render_entry(item, 3))})
+    return out
+
+
+def fence_ac(acs):
+    """The Armor Class as a number, and what the stat block says about it besides."""
+    first, rest = (acs or [None])[0], (acs or [])[1:]
+    notes = [armor_class([a]) for a in rest]
+    if isinstance(first, dict) and not first.get("special"):
+        ac = first.get("ac")
+        extra = ", ".join(plain(f) for f in first.get("from") or [])
+        if first.get("condition"):
+            extra = " ".join(x for x in (extra, plain(first["condition"])) if x)
+        notes = ([extra] if extra else []) + notes
+    elif isinstance(first, int):
+        ac = first
+    else:
+        ac = armor_class([first]) if first is not None else None
+    return ac, "; ".join(notes)
+
+
+def statblock_fence(m, workspace_edition=None):
+    """The monster as a Fantasy Statblocks fence (```statblock), for the note's stat block."""
+    fields = [("name", m["name"])]
+    edition = edition_of(m.get("source"))
+    if workspace_edition and edition and edition != workspace_edition:
+        fields.append(("layout", MONSTER_LAYOUTS[edition]))
+    align = alignment(m.get("alignment"))
+    if m.get("alignmentPrefix"):
+        align = plain(m["alignmentPrefix"]) + align
+    ac, ac_class = fence_ac(m["ac"])
+    fields += [("size", " or ".join(SIZES.get(s, s) for s in m["size"])),
+               ("type", creature_type(m["type"])), ("alignment", align), ("ac", ac), ("ac_class", ac_class)]
+    hp = m["hp"]
+    if hp.get("special"):
+        fields.append(("hp", plain(hp["special"])))
+    else:
+        fields += [("hp", hp.get("average")), ("hit_dice", hp.get("formula"))]
+    bonus = initiative_bonus(m)
+    fields += [("speed", speed(m.get("speed", {}))),
+               ("initiative", modifier(m.get("dex", 10)) if bonus is None else bonus),
+               ("stats", [m.get(a, 10) for a in ABILITIES])]
+    fields.append(("saves", [{ABILITIES.get(k, k): bonus_value(v)} for k, v in (m.get("save") or {}).items()
+                             if isinstance(v, str)]))
+    fields.append(("skillsaves", [{title_words(k): bonus_value(v)} for k, v in (m.get("skill") or {}).items()
+                                  if isinstance(v, str)]))
+    for field, key in (("vulnerable", "damage_vulnerabilities"), ("resist", "damage_resistances"),
+                       ("immune", "damage_immunities"), ("conditionImmune", "condition_immunities")):
+        fields.append((key, damage_list(m.get(field), field)))
+    if m.get("gear"):
+        fields.append(("gear", gear(m["gear"])))
+    senses = [plain(s) for s in m.get("senses") or []] + [f"passive Perception {m.get('passive', 10)}"]
+    fields += [("senses", ", ".join(senses)),
+               ("languages", ", ".join(plain(x) for x in m.get("languages") or []) or "—")]
+    if m.get("cr") is not None:
+        cr = m["cr"]
+        fields.append(("cr", str(cr.get("cr") if isinstance(cr, dict) else cr)))
+    casting = {}
+    for sc in m.get("spellcasting", []):
+        desc = render_entries(sc.get("headerEntries", []), 3) + spell_lines(sc) \
+            + render_entries(sc.get("footerEntries", []), 3)
+        casting.setdefault(sc.get("displayAs", "trait"), []).append(
+            {"name": plain(sc.get("name", "Spellcasting")), "desc": "\n\n".join(desc)})
+    for field, key in FENCE_SECTIONS:
+        header = "\n\n".join(render_entries(m.get(f"{field}Header", []), 3))
+        if field == "legendary" and m.get("legendary") and not header:
+            uses = str(m.get("legendaryActions", 3))
+            if m.get("legendaryActionsLair"):
+                uses += f" ({m['legendaryActionsLair']} in Lair)"
+            header = f"Legendary Action Uses: {uses}"
+        items = fence_items(m.get(field) or []) + casting.get(field, [])
+        if field in ("legendary", "mythic"):
+            fields.append((f"{field}_description", header if items else ""))
+        elif header:
+            items = [{"name": "", "desc": header}] + items
+        fields.append((key, items))
+    return fence(fields)
+
+
+def fence(fields):
+    lines = ["```statblock"]
+    for key, value in fields:
+        if value in (None, "", []):
+            continue
+        if key == "stats":
+            lines.append(f"stats: [{', '.join(yaml_scalar(v) for v in value)}]")
+        elif isinstance(value, list):
+            lines.append(f"{key}:")
+            for item in value:
+                pairs = list(item.items())
+                if key in ("saves", "skillsaves"):
+                    (name, v), = pairs
+                    lines.append(f"  - {yaml_scalar(name)}: {yaml_scalar(v)}")
+                else:
+                    lines.append(f"  - {pairs[0][0]}: {yaml_scalar(pairs[0][1])}")
+                    lines.extend(f"    {k}: {yaml_scalar(v)}" for k, v in pairs[1:])
+        else:
+            lines.append(f"{key}: {yaml_scalar(value)}")
+    return "\n".join(lines + ["```"])
 
 
 ITEM_TYPES = {
@@ -1386,12 +1533,14 @@ RENDERERS = {"spell": render_spell, "monster": render_monster,
              "baseitem": render_item, "item": render_item, "magicvariant": render_item}
 
 
-def render(key, entry, data):
+def render(key, entry, data, edition=None):
     add_features(data)
     if key in ("race", "subrace"):
         blocks = render_race(key, entry, data)
     else:
         blocks = RENDERERS.get(key, render_generic)(key, entry)
+    if key == "monster":
+        blocks.insert(1, statblock_fence(entry, edition))
     return "\n\n".join(b for b in blocks if b) + "\n"
 
 
@@ -1452,7 +1601,7 @@ def main(argv):
     i = 0
     while i < len(argv):
         a = argv[i]
-        if a in ("--key", "--class-source"):
+        if a in ("--key", "--class-source", "--edition"):
             if i + 1 >= len(argv):
                 raise Failure(2, f"{a} needs a value.")
             opts[a] = argv[i + 1]
@@ -1463,14 +1612,15 @@ def main(argv):
         else:
             args.append(a)
             i += 1
-    if len(args) != 3 or not args[0].startswith("data/"):
+    if len(args) != 3 or not args[0].startswith("data/") \
+            or opts.get("--edition", "2024") not in MONSTER_LAYOUTS:
         raise Failure(2, "usage: render-entry.py data/<file> <name> <source> "
-                         "[--key <key>] [--class-source <source>] [--meta]")
+                         "[--key <key>] [--class-source <source>] [--edition 2014|2024] [--meta]")
     path, name, source = args
     key, entry = find(path, name, source, opts.get("--key"), opts.get("--class-source"))
     if "--meta" in flags:
         return json.dumps(meta(key, entry), indent=2, ensure_ascii=False) + "\n"
-    return render(key, entry, load(path))
+    return render(key, entry, load(path), opts.get("--edition"))
 
 
 if __name__ == "__main__":
