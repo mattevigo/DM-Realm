@@ -76,6 +76,11 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S72 | transfer-preview (nothing written before the go-ahead, the source unchanged) |
 | S73 | transfer-name-clash |
 | S74 | transfer-past-builds (past Builds as history: plain-text options, no links) |
+| S75 | s31-import-reprint, s32-off-edition-monster, statblock-import-italian (an imported monster's stat block: English keys, values in the Workspace Language, the default layout or the Off-Edition one) |
+| S76 | statblock-adventure-npc (an Adventure NPC the book changes extends its Reference monster with the change alone; one it does not change only links to it) |
+| S77 | statblock-campaign-npc-clash (a stat block name already in the bestiary: nothing written, another name asked) |
+| S78 | character-create, character-level-up, transfer-past-builds (a Character's stat block agrees with its Build and is written again; a past Build leaves the bestiary) |
+| S79 | setup-statblocks-plugin, setup-statblocks-italian, setup-fresh-english (Setup merges the layouts when Fantasy Statblocks is installed, labels translated; without it, writes nothing for it and mentions it) |
 
 ## How to run the manual scenarios
 

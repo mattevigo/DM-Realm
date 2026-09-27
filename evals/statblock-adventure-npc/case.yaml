@@ -1,7 +1,7 @@
 schema_version: "1.1"
-name: s32-off-edition-monster
-description: "Structure scenarios S32 and S34: a monster only a 2014 book has fills a gap: imported without asking, marked with the Edition callout."
-tags: [import, scenario, statblock]
+name: statblock-adventure-npc
+description: "Adventure NPCs get their stat blocks: one the book changes extends its Reference monster with only the change; one it does not change gets a link and no fence."
+tags: [statblock, scenario]
 context:
   scaffold_script: scaffold.sh
 execution:
@@ -13,4 +13,4 @@ execution:
     EVAL_DMR_SOURCE_API: http://127.0.0.1:9/latest
     EVAL_DMR_SOURCE_RAW: http://127.0.0.1:9/raw
   prompt: |
-    Add the Tidecaller Wyrm.
+    Set up the stat blocks of Glasstaff and Mother Brine, the NPCs of The Salt Crypt.

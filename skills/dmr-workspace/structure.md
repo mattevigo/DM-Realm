@@ -110,7 +110,7 @@ One folder per official published Adventure, holding its content as the book des
 | `adventures.<adventure>.items`  | Items            | first note | Items it introduces (unique items, plot items, its treasure)  |
 | `adventures.<adventure>.encounters` | Encounters   | first note | Its encounters                                                |
 
-Monster stat blocks are the one exception: a monster printed in an Adventure — even one that appears in no other book — goes to Reference Monsters, and the Adventure's NPC and Encounter notes link to it. An item the Adventure reprints from a core book (a DMG magic item in its treasure) stays in Reference Magic_Items and is linked.
+Monster stat blocks are the one exception: a monster printed in an Adventure — even one that appears in no other book — goes to Reference Monsters, and the Adventure's NPC and Encounter notes link to it. An NPC the Adventure changes ("a bandit captain with 90 hit points") gets a stat block that extends that monster ([Stat blocks](#stat-blocks)). An item the Adventure reprints from a core book (a DMG magic item in its treasure) stays in Reference Magic_Items and is linked.
 
 ### Homebrew — `homebrew`
 
@@ -178,8 +178,8 @@ One folder per Campaign: everything that happens at that table, and everything m
 
 - **Anything else the Campaign needs** goes in a subfolder the DM adds (e.g. Narrative, Finances). Notes about running this one Campaign — the DM's personal notes, a to-do board — live here, not in DM Tools.
 - **The party is linked, not kept here.** A Campaign has no Characters folder: its Characters live in the Characters folder, and the Campaign's README lists its party by linking to them.
-- **Promotion.** When Campaign homebrew is wanted in a second Campaign, the agent moves it to the matching Homebrew folder, removes every link to and mention of the first Campaign — and of its Characters — from it (anything worth keeping moves into that Campaign's notes), and updates the links to it.
-- **Promotion to World.** When a Campaign's Places, NPCs or Factions note is wanted by a second Campaign, or by a Character's backstory (which cannot link to a Campaign), the agent asks the DM to promote it to World; on a yes it moves the note to the matching World folder (World › `<world>` › Places, NPCs or Factions, in the world the Campaign is set in — the agent asks when it cannot tell), removes from it every link to and mention of the Campaign, its Characters and its Sessions, as for Homebrew (anything worth keeping moves into that Campaign's notes), and updates the links to it. Until then the note stays in the Campaign, and a Character does not name it.
+- **Promotion.** When Campaign homebrew is wanted in a second Campaign, the agent moves it — its stat block intact — to the matching Homebrew folder, removes every link to and mention of the first Campaign — and of its Characters — from it (anything worth keeping moves into that Campaign's notes), and updates the links to it.
+- **Promotion to World.** When a Campaign's Places, NPCs or Factions note is wanted by a second Campaign, or by a Character's backstory (which cannot link to a Campaign), the agent asks the DM to promote it to World; on a yes it moves the note to the matching World folder (World › `<world>` › Places, NPCs or Factions, in the world the Campaign is set in — the agent asks when it cannot tell), removes from it every link to and mention of the Campaign, its Characters and its Sessions, as for Homebrew (anything worth keeping moves into that Campaign's notes), and updates the links to it. An NPC's mechanics — its stat block — do not go to World: they become a Homebrew Monsters note that the World note links to. Until then the note stays in the Campaign, and a Character does not name it.
 - **A Character gaining Campaign homebrew** (an item it now carries, a spell it learns) cannot link to it where it is. The agent says so and asks the DM to promote it; on a yes it promotes it as above and the Character note links to the Homebrew note. Until then the Character note does not name it; the Campaign's notes record who holds it.
 
 ### DM Tools — `dm_tools`
@@ -252,8 +252,8 @@ Every note imported from the Trusted Source records its source in a frontmatter 
 ### Imported notes
 
 - **Its file name** is the entry's name translated into the Workspace Language (see [Translating a term](#translating-a-term)), with the [name rules](#name-rules) applied: `Fireball.md`, `Palla_di_Fuoco.md`.
-- **Its frontmatter** holds only the source property.
-- **Its body** starts with the translated name as a `#` heading, then the entry's text, translated faithfully: every paragraph, list, table and number, nothing added. A monster's stat lines are one section of the note.
+- **Its frontmatter** holds only the source property — and, for a monster, the `statblock` flag ([Stat blocks](#stat-blocks)).
+- **Its body** starts with the translated name as a `#` heading, then the entry's text, translated faithfully: every paragraph, list, table and number, nothing added. A monster's stat lines are one section of the note, and its [stat block](#stat-blocks) sits right under the heading.
 - **An Off-Edition note** has, right under its heading, an Obsidian callout in the Workspace Language naming the Edition it belongs to: `> [!warning] Off-Edition Material (2014)`.
 - **It is found by its path.** The translated name comes from the Translation Glossary, so an entry always gets the same path. When a note is already at that path, an Import of the entry writes nothing and tells the DM; replacing it is the [update check](#checking-for-updates).
 
@@ -264,6 +264,99 @@ When the DM asks, in any Workspace, the agent compares each imported note's entr
 The check does not refresh the Source Cache: it states the release the cache is pinned to and whether a newer one exists, and offers to refresh first.
 
 A re-import replaces the note's official content wholesale and records the new release. Reference and Adventure notes are not meant to be edited by the DM: a change to official material is a House Rule, Homebrew, or a Campaign note linking to it. If a note differs from its recorded import, the agent warns before overwriting it and offers to move the DM's addition where it belongs.
+
+## Stat blocks
+
+A note with game statistics — a monster, an NPC's mechanics, a Character — shows them as a stat block for Fantasy Statblocks (`obsidian-5e-statblocks`), the Obsidian plugin that renders them and keeps a bestiary, which MapForge (the DM's initiative tracker) reads too. The format is the plugin's inline mode: the frontmatter flag `statblock: inline` and one ```` ```statblock ```` fence of YAML in the body, right under the `#` heading (and its callout, if any):
+
+````markdown
+---
+statblock: inline
+---
+
+# Bog Goblin
+
+```statblock
+name: Bog Goblin
+size: Small
+type: fey (goblinoid)
+alignment: neutral
+ac: 14
+hp: 11
+hit_dice: 2d6 + 4
+speed: 30 ft., swim 30 ft.
+initiative: 4
+stats: [8, 15, 14, 9, 10, 8]
+skillsaves:
+  - Stealth: 6
+senses: darkvision 60 ft., passive Perception 10
+languages: Common, Goblin
+cr: 1/2
+traits:
+  - name: Reed Walker
+    desc: The goblin moves through reeds and mud without spending extra movement.
+actions:
+  - name: Reed Spear
+    desc: "*Melee or Ranged Attack Roll:* +4, reach 5 ft. or range 20/60 ft. *Hit:* 6 (1d8 + 2) Piercing damage."
+```
+````
+
+- **The plugin is optional.** Every note is correct and readable without it; without it the fence shows as a YAML code block. DM Realm never installs it, and never uses its own 5etools import or its bundled SRD ([ADR 0003](../../docs/adr/0003-official-material-comes-only-from-5etools.md)): Setup turns the SRD off.
+- **A derived view.** The stat block is derived from the note's body, which stays the source of truth — the rendered entry for a monster, the Build for a Character — and is never the only place a value or a link lives: Obsidian does not index links inside a fence, so every link stays in the body, and "who uses this" still comes from the body's links. Whenever the body changes (an Import, a Character's creation, level-up, update or Transfer, a Promotion), the fence is written again from it, with the same numbers.
+- **One fence per note**, and only where the table below puts one.
+
+### Which notes have one
+
+| Note | Stat block |
+| --- | --- |
+| Reference monster | A full fence, rendered by the Import's helper from the Trusted Source entry, then translated |
+| Homebrew monster, and a Campaign-only monster (a Campaign's Homebrew_Monsters) | A full fence, written by the agent from the note's stat lines. Promotion moves it intact |
+| Adventure NPC | A link to its Reference monster (a real link, in the body). A fence only when the Adventure changes something: `extends:` the monster plus the changed values alone. No change, no fence — and no bestiary entry |
+| Campaign NPC | The same as an Adventure NPC. A unique NPC may have a full fence written from scratch; its mechanics stay in the Campaign until Promotion moves them to Homebrew Monsters |
+| World NPC | None: World has no mechanics ([ADR 0005](../../docs/adr/0005-the-dms-world-is-a-scope-apart-from-homebrew.md)). The World note links to the Homebrew or Reference monster that holds them (see [World](#world--world)) |
+| Character | A fence in the Character layout, written by the agent from the Build with the same numbers as its calculation (the `dmr-character` skill's format) |
+| A Character's past Build, kept at a level-up or rebuild | Its copy of the fence stays, as a snapshot, with `bestiary: false`; its frontmatter drops the `statblock` flag |
+| A past Build brought by a Transfer | None: it is plain history, with no computed numbers |
+
+A Promotion to World moves a Campaign NPC's fence out of the NPC note into a new Homebrew Monsters note, which the World note then links to.
+
+### Keys and values
+
+The keys the plugin (and MapForge) read stay English; every value is in the Workspace Language ([ADR 0006](../../docs/adr/0006-keys-a-plugin-reads-stay-in-english.md)). These are the only English keys in a Workspace:
+
+- **Frontmatter:** `statblock`.
+- **In the fence:** `name`, `layout`, `extends`, `bestiary`, `size`, `type`, `alignment`, `ac`, `ac_class`, `hp`, `hit_dice`, `initiative`, `speed`, `stats`, `saves`, `skillsaves`, `damage_vulnerabilities`, `damage_resistances`, `damage_immunities`, `condition_immunities`, `gear`, `senses`, `languages`, `cr`, `traits`, `actions`, `bonus_actions`, `reactions`, `legendary_description`, `legendary_actions`, `mythic_description`, `mythic_actions`, `lair_actions`, `regional_effects`, `spells`, and in each list item `name` and `desc`; for a Character also `species`, `class`, `level`, `player`.
+
+Every other frontmatter key stays in the Workspace Language. In the fence:
+
+- **Values are translated** term by term as [Translating a term](#translating-a-term) says, the Glossary shared with the note's body: `size: Piccola`, an action named "Lancia di Canna". The names in `saves` and `skillsaves` are values too — an ability or skill name as the Glossary translates it (`- Destrezza: 4`), the same word the layouts' labels use.
+- **Numbers stay numbers**, so the table tools can read them: `ac`, `hp`, `initiative` (a bonus: `4`, `-1`), the six `stats` in ability order, each save and skill bonus, and `cr` as the book gives it (`1/2`, `"3"`). What the book says besides a number goes in the text keys: `ac_class` beside `ac`, `hit_dice` beside `hp`. Only when the book gives no number at all ("equal to the lantern's light") is `ac` or `hp` that text.
+- **A value YAML would misread is quoted**: one starting with a character other than a letter or digit, or holding `: ` or ` #` (`"*Melee Attack Roll:* +4…"`), or reading as a number or `true`/`false` when it is text.
+- **`layout:` names a layout** and is never translated.
+- **Lists of traits and actions** are items with a `name` and a `desc`; `desc` is the item's full text, as in the body.
+
+### Layouts
+
+DM Realm ships three layouts, named in English and never renamed; Setup installs them into the plugin with their labels ("Armor Class", STR, "Actions"…) translated through the Translation Glossary, like any term:
+
+| Layout | For |
+| --- | --- |
+| `DM Realm Monster 2014` | 2014 monsters: the plugin's Basic 5e layout |
+| `DM Realm Monster 2024` | 2024 monsters, in the style of the 2025 Monster Manual: initiative with its score, abilities and saving throws in one table, passive Perception in the senses |
+| `DM Realm Character` | Characters: what matters in combat — AC, Hit Point maximum, Hit Dice, initiative, speed, abilities and saves, proficient skills, senses and languages, attacks, spellcasting, features |
+
+The Workspace's Edition sets the default layout, so a monster of the Edition names none. An [Off-Edition](#off-edition-material) monster names its own Edition's (`layout: DM Realm Monster 2014`), and a Character's fence names `DM Realm Character`.
+
+### Names in the bestiary
+
+The plugin's bestiary is keyed by `name`: a second fence with the same name silently replaces the first, and an `extends` naming no stat block is silently ignored. So, before writing a fence:
+
+- **Its `name` is unique** among the Workspace's fences in the bestiary (every fence without `bestiary: false`): Grep the Workspace for a `name:` line with it inside a `statblock` fence. On a clash the agent writes nothing and asks the DM for another name — an NPC called "Bog Goblin" when a Reference monster already is. The same monster imported again is not a clash: it is already imported.
+- **Its `extends` target exists**: the `name` of a fence already in the Workspace, importing the Reference monster first when it is missing.
+
+### MapForge
+
+DM Realm guarantees the plugin's standard keys, `initiative` and `size` included, and nothing else of MapForge. Two known limits are MapForge's to lift: it reads one bestiary folder (`bestiaryStatBlockPath`) while a Workspace's stat blocks span several Scopes, and it takes the party from its own `parties.json`, not from the Character notes.
 
 ## Language and names
 

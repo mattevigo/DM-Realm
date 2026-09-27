@@ -100,6 +100,10 @@ One ongoing game with its own party of Characters, Sessions and story; what actu
 **Template**:
 A blank starting note for a kind of content, copied when a new note is created. Not a Scope.
 
+**Stat block**:
+The game statistics of a monster, an NPC or a Character as a Fantasy Statblocks fence in its note: a view derived from the note's body and written again whenever the body changes, never the only place a value or a link lives. The plugin that renders it is optional.
+_Avoid_: Sheet, statblock note
+
 **DM Tools**:
 Notes that help the DM run the game — checklists, random tables, prep aids — which sit outside every Scope and may reference anything.
 _Avoid_: DM resources, utilities
