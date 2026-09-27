@@ -109,7 +109,7 @@ if command -v node >/dev/null; then
 const fs = require("fs");
 const [en, it] = process.argv.slice(2).map((p) => JSON.parse(fs.readFileSync(p, "utf8")));
 // A document just big enough for the abilities table.
-const node = (tag) => ({ tag, children: [], style: {}, textContent: "",
+const node = (tag) => ({ tag, children: [], style: { setProperty(k, v) { this[k] = v; } }, textContent: "",
   append(...c) { this.children.push(...c); } });
 global.document = { createElement: node };
 const walk = (bs) => bs.flatMap((b) => [b, ...walk(b.nested || [])]);
@@ -117,7 +117,8 @@ const block = (data, name, id) => walk(data.layouts.find((l) => l.name === name)
 const call = (data, name, id, monster) => new Function("monster", block(data, name, id).callback)(monster);
 const table = (data, monster) => {
   const t = new Function("monster", "property", block(data, "DM Realm Monster 2024", "dmr-abilities").code)(monster, monster.stats);
-  return t.children.slice(1).map((row) => row.children.map((c) => c.textContent).join(" "));
+  // Three tables, one per pair of abilities; after each table's header row, one row per ability.
+  return t.children.flatMap((table) => table.children.slice(1).map((row) => row.children.map((c) => c.textContent).join(" ")));
 };
 const eq = (label, got, want) => { if (JSON.stringify(got) !== JSON.stringify(want)) {
   console.log(`FAIL ${label}: got ${JSON.stringify(got)}, want ${JSON.stringify(want)}`); process.exitCode = 1; } };
@@ -132,10 +133,10 @@ eq("armor class", call(en, "DM Realm Monster 2014", "dmr-ac", { ac: 13, ac_class
 eq("hit points", call(en, "DM Realm Monster 2014", "dmr-hp", moth), "3 (1d4 + 1)");
 eq("immunities", call(en, "DM Realm Monster 2024", "dmr-immunities", moth), "fire; charmed");
 eq("character initiative", call(en, "DM Realm Character", "dmr-initiative", { initiative: 2 }), "+2");
-eq("abilities table", table(en, moth), ["STR 2 −4 −4 DEX 15 +2 +6 CON 12 +1 +1", "INT 2 −4 −4 WIS 10 +0 +0 CHA 6 −2 −2"]);
+eq("abilities table", table(en, moth), ["STR 2 −4 −4", "INT 2 −4 −4", "DEX 15 +2 +6", "WIS 10 +0 +0", "CON 12 +1 +1", "CHA 6 −2 −2"]);
 // Translated: the table's names match the save names a translated fence uses.
 eq("translated challenge", call(it, "DM Realm Monster 2014", "dmr-cr", moth), "1/4 (50 PE)");
-eq("translated table", table(it, { stats: [2, 15, 12, 2, 10, 6], saves: [{ "IT Dexterity": 6 }] })[0], "FOR 2 −4 −4 IT DEX 15 +2 +6 IT CON 12 +1 +1");
+eq("translated table", table(it, { stats: [2, 15, 12, 2, 10, 6], saves: [{ "IT Dexterity": 6 }] }).slice(0, 3), ["FOR 2 −4 −4", "IT INT 2 −4 −4", "IT DEX 15 +2 +6"]);
 JS
 else
   echo "statblocks-settings: node not found, layout JavaScript not run"
