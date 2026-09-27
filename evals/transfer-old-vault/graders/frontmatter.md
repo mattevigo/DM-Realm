@@ -4,4 +4,4 @@ target: {source: file, path: Characters/Tamsin_Reed/Tamsin_Reed.md}
 match: contains
 flags: m
 ---
-^(?=[\s\S]*^player:\s*Dario\s*$)(?=[\s\S]*^status:\s*active\s*$)(?=[\s\S]*^level:\s*1\s*$)(?![\s\S]*^(campaign|type|hp|ac|class):)
+^(?<![\s\S])---\n(?=(?:(?!---$)[^\n]*\n)*?player:\s*Dario\s*$)(?=(?:(?!---$)[^\n]*\n)*?status:\s*active\s*$)(?=(?:(?!---$)[^\n]*\n)*?level:\s*1\s*$)(?!(?:(?!---$)[^\n]*\n)*?(campaign|type|hp|ac|class):)

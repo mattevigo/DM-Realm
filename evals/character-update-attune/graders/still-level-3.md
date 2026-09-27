@@ -4,4 +4,4 @@ target: {source: file, path: Characters/Wren/Wren.md}
 match: contains
 flags: m
 ---
-^level:\s*3\s*$
+^(?<![\s\S])---\n(?:(?!---$)[^\n]*\n)*?level:\s*3\s*$

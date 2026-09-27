@@ -1,4 +1,4 @@
-# Wren, a level 3 Character in the dmr-character note format, with one past Build (level 2)
+# Wren, a level 3 Character in the dmr-character note format (stat block included), with one past Build (level 2)
 # and the Lantern Keeper background note she links to. Sourced after character-workspace.sh.
 # Her numbers follow character-cache.sh's invented rules (standard array 16, 14, 13, 11, 10, 8;
 # fixed hit points 5 per level on a d8), so a recomputed number can be checked exactly.
@@ -9,9 +9,57 @@ cat > Characters/Wren/Wren.md <<'MD'
 player: Carla
 status: active
 level: 3
+statblock: inline
 ---
 
 # Wren
+
+```statblock
+layout: DM Realm Character
+name: Wren
+size: Small
+species: Mothfolk
+class: Lamplighter (Path of the Wick)
+level: 3
+player: Carla
+ac: 13
+hp: 24
+hit_dice: 3d8
+initiative: 2
+speed: 30 ft., fly 30 ft.
+stats: [8, 14, 14, 11, 18, 10]
+saves:
+  - Strength: -1
+  - Dexterity ●: 4
+  - Constitution: 2
+  - Intelligence: 0
+  - Wisdom ●: 6
+  - Charisma: 0
+skillsaves:
+  - Insight: 6
+  - Perception: 6
+  - Religion: 2
+  - Stealth: 4
+senses: darkvision 60 ft., passive Perception 16
+actions:
+  - name: Lantern Pole
+    desc: +4 to hit, reach 5 ft., 1d6 + 2 bludgeoning
+  - name: Spark Wick
+    desc: +6 to hit, range 60 ft., 1d8 fire
+spells:
+  - Wisdom, spell save DC 14, spell attack +6
+  - 1st level: 4 slots
+  - 2nd level: 2 slots
+traits:
+  - name: Kindle
+    desc: Lights any wick she touches.
+  - name: Wick Burst
+    desc: Her flame flares, 1d6 fire to each creature within 10 feet.
+  - name: Dustwings
+    desc: Flies while wearing no heavy armor.
+  - name: Night Owl
+    desc: Darkvision 60 feet.
+```
 
 ## Identity
 
@@ -96,6 +144,25 @@ level: 2
 # Wren
 
 > [!info] Past Build: level 2. The current Build is [[Wren]].
+
+```statblock
+layout: DM Realm Character
+name: Wren
+bestiary: false
+size: Small
+species: Mothfolk
+class: Lamplighter (Path of the Wick)
+level: 2
+player: Carla
+ac: 13
+hp: 17
+hit_dice: 2d8
+initiative: 2
+stats: [8, 14, 14, 11, 18, 10]
+spells:
+  - Wisdom, spell save DC 14, spell attack +6
+  - 1st level: 3 slots
+```
 
 ## Identity
 

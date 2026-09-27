@@ -32,19 +32,20 @@ Done when the job's own completion line holds.
 
 ### Frontmatter
 
-Exactly three keys, nothing else:
+Exactly four keys, nothing else:
 
 | Key | Value |
 | --- | --- |
 | `player` | Who plays the Character, as the DM names them (free text; Players are not notes) |
 | `status` | `active`, `retired` or `dead` |
 | `level` | The Character's level |
+| `statblock` | `inline` |
 
-Keys and `status` values are translated like any term and recorded in the Translation Glossary (structure.md's "Translating a term"); an English Workspace uses them as written.
+`player`, `status`, `level` and the `status` values are translated like any term and recorded in the Translation Glossary (structure.md's "Translating a term"); an English Workspace uses them as written. `statblock: inline` is the plugin's flag, always English (structure.md's "Stat blocks").
 
 ### Body
 
-1. `# <Character name>`
+1. `# <Character name>`, then the [stat block](#stat-block).
 2. `## Identity` — the backstory, appearance and personality: the DM's words, naming no Campaign, Session or table event.
 3. `## Build` — everything the Character is made of:
    - species, class with its level and subclass, background, each a link;
@@ -54,9 +55,34 @@ Keys and `status` values are translated like any term and recorded in the Transl
    - `### Features`: each feature by name and level, under a link to the note it comes from (class, subclass, species, background); each feat a link;
    - `### Spells`: cantrips and spells known or prepared, each a link;
    - `### Equipment`: each item a link, with what is worn or wielded; coins; and which items are attuned.
-4. `## Statistics` — the derived numbers, in one self-contained section: Armor Class, Hit Point Maximum, Hit Dice, Initiative, Speed, Proficiency Bonus, Passive Perception, saving throws, skills, attacks, spellcasting (ability, save DC, attack bonus, spell slots per level), and the uses per rest of limited features. Nothing else in the note repeats these numbers.
+4. `## Statistics` — the derived numbers, in one self-contained section: Armor Class, Hit Point Maximum, Hit Dice, Initiative, Speed, Proficiency Bonus, Passive Perception, saving throws, skills, attacks, spellcasting (ability, save DC, attack bonus, spell slots per level), and the uses per rest of limited features. Nothing else in the note repeats these numbers, except the stat block derived from them.
 
 **Maximums only.** A Character note records what the Build allows — slots per level, the Hit Point maximum, Hit Dice, uses per rest — never what is spent: no current hit points, spent slots, conditions or checkboxes. Those are a table's state and belong to its Campaign.
+
+### Stat block
+
+The compact view of the Character for the table, as structure.md's "Stat blocks" defines it: one ```` ```statblock ```` fence right under the `#` heading, in the `DM Realm Character` layout, written from the Build and Statistics — the same numbers, never others — and written again whenever they change. Keys and values follow structure.md's "Keys and values". In this order, leaving out a key the Character has nothing for:
+
+| Key | Value |
+| --- | --- |
+| `layout` | `DM Realm Character` |
+| `name` | The Character's name, unique among the Workspace's stat blocks (structure.md's "Names in the bestiary") |
+| `size` | Its size (Small, Medium) |
+| `species` | Its species (a 2014 subrace, a 2024 lineage named after it) |
+| `class` | Its class and, once chosen, subclass: `Lamplighter (Path of the Wick)`; a multiclass lists each with its level |
+| `level` | Its level, a number |
+| `player` | Its player |
+| `ac`, `hp`, `hit_dice`, `initiative`, `speed` | Armor Class, Hit Point maximum and initiative bonus as numbers; Hit Dice (`3d8`) and speed as text |
+| `stats` | The six ability scores, in order: `[8, 14, 14, 11, 18, 10]` |
+| `saves` | All six saving throws, in ability order, each `- <Ability>: <bonus>`; a proficient one's name ends with ` ●` (`- Wisdom ●: 6`) |
+| `skillsaves` | Each proficient skill with its total: `- Perception: 6` |
+| `senses` | Its senses, ending with its passive Perception: `darkvision 60 ft., passive Perception 16` |
+| `languages` | Its languages |
+| `actions` | Its attacks, weapons and attack cantrips: `- name: Lantern Pole` with `desc: +4 to hit, reach 5 ft., 1d6 + 2 Bludgeoning` |
+| `spells` | Spellcasting: first the ability, save DC and attack bonus as one line, then one line per slot level, maximums only: `1st level: 4 slots` |
+| `traits` | Each feature and trait by name, with a one-line summary of what it does in play |
+
+No backstory, equipment list, full spell list or full feature text: those stay in the body. Nothing spent, as for Statistics.
 
 ### Links
 
@@ -73,7 +99,7 @@ Every rules value — ability score methods and point costs, hit points per leve
 
 Dice are the DM's: a rolled value — ability scores, hit points, starting wealth — is the result the DM gives.
 
-**Recompute** every number in Statistics from the Build and these rules whenever the Build changes, item bonuses included.
+**Recompute** every number in Statistics from the Build and these rules whenever the Build changes, item bonuses included, then write the stat block again from them.
 
 ### Backstory and the DM's world
 
