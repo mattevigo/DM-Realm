@@ -77,6 +77,22 @@ OUT=$(run_hook "$WS3")
 case "$OUT" in *"#"*|*"default: Reference"*) echo "FAIL empty: comment leaked into: $OUT"; FAILS=$((FAILS+1));; esac
 expect_contains empty "$OUT" "Adventures"
 
+# Fantasy Statblocks installed after Setup, never configured: its stat blocks render in the
+# plugin's English Basic 5e layout, so the notice says Setup must be re-run.
+PLUGIN="$WS/.obsidian/plugins/obsidian-5e-statblocks"
+OUT=$(run_hook "$WS")
+case "$OUT" in *"Fantasy Statblocks"*) echo "FAIL no plugin: mentions the plugin: $OUT"; FAILS=$((FAILS+1));; esac
+mkdir -p "$PLUGIN"
+OUT=$(run_hook "$WS")
+expect_contains "plugin, no data.json" "$OUT" "Fantasy Statblocks is installed but not configured"
+expect_contains "plugin, no data.json" "$OUT" "dmr-setup"
+printf '{"default": "basic-5e-layout", "layouts": []}' > "$PLUGIN/data.json"
+OUT=$(run_hook "$WS")
+expect_contains "plugin unconfigured" "$OUT" "Fantasy Statblocks is installed but not configured"
+python3 "$(dirname "$HOOK")/../skills/dmr-setup/statblocks-settings.py" merge "$WS" 2024 >/dev/null
+OUT=$(run_hook "$WS")
+case "$OUT" in *"not configured"*) echo "FAIL plugin configured: still says not configured"; FAILS=$((FAILS+1));; esac
+
 # Not a Workspace: no output at all, exit 0
 NO="$TMP/plain"; mkdir -p "$NO"
 OUT=$(run_hook "$NO"); CODE=$?

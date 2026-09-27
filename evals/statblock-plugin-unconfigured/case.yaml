@@ -1,0 +1,16 @@
+schema_version: "1.1"
+name: statblock-plugin-unconfigured
+description: "Fantasy Statblocks installed after Setup, without DM Realm's layouts: an Import still writes its stat block, and the agent tells the DM to re-run Setup, which configures the plugin."
+tags: [import, statblock]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  env:
+    EVAL_DMR_SOURCE_CACHE: "~/.dm-realm/source-cache"
+    EVAL_DMR_SOURCE_API: http://127.0.0.1:9/latest
+    EVAL_DMR_SOURCE_RAW: http://127.0.0.1:9/raw
+  prompt: |
+    Aggiungi il mostro Bog Goblin.

@@ -34,3 +34,17 @@ Top-level folders, by key:${FOLDERS}
 Before writing, moving, renaming or linking any note or folder here, load the dmr-workspace skill and follow its rules.
 For official D&D material — a rules question, rules text, a stat block — load the dmr-trusted-source skill first.
 NOTICE
+
+# Fantasy Statblocks installed after Setup has none of DM Realm's layouts, so it renders
+# every stat block in its own English layout until Setup is re-run.
+PLUGIN="$CWD/.obsidian/plugins/obsidian-5e-statblocks"
+if [ -d "$PLUGIN" ]; then
+  for id in dm-realm-character dm-realm-monster-2014 dm-realm-monster-2024; do
+    if ! grep -q "\"$id\"" "$PLUGIN/data.json" 2>/dev/null; then
+      cat <<NOTICE
+Fantasy Statblocks is installed but not configured for DM Realm: it lacks DM Realm's layouts, so it shows every stat block in its own layout, with English labels. Tell the DM, and offer to re-run Setup (/dm-realm:dmr-setup), which installs them; the DM should close Obsidian first, or reload the plugin afterwards.
+NOTICE
+      break
+    fi
+  done
+fi
