@@ -82,6 +82,7 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S78 | character-create, character-level-up, transfer-past-builds (a Character's stat block agrees with its Build and is written again; a past Build leaves the bestiary) |
 | S79 | setup-statblocks-plugin, setup-statblocks-italian, setup-fresh-english (Setup merges the layouts when Fantasy Statblocks is installed, labels translated; without it, writes nothing for it and mentions it) |
 | S80 | statblock-plugin-unconfigured, tests/workspace-notice.test.sh (Fantasy Statblocks installed after Setup: the session notice says it lacks DM Realm's layouts, and the agent tells the DM to re-run Setup) |
+| S81 | setup-rerun-statblocks-outdated, setup-rerun-statblocks-obsidian-open, tests/statblocks-settings.test.sh (DM Realm's layouts at an older revision: a re-run updates them, and with Obsidian open writes nothing and asks the DM to close it) |
 
 ## How to run the manual scenarios
 

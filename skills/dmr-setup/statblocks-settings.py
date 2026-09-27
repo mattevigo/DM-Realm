@@ -14,17 +14,27 @@
       are, and a file already right is not rewritten; prints what it set.
       --labels is a JSON object mapping every English label to its translation
       (`-` reads it from standard input); without it the labels stay English.
+      Each layout it writes carries its revision (dmRealmRevision): a hash of the
+      layout as DM Realm ships it, before translation.
       Exit 3, touching nothing, when the plugin is not installed (no plugin folder).
       Exit 2, touching nothing, when data.json or the labels are not valid JSON,
       a label has no translation, or the edition is not 2014 or 2024.
+      Exit 5, touching nothing, when data.json needs a change and Obsidian is
+      running: the plugin rewrites data.json from memory, so the change would be lost.
+
+  statblocks-settings.py check <workspace>
+      Whether the plugin has the layouts this DM Realm ships: exit 0 when all three
+      are there at the current revision; exit 4 when one is missing or older (it
+      says which); exit 3 when the plugin is not installed; exit 2 when data.json
+      is not valid JSON. Writes nothing.
 
 Layout names are stable and never translated: a fence's `layout:` names one of them.
-The plugin rewrites data.json while Obsidian is open: close Obsidian first, or reload
-the plugin afterwards.
 """
+import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 
 LAYOUTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "statblock-layouts")
@@ -46,6 +56,70 @@ def layouts():
         with open(os.path.join(LAYOUTS_DIR, name), encoding="utf-8") as f:
             out.append(json.load(f))
     return out
+
+
+def revision(layout):
+    """The layout as DM Realm ships it, before translation, as a short hash."""
+    return hashlib.sha256(json.dumps(layout, sort_keys=True).encode("utf-8")).hexdigest()[:12]
+
+
+def obsidian_running():
+    # Evals only (their sandbox would see the developer's own Obsidian): 1 running, 0 not.
+    if os.environ.get("EVAL_DMR_OBSIDIAN_RUNNING") in ("0", "1"):
+        return os.environ["EVAL_DMR_OBSIDIAN_RUNNING"] == "1"
+    for name in ("Obsidian", "obsidian"):
+        try:
+            if subprocess.run(["pgrep", "-x", name], stdout=subprocess.DEVNULL,
+                              stderr=subprocess.DEVNULL).returncode == 0:
+                return True
+        except OSError:  # no pgrep: cannot tell
+            return False
+    return False
+
+
+def installed(workspace):
+    """The plugin's settings in the Workspace ({} before its first save), or None without the plugin."""
+    folder = os.path.join(workspace, PLUGIN)
+    if not os.path.isdir(folder):
+        return None
+    path = os.path.join(folder, "data.json")
+    try:
+        with open(path, encoding="utf-8") as f:
+            current = json.load(f)
+    except FileNotFoundError:
+        return {}
+    except ValueError as e:
+        raise Refused(f"{path} is not valid JSON ({e}); nothing was changed.")
+    if not isinstance(current, dict):
+        raise Refused(f"{path} does not hold the plugin's settings; nothing was changed.")
+    return current
+
+
+NOT_INSTALLED = ("Fantasy Statblocks is not installed in this Workspace "
+                 "(no .obsidian/plugins/obsidian-5e-statblocks/); nothing was changed.")
+
+
+def check(workspace):
+    current = installed(workspace)
+    if current is None:
+        print(NOT_INSTALLED, file=sys.stderr)
+        return 3
+    have = {l.get("name"): l for l in current.get("layouts") or [] if isinstance(l, dict)}
+    missing, older = [], []
+    for layout in layouts():
+        mine = have.get(layout["name"])
+        if mine is None:
+            missing.append(layout["name"])
+        elif mine.get("dmRealmRevision") != revision(layout):
+            older.append(layout["name"])
+    if missing:
+        print(f"Fantasy Statblocks lacks DM Realm's layouts: {', '.join(missing)}.")
+    if older:
+        print(f"Fantasy Statblocks has an older version of DM Realm's layouts: {', '.join(older)}.")
+    if missing or older:
+        return 4
+    print("Fantasy Statblocks has DM Realm's current layouts.")
+    return 0
 
 
 def blocks(items):
@@ -103,25 +177,18 @@ def read_labels(source):
 def merge(workspace, edition, labels_source=None):
     if edition not in MONSTER_LAYOUT:
         raise Refused(f"the edition must be 2014 or 2024, not '{edition}'.")
-    folder = os.path.join(workspace, PLUGIN)
-    if not os.path.isdir(folder):
-        print("Fantasy Statblocks is not installed in this Workspace (no .obsidian/plugins/obsidian-5e-statblocks/); "
-              "nothing was changed.", file=sys.stderr)
+    current = installed(workspace)
+    if current is None:
+        print(NOT_INSTALLED, file=sys.stderr)
         return 3
     words = read_labels(labels_source) if labels_source else {}
-    path = os.path.join(folder, "data.json")
-    try:
-        with open(path, encoding="utf-8") as f:
-            current = json.load(f)
-    except FileNotFoundError:
-        current = None
-    except ValueError as e:
-        raise Refused(f"{path} is not valid JSON ({e}); nothing was changed.")
-    if current is not None and not isinstance(current, dict):
-        raise Refused(f"{path} does not hold the plugin's settings; nothing was changed.")
+    path = os.path.join(workspace, PLUGIN, "data.json")
 
-    data = json.loads(json.dumps(current or {}))
-    ours = [relabel(layout, lambda label: words.get(label, label)) for layout in layouts()]
+    data = json.loads(json.dumps(current))
+    ours = []
+    for layout in layouts():
+        stamp = revision(layout)
+        ours.append(dict(relabel(layout, lambda label: words.get(label, label)), dmRealmRevision=stamp))
     names = {layout["name"] for layout in ours}
 
     def ours_for(layout):
@@ -141,9 +208,13 @@ def merge(workspace, edition, labels_source=None):
     data.update({"layouts": merged, "default": MONSTER_LAYOUT[edition],
                  "disableSRD": True, "autoParse": True, "paths": ["/"]})
 
-    if data == current:
+    if data == current and os.path.exists(path):
         print("Fantasy Statblocks already as DM Realm needs it; nothing changed.")
         return 0
+    if obsidian_running():
+        print("statblocks-settings: Obsidian is running, and Fantasy Statblocks would overwrite data.json "
+              "from memory; close Obsidian and run this again. Nothing was changed.", file=sys.stderr)
+        return 5
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
         f.write("\n")
@@ -158,6 +229,8 @@ def main(argv):
         if argv[1:] == ["labels"]:
             print("\n".join(all_labels()))
             return 0
+        if len(argv) == 3 and argv[1] == "check":
+            return check(argv[2])
         if len(argv) == 4 and argv[1] == "merge":
             return merge(argv[2], argv[3])
         if len(argv) == 6 and argv[1] == "merge" and argv[4] == "--labels":

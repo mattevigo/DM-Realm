@@ -35,16 +35,21 @@ Before writing, moving, renaming or linking any note or folder here, load the dm
 For official D&D material — a rules question, rules text, a stat block — load the dmr-trusted-source skill first.
 NOTICE
 
-# Fantasy Statblocks installed after Setup has none of DM Realm's layouts, so it renders
-# every stat block in its own English layout until Setup is re-run.
+# Fantasy Statblocks installed after Setup has none of DM Realm's layouts, and one set up by
+# an older DM Realm has older ones: either way its stat blocks do not show as DM Realm's
+# layouts draw them until Setup is re-run.
 PLUGIN="$CWD/.obsidian/plugins/obsidian-5e-statblocks"
-if [ -d "$PLUGIN" ]; then
+[ -d "$PLUGIN" ] || exit 0
+HELPER="$(cd "$(dirname "$0")/.." && pwd)/skills/dmr-setup/statblocks-settings.py"
+if command -v python3 >/dev/null 2>&1 && [ -f "$HELPER" ]; then
+  STATE=$(python3 "$HELPER" check "$CWD" 2>/dev/null); CODE=$?
+else  # without python3, only whether the layouts are there at all
+  STATE="Fantasy Statblocks lacks DM Realm's layouts."; CODE=0
   for id in dm-realm-character dm-realm-monster-2014 dm-realm-monster-2024; do
-    if ! grep -q "\"$id\"" "$PLUGIN/data.json" 2>/dev/null; then
-      cat <<NOTICE
-Fantasy Statblocks is installed but not configured for DM Realm: it lacks DM Realm's layouts, so it shows every stat block in its own layout, with English labels. Tell the DM, and offer to re-run Setup (/dm-realm:dmr-setup), which installs them; the DM should close Obsidian first, or reload the plugin afterwards.
-NOTICE
-      break
-    fi
+    grep -q "\"$id\"" "$PLUGIN/data.json" 2>/dev/null || CODE=4
   done
 fi
+[ "$CODE" -eq 4 ] || exit 0
+cat <<NOTICE
+Fantasy Statblocks is installed but not configured for this version of DM Realm: $STATE Its stat blocks do not show as DM Realm's layouts draw them (a missing layout falls back to the plugin's own, with English labels). Tell the DM, and offer to re-run Setup (/dm-realm:dmr-setup), which installs them; Obsidian must be closed while it does.
+NOTICE

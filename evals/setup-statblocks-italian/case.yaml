@@ -8,5 +8,7 @@ execution:
   max_turns: 30
   timeout_seconds: 600
   allowed_tools: [Read, Glob, Grep, Skill, Write, Bash]
+  env:
+    EVAL_DMR_OBSIDIAN_RUNNING: "0"
   prompt: |
     /dm-realm:dmr-setup configura il workspace in italiano, regole 2024, nomi predefiniti, procedi

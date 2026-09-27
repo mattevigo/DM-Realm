@@ -22,6 +22,11 @@ def walk(bs):
 l['all'] = list(walk(l['blocks']))
 print(eval(sys.argv[3]))" "$@"; }
 PLUGIN=.obsidian/plugins/obsidian-5e-statblocks
+# Whether Obsidian runs is asked of pgrep: a fake one answers "not running" unless a test says so.
+mkdir -p "$TMP/bin"
+printf '#!/bin/sh\n[ -n "${FAKE_OBSIDIAN_RUNNING:-}" ] && { echo "123 Obsidian"; exit 0; }\nexit 1\n' > "$TMP/bin/pgrep"
+chmod +x "$TMP/bin/pgrep"
+PATH="$TMP/bin:$PATH"; export PATH
 
 # The plugin is not installed: nothing is written, and it says so (exit 3).
 W="$TMP/none"; mkdir -p "$W/.obsidian"
@@ -141,6 +146,43 @@ JS
 else
   echo "statblocks-settings: node not found, layout JavaScript not run"
 fi
+
+# check: whether the installed layouts are the ones this DM Realm ships (exit 0), missing or
+# older (exit 4), or the plugin is absent (exit 3). Each merged layout carries its revision.
+W="$TMP/fresh"
+OUT=$(python3 "$HELPER" check "$W"); CODE=$?
+[ "$CODE" -eq 0 ] || fail "check current: expected exit 0, got $CODE: $OUT"
+[ "$(json "$W/$PLUGIN/data.json" 'all(len(l.get("dmRealmRevision", "")) == 12 for l in d["layouts"])')" = "True" ] || fail "revision: every DM Realm layout carries one"
+cp -R "$W" "$TMP/older"
+python3 -c "import json,sys; p=sys.argv[1]; d=json.load(open(p)); d['layouts'][0]['dmRealmRevision']='000000000000'; json.dump(d, open(p,'w'))" "$TMP/older/$PLUGIN/data.json"
+OUT=$(python3 "$HELPER" check "$TMP/older"); CODE=$?
+[ "$CODE" -eq 4 ] || fail "check older: expected exit 4, got $CODE"
+case "$OUT" in *"older"*) ;; *) fail "check older: should say the layouts are older: $OUT";; esac
+# Merging brings them up to date, keeping their translated labels as given.
+python3 "$HELPER" merge "$TMP/older" 2024 >/dev/null || fail "merge older: exit $?"
+python3 "$HELPER" check "$TMP/older" >/dev/null || fail "merge older: still not current"
+OUT=$(python3 "$HELPER" check "$TMP/existing"); CODE=$?
+[ "$CODE" -eq 0 ] || fail "check existing: expected exit 0, got $CODE"
+python3 -c "import json,sys; p=sys.argv[1]; d=json.load(open(p)); d['layouts']=[l for l in d['layouts'] if l['name']!='DM Realm Character']; json.dump(d, open(p,'w'))" "$TMP/older/$PLUGIN/data.json"
+OUT=$(python3 "$HELPER" check "$TMP/older"); CODE=$?
+[ "$CODE" -eq 4 ] || fail "check missing: expected exit 4, got $CODE"
+case "$OUT" in *"DM Realm Character"*) ;; *) fail "check missing: should name the missing layout: $OUT";; esac
+OUT=$(python3 "$HELPER" check "$TMP/none" 2>&1); CODE=$?
+[ "$CODE" -eq 3 ] || fail "check not installed: expected exit 3, got $CODE"
+
+# Obsidian open: the plugin rewrites data.json from memory, so a change is refused (exit 5)
+# and nothing is written; with nothing to change, it is fine.
+cp "$TMP/older/$PLUGIN/data.json" "$TMP/before.json"
+OUT=$(FAKE_OBSIDIAN_RUNNING=1 python3 "$HELPER" merge "$TMP/older" 2024 2>&1); CODE=$?
+[ "$CODE" -eq 5 ] || fail "obsidian open: expected exit 5, got $CODE"
+case "$OUT" in *"Obsidian"*) ;; *) fail "obsidian open: should ask to close Obsidian: $OUT";; esac
+cmp -s "$TMP/before.json" "$TMP/older/$PLUGIN/data.json" || fail "obsidian open: data.json was written"
+# The eval-only override answers instead of pgrep.
+OUT=$(EVAL_DMR_OBSIDIAN_RUNNING=1 python3 "$HELPER" merge "$TMP/older" 2024 2>&1); CODE=$?
+[ "$CODE" -eq 5 ] || fail "eval override running: expected exit 5, got $CODE"
+FAKE_OBSIDIAN_RUNNING=1 EVAL_DMR_OBSIDIAN_RUNNING=0 python3 "$HELPER" merge "$TMP/older" 2024 >/dev/null || fail "eval override closed: exit $?"
+OUT=$(FAKE_OBSIDIAN_RUNNING=1 python3 "$HELPER" merge "$TMP/existing" 2024 2>&1); CODE=$?
+[ "$CODE" -eq 0 ] || fail "obsidian open, nothing to change: expected exit 0, got $CODE: $OUT"
 
 # A label missing from the translations: nothing written, exit 2, the label named.
 python3 -c "import json,sys; d=json.load(open(sys.argv[1])); del d['Hit Points']; json.dump(d, open(sys.argv[2], 'w'))" "$TMP/it.json" "$TMP/partial.json"

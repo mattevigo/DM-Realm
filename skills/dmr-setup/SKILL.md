@@ -19,7 +19,7 @@ Turn the current folder into a DM Realm Workspace, in any Workspace Language, le
 5. **Folder names.** For each top-level folder:
    - **Named by the DM** (in the request or an answer): use that name exactly, after checking it as structure.md's "Workspace Config" requires — a single folder name, not empty after the name rules, not a duplicate. An invalid name: say why, ask for another, and end your turn; the folder stays as it is.
    - **Otherwise**: its default English name, translated into the Workspace Language as structure.md's "Translating a term" says (Official Translation, else a faithful fallback), with the name rules applied. In English, the default name itself.
-6. **Preview.** Show exactly what Setup will create: `workspace-config.yml` with its content — Workspace Language, Edition and every folder name; every top-level folder, each empty; in a non-English Workspace, the Translation Glossary with its rows; the Obsidian settings Setup merges (below); and, when Fantasy Statblocks is installed, what [Fantasy Statblocks](#fantasy-statblocks) sets, with the request to close Obsidian first. Unless the request already settled the names ("default names", or names given), invite the DM to rename any folder.
+6. **Preview.** Show exactly what Setup will create: `workspace-config.yml` with its content — Workspace Language, Edition and every folder name; every top-level folder, each empty; in a non-English Workspace, the Translation Glossary with its rows; the Obsidian settings Setup merges (below); and, when Fantasy Statblocks is installed, what [Fantasy Statblocks](#fantasy-statblocks) sets. Unless the request already settled the names ("default names", or names given), invite the DM to rename any folder.
 7. **Confirmation.** Continue on an explicit go-ahead from the DM: one already in the request ("go ahead", "proceed", "procedi", "create it") counts. Otherwise ask for it and end your turn; the folder stays as it is until then.
 8. **Create.**
    1. Write `workspace-config.yml` at the folder root in the example's format, every value filled in (each folder name written out).
@@ -56,7 +56,7 @@ A Workspace is set up once. A re-run keeps its Workspace Language and Edition, r
    ```
 
    It checks the name as structure.md requires (exit 2: say why and ask for another), moves the folder, rewrites every link whose path starts with the old name, updates the Workspace Config and, for the Templates folder, Obsidian's template folder. In a non-English Workspace, then update that folder's row in the Translation Glossary: the name in use, with the source *DM's choice* in the Workspace Language.
-4. **Repair Obsidian settings**: run `python3 "<this skill's base directory>/obsidian-settings.py" merge . "<Templates folder name in use>"`. It restores only DM Realm's keys that drifted and rewrites nothing that is right. Then set up [Fantasy Statblocks](#fantasy-statblocks) the same way, with the layout labels the Translation Glossary already holds.
+4. **Repair Obsidian settings**: run `python3 "<this skill's base directory>/obsidian-settings.py" merge . "<Templates folder name in use>"`. It restores only DM Realm's keys that drifted and rewrites nothing that is right. Then set up [Fantasy Statblocks](#fantasy-statblocks): run its helper even when the plugin looks configured, with the layout labels the Translation Glossary already holds.
 5. **Report** what changed — renamed folders and rewritten notes, restored settings, Fantasy Statblocks, recreated folders — or that the Workspace was already in order.
 
 Done when every change the DM confirmed is made, the Obsidian settings (Fantasy Statblocks' included, when installed) are as DM Realm needs them, and nothing else in the Workspace changed.
@@ -66,7 +66,7 @@ Done when every change the DM confirmed is made, the Obsidian settings (Fantasy 
 The Obsidian plugin that renders the Workspace's stat blocks (structure.md's "Stat blocks"). Setup configures it only where the DM installed it.
 
 - **Not installed** — no `.obsidian/plugins/obsidian-5e-statblocks/` folder: write nothing for it. In the report, say what it adds — monsters, NPCs and Characters rendered as stat blocks, a bestiary MapForge also reads — and how to get it: in Obsidian, Settings › Community plugins › Browse, "Fantasy Statblocks"; then re-run Setup to configure it.
-- **Installed** — merge DM Realm's layouts and settings with the helper next to this file, passing the Edition in use:
+- **Installed** — merge DM Realm's layouts and settings with the helper next to this file, passing the Edition in use. Always run it, on a first Setup and on every re-run: it alone knows whether the layouts are current, since a layout with the right name and translated labels can still be an older version of DM Realm's (`statblocks-settings.py check .` tells, writing nothing). Never conclude from reading `data.json` that there is nothing to do.
 
   ```sh
   python3 "<this skill's base directory>/statblocks-settings.py" merge . <Edition>
@@ -80,4 +80,4 @@ The Obsidian plugin that renders the Workspace's stat blocks (structure.md's "St
   JSON
   ```
 
-  Exit 2 changed nothing: `data.json` is not valid JSON (name the file for the DM and go on), or a label is missing (the message names it: add it and run again). The plugin rewrites `data.json` while Obsidian is open, so the preview asks the DM to close Obsidian first, and the report says to reload the plugin (or restart Obsidian) if it was open. Without `python3`, leave `data.json` as it is and tell the DM that Fantasy Statblocks was not configured.
+  Exit 2 changed nothing: `data.json` is not valid JSON (name the file for the DM and go on), or a label is missing (the message names it: add it and run again). **Exit 5** changed nothing either: `data.json` needs a change but Obsidian is running, and the plugin would overwrite the file from memory. Ask the DM to close Obsidian and end your turn; on their go-ahead, run the helper again. Without `python3`, leave `data.json` as it is and tell the DM that Fantasy Statblocks was not configured.
