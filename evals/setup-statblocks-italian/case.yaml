@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: setup-statblocks-italian
+description: "Italian Setup with Fantasy Statblocks installed: the layouts' labels are translated and recorded in the Translation Glossary; layout names stay English."
+tags: [setup, statblock]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Bash]
+  prompt: |
+    /dm-realm:dmr-setup configura il workspace in italiano, regole 2024, nomi predefiniti, procedi
