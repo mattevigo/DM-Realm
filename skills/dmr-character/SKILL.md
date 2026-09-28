@@ -2,7 +2,7 @@
 name: dmr-character
 description: Characters in a DM Realm Workspace — create one ("a new character for Baldu", at any level), level it up or rebuild it ("Durga reaches level 6"), change its equipment, attunement, prepared spells, coins, backstory or status ("Durga attunes the belt", "Durga retires"), or transfer one from an old vault or another Workspace.
 argument-hint: <what to do, e.g. create a character for Baldu, Durga reaches level 6>
-allowed-tools: Read, Glob, Grep, Write, Edit, Skill, Bash(mkdir:*), Bash(cp:*), Bash(ls:*), Bash(sh:*), Bash(python3:*), Bash(DMR_SOURCE_CACHE=*)
+allowed-tools: Read, Glob, Grep, Write, Edit, Skill, AskUserQuestion, Bash(mkdir:*), Bash(cp:*), Bash(ls:*), Bash(sh:*), Bash(python3:*), Bash(DMR_SOURCE_CACHE=*)
 ---
 
 # Characters

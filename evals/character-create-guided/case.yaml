@@ -1,6 +1,6 @@
 schema_version: "1.1"
-name: character-create-asks-choices
-description: "Creating above level 1 in Recap mode, the agent asks the open choices of every level in one message, each marked open, and writes nothing yet."
+name: character-create-guided
+description: "Creating in Guided mode with no dialog tool, the agent asks only the first open choice (the hit points) in a message marked open, and writes nothing."
 tags: [character, scenario]
 context:
   scaffold_script: scaffold.sh
@@ -17,4 +17,4 @@ execution:
     Standard array: the highest score in Wisdom, then Dexterity, Constitution, Intelligence, Charisma, and Strength last.
     From the background, +2 Wisdom and +1 Constitution. Skills: Religion and Stealth. Cantrip: Spark Wick.
     Prepared spells: Soft Light, Glimmerlance and Whisper Veil. He takes the class and background equipment packages.
-    List every open choice in one message and I'll answer them all together.
+    Guide me through the open choices one at a time.
