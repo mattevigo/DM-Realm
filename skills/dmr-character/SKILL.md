@@ -113,6 +113,6 @@ A backstory may name places, NPCs and factions:
 What the DM decides — an option, a method, a roll, a consent — is a choice:
 
 - **A choice the DM's request already makes counts.**
-- **Ask once, then stop.** Gather every open choice you can ask now into one message, each with its options by name from the Trusted Source, and end your turn. A choice that depends on an answer waits for that answer. Off-Edition consent (structure.md's consent rule) is asked in the same message. Creating a Character, this is Recap, and the DM may pick Guided instead: create.md's "Guided or Recap".
+- **Ask once, then stop.** Gather every open choice you can ask now into one message, each with its options by name from the Trusted Source, and end your turn. A choice that depends on an answer waits for that answer. Off-Edition consent (structure.md's consent rule) is asked in the same message.
 - **Check each answer** against the Trusted Source rules — prerequisites, counts, the point-buy budget, the score cap — and ask again about what does not fit.
 - **Write once every choice is made**; until then the Workspace stays as it is.

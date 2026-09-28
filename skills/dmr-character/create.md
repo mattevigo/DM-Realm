@@ -2,7 +2,7 @@
 
 A new Character, single class, at any level: level 1's choices, then each higher level's in order, written as one note with no past Builds. The note's format, links and rules values are in [SKILL.md](SKILL.md).
 
-1. **Name and player.** The Character's name, in the DM's words, and who plays it. When a Character folder of that name already exists, say so and ask for another name: a new Character never replaces or merges into one.
+1. **Name and player.** The Character's name, in the DM's words, and who plays it: "a character for Baldu" names Baldu as the player. When a Character folder of that name already exists, say so and ask for another name: a new Character never replaces or merges into one.
 2. **Collect the choices**, in this order, from the Trusted Source entries of the Edition in use (a multiclass is not created: say so):
    1. The level (1 unless the DM says otherwise).
    2. Class, species (a 2014 subrace, a 2024 lineage) and background.
@@ -24,15 +24,16 @@ Done when the note holds every choice, links every option, its numbers follow fr
 When the request leaves choices open, the DM picks how step 2 asks them:
 
 - **Recap**: SKILL.md's "Ask once, then stop": one message with every open choice that can be asked now.
-- **Guided**: one choice at a time, in step 2's order.
+- **Guided**: one choice at a time, in step 2's order. The hit points of every higher level are one choice, asked before level 2's other choices.
 
-**The mode.** A request that names one ("guide me step by step", "list everything at once") uses it. Otherwise the mode is the first question, asked alone: a two-option dialog (`AskUserQuestion`) with Guided and Recap, in the Workspace Language, or a plain message when the dialog tool is unavailable (a non-interactive session, such as `claude -p`). A request that makes every choice asks nothing.
+A **dialog** is the `AskUserQuestion` tool: two to four options, multi-select for a "pick N" choice (skills, spells), and its answer comes back in the same turn. In a session without it (a non-interactive one, such as `claude -p`), each question meant for a dialog is a plain message instead, and ends your turn.
+
+**The mode.** A request that names one ("guide me step by step", "list everything at once") uses it. Otherwise the mode is the first question, asked alone, with no mark: a dialog with Guided and Recap. A request that makes every choice asks nothing.
 
 **Guided.** Ask the next open choice, alone, and check its answer as SKILL.md's "Check each answer" says before asking the one after it:
 
-- **Two to four options**: a dialog, in the Workspace Language; a "pick N" choice (skills, spells) is multi-select. Its answer comes back in the same turn.
+- **Up to four options**: a dialog. Asked again because the answer did not fit, its question says why.
 - **More options** (a class, a species, spells from a list): a plain message with that choice and its whole list, then end your turn.
-- **No dialog tool**: every choice is a plain message, one per turn.
 - **Off-Edition consent** is a step of its own, right after the answer that brings the Off-Edition option.
 - **The backstory's choice** (SKILL.md's "Backstory and the DM's world") comes last, after every Build choice.
 
@@ -41,8 +42,8 @@ When the request leaves choices open, the DM picks how step 2 asks them:
 | Mark | Status | Followed by |
 | --- | --- | --- |
 | ❓ | Open | the choice and its options |
-| ✅ | Answered, and the answer fits the rules | the answer, in a few words |
+| ✅ | Answered by the DM, and the answer fits the rules | the answer, in a few words |
 | 🟡 | Partly answered: one skill of two, hit points for some levels | what is still missing |
 | ⚠️ | To reconsider: the answer does not fit the rules | why, in a few words |
 
-In Recap, the message after each reply lists every choice again with its new mark. The marks are the same in every Workspace Language; the words beside them are in it.
+The first message asks only the open choices, each ❓. From the DM's first reply on, a choice answered shows ✅, 🟡 or ⚠️, and in Recap the message after each reply lists every choice asked so far again, with its new mark. The marks are the same in every Workspace Language.
