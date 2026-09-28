@@ -43,6 +43,7 @@ DMR_SOURCE_CACHE="${CLAUDE_PLUGIN_DATA}/source-cache" sh "<this skill's base dir
 | Classes and subclasses | `class/class-<name>.json`; `class/index.json` | `class`, `subclass` |
 | Class options (Maneuvers, Eldritch Invocations, Metamagic, 2014 Fighting Styles…) | `optionalfeatures.json` | `optionalfeature` |
 | Books, Adventures and their publication dates | `books.json`, `adventures.json` | `book`, `adventure` |
+| An entry's description ("fluff": what a monster, species, background, class or item is like) | `fluff-<its data file>` beside it (`bestiary/fluff-bestiary-xmm.json`, `fluff-races.json`); a base item's is in `fluff-items.json` | `<key>Fluff` (`monsterFluff`, `raceFluff`…) |
 | A book's own text: character creation and advancement (ability score methods, point costs, hit points, proficiency bonus) and other rules no entry holds | `book/book-<book>.json` (e.g. `book-xphb.json`) | `data`: sections by `name` |
 
 ## Finding the entry for the Edition

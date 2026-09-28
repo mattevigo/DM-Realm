@@ -91,7 +91,7 @@ Official material, imported faithfully from the Trusted Source. Its rules materi
 - **Class options** — Fighting Styles (2014), Maneuvers, Eldritch Invocations, Metamagic and the other kinds — are one note each in Classes › Options › `<Kind>`. 2024 Fighting Styles are feats, in Feats. A class or subclass note names its options in plain text; importing it does not import them.
 - **Species.** The same pattern as classes: Races › Dwarf › Dwarf, and beside it one note per named 2014 subrace (Hill_Dwarf), holding only what the subrace adds. An unnamed 2014 subrace is part of its race's note. 2024 species have no subraces: a lineage is part of its species' note, so asking for a 2024 lineage (Drow) imports its species (Elf).
 - **Magic items.** A specific item the Trusted Source builds from a generic variant and a base item ("+1 Longsword", "Flame Tongue Greatsword") is not an entry: asking for one imports the generic variant ("+1 Weapon", "Flame Tongue") into Magic_Items, and the agent says so ([ADR 0007](../../docs/adr/0007-an-import-renders-only-what-the-data-contains.md)). Its DMG or XDMG version follows the Edition like any other entry.
-- **Mechanics only.** The Trusted Source's lore text about an entry (its "fluff") and its images are not imported.
+- **Descriptions, not images.** An entry's description — the Trusted Source's text about what it is, its "fluff" — is imported with it, into the same note; its images are not imported.
 - **One entry at a time.** The one set an Import brings in on request is every Condition, or every Action, of the Edition, one note each; any other bulk request is declined.
 - **No links between Reference notes.** A note names other entries (a monster's spells, a class's options) in plain text, so it never depends on what else was imported.
 
@@ -254,6 +254,7 @@ Every note imported from the Trusted Source records its source in a frontmatter 
 - **Its file name** is the entry's name translated into the Workspace Language (see [Translating a term](#translating-a-term)), with the [name rules](#name-rules) applied: `Fireball.md`, `Palla_di_Fuoco.md`.
 - **Its frontmatter** holds only the source property — and, for a monster, the `statblock` flag ([Stat blocks](#stat-blocks)).
 - **Its body** starts with the translated name as a `#` heading, then the entry's text, translated faithfully: every paragraph, list, table and number, nothing added. A monster's stat lines are one section of the note, and its [stat block](#stat-blocks) sits right under the heading.
+- **Its description**, when the Trusted Source has one, is a section of the body headed Description (translated): for a monster before its stat lines, as the Monster Manual puts it; for any other entry at the end of the note. A subrace's holds only what it adds to its race's. It is never in the stat block.
 - **An Off-Edition note** has, right under its heading, an Obsidian callout in the Workspace Language naming the Edition it belongs to: `> [!warning] Off-Edition Material (2014)`.
 - **It is found by its path.** The translated name comes from the Translation Glossary, so an entry always gets the same path. When a note is already at that path, an Import of the entry writes nothing and tells the DM; replacing it is the [update check](#checking-for-updates).
 
@@ -304,6 +305,7 @@ actions:
 - **The plugin is optional.** Every note is correct and readable without it; without it the fence shows as a YAML code block. DM Realm never installs it, and never uses its own 5etools import or its bundled SRD ([ADR 0003](../../docs/adr/0003-official-material-comes-only-from-5etools.md)): Setup turns the SRD off.
 - **A derived view.** The stat block is derived from the note's body, which stays the source of truth — the rendered entry for a monster, the Build for a Character — and is never the only place a value or a link lives: Obsidian does not index links inside a fence, so every link stays in the body, and "who uses this" still comes from the body's links. Whenever the body changes (an Import, a Character's creation, level-up, update or Transfer, a Promotion), the fence is written again from it, with the same numbers.
 - **One fence per note**, and only where the table below puts one.
+- **Game statistics only.** A monster's description stays in the body, never in the fence.
 
 ### Which notes have one
 
