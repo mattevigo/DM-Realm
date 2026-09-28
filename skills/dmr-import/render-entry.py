@@ -12,7 +12,9 @@ kind when the file holds several (`subclass`, `itemMastery`…); --class-source 
 a subclass under one version of its class (`XPHB`), or a subrace under one race.
 
 Prints the entry's Markdown: `# <name>`, then its text, deterministically, with
-5etools tags as plain text. A monster also gets its stat block, a Fantasy Statblocks
+5etools tags as plain text; the entry's description (its 5etools fluff, from the
+`fluff-*` file beside its data, images left out) is a `## Description` section, before
+a monster's stat lines and at the end of any other entry. A monster also gets its stat block, a Fantasy Statblocks
 fence (```statblock) with the plugin's English keys, under the heading; --edition is the
 Workspace's Edition, and a monster of the other one names its own Edition's layout
 (without --edition, no layout is named). --meta prints JSON facts about the entry instead: its
@@ -21,7 +23,8 @@ and what placing its note needs (spell level, class, race, option kind…).
 
 Exit 2: bad usage. Exit 3 and 4: passed through from the Source Cache helper
 (the Trusted Source is unreachable; no such file). Exit 5: no such entry.
-Exit 6: a copied entry uses a `_copy` modifier this helper does not support.
+Exit 6: a copied entry uses a `_copy` modifier this helper does not support, or the
+description holds a field it does not know.
 Exit 7: a malformed entry, or one that cannot be rendered. Exit 8: several entries match.
 Nothing is printed on stdout on any error.
 """
@@ -146,8 +149,9 @@ def copied_entry(key, copy, path):
     found = look(load(path))
     if found is not None:
         return found, path
-    folder = os.path.dirname(path)
-    index = load_optional(f"{folder}/index.json") if folder != "data" else {}
+    folder, base = os.path.split(path)
+    index_name = "fluff-index.json" if base.startswith("fluff-") else "index.json"
+    index = load_optional(f"{folder}/{index_name}") if folder != "data" else {}
     wanted = (copy.get("source"), copy.get("className"))  # bestiary/spells by book, class by class
     for src, name in index.items():
         if any(same(src, w) for w in wanted if w):
@@ -303,6 +307,13 @@ def apply_mod(entry, field, info):
                 for p in props:
                     if p and p in item:
                         item[p] = replace_text(item[p], regex, repl)
+        return
+    if mode == "setProp":
+        steps = [field] + (info["prop"].split(".") if info.get("prop") else [])
+        target = entry
+        for step in steps[:-1]:
+            target = target.setdefault(step, {})
+        target[steps[-1]] = copy_of(info.get("value"))
         return
     array_modes = ("appendArr", "prependArr", "insertArr", "replaceArr", "replaceOrAppendArr",
                    "removeArr", "appendIfNotExistsArr")
@@ -1533,12 +1544,103 @@ RENDERERS = {"spell": render_spell, "monster": render_monster,
              "baseitem": render_item, "item": render_item, "magicvariant": render_item}
 
 
-def render(key, entry, data, edition=None):
+# --- Description: the entry's fluff, a section of the note, never of its stat block ----
+
+# Kinds whose fluff is another kind's; every other key's is `<key>Fluff`.
+FLUFF_OF = {"baseitem": "item", "magicvariant": "item", "subrace": "race"}
+# Data files whose fluff is not in `fluff-<file name>` beside them.
+FLUFF_FILES = {"data/items-base.json": "data/fluff-items.json",
+               "data/magicvariants.json": "data/fluff-items.json"}
+# What a fluff entry may hold besides its text; its images are out of scope.
+FLUFF_FIELDS = {"name", "source", "page", "shortName", "className", "classSource", "type",
+                "entries", "images", "_meta"}
+# Flags that append a text the fluff file shares, from `<prop>Meta` (the 2014 PHB's sidebars
+# on uncommon and monstrous races), as 5etools shows it.
+FLUFF_SHARED = ("uncommon", "monstrous")
+
+
+def unsupported_fluff(what, name):
+    raise Failure(6, f"unsupported {what} in the description of '{name}': "
+                     f"this helper cannot render the entry.")
+
+
+def fluff_file(path):
+    folder, base = os.path.split(path)
+    return FLUFF_FILES.get(path, f"{folder}/fluff-{base}")
+
+
+def fluff_ref(key, entry):
+    """The fields that name an entry's fluff: a subrace's is its merged name, "Race (Subrace)"."""
+    if key == "subrace":
+        race = entry.get("raceName") or ""
+        name = f"{race[:-1]}; {entry['name']})" if race.endswith(")") else f"{race} ({entry['name']})"
+        return {"name": name, "source": entry.get("source")}
+    ref = {"name": entry.get("name"), "source": entry.get("source")}
+    if key == "subclass":
+        ref.update(className=entry.get("className"), classSource=entry.get("classSource"))
+    return ref
+
+
+def fluff_entries(prop, path, ref):
+    for f in load_optional(path).get(prop, []):
+        if isinstance(f, dict) and all(same(f.get(k), v) for k, v in ref.items()):
+            f = resolve(prop, f, path)
+            unknown = sorted(k for k in f if k not in FLUFF_FIELDS and k not in FLUFF_SHARED)
+            if unknown:
+                unsupported_fluff(", ".join(unknown), ref["name"])
+            entries = f.get("entries") or []
+            if not isinstance(entries, list):
+                malformed(f"the description of '{ref['name']}' is not a list")
+            shared = load_optional(path).get(f"{prop}Meta") or {}
+            for flag in FLUFF_SHARED:
+                if f.get(flag):
+                    if flag not in shared:
+                        malformed(f"the description of '{ref['name']}' appends a missing '{flag}' text")
+                    entries = entries + [shared[flag]]
+            return entries
+    return []
+
+
+def description(key, entry, path):
+    """The entry's description (its fluff), as entries: [] when it has none, or only images."""
+    if key == "subrace" and not entry.get("name"):
+        return []
+    prop = FLUFF_OF.get(key, key) + "Fluff"
+    own = entry.get("fluff")
+    if isinstance(own, dict):
+        for k in own:
+            if k not in FLUFF_FIELDS and k not in (f"_{prop}", f"_append{prop[0].upper()}{prop[1:]}"):
+                unsupported_fluff(f"'{k}'", entry.get("name"))
+        entries = list(own.get("entries") or [])
+        if own.get(f"_{prop}"):
+            entries = fluff_entries(prop, fluff_file(path), own[f"_{prop}"]) or entries
+        appended = own.get(f"_append{prop[0].upper()}{prop[1:]}")
+        if appended:
+            entries += fluff_entries(prop, fluff_file(path), appended)
+        return entries
+    if not entry.get("hasFluff"):
+        return []
+    entries = fluff_entries(prop, fluff_file(path), fluff_ref(key, entry))
+    if key == "subrace":  # a subrace's note holds only what it adds to its race's
+        race = fluff_entries(prop, fluff_file(path), {"name": entry.get("raceName"),
+                                                      "source": entry.get("raceSource")})
+        entries = [e for e in entries if e not in race]
+    return entries
+
+
+def render(key, entry, path, edition=None):
+    data = load(path)
     add_features(data)
     if key in ("race", "subrace"):
         blocks = render_race(key, entry, data)
     else:
         blocks = RENDERERS.get(key, render_generic)(key, entry)
+    about = render_entries(description(key, entry, path), 1)
+    if about:
+        # A monster's comes before its stat lines, as in the Monster Manual; any other
+        # entry's text has no heading of its own, so its description closes the note.
+        at = blocks.index("## Stat Block") if key == "monster" else len(blocks)
+        blocks[at:at] = ["## Description"] + about
     if key == "monster":
         blocks.insert(1, statblock_fence(entry, edition))
     return "\n\n".join(b for b in blocks if b) + "\n"
@@ -1620,7 +1722,7 @@ def main(argv):
     key, entry = find(path, name, source, opts.get("--key"), opts.get("--class-source"))
     if "--meta" in flags:
         return json.dumps(meta(key, entry), indent=2, ensure_ascii=False) + "\n"
-    return render(key, entry, load(path), opts.get("--edition"))
+    return render(key, entry, path, opts.get("--edition"))
 
 
 if __name__ == "__main__":

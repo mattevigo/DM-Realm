@@ -8,6 +8,7 @@
 #               BOFI Beasts of the Far Isles (2021)
 #   2024 books: EMBC Ember Codex (2025), FAR Far Reaches Bestiary (2025; listed, never cached)
 #   Adventure:  SACR The Salt Crypt (2025)
+#   Descriptions (fluff): only the Wisp Hound's, in bestiary/fluff-bestiary-embc.json
 CACHE="$HOME/.dm-realm/source-cache"
 D="$CACHE/v3.0.0/data"
 mkdir -p "$D/spells" "$D/bestiary" "$D/class"
@@ -104,7 +105,25 @@ cat > "$D/bestiary/bestiary-embc.json" <<'JSON'
    "initiative": {"proficiency": 1}, "str": 8, "dex": 15, "con": 14, "int": 9, "wis": 10, "cha": 8,
    "skill": {"stealth": "+6"}, "senses": ["darkvision 60 ft."], "passive": 10, "languages": ["Common", "Goblin"], "cr": "1/2",
    "trait": [{"name": "Reed Walker", "entries": ["The goblin moves through reeds and mud without spending extra movement."]}],
-   "action": [{"name": "Reed Spear", "entries": ["{@atkr m,r} {@hit 4}, reach 5 ft. or range 20/60 ft. {@h}6 ({@damage 1d8 + 2}) Piercing damage."]}]}
+   "action": [{"name": "Reed Spear", "entries": ["{@atkr m,r} {@hit 4}, reach 5 ft. or range 20/60 ft. {@h}6 ({@damage 1d8 + 2}) Piercing damage."]}]},
+  {"name": "Wisp Hound", "source": "EMBC", "page": 152, "hasFluff": true, "hasFluffImages": true,
+   "size": ["M"], "type": "fey", "alignment": ["C", "N"],
+   "ac": [13], "hp": {"average": 27, "formula": "5d8 + 5"}, "speed": {"walk": 40},
+   "initiative": {"proficiency": 1}, "str": 12, "dex": 16, "con": 12, "int": 6, "wis": 14, "cha": 10,
+   "senses": ["darkvision 120 ft."], "passive": 12, "languages": ["understands Sylvan but can't speak"], "cr": "1",
+   "action": [{"name": "Cold Bite", "entries": ["{@atkr m} {@hit 5}, reach 5 ft. {@h}7 ({@damage 1d8 + 3}) Cold damage."]}]}
+]}
+JSON
+cat > "$D/bestiary/fluff-index.json" <<'JSON'
+{"EMBC": "fluff-bestiary-embc.json"}
+JSON
+cat > "$D/bestiary/fluff-bestiary-embc.json" <<'JSON'
+{"monsterFluff": [
+  {"name": "Wisps", "source": "EMBC", "entries": [{"type": "entries", "entries": [
+    {"type": "section", "name": "Wisps", "entries": ["Wisps are lost lantern flames that learned to wander on their own."]}]}],
+   "images": [{"type": "image", "href": {"type": "internal", "path": "bestiary/EMBC/Wisps.webp"}}]},
+  {"name": "Wisp Hound", "source": "EMBC", "_copy": {"name": "Wisps", "source": "EMBC", "_mod": {
+    "entries": {"mode": "prependArr", "items": {"type": "section", "entries": ["Wisp hounds follow travelers who whistle after dark, and never bark."]}}}}}
 ]}
 JSON
 cat > "$D/bestiary/bestiary-bofi.json" <<'JSON'

@@ -902,6 +902,121 @@ has "subclass copy meta" "$OUT" '"class_source": "CNR"'
 has "subclass copy meta" "$OUT" '"source_property": "TOR p. 47, v9.9.9"'
 has "subclass copy meta" "$OUT" '"edition": "2014"'
 
+# --- Descriptions: the entry's fluff, a section of the note and never of its stat block --
+python3 - "$DATA" <<'PY'
+import json, sys
+data = sys.argv[1]
+def edit(path, fn):
+    p = f"{data}/{path}"; d = json.load(open(p)); fn(d); json.dump(d, open(p, "w"))
+edit("bestiary/bestiary-cnr.json", lambda d: d["monster"].extend([
+  {"name": "Lamp Drake", "source": "CNR", "page": 52, "hasFluff": True, "hasFluffImages": True,
+   "size": ["S"], "type": "dragon", "alignment": ["N"], "ac": [13], "hp": {"average": 9, "formula": "2d6 + 2"},
+   "speed": {"walk": 30}, "passive": 10, "cr": "1/2",
+   "trait": [{"name": "Wick Heart", "entries": ["The drake glows."]}]},
+  {"name": "Old Drake", "source": "CNR", "page": 53, "hasFluff": True,
+   "size": ["M"], "type": "dragon", "ac": [15], "hp": {"average": 30, "formula": "4d8 + 12"}, "passive": 10, "cr": "2"}]))
+edit("bestiary/bestiary-tor.json", lambda d: d["monster"][0].update(hasFluffImages=True))
+edit("races.json", lambda d: (d["race"][0].update(hasFluff=True), d["subrace"][0].update(hasFluff=True)))
+edit("items-base.json", lambda d: d["baseitem"][0].update(hasFluff=True))
+edit("class/class-lamplighter.json", lambda d: d["subclass"][0].update(
+  fluff={"_subclassFluff": {"name": "Path of the Wick", "shortName": "Wick", "source": "CNR",
+                            "className": "Lamplighter", "classSource": "CNR"}}))
+PY
+seed bestiary/fluff-bestiary-cnr.json <<'JSON'
+{"monsterFluff": [
+  {"name": "Drakes", "source": "CNR", "entries": [{"type": "entries", "entries": [
+    {"type": "section", "name": "Drakes", "entries": ["Drakes nest in old {@item lamp of echoes|CNR|lamps}."]}]}],
+   "images": [{"type": "image", "href": {"type": "internal", "path": "drakes.webp"}}]},
+  {"name": "Lamp Drake", "source": "CNR", "_copy": {"name": "Drakes", "source": "CNR", "_mod": {
+    "entries": {"mode": "prependArr", "items": {"type": "section", "entries": ["Lamp drakes guard the lamplighters."]}},
+    "images": {"mode": "appendArr", "items": {"type": "image", "href": {"type": "internal", "path": "lamp.webp"}}}}}},
+  {"name": "Old Drake", "source": "CNR", "_copy": {"name": "Drakes", "source": "CNR", "_mod": {
+    "entries": {"mode": "setProp", "value": [{"type": "entries", "entries": ["Old drakes have forgotten fire."]}]}}}},
+  {"name": "Ember Moth", "source": "CNR", "entries": ["Nothing points here: the moth has no hasFluff."]}
+]}
+JSON
+seed fluff-races.json <<'JSON'
+{"raceFluff": [
+  {"name": "Lampkin", "source": "TOR", "uncommon": true, "entries": [{"type": "entries", "entries": ["Lampkin are born in lanterns."]}]},
+  {"name": "Lampkin (Wick)", "source": "TOR", "_copy": {"name": "Lampkin", "source": "TOR", "_mod": {
+    "entries": {"mode": "prependArr", "items": {"type": "entries", "entries": ["Wick lampkin burn slowly."]}}}}}
+ ],
+ "raceFluffMeta": {"uncommon": {"name": "Rare Folk", "type": "inset", "entries": ["Few have met one."]}}}
+JSON
+seed fluff-items.json <<'JSON'
+{"itemFluff": [{"name": "Hooked Blade", "source": "CNR", "entries": ["Harbor guards carry it."]}]}
+JSON
+seed class/fluff-class-lamplighter.json <<'JSON'
+{"subclassFluff": [{"name": "Path of the Wick", "shortName": "Wick", "source": "CNR", "className": "Lamplighter",
+  "classSource": "CNR", "entries": ["Wick walkers keep the night roads."]}]}
+JSON
+OUT=$(render data/bestiary/bestiary-cnr.json "Lamp Drake" CNR) || fail "monster description: exit $?: $(cat "$TMP/err")"
+# Under the fence, before the stat lines; its own text first, then what it copies.
+has "monster description" "$OUT" '```
+
+## Description
+
+Lamp drakes guard the lamplighters.
+
+***Drakes.*** Drakes nest in old lamps.
+
+## Stat Block'
+FENCE=$(printf '%s\n' "$OUT" | sed -n '/^```statblock$/,/^```$/p')
+hasnt "description not in the fence" "$FENCE" "drakes"
+hasnt "description not in the fence" "$FENCE" "Description"
+hasnt "description images" "$OUT" ".webp"
+OUT=$(render data/bestiary/bestiary-cnr.json "Old Drake" CNR) || fail "setProp: exit $?: $(cat "$TMP/err")"
+has setProp "$OUT" "## Description
+
+Old drakes have forgotten fire."
+hasnt setProp "$OUT" "Drakes nest"
+# Without hasFluff there is no description, even when the fluff file names the entry;
+# with only images (hasFluffImages) there is none either, and no fluff file is fetched.
+OUT=$(render data/bestiary/bestiary-cnr.json "Ember Moth" CNR)
+hasnt "no hasFluff" "$OUT" "## Description"
+OUT=$(render data/bestiary/bestiary-tor.json "Quill Hound" TOR) || fail "images only: exit $?: $(cat "$TMP/err")"
+hasnt "images only" "$OUT" "## Description"
+# Any other entry's description closes the note.
+OUT=$(render data/races.json Lampkin TOR) || fail "race description: exit $?: $(cat "$TMP/err")"
+has "race description" "$OUT" "***Languages.*** Common and Lampish.
+
+## Description
+
+Lampkin are born in lanterns.
+
+> **Rare Folk**
+>
+> Few have met one."
+# A subrace's description is only what it adds to its race's.
+OUT=$(render data/races.json Wick TOR) || fail "subrace description: exit $?: $(cat "$TMP/err")"
+has "subrace description" "$OUT" "## Description
+
+Wick lampkin burn slowly."
+hasnt "subrace description" "$OUT" "born in lanterns"
+hasnt "subrace description" "$OUT" "Rare Folk"
+OUT=$(render data/items-base.json "Hooked Blade" CNR) || fail "item description: exit $?: $(cat "$TMP/err")"
+has "item description" "$OUT" "A curved blade.
+
+## Description
+
+Harbor guards carry it."
+OUT=$(render data/class/class-lamplighter.json "Path of the Wick" CNR) || fail "subclass description: exit $?: $(cat "$TMP/err")"
+has "subclass description" "$OUT" "Boom.
+
+## Description
+
+Wick walkers keep the night roads."
+# A description with something this helper does not know is refused, like a copy's modifier.
+python3 - "$DATA/fluff-items.json" <<'PY'
+import json, sys
+p = sys.argv[1]; d = json.load(open(p))
+d["itemFluff"][0]["_versions"] = [{"name": "Hooked Blade (Rusty)"}]
+json.dump(d, open(p, "w"))
+PY
+OUT=$(render data/items-base.json "Hooked Blade" CNR); CODE=$?
+[ "$CODE" -eq 6 ] || fail "unknown description field: expected exit 6, got $CODE ($(cat "$TMP/err"))"
+[ -z "$OUT" ] || fail "unknown description field: printed '$OUT'"
+
 # --- Errors: each has its exit code and prints nothing -------------------------------
 expect_exit() { # label code args…
   label=$1 code=$2; shift 2
