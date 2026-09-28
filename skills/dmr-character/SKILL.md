@@ -2,7 +2,7 @@
 name: dmr-character
 description: Characters in a DM Realm Workspace — create one ("a new character for Baldu", at any level), level it up or rebuild it ("Durga reaches level 6"), change its equipment, attunement, prepared spells, coins, backstory or status ("Durga attunes the belt", "Durga retires"), or transfer one from an old vault or another Workspace.
 argument-hint: <what to do, e.g. create a character for Baldu, Durga reaches level 6>
-allowed-tools: Read, Glob, Grep, Write, Edit, Skill, Bash(mkdir:*), Bash(cp:*), Bash(ls:*), Bash(sh:*), Bash(python3:*), Bash(DMR_SOURCE_CACHE=*)
+allowed-tools: Read, Glob, Grep, Write, Edit, Skill, AskUserQuestion, Bash(mkdir:*), Bash(cp:*), Bash(ls:*), Bash(sh:*), Bash(python3:*), Bash(DMR_SOURCE_CACHE=*)
 ---
 
 # Characters
@@ -113,6 +113,6 @@ A backstory may name places, NPCs and factions:
 What the DM decides — an option, a method, a roll, a consent — is a choice:
 
 - **A choice the DM's request already makes counts.**
-- **Ask once, then stop.** Gather every open choice you can ask now into one message, each with its options by name from the Trusted Source, and end your turn. A choice that depends on an answer waits for that answer. Off-Edition consent (structure.md's consent rule) is asked in the same message.
+- **Ask once, then stop.** Gather every open choice you can ask now into one message, each with its options by name from the Trusted Source, and end your turn. A choice that depends on an answer waits for that answer. Off-Edition consent (structure.md's consent rule) is asked in the same message. Creating a Character, this is Recap, and the DM may pick Guided instead: create.md's "Guided or Recap".
 - **Check each answer** against the Trusted Source rules — prerequisites, counts, the point-buy budget, the score cap — and ask again about what does not fit.
 - **Write once every choice is made**; until then the Workspace stays as it is.

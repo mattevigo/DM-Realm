@@ -11,10 +11,38 @@ A new Character, single class, at any level: level 1's choices, then each higher
    5. Starting equipment, as the Edition offers it: in 2024 the class's and the background's package, or the gold each offers instead; in 2014 the class's and background's packages, or the class's starting wealth (rolled by the DM).
    6. Each higher level up to the Character's, in order: the hit points gained (the DM's roll or the fixed value; ask once for every level), then that level's choices — subclass, feat or Ability Score Improvement, new cantrips and spells, feature options.
 
-   Ask for the open ones as SKILL.md's "Choices" says.
+   Ask for the open ones as SKILL.md's "Choices" says, in the mode the DM picks ([Guided or Recap](#guided-or-recap)).
 3. **Link every option** as SKILL.md's "Links" says, importing each missing Reference note with `dmr-import`.
 4. **Compute the numbers** in Statistics from the Build, as SKILL.md's "Numbers come from the Trusted Source" says.
 5. **Write the note** in SKILL.md's format, with `status` active and `level` the Character's level, and its stat block from the numbers just computed, its `name` checked as structure.md's "Names in the bestiary" says.
 6. **Report**: the note's path, its level and player, each Reference note imported, and each option the DM chose that is Off-Edition.
 
 Done when the note holds every choice, links every option, its numbers follow from the Build and the Trusted Source rules, and no past Build was written.
+
+## Guided or Recap
+
+When the request leaves choices open, the DM picks how step 2 asks them:
+
+- **Recap**: SKILL.md's "Ask once, then stop": one message with every open choice that can be asked now.
+- **Guided**: one choice at a time, in step 2's order.
+
+**The mode.** A request that names one ("guide me step by step", "list everything at once") uses it. Otherwise the mode is the first question, asked alone: a two-option dialog (`AskUserQuestion`) with Guided and Recap, in the Workspace Language, or a plain message when the dialog tool is unavailable (a non-interactive session, such as `claude -p`). A request that makes every choice asks nothing.
+
+**Guided.** Ask the next open choice, alone, and check its answer as SKILL.md's "Check each answer" says before asking the one after it:
+
+- **Two to four options**: a dialog, in the Workspace Language; a "pick N" choice (skills, spells) is multi-select. Its answer comes back in the same turn.
+- **More options** (a class, a species, spells from a list): a plain message with that choice and its whole list, then end your turn.
+- **No dialog tool**: every choice is a plain message, one per turn.
+- **Off-Edition consent** is a step of its own, right after the answer that brings the Off-Edition option.
+- **The backstory's choice** (SKILL.md's "Backstory and the DM's world") comes last, after every Build choice.
+
+**Marks.** In both modes, each choice asked in a plain message starts with the mark of its status:
+
+| Mark | Status | Followed by |
+| --- | --- | --- |
+| ❓ | Open | the choice and its options |
+| ✅ | Answered, and the answer fits the rules | the answer, in a few words |
+| 🟡 | Partly answered: one skill of two, hit points for some levels | what is still missing |
+| ⚠️ | To reconsider: the answer does not fit the rules | why, in a few words |
+
+In Recap, the message after each reply lists every choice again with its new mark. The marks are the same in every Workspace Language; the words beside them are in it.
