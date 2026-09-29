@@ -1,7 +1,6 @@
 ---
 type: regex
 target: {source: file, path: Characters/Brom/Brom.md}
-match: not_contains
-flags: i
+match: contains
 ---
-Ashes|Campaign
+^(?<![\s\S])# Brom\n\nDwarf fighter\. Feats: Alert\.\n$(?![\s\S])

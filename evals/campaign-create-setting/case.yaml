@@ -1,0 +1,13 @@
+schema_version: "1.1"
+name: campaign-create-setting
+description: "A Campaign set in an official Setting that is in Reference, running an Adventure the DM says is already under way: the README names the Setting where Reference keeps it, the Adventure with its stated status, and neither is asked again."
+tags: [campaign]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Start a new campaign called Jewel of the North, set in the Forgotten Realms.
+    It runs The Sunken Keep, which the group has already started playing.

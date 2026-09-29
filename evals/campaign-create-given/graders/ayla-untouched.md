@@ -1,7 +1,6 @@
 ---
 type: regex
 target: {source: file, path: Characters/Ayla/Ayla.md}
-match: not_contains
-flags: i
+match: contains
 ---
-Ashes|Campaign
+^(?<![\s\S])# Ayla\n\nElf ranger\. Feats: Alert\.\n$(?![\s\S])

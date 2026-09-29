@@ -1,6 +1,7 @@
 ---
-type: llm
-focus: last_message
+type: regex
+target: last_message
+match: contains
+flags: i
 ---
-
-- The reply offers to create a new Character for Baldu (and does not claim one was created).
+^(?=[\s\S]*\bBaldu\b)(?=[\s\S]*\bcreat)
