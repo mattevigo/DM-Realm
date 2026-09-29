@@ -682,7 +682,8 @@ seed class/class-lamplighter.json <<'JSON'
  "classFeature": [
   {"name": "Kindle", "source": "CNR", "page": 101, "className": "Lamplighter", "classSource": "CNR", "level": 1,
    "entries": ["You light things.", {"type": "refClassFeature", "classFeature": "Spark Rule|Lamplighter|CNR|1"},
-               {"type": "options", "count": 1, "entries": [{"type": "refOptionalfeature", "optionalfeature": "Ember Tongue|TOR"}]}]},
+               {"type": "options", "count": 1, "entries": [{"type": "refOptionalfeature", "optionalfeature": "Ember Tongue|TOR"},
+                                                           {"type": "refFeat", "feat": "Wick Warrior|CNR"}]}]},
   {"name": "Spark Rule", "source": "CNR", "page": 101, "className": "Lamplighter", "classSource": "CNR", "level": 1, "entries": ["Sparks fly."]},
   {"name": "Lamplighter Path", "source": "CNR", "page": 102, "className": "Lamplighter", "classSource": "CNR", "level": 2, "entries": ["Choose a path."]},
   {"name": "Hearth Craft", "source": "TOR", "page": 42, "className": "Lamplighter", "classSource": "CNR", "level": 2,
@@ -729,6 +730,7 @@ You light things.
 ***Spark Rule.*** Sparks fly.
 
 - Ember Tongue
+- Wick Warrior
 
 ## Level 2
 

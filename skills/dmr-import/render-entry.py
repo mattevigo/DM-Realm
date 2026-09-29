@@ -643,8 +643,8 @@ def render_entry(entry, depth):
         return ["---"]
     if kind in ("image", "gallery"):
         return []  # images are out of scope
-    if kind == "refOptionalfeature":
-        return [uid_name(entry.get("optionalfeature", ""))]
+    if kind in ("refOptionalfeature", "refFeat"):
+        return [uid_name(entry.get("optionalfeature" if kind == "refOptionalfeature" else "feat", ""))]
     if kind in ("refClassFeature", "refSubclassFeature"):
         feature = class_feature(entry.get(kind[3].lower() + kind[4:]), kind == "refSubclassFeature")
         return named_blocks(feature["name"], feature.get("entries", []), depth)
