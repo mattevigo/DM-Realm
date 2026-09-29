@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: campaign-create-adventure-parts
+description: "A Campaign running chapters of one Adventure and then another Adventure that is not in the Workspace: each is listed with its part and status, the missing one named without a link and reported, and nothing is written in Adventures."
+tags: [campaign]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Start a new campaign called The Long Road. It runs chapters 1 and 2 of The Sunken Keep, then The Glass Tower in full.
