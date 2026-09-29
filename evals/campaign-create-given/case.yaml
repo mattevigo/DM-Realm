@@ -1,0 +1,13 @@
+schema_version: "1.1"
+name: campaign-create-given
+description: "The request gives the world, an Adventure, the party and the starting level: the README records them (Adventure and Characters linked, the Adventure whole and planned), the Characters stay unchanged, and none of them is asked again."
+tags: [campaign]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Start a new campaign called Ashes of Orsenna. It is set in my world, Orsenna, and based on The Sunken Keep.
+    Ayla and Brom are in the party, starting at level 3.

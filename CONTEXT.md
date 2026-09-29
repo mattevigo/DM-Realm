@@ -69,8 +69,8 @@ DM-authored game material with mechanics — rules, classes, species, background
 _Avoid_: Custom, house content
 
 **Adventure**:
-An official published adventure — its places, NPCs and items as the book describes them — kept apart from any Campaign that runs it.
-_Avoid_: Module, scenario
+An official published adventure — its places, NPCs and items as the book describes them — kept apart from any Campaign that runs it. Only official: a plot the DM writes is never an Adventure, but that Campaign's own content.
+_Avoid_: Module, scenario, homebrew adventure
 
 **Setting**:
 The lore of a game world — geography, pantheon, history. An official Setting is Reference; the DM's own lore is World; how a Campaign has changed it belongs to that Campaign.
@@ -95,7 +95,7 @@ Bringing an existing Character into the Workspace from outside it — another Wo
 _Avoid_: Import (which is only from the Trusted Source), copy, migrate
 
 **Campaign**:
-One ongoing game with its own party of Characters, Sessions and story; what actually happened at the table, including what happened to its Characters. May run any number of Adventures, and may draw on every other Scope.
+One ongoing game with its own party of Characters, Sessions and story; what actually happened at the table, including what happened to its Characters. Set in one world (an official Setting, the DM's World, or both), it may run any number of Adventures — whole or in part, one after another — and may draw on every other Scope. Its party may be empty when it starts.
 
 **Template**:
 A blank starting note for a kind of content, copied when a new note is created. Not a Scope.

@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: campaign-create-new-character
+description: "A party member who is not a Character yet is not written: the existing one is linked, and the agent offers to create the new one with dmr-character."
+tags: [campaign]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Start a new campaign called Heroes of the Border. The party is Ayla and a new character for Baldu.
