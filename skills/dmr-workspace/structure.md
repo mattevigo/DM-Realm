@@ -223,7 +223,7 @@ Blank starting notes, copied when a new note is created. Not a Scope. There is o
 | `templates.house_rule`       | House_Rule (a note)        | first Setup | A House Rule                                  |
 | `templates.homebrew_spell`   | Homebrew_Spell (a note)    | first Setup | A homebrew spell                              |
 | `templates.homebrew_item`    | Homebrew_Item (a note)     | first Setup | A homebrew item                               |
-| `templates.homebrew_monster` | Homebrew_Monster (a note)  | first Setup | A homebrew monster, with an empty [stat block](#stat-blocks) fence |
+| `templates.homebrew_monster` | Homebrew_Monster (a note)  | first Setup | A homebrew monster, with empty [statistics](#stat-blocks) in the Workspace's form |
 
 - **The first Setup writes them**, in the Workspace Language; their content is the `dmr-setup` skill's. A Setup re-run never overwrites one: it offers to add a missing one, and adds it only on the DM's yes.
 - **The agent creates a note of these kinds from the Template in use**, the DM's edits included. A Template links to nothing ([Link rules](#link-rules)); if the DM's Template holds a link anyway, the new note keeps it only where its own Scope allows it, and the agent says which it left out.
@@ -291,10 +291,10 @@ Every note imported from the Trusted Source records its source in a frontmatter 
 ### Imported notes
 
 - **Its file name** is the entry's name translated into the Workspace Language (see [Translating a term](#translating-a-term)), with the [name rules](#name-rules) applied: `Fireball.md`, `Palla_di_Fuoco.md`.
-- **Its frontmatter** holds only the source property — and, for a monster, the `statblock` flag ([Stat blocks](#stat-blocks)).
-- **Its body** starts with the translated name as a `#` heading, then the entry's text, translated faithfully: every paragraph, list, table and number, nothing added. A monster's stat lines are one section of the note, and its [stat block](#stat-blocks) sits right under the heading.
-- **Its description**, when the Trusted Source has one, is a section of the body headed Description (translated): for a monster before its stat lines, as the Monster Manual puts it; for any other entry at the end of the note. A subrace's holds only what it adds to its race's. It is never in the stat block.
-- **Its images** — every image the entry shows, such as a monster's picture or an Adventure's map — are fetched through the Source Cache, copied into the [Attachments](#attachments) folder of the note's Scope (Reference › Attachments, or the Adventure's), and embedded where the Trusted Source places them. Each file is named after its note, with the image's own extension: `Palla_di_Fuoco.webp`, or `Palla_di_Fuoco_01.webp`, `Palla_di_Fuoco_02.webp` when there are several. A note never embeds a remote URL.
+- **Its frontmatter** holds only the source property — and, for a monster in a Workspace that writes stat blocks, the `statblock` flag ([Stat blocks](#stat-blocks)).
+- **Its body** starts with the translated name as a `#` heading, then the entry's text, translated faithfully: every paragraph, list, table and number, nothing added. A monster's body is its description, then its [statistics](#stat-blocks), last.
+- **Its description**, when the Trusted Source has one, is a section of the body headed Description (translated): its images first, then its text; for a monster before its statistics, for any other entry at the end of the note. A subrace's holds only what it adds to its race's. It is never in the statistics.
+- **Its images** — every image the entry shows, such as a monster's picture or an Adventure's map — are fetched through the Source Cache, copied into the [Attachments](#attachments) folder of the note's Scope (Reference › Attachments, or the Adventure's), and embedded where the Trusted Source places them: a description's first, an image in the entry's text where it stands. One inside a monster's statistics goes under its stat block fence, which cannot show it. Each file is named after its note, with the image's own extension: `Palla_di_Fuoco.webp`, or `Palla_di_Fuoco_01.webp`, `Palla_di_Fuoco_02.webp` when there are several. A note never embeds a remote URL.
 - **An Off-Edition note** has, right under its heading, an Obsidian callout in the Workspace Language naming the Edition it belongs to: `> [!warning] Off-Edition Material (2014)`.
 - **It is found by its path.** The translated name comes from the Translation Glossary, so an entry always gets the same path. When a note is already at that path, an Import of the entry writes nothing and tells the DM; replacing it is the [update check](#checking-for-updates).
 
@@ -308,7 +308,12 @@ A re-import replaces the note's official content wholesale, and its images with 
 
 ## Stat blocks
 
-A note with game statistics — a monster, an NPC's mechanics, a Character — shows them as a stat block for Fantasy Statblocks (`obsidian-5e-statblocks`), the Obsidian plugin that renders them and keeps a bestiary, which MapForge (the DM's initiative tracker) reads too. The format is the plugin's inline mode: the frontmatter flag `statblock: inline` and one ```` ```statblock ```` fence of YAML in the body, right under the `#` heading (and its callout, if any):
+A note with game statistics — a monster, an NPC's mechanics — writes them once, last in the note, in the form the Workspace chose at Setup: the Workspace Config's `stat_blocks` ([ADR 0009](../../docs/adr/0009-a-workspace-writes-statistics-once-as-a-stat-block-or-as-markdown.md)). A Character is outside that choice ([Characters' stat blocks](#characters-stat-blocks)).
+
+- **`true` — a stat block** for Fantasy Statblocks (`obsidian-5e-statblocks`), the Obsidian plugin that renders it and keeps a bestiary, which MapForge (the DM's initiative tracker) reads too. The format is the plugin's inline mode: the frontmatter flag `statblock: inline` and one ```` ```statblock ```` fence of YAML as the note's statistics section.
+- **`false` — Markdown**: the same statistics as DM Realm's Markdown, with no fence and no flag.
+
+A monster's statistics section is headed Stat Block (translated). As a stat block:
 
 ````markdown
 ---
@@ -316,6 +321,14 @@ statblock: inline
 ---
 
 # Bog Goblin
+
+## Description
+
+![[Bog_Goblin.webp]]
+
+Bog goblins nest in the reeds of the southern marshes.
+
+## Stat Block
 
 ```statblock
 name: Bog Goblin
@@ -342,26 +355,68 @@ actions:
 ```
 ````
 
-- **The plugin is optional.** Every note is correct and readable without it; without it the fence shows as a YAML code block. DM Realm never installs it, and never uses its own 5etools import or its bundled SRD ([ADR 0003](../../docs/adr/0003-official-material-comes-only-from-5etools.md)): Setup turns the SRD off.
-- **A derived view.** The stat block is derived from the note's body, which stays the source of truth — the rendered entry for a monster, the Build for a Character — and is never the only place a value or a link lives: Obsidian does not index links inside a fence, so every link stays in the body, and "who uses this" still comes from the body's links. Whenever the body changes (an Import, a Character's creation, level-up, update or Transfer, a Promotion), the fence is written again from it, with the same numbers.
-- **One fence per note**, and only where the table below puts one.
-- **Game statistics only.** A monster's description stays in the body, never in the fence.
+As Markdown, the same section reads:
+
+```markdown
+## Stat Block
+
+%% statblock
+name: Bog Goblin
+%%
+
+*Small fey (goblinoid), neutral*
+
+**Armor Class** 14
+**Hit Points** 11 (2d6 + 4)
+**Speed** 30 ft., swim 30 ft.
+**Initiative** +4 (14)
+
+| STR | DEX | CON | INT | WIS | CHA |
+| --- | --- | --- | --- | --- | --- |
+| 8 (-1) | 15 (+2) | 14 (+2) | 9 (-1) | 10 (+0) | 8 (-1) |
+
+**Skills** Stealth +6
+**Senses** darkvision 60 ft., passive Perception 10
+**Languages** Common, Goblin
+**Challenge** 1/2 (XP 100; PB +2)
+
+### Traits
+
+- ***Reed Walker.*** The goblin moves through reeds and mud without spending extra movement.
+
+### Actions
+
+- ***Reed Spear.*** *Melee or Ranged Attack Roll:* +4, reach 5 ft. or range 20/60 ft. *Hit:* 6 (1d8 + 2) Piercing damage.
+```
+
+- **One set of statistics, in two forms.** Both hold the same keys ([Keys and values](#keys-and-values)); the Markdown's labels are the layouts' own ([Layouts](#layouts)), translated through the Translation Glossary, and its `%% statblock` comment, which Obsidian does not show, keeps the keys it does not display (`name`, `layout`, `extends`, `bestiary`). The `statblock.py` helper next to this file writes the Markdown from a fence and converts a note between the two, with the same values and translations.
+- **Written once, and last.** A note never holds both forms, and nothing else in it repeats their numbers. They come after everything else: a monster's images and description. Whenever the note changes (an Import, a Promotion), its statistics are written again, in the Workspace's form.
+- **No link lives only in a fence**: Obsidian does not index links inside one. Statistics that name other notes (the spells a Homebrew monster casts) name them as plain text in the fence, and the links stand on one line right under it.
+- **Changing the form is a [Setup](#workspace-config) re-run**, which converts every note with statistics but a Character's, after a preview. An edit to `stat_blocks` alone changes nothing until then.
+- **The plugin is optional.** DM Realm never installs it, and never uses its own 5etools import or its bundled SRD ([ADR 0003](../../docs/adr/0003-official-material-comes-only-from-5etools.md)): Setup turns the SRD off. Without it a fence shows as a YAML code block, so Setup recommends Markdown when the plugin is not installed; without fences, MapForge has no creature to place.
+- **Game statistics only.** A monster's description stays in the body, never in its statistics.
 
 ### Which notes have one
 
-| Note | Stat block |
+Each of these statistics is a fence or Markdown, as the Workspace chose.
+
+| Note | Statistics |
 | --- | --- |
-| Reference monster | A full fence, rendered by the Import's helper from the Trusted Source entry, then translated |
-| Homebrew monster, and a Campaign-only monster (a Campaign's Homebrew_Monsters) | A full fence, written by the agent from the note's stat lines. Promotion moves it intact |
-| Adventure NPC | A link to its Reference monster (a real link, in the body). A fence only when the Adventure changes something: `extends:` the monster plus the changed values alone. No change, no fence — and no bestiary entry |
-| Campaign NPC | The same as an Adventure NPC. A unique NPC may have a full fence written from scratch; its mechanics stay in the Campaign until Promotion moves them to Homebrew Monsters |
+| Reference monster | All of them, rendered by the Import's helper from the Trusted Source entry, then translated |
+| Homebrew monster, and a Campaign-only monster (a Campaign's Homebrew_Monsters) | All of them, written by the agent. Promotion moves them intact |
+| Adventure NPC | A link to its Reference monster (a real link, in the body). Statistics only when the Adventure changes something: `extends:` the monster plus the changed values alone. No change, no statistics — and no bestiary entry |
+| Campaign NPC | The same as an Adventure NPC. A unique NPC may have full statistics written from scratch; its mechanics stay in the Campaign until Promotion moves them to Homebrew Monsters |
 | World NPC | None: World has no mechanics ([ADR 0005](../../docs/adr/0005-the-dms-world-is-a-scope-apart-from-homebrew.md)). The World note links to the Homebrew or Reference monster that holds them (see [World](#world--world)) |
-| Character | A fence in the Character layout, written by the agent from the Build with the same numbers as its calculation (the `dmr-character` skill's format) |
+| Character | A fence in the Character layout, whatever `stat_blocks` says ([Characters' stat blocks](#characters-stat-blocks)) |
 | A Character's past Build, kept at a level-up or rebuild | Its copy of the fence stays, as a snapshot, with `bestiary: false`; its frontmatter drops the `statblock` flag |
 | A past Build brought by a Transfer | None: it is plain history, with no computed numbers |
-| The Homebrew monster [Template](#templates--templates) | An empty fence, filled in the note made from it |
+| The Homebrew monster [Template](#templates--templates) | Empty statistics, filled in the note made from it |
 
-A Promotion to World moves a Campaign NPC's fence out of the NPC note into a new Homebrew Monsters note, which the World note then links to.
+A Promotion to World moves a Campaign NPC's statistics out of the NPC note into a new Homebrew Monsters note, which the World note then links to.
+
+### Characters' stat blocks
+
+A Character note keeps its stat block whatever `stat_blocks` says, and a Setup re-run never converts it: the frontmatter flag `statblock: inline` and one ```` ```statblock ```` fence in the `DM Realm Character` layout, right under the `#` heading (and its callout, if any). The fence is a view derived from the note's Build and its Statistics section, which stay the source of truth: the same numbers, written again whenever they change, and never the only place a value or a link lives. The note's format is the `dmr-character` skill's.
 
 ### Keys and values
 
@@ -394,7 +449,7 @@ The Workspace's Edition sets the default layout, so a monster of the Edition nam
 
 The plugin's bestiary is keyed by `name`: a second fence with the same name silently replaces the first, and an `extends` naming no stat block is silently ignored. So, before writing a fence:
 
-- **Its `name` is unique** among the Workspace's fences in the bestiary (every fence without `bestiary: false`): Grep the Workspace for a `name:` line with it inside a `statblock` fence. On a clash the agent writes nothing and asks the DM for another name — an NPC called "Bog Goblin" when a Reference monster already is. The same monster imported again is not a clash: it is already imported.
+- **Its `name` is unique** among the Workspace's statistics in the bestiary (every one without `bestiary: false`), in either form, so that a later change of form cannot clash: Grep the Workspace for a `name:` line with it inside a `statblock` fence or a `%% statblock` comment. On a clash the agent writes nothing and asks the DM for another name — an NPC called "Bog Goblin" when a Reference monster already is. The same monster imported again is not a clash: it is already imported.
 - **Its `extends` target exists**: the `name` of a fence already in the Workspace, importing the Reference monster first when it is missing.
 
 ### MapForge
@@ -462,6 +517,7 @@ Because the Workspace Config can be edited, the values in use are read from the 
 | -------------------- | ---------------------------------------------------------------------------------------------- |
 | `language`           | The Workspace Language, as its name in any language (`English`, `Italiano`, `Deutsch`…). Fixed after Setup. |
 | `edition`            | The Edition: `2014` or `2024`. Fixed once rules material is imported.                         |
+| `stat_blocks`        | `true`: monsters' and NPCs' statistics are Fantasy Statblocks fences; `false`: Markdown ([Stat blocks](#stat-blocks)). Characters keep their fence either way. Setup asks, recommending `true` when the plugin is installed. A Config without it counts as `true` until a Setup re-run asks. |
 | `folders.<key>`      | The name of the top-level folder with that key (`reference`, `adventures`, `homebrew`, `world`, `characters`, `campaigns`, `dm_tools`, `templates`). Empty means the agent's translation of the default English name. |
 
 - **A top-level folder name is a single folder name directly under the Workspace root** — never a path (`Games/Active`, `../Games`), never empty after the [name rules](#name-rules) are applied, never the same as another top-level folder. On an invalid name the agent writes nothing and asks the DM for a valid one.

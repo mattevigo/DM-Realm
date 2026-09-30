@@ -11,4 +11,4 @@ execution:
   env:
     EVAL_DMR_OBSIDIAN_RUNNING: "0"
   prompt: |
-    /dm-realm:dmr-setup configura il workspace in italiano, regole 2024, nomi predefiniti, procedi
+    /dm-realm:dmr-setup configura il workspace in italiano, regole 2024, nomi predefiniti, con i blocchi delle statistiche, procedi

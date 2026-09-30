@@ -19,6 +19,8 @@ value() {
 
 LANGUAGE=$(value language)
 EDITION=$(value edition)
+STAT_BLOCKS=$(value stat_blocks)
+[ "$STAT_BLOCKS" = "(not set)" ] && STAT_BLOCKS="true (not in the Config yet: a Setup re-run asks)"
 FOLDERS=""
 for key in reference adventures homebrew world characters campaigns dm_tools templates; do
   FOLDERS="$FOLDERS
@@ -29,6 +31,7 @@ cat <<NOTICE
 This folder is a DM Realm Workspace. Its Workspace Config (workspace-config.yml) records:
 Workspace Language: ${LANGUAGE}
 Edition: ${EDITION}
+Stat blocks (stat_blocks): ${STAT_BLOCKS}
 Top-level folders, by key:${FOLDERS}
 (The dmr-workspace rules, "Fixed after Setup", say how to confirm the language and Edition in use.)
 Before writing, moving, renaming or linking any note or folder here, load the dmr-workspace skill and follow its rules.

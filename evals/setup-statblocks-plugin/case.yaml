@@ -11,4 +11,4 @@ execution:
   env:
     EVAL_DMR_OBSIDIAN_RUNNING: "0"
   prompt: |
-    /dm-realm:dmr-setup set up an English workspace, 2024 rules, default names, go ahead
+    /dm-realm:dmr-setup set up an English workspace, 2024 rules, default names, with stat blocks, go ahead

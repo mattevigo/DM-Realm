@@ -35,6 +35,7 @@ description holds a field it does not know, or an image is outside the image mir
 Exit 7: a malformed entry, or one that cannot be rendered. Exit 8: several entries match.
 Nothing is printed on stdout on any error.
 """
+import importlib.util
 import json
 import os
 import re
@@ -44,6 +45,11 @@ from collections import namedtuple
 
 SOURCE_CACHE_HELPER = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "..", "dmr-trusted-source", "source-cache.sh")
+# A note's statistics, as a fence or as Markdown: the module every DM Realm skill shares.
+_spec = importlib.util.spec_from_file_location("statblock", os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "..", "dmr-workspace", "statblock.py"))
+statblock = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(statblock)
 # The 2024 Player's Handbook: a book published before it is 2014, the rest 2024.
 EDITION_2024_BOOK = "XPHB"
 EDITION_2024_FALLBACK_DATE = "2024-09-17"
@@ -818,14 +824,7 @@ ALIGNMENT_SETS = {
     frozenset("L NX C G NY".split()): "any non-evil alignment",
     frozenset("L NX NY G E".split()): "any non-chaotic alignment",
 }
-XP = {"0": 10, "1/8": 25, "1/4": 50, "1/2": 100, "1": 200, "2": 450, "3": 700, "4": 1100,
-      "5": 1800, "6": 2300, "7": 2900, "8": 3900, "9": 5000, "10": 5900, "11": 7200, "12": 8400,
-      "13": 10000, "14": 11500, "15": 13000, "16": 15000, "17": 18000, "18": 20000, "19": 22000,
-      "20": 25000, "21": 33000, "22": 41000, "23": 50000, "24": 62000, "25": 75000, "26": 90000,
-      "27": 105000, "28": 120000, "29": 135000, "30": 155000}
 SPEEDS = ("walk", "burrow", "climb", "fly", "swim")
-SECTIONS = (("trait", "Traits"), ("action", "Actions"), ("bonus", "Bonus Actions"),
-            ("reaction", "Reactions"), ("legendary", "Legendary Actions"), ("mythic", "Mythic Actions"))
 SPELL_LEVELS = ["Cantrips", "1st level", "2nd level", "3rd level", "4th level", "5th level",
                 "6th level", "7th level", "8th level", "9th level"]
 
@@ -907,12 +906,6 @@ def armor_class(acs):
     return ", ".join(out)
 
 
-def hit_points(hp):
-    if hp.get("special"):
-        return plain(hp["special"])
-    return f"{hp.get('average')} ({hp.get('formula')})"
-
-
 def speed(speeds):
     out = []
     for mode in SPEEDS:
@@ -934,10 +927,6 @@ def title_words(s):
     return " ".join(w if w in small and i else w.capitalize() for i, w in enumerate(s.split()))
 
 
-def bonuses(values, names):
-    return ", ".join(f"{names(k)} {v}" for k, v in values.items() if isinstance(v, str))
-
-
 def damage_list(items, key):
     groups, simple = [], []
     for it in items or []:
@@ -952,23 +941,6 @@ def damage_list(items, key):
     return "; ".join(([", ".join(simple)] if simple else []) + groups)
 
 
-def challenge(cr):
-    def one(value):
-        xp = XP.get(str(value))
-        return f"{value} (XP {xp:,})" if xp is not None else str(value)
-    if isinstance(cr, dict):
-        pb = proficiency_bonus(cr.get("cr"))
-        s = one(cr.get("cr"))
-        s = s[:-1] + f"; PB +{pb})" if pb and s.endswith(")") else s
-        if cr.get("lair"):
-            s += f", or {one(cr['lair'])} in its lair"
-        if cr.get("coven"):
-            s += f", or {one(cr['coven'])} when part of a coven"
-        return s
-    s, pb = one(cr), proficiency_bonus(cr)
-    return s[:-1] + f"; PB +{pb})" if pb and s.endswith(")") else s
-
-
 def initiative_bonus(monster):
     """The initiative bonus the entry states (2024), else None."""
     init = monster.get("initiative")
@@ -981,11 +953,6 @@ def initiative_bonus(monster):
         pb = proficiency_bonus(cr.get("cr") if isinstance(cr, dict) else cr) or 2
         return modifier(monster.get("dex", 10)) + init.get("proficiency", 0) * pb
     return None
-
-
-def initiative(monster):
-    bonus = initiative_bonus(monster)
-    return None if bonus is None else f"{signed(bonus)} ({10 + bonus})"
 
 
 def gear(items):
@@ -1032,88 +999,12 @@ def spell_lines(sc):
     return ["\n".join(lines)] if lines else []
 
 
-def spellcasting_blocks(sc):
-    blocks = named_blocks(sc.get("name", "Spellcasting"), sc.get("headerEntries", []), 3)
-    return blocks + spell_lines(sc) + render_entries(sc.get("footerEntries", []), 3)
-
-
-def render_monster(key, m):
-    for field in ("size", "type", "ac", "hp"):
-        if field not in m:
-            malformed(f"monster '{m['name']}' has no {field}")
-    kind = f"{' or '.join(SIZES.get(s, s) for s in m['size'])} {creature_type(m['type'])}"
-    align = alignment(m.get("alignment"))
-    if m.get("alignmentPrefix"):
-        align = plain(m["alignmentPrefix"]) + align
-    core = [f"**Armor Class** {armor_class(m['ac'])}", f"**Hit Points** {hit_points(m['hp'])}",
-            f"**Speed** {speed(m.get('speed', {}))}"]
-    init = initiative(m)
-    if init:
-        core.append(f"**Initiative** {init}")
-    abilities = ["STR", "DEX", "CON", "INT", "WIS", "CHA"]
-    scores = [m.get(a.lower(), 10) for a in abilities]
-    table = "\n".join(["| " + " | ".join(abilities) + " |", "|" + " --- |" * 6,
-                       "| " + " | ".join(f"{s} ({signed(modifier(s))})" for s in scores) + " |"])
-    details = []
-    if m.get("save"):
-        details.append(f"**Saving Throws** {bonuses(m['save'], lambda k: k.capitalize())}")
-    if m.get("skill"):
-        details.append(f"**Skills** {bonuses(m['skill'], title_words)}")
-    for field, label, inner in (("vulnerable", "Damage Vulnerabilities", "vulnerable"),
-                                ("resist", "Damage Resistances", "resist"),
-                                ("immune", "Damage Immunities", "immune"),
-                                ("conditionImmune", "Condition Immunities", "conditionImmune")):
-        if m.get(field):
-            details.append(f"**{label}** {damage_list(m[field], inner)}")
-    if m.get("gear"):
-        details.append(f"**Gear** {gear(m['gear'])}")
-    senses = [plain(s) for s in m.get("senses") or []] + [f"passive Perception {m.get('passive', 10)}"]
-    details.append(f"**Senses** {', '.join(senses)}")
-    details.append(f"**Languages** {', '.join(plain(x) for x in m.get('languages') or []) or '—'}")
-    if m.get("cr") is not None:
-        details.append(f"**Challenge** {challenge(m['cr'])}")
-
-    blocks = [f"# {m['name']}", "## Stat Block", f"*{kind}{', ' + align if align else ''}*",
-              "\n".join(core), table, "\n".join(details)]
-    casting = {}
-    for sc in m.get("spellcasting", []):
-        casting.setdefault(sc.get("displayAs", "trait"), []).extend(spellcasting_blocks(sc))
-    for field, title in SECTIONS:
-        section = render_entries(m.get(f"{field}Header", []), 3)
-        if field == "legendary" and m.get("legendary") and not section:
-            uses = str(m.get("legendaryActions", 3))
-            if m.get("legendaryActionsLair"):
-                uses += f" ({m['legendaryActionsLair']} in Lair)"
-            section = [f"**Legendary Action Uses:** {uses}"]
-        for item in m.get(field) or []:
-            section.extend(render_entry(item, 3))
-        section.extend(casting.get(field, []))
-        if m.get(field) or casting.get(field):
-            blocks.extend([f"### {title}"] + section)
-    return blocks
-
-
 # --- Stat block fence (Fantasy Statblocks): keys in English, values to translate ------
 
 # The layout of each Edition's monsters; an Off-Edition monster names its own.
 MONSTER_LAYOUTS = {"2014": "DM Realm Monster 2014", "2024": "DM Realm Monster 2024"}
 FENCE_SECTIONS = (("trait", "traits"), ("action", "actions"), ("bonus", "bonus_actions"),
                   ("reaction", "reactions"), ("legendary", "legendary_actions"), ("mythic", "mythic_actions"))
-PLAIN_SCALAR = re.compile(r"[^\W_][\w ,.()/;'’+–—-]*(?<! )")
-YAML_AMBIGUOUS = re.compile(r"(?i)(true|false|yes|no|on|off|null|~|0x[\da-f_]+|0o?[0-7_]+|[-+]?(\d[\d_]*)?(\.\d*)?([e][-+]?\d+)?)")
-
-
-def yaml_scalar(value):
-    """A YAML scalar: numbers as they are, strings plain when that is unambiguous, else quoted."""
-    if isinstance(value, bool) or not isinstance(value, (int, str)):
-        malformed(f"a stat block value is not text or a number: {value!r}")
-    if isinstance(value, int):
-        return str(value)
-    if PLAIN_SCALAR.fullmatch(value) and not YAML_AMBIGUOUS.fullmatch(value):
-        return value
-    return json.dumps(value, ensure_ascii=False)
-
-
 def bonus_value(value):
     """A bonus such as "+4" as the number 4, for the table tools; any other text as it is."""
     text = str(value).strip().replace("−", "-")
@@ -1124,15 +1015,23 @@ def fence_items(items):
     out = []
     for item in items:
         if isinstance(item, dict) and "name" in item:
-            out.append({"name": plain(item["name"]), "desc": fence_text(render_entries(children(item), 3))})
+            out.append({"name": plain(item["name"]), "desc": "\n\n".join(render_entries(children(item), 3))})
         else:
-            out.append({"name": "", "desc": fence_text(render_entry(item, 3))})
+            out.append({"name": "", "desc": "\n\n".join(render_entry(item, 3))})
     return out
 
 
-def fence_text(blocks):
-    """An item's text in the stat block: its images are the body's alone."""
-    return "\n\n".join(b for b in blocks if not IMAGE_TOKEN.fullmatch(b))
+def without_images(value, found):
+    """A stat block value with its images taken out into found: a fence cannot show one."""
+    if isinstance(value, list):
+        return [without_images(v, found) for v in value]
+    if isinstance(value, dict):
+        return {k: without_images(v, found) for k, v in value.items()}
+    if isinstance(value, str) and IMAGE_TOKEN.search(value):
+        paragraphs = value.split("\n\n")
+        found.extend(p for p in paragraphs if IMAGE_TOKEN.fullmatch(p))
+        return "\n\n".join(p for p in paragraphs if not IMAGE_TOKEN.fullmatch(p))
+    return value
 
 
 def fence_ac(acs):
@@ -1152,8 +1051,9 @@ def fence_ac(acs):
     return ac, "; ".join(notes)
 
 
-def statblock_fence(m, workspace_edition=None):
-    """The monster as a Fantasy Statblocks fence (```statblock), for the note's stat block."""
+def statblock_fields(m, workspace_edition=None):
+    """The monster's statistics as stat block fields, in their order: written as the fence
+    (```statblock) or as Markdown by the shared statblock module."""
     fields = [("name", m["name"])]
     edition = edition_of(m.get("source"))
     if workspace_edition and edition and edition != workspace_edition:
@@ -1207,29 +1107,7 @@ def statblock_fence(m, workspace_edition=None):
         elif header:
             items = [{"name": "", "desc": header}] + items
         fields.append((key, items))
-    return fence(fields)
-
-
-def fence(fields):
-    lines = ["```statblock"]
-    for key, value in fields:
-        if value in (None, "", []):
-            continue
-        if key == "stats":
-            lines.append(f"stats: [{', '.join(yaml_scalar(v) for v in value)}]")
-        elif isinstance(value, list):
-            lines.append(f"{key}:")
-            for item in value:
-                pairs = list(item.items())
-                if key in ("saves", "skillsaves"):
-                    (name, v), = pairs
-                    lines.append(f"  - {yaml_scalar(name)}: {yaml_scalar(v)}")
-                else:
-                    lines.append(f"  - {pairs[0][0]}: {yaml_scalar(pairs[0][1])}")
-                    lines.extend(f"    {k}: {yaml_scalar(v)}" for k, v in pairs[1:])
-        else:
-            lines.append(f"{key}: {yaml_scalar(value)}")
-    return "\n".join(lines + ["```"])
+    return fields
 
 
 ITEM_TYPES = {
@@ -1598,7 +1476,7 @@ def render_class(key, cls):
         + features_by_level(cls.get("classFeatures", []), False, cls["source"])
 
 
-RENDERERS = {"spell": render_spell, "monster": render_monster,
+RENDERERS = {"spell": render_spell,
              "class": render_class, "subclass": render_class,
              "feat": render_feat, "optionalfeature": render_feat,
              "baseitem": render_item, "item": render_item, "magicvariant": render_item}
@@ -1668,9 +1546,9 @@ def fluff_entries(prop, path, ref):
 
 def description(key, entry, path):
     """The entry's description (its fluff), as entries: [] when it has none. Its images
-    come as 5etools shows them: the first above the text, the others after it."""
+    come first, above its text (ADR 0009)."""
     entries, images = description_parts(key, entry, path)
-    return images[:1] + entries + images[1:]
+    return images + entries
 
 
 def description_parts(key, entry, path):
@@ -1705,22 +1583,30 @@ def description_parts(key, entry, path):
     return Fluff(entries, images)
 
 
-def render(key, entry, path, edition=None, note=None):
+def render(key, entry, path, edition=None, note=None, stat_blocks=True):
     """The note's Markdown, and the images it embeds in its order."""
     data = load(path)
     add_features(data)
     if key in ("race", "subrace"):
         blocks = render_race(key, entry, data)
+    elif key == "monster":
+        for field in ("size", "type", "ac", "hp"):
+            if field not in entry:
+                malformed(f"monster '{entry['name']}' has no {field}")
+        blocks = [f"# {entry['name']}"]
     else:
         blocks = RENDERERS.get(key, render_generic)(key, entry)
     about = render_entries(description(key, entry, path), 1)
     if about:
-        # A monster's comes before its stat lines, as in the Monster Manual; any other
-        # entry's text has no heading of its own, so its description closes the note.
-        at = blocks.index("## Stat Block") if key == "monster" else len(blocks)
-        blocks[at:at] = ["## Description"] + about
-    if key == "monster":
-        blocks.insert(1, statblock_fence(entry, edition))
+        blocks += ["## Description"] + about
+    if key == "monster":  # its statistics come last, once: the fence or Markdown (ADR 0009)
+        fields = statblock_fields(entry, edition)
+        if stat_blocks:  # an image in its statistics goes under the fence, which cannot show it
+            images = []
+            fields = [(k, without_images(v, images)) for k, v in fields]
+            blocks += ["## Stat Block", statblock.fence(fields)] + images
+        else:
+            blocks += ["## Stat Block", statblock.markdown(fields)]
     stem = note or file_stem(entry["name"])
     return embed_images("\n\n".join(b for b in blocks if b) + "\n", stem)
 
@@ -1782,7 +1668,7 @@ def main(argv):
     i = 0
     while i < len(argv):
         a = argv[i]
-        if a in ("--key", "--class-source", "--edition", "--note"):
+        if a in ("--key", "--class-source", "--edition", "--note", "--stat-blocks"):
             if i + 1 >= len(argv):
                 raise Failure(2, f"{a} needs a value.")
             opts[a] = argv[i + 1]
@@ -1795,16 +1681,18 @@ def main(argv):
             i += 1
     if len(args) != 3 or not args[0].startswith("data/") \
             or opts.get("--edition", "2024") not in MONSTER_LAYOUTS \
+            or opts.get("--stat-blocks", "true") not in ("true", "false") \
             or flags >= {"--meta", "--images"} \
             or "--note" in opts and not valid_note(opts["--note"]):
         raise Failure(2, "usage: render-entry.py data/<file> <name> <source> "
-                         "[--key <key>] [--class-source <source>] [--edition 2014|2024] "
+                         "[--key <key>] [--class-source <source>] [--edition 2014|2024] [--stat-blocks true|false] "
                          "[--note <note file name, name rules applied>] [--meta | --images]")
     path, name, source = args
     key, entry = find(path, name, source, opts.get("--key"), opts.get("--class-source"))
     if "--meta" in flags:
         return json.dumps(meta(key, entry), indent=2, ensure_ascii=False) + "\n"
-    text, images = render(key, entry, path, opts.get("--edition"), opts.get("--note"))
+    text, images = render(key, entry, path, opts.get("--edition"), opts.get("--note"),
+                          opts.get("--stat-blocks", "true") == "true")
     if "--images" in flags:
         return json.dumps(images, indent=2, ensure_ascii=False) + "\n"
     return text
@@ -1813,7 +1701,7 @@ def main(argv):
 if __name__ == "__main__":
     try:
         sys.stdout.write(main(sys.argv[1:]))
-    except Failure as e:
+    except (Failure, statblock.Failure) as e:
         print(f"render-entry: {e}", file=sys.stderr)
         sys.exit(e.code)
     except (re.error, KeyError, IndexError, TypeError, ValueError, AttributeError) as e:

@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: setup-rerun-convert-markdown
+description: "A Setup re-run asked to switch to Markdown converts a monster's statistics with the same values, drops its statblock flag, records stat_blocks: false, and leaves the Character and its past Build as they were (ADR 0009)."
+tags: [setup, statblock]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  env:
+    EVAL_DMR_OBSIDIAN_RUNNING: "0"
+  prompt: |
+    /dm-realm:dmr-setup I want the statistics as Markdown instead of stat blocks. Convert everything, go ahead.
