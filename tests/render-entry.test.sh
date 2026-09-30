@@ -23,6 +23,8 @@ seed() { mkdir -p "$(dirname "$DATA/$1")"; cat > "$DATA/$1"; }
 seed_image() { mkdir -p "$(dirname "$DMR_SOURCE_CACHE/v9.9.9/img/$1")"; printf 'IMG %s' "$1" > "$DMR_SOURCE_CACHE/v9.9.9/img/$1"; }
 
 render() { python3 "$HELPER" "$@" 2>"$TMP/err"; }
+# md: the same render in a Workspace that writes statistics as Markdown (ADR 0009).
+md() { render "$@" --stat-blocks false; }
 # has <label> <text> <expected substring>
 has() { case "$2" in *"$3"*) ;; *) fail "$1: expected '$3' in:
 $2";; esac; }
@@ -289,19 +291,28 @@ seed bestiary/bestiary-cnr.json <<'JSON'
 ]}
 JSON
 OUT=$(render data/bestiary/bestiary-tor.json "Quill Hound" TOR) || fail "monster: exit $?: $(cat "$TMP/err")"
-has monster "$OUT" "## Stat Block
+# In a Markdown Workspace the statistics are the same fields as Markdown, last in the note.
+MD=$(md data/bestiary/bestiary-tor.json "Quill Hound" TOR) || fail "monster markdown: exit $?: $(cat "$TMP/err")"
+has monster "$MD" "# Quill Hound
+
+## Stat Block
+
+%% statblock
+name: Quill Hound
+%%
 
 *Medium beast, unaligned*
 
 **Armor Class** 13 (natural armor)
 **Hit Points** 22 (4d8 + 4)
 **Speed** 40 ft., climb 20 ft., fly 30 ft. (hover)
+**Initiative** +2 (12)
 
 | STR | DEX | CON | INT | WIS | CHA |
 | --- | --- | --- | --- | --- | --- |
 | 12 (+1) | 15 (+2) | 12 (+1) | 3 (-4) | 12 (+1) | 7 (-2) |
 
-**Saving Throws** Dex +4
+**Saving Throws** Dexterity +4
 **Skills** Perception +3, Sleight of Hand +4
 **Damage Vulnerabilities** fire
 **Damage Resistances** cold; bludgeoning, piercing, and slashing from nonmagical attacks
@@ -313,27 +324,35 @@ has monster "$OUT" "## Stat Block
 
 ### Traits
 
-***Keen Smell.*** The hound has advantage on Wisdom (Perception) checks that rely on smell.
+- ***Keen Smell.*** The hound has advantage on Wisdom (Perception) checks that rely on smell.
+- ***Innate Spellcasting.*** The hound's spellcasting ability is Wisdom (DC 11).
 
-***Innate Spellcasting.*** The hound's spellcasting ability is Wisdom (DC 11).
-
-- At will: dancing sparks
-- 3/day: blink step
-- 1/day each: hush, glow
+  - At will: dancing sparks
+  - 3/day: blink step
+  - 1/day each: hush, glow
 
 ### Actions
 
-***Quill Spray (Recharge 5–6).*** *Ranged Weapon Attack:* +4 to hit, range 20/60 ft. *Hit:* 5 (1d6 + 2) piercing damage.
+- ***Quill Spray (Recharge 5–6).*** *Ranged Weapon Attack:* +4 to hit, range 20/60 ft. *Hit:* 5 (1d6 + 2) piercing damage.
 
 ### Legendary Actions
 
-**Legendary Action Uses:** 2
+Legendary Action Uses: 2
 
-***Bristle.*** The hound bristles."
+- ***Bristle.*** The hound bristles."
+hasnt "monster markdown: no fence" "$MD" '```statblock'
+# Markdown and fence are one set of fields: the Markdown converts back to the very fence.
+printf '%s\n' "$MD" | sed -n '/^%% statblock$/,$p' > "$TMP/md-stats.md"
+printf '%s\n' "$OUT" | sed -n '/^```statblock$/,/^```$/p' > "$TMP/fence-stats.md"
+python3 "$ROOT/skills/dmr-workspace/statblock.py" convert "$TMP/md-stats.md" --to fence >/dev/null || fail "monster markdown back: exit $?"
+[ "$(sed '1,4d' "$TMP/md-stats.md")" = "$(cat "$TMP/fence-stats.md")" ] || fail "monster markdown back: not the fence:
+$(sed '1,4d' "$TMP/md-stats.md" | diff "$TMP/fence-stats.md" -)"
 
-# --- Stat block fences: the monster's Fantasy Statblocks view, keys in English ---------
-# The fence sits right under the heading, before the Markdown stat block it is derived from.
+# --- Stat block fences: the monster's statistics for Fantasy Statblocks, keys in English --
+# The fence is the statistics, last in the note, and there are no Markdown stat lines.
 has fence "$OUT" '# Quill Hound
+
+## Stat Block
 
 ```statblock
 name: Quill Hound
@@ -371,9 +390,8 @@ legendary_description: "Legendary Action Uses: 2"
 legendary_actions:
   - name: Bristle
     desc: The hound bristles.
-```
-
-## Stat Block'
+```'
+hasnt fence "$OUT" "**Armor Class**"
 # Every value is valid YAML: the fence parses back to what the stat block says.
 FENCE=$(printf '%s\n' "$OUT" | sed -n '/^```statblock$/,/^```$/p' | sed '1d;$d')
 # yaml_json: YAML on stdin as JSON, with whichever YAML parser the machine has.
@@ -423,6 +441,7 @@ OUT=$(render data/conditionsdiseases.json Dazzled CNR --edition 2024)
 hasnt "no fence" "$OUT" '```statblock'
 
 OUT=$(render data/bestiary/bestiary-tor.json "Lantern Warden" TOR) || fail "monster 2: exit $?: $(cat "$TMP/err")"
+MD=$(md data/bestiary/bestiary-tor.json "Lantern Warden" TOR) || fail "monster 2 markdown: exit $?: $(cat "$TMP/err")"
 has "fence special" "$OUT" '```statblock
 name: Lantern Warden
 size: Small or Medium
@@ -440,21 +459,21 @@ traits:
   - name: Spellcasting
     desc: "The warden casts spells:\n\n- Cantrips (at will): spark\n- 1st level (4 slots): glow, hush\n\nIt prefers light."
 ```'
-has "monster 2" "$OUT" "*Small or Medium humanoid (lampkin, hedge wizard), any evil alignment*"
-has "monster 2" "$OUT" "**Armor Class** 15
+has "monster 2" "$MD" "*Small or Medium humanoid (lampkin, hedge wizard), any evil alignment*"
+has "monster 2" "$MD" "**Armor Class** 15
 **Hit Points** equal to the lantern's light
 **Speed** 30 ft."
-has "monster 2" "$OUT" "**Senses** passive Perception 10
+has "monster 2" "$MD" "**Senses** passive Perception 10
 **Languages** Common
-**Challenge** 5 (XP 1,800; PB +3), or 6 (XP 2,300) in its lair"
-has "monster 2" "$OUT" "***Spellcasting.*** The warden casts spells:
+**Challenge** 5 (XP 1,800; PB +3)"
+has "monster 2" "$MD" "- ***Spellcasting.*** The warden casts spells:
 
-- Cantrips (at will): spark
-- 1st level (4 slots): glow, hush
+  - Cantrips (at will): spark
+  - 1st level (4 slots): glow, hush
 
-It prefers light."
+  It prefers light."
 OUT=$(render data/bestiary/bestiary-cnr.json "Ember Moth" CNR) || fail "monster 2024: exit $?: $(cat "$TMP/err")"
-has "monster 2024" "$OUT" "*Tiny beast or elemental, neutral*"
+has "monster 2024" "$(md data/bestiary/bestiary-cnr.json "Ember Moth" CNR)" "*Tiny beast or elemental, neutral*"
 has "fence 2024" "$OUT" '```statblock
 name: Ember Moth
 size: Tiny
@@ -484,26 +503,25 @@ reactions:
 ```'
 OUT=$(render data/bestiary/bestiary-cnr.json "Ember Moth" CNR --edition 2014) || fail "fence 2024 off-edition: exit $?"
 has "fence 2024 off-edition" "$OUT" 'layout: DM Realm Monster 2024'
-OUT=$(render data/bestiary/bestiary-cnr.json "Ember Moth" CNR)
+OUT=$(md data/bestiary/bestiary-cnr.json "Ember Moth" CNR)
 has "monster 2024" "$OUT" "**Speed** 5 ft., fly 40 ft.
 **Initiative** +4 (14)"
 has "monster 2024" "$OUT" "**Gear** ember lamp, moth dust (2)"
 has "monster 2024" "$OUT" "**Challenge** 1/4 (XP 50; PB +2)"
 has "monster 2024" "$OUT" "### Actions
 
-***Singe.*** *Melee Attack Roll:* +4, reach 5 ft. *Hit:* 1d4 fire damage.
+- ***Singe.*** *Melee Attack Roll:* +4, reach 5 ft. *Hit:* 1d4 fire damage.
+- ***Spellcasting.*** The moth casts:
 
-***Spellcasting.*** The moth casts:
-
-- At will: glow
+  - At will: glow
 
 ### Bonus Actions
 
-***Flit.*** The moth moves.
+- ***Flit.*** The moth moves.
 
 ### Reactions
 
-***Flare.*** *Trigger:* A creature hits the moth. *Response:* It flares."
+- ***Flare.*** *Trigger:* A creature hits the moth. *Response:* It flares."
 
 # --- Equipment, Weapon Masteries and magic items -------------------------------------
 seed items-base.json <<'JSON'
@@ -808,41 +826,37 @@ seed bestiary/bestiary-drk.json <<'JSON'
   {"name": "Lost Hound", "source": "DRK", "page": 55, "_copy": {"name": "Nowhere Hound", "source": "TOR"}}
 ]}
 JSON
-OUT=$(render data/bestiary/bestiary-drk.json "Quill Hound Alpha" DRK) || fail "copy: exit $?: $(cat "$TMP/err")"
+OUT=$(md data/bestiary/bestiary-drk.json "Quill Hound Alpha" DRK) || fail "copy: exit $?: $(cat "$TMP/err")"
 has copy "$OUT" "# Quill Hound Alpha"
 has copy "$OUT" "**Hit Points** 40 (8d8 + 4)"
 has copy "$OUT" "*Medium beast, unaligned*"
 has copy "$OUT" "### Traits
 
-***Big.*** It is big.
-
-***Loud.*** It howls.
-
-***Keen Smell.*** the alpha hound has advantage on Wisdom (Perception) checks that rely on smell.
-
-***Pack Leader.*** Allies rally.
+- ***Big.*** It is big.
+- ***Loud.*** It howls.
+- ***Keen Smell.*** the alpha hound has advantage on Wisdom (Perception) checks that rely on smell.
+- ***Pack Leader.*** Allies rally.
 
 ### Actions
 
-***Quill Storm.*** Quills everywhere.
-
-***Bite.*** Chomp."
+- ***Quill Storm.*** Quills everywhere.
+- ***Bite.*** Chomp."
 has copy "$OUT" "**Senses** darkvision 60 ft., tremorsense 10 ft., passive Perception 13"
 hasnt copy "$OUT" "Legendary"
 hasnt copy "$OUT" "Innate Spellcasting"
 OUT=$(render data/bestiary/bestiary-drk.json "Quill Hound Alpha" DRK --meta)
 has "copy meta" "$OUT" '"source_property": "DRK p. 52, v9.9.9"'
 has "adventure edition" "$OUT" '"edition": "2024"'
-OUT=$(render data/bestiary/bestiary-drk.json "Quill Pup" DRK) || fail "chained copy: exit $?: $(cat "$TMP/err")"
+OUT=$(md data/bestiary/bestiary-drk.json "Quill Pup" DRK) || fail "chained copy: exit $?: $(cat "$TMP/err")"
 has "chained copy" "$OUT" "### Traits
 
-***Keen Smell.*** the alpha hound"
+- ***Keen Smell.*** the alpha hound"
 hasnt "chained copy" "$OUT" "It howls."
 OUT=$(render data/bestiary/bestiary-drk.json "Quill Pup" DRK --meta)
 has "copy page" "$OUT" '"source_property": "DRK, v9.9.9"'
-OUT=$(render data/bestiary/bestiary-drk.json "Ashen Quill Hound" DRK) || fail "template: exit $?: $(cat "$TMP/err")"
+OUT=$(md data/bestiary/bestiary-drk.json "Ashen Quill Hound" DRK) || fail "template: exit $?: $(cat "$TMP/err")"
 has template "$OUT" "**Damage Vulnerabilities** cold"
-has template "$OUT" "***Ashen Body.*** It crumbles."
+has template "$OUT" "- ***Ashen Body.*** It crumbles."
 OUT=$(render data/bestiary/bestiary-drk.json "Odd Hound" DRK); CODE=$?
 [ "$CODE" -eq 6 ] || fail "unsupported modifier: expected exit 6, got $CODE"
 [ -z "$OUT" ] || fail "unsupported modifier: printed '$OUT'"
@@ -967,24 +981,26 @@ seed class/fluff-class-lamplighter.json <<'JSON'
   "classSource": "CNR", "entries": ["Wick walkers keep the night roads."]}]}
 JSON
 OUT=$(render data/bestiary/bestiary-cnr.json "Lamp Drake" CNR) || fail "monster description: exit $?: $(cat "$TMP/err")"
-# Under the fence, before the stat lines; its own text first, then what it copies. Its
-# images as 5etools shows a description's: the first above the text, the others after it,
-# each embedded by a file named after the note, and a title as the caption.
-has "monster description" "$OUT" '```
+# Under the heading, before the statistics; its images first (ADR 0009), each embedded
+# by a file named after the note with its title as the caption; then its own text, then
+# what it copies.
+has "monster description" "$OUT" '# Lamp Drake
 
 ## Description
 
 ![[Lamp_Drake_01.webp]]
 
-Lamp drakes guard the lamplighters.
-
-***Drakes.*** Drakes nest in old lamps.
-
 ![[Lamp_Drake_02.webp]]
 
 *A lamp drake at rest*
 
-## Stat Block'
+Lamp drakes guard the lamplighters.
+
+***Drakes.*** Drakes nest in old lamps.
+
+## Stat Block
+
+```statblock'
 FENCE=$(printf '%s\n' "$OUT" | sed -n '/^```statblock$/,/^```$/p')
 hasnt "description not in the fence" "$FENCE" "drakes"
 hasnt "description not in the fence" "$FENCE" "Description"
@@ -1153,9 +1169,13 @@ FENCE=$(printf '%s\n' "$OUT" | sed -n '/^```statblock$/,/^```$/p')
 hasnt "action image, fence" "$FENCE" "![["
 hasnt "action image, fence" "$FENCE" "IMAGE"
 has "action image, fence" "$FENCE" 'desc: It glints.'
-has "action image, body" "$OUT" "It glints.
+# In a stat block Workspace it sits under the fence; in a Markdown one, in its action.
+has "action image, under the fence" "$OUT" '```
 
-![[Glass_Moth.webp]]"
+![[Glass_Moth.webp]]'
+has "action image, markdown" "$(md data/bestiary/bestiary-cnr.json "Glass Moth" CNR)" "- ***Shimmer.*** It glints.
+
+  ![[Glass_Moth.webp]]"
 expect_exit "usage" 2 data/conditionsdiseases.json Dazzled
 expect_exit "path outside data" 2 ../x.json Dazzled CNR
 
