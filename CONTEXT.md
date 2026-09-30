@@ -27,7 +27,7 @@ Official rules material of the Edition the Workspace did not choose, as the Trus
 _Avoid_: Legacy, cross-edition content
 
 **Workspace Config**:
-The file recording the Workspace Language, the Edition and the names of the top-level folders, written by Setup from the DM's answers. It is the only DM Realm file in a Workspace, and its presence is what makes a folder a Workspace.
+The file recording the Workspace Language, the Edition, whether game statistics are stat blocks, and the names of the top-level folders, written by Setup from the DM's answers. It is the only DM Realm file in a Workspace, and its presence is what makes a folder a Workspace.
 _Avoid_: Settings, preferences
 
 **Setup**:
@@ -105,7 +105,7 @@ _Avoid_: Export, share, move
 A blank starting note for a kind of content, copied when a new note is created. Not a Scope.
 
 **Stat block**:
-The game statistics of a monster, an NPC or a Character as a Fantasy Statblocks fence in its note: a view derived from the note's body and written again whenever the body changes, never the only place a value or a link lives. The plugin that renders it is optional.
+The game statistics of a monster, an NPC or a Character as a Fantasy Statblocks fence in its note, in a Workspace that chose stat blocks at Setup; a Workspace that did not writes the same statistics as Markdown instead, never both. Either way they come last in the note, after its images and description, and no link lives only in a fence.
 _Avoid_: Sheet, statblock note
 
 **DM Tools**:

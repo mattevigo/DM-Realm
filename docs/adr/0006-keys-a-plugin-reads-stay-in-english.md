@@ -2,6 +2,8 @@
 
 Every frontmatter key in a Workspace is in the Workspace Language, with one exception: the keys an Obsidian plugin or table tool reads stay in English. Stat blocks are rendered by Fantasy Statblocks (`obsidian-5e-statblocks`), and MapForge, the initiative tracker, reads the same stat blocks from the notes. Both, along with the plugin's dice parsing, look for fixed English keys: the `statblock` flag in frontmatter, and `name`, `ac`, `hp`, `initiative`, `size`, `stats`, `actions`… in the ```` ```statblock ```` fence. So those keys stay English, while every value is in the Workspace Language (`size: Piccola`, an action named "Scimitarra") and the layout's labels ("Classe Armatura", FOR DES COS) are translated through the Translation Glossary. DM Realm's own keys (`player`, `status`, `level`, the source property) are still translated.
 
+*Amended by [ADR 0009](0009-a-workspace-writes-statistics-once-as-a-stat-block-or-as-markdown.md): a Workspace writes statistics once, as a stat block or as Markdown, and the stat block is no longer a view beside Markdown stat lines.*
+
 ## Considered Options
 
 - **Translated keys, with custom layouts mapping them.** Rejected: a layout can read any property name, but MapForge, the dice parsing ("+4 to hit") and the plugin's importers cannot, so stat blocks would render and still fail at the table.
