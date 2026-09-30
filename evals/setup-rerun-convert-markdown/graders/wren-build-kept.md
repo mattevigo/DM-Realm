@@ -2,6 +2,5 @@
 type: regex
 target: {source: file, path: Characters/Wren/Wren.md}
 match: contains
-flags: mi
 ---
-saving throws[^\n]*wisdom ●? ?\+7|^\s*- (\"?)Wisdom( ●)?\1:\s*7\s*$
+\[\[Path_of_the_Wick\|Path of the Wick\]\]

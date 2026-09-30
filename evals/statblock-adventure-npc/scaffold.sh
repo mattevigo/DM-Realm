@@ -15,6 +15,8 @@ statblock: inline
 
 # Salt Wight
 
+## Stat Block
+
 ```statblock
 name: Salt Wight
 size: Medium
@@ -34,18 +36,6 @@ actions:
   - name: Brine Touch
     desc: "*Melee Attack Roll:* +4, reach 5 ft. *Hit:* 9 (2d6 + 2) Necrotic damage, and the target's lips crust with salt."
 ```
-
-## Stat Block
-
-*Medium undead, lawful evil*
-
-**Armor Class** 15
-**Hit Points** 52 (8d8 + 16)
-**Speed** 30 ft.
-
-### Actions
-
-***Brine Touch.*** *Melee Attack Roll:* +4, reach 5 ft. *Hit:* 9 (2d6 + 2) Necrotic damage, and the target's lips crust with salt.
 MD
 printf '# The Salt Crypt\n\nA published adventure (test stub): a crypt under the salt flats.\n' > Adventures/The_Salt_Crypt/README.md
 printf '# Glasstaff\n\nThe crypt'"'"'s keeper, a wizard who drowned in brine and rose again. Glasstaff uses the Salt Wight statistics, except that he has 70 hit points.\n' > Adventures/The_Salt_Crypt/NPCs/Glasstaff.md

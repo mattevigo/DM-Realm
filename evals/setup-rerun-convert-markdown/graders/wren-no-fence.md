@@ -1,7 +1,7 @@
 ---
 type: regex
 target: {source: file, path: Characters/Wren/Wren.md}
-match: contains
-flags: mi
+match: not_contains
+flags: m
 ---
-hit point maximum[^\n]*\b31\b|^hp:\s*31\s*$
+^```statblock|^statblock:

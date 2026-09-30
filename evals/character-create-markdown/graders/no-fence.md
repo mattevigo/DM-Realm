@@ -1,7 +1,7 @@
 ---
 type: regex
 target: {source: file, path: Characters/Juno/Juno.md}
-match: contains
+match: not_contains
 flags: m
 ---
-^# Juno\s*\n\s*```statblock$
+^```statblock|^statblock:

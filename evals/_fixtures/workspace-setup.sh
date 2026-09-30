@@ -7,8 +7,11 @@
 #   WS_EDITION   2024 (default) or 2014
 #   WS_LANGUAGE  the Config's language line (default English or Italiano), e.g. to
 #                simulate a hand-edited Config
+#   WS_STAT_BLOCKS  the Config's stat_blocks: true (default) or false, or none to leave
+#                it out, as in a Workspace set up before ADR 0009
 WS_LANG=${WS_LANG:-en}
 WS_EDITION=${WS_EDITION:-2024}
+WS_STAT_BLOCKS=${WS_STAT_BLOCKS:-true}
 if [ "$WS_LANG" = it ]; then
   WS_LANGUAGE=${WS_LANGUAGE:-Italiano}
   WS_FOLDERS="Riferimento Avventure Homebrew Mondo Personaggi Campagne Strumenti_DM Modelli"
@@ -22,6 +25,7 @@ cat > workspace-config.yml <<YML
 # DM Realm Workspace Config — written by Setup; fields in the dmr-workspace rules.
 language: $WS_LANGUAGE
 edition: $WS_EDITION
+$([ "$WS_STAT_BLOCKS" = none ] || echo "stat_blocks: $WS_STAT_BLOCKS")
 folders:
   reference: $(ws_folder 1)
   adventures: $(ws_folder 2)

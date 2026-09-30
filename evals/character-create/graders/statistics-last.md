@@ -2,6 +2,6 @@
 type: regex
 target: {source: file, path: Characters/Juno/Juno.md}
 match: contains
-flags: mi
+flags: m
 ---
-hit point[^\n]*\b10\b|^hp:\s*10\s*$
+^## Statistics\s*\n\s*```statblock\n(?:(?!```)[\s\S])*^```\s*(?![\s\S]*^#)
