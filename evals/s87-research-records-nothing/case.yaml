@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: s87-research-records-nothing
+description: "Structure scenario S87: a rules answer in an Italian Workspace is in Italian and cites the book, and writes nothing: no note, no Translation Glossary row."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 20
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  env:
+    EVAL_DMR_SOURCE_CACHE: "~/.dm-realm/source-cache"
+  prompt: |
+    Come funziona la condizione Tangled?

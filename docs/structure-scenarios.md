@@ -20,7 +20,7 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S12 | workspace-plain-request |
 | S13 | s13b-invented-world, s13c-campaign-changes-setting (part a, official Setting lore, waits for the Setting lore spec) |
 | S14 | s14-conditions |
-| S15 | s15a-random-table, s15b-campaign-todo |
+| S15 | s15a-random-table, s15b-campaign-todo (a Campaign-level note with no DM subfolder goes at the Campaign root) |
 | S16 | s16-promotion |
 | S17 | s17-weapon-mastery |
 | S18 | s18-campaign-start |
@@ -83,6 +83,12 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S79 | setup-statblocks-plugin, setup-statblocks-italian, setup-fresh-english (Setup merges the layouts when Fantasy Statblocks is installed, labels translated; without it, writes nothing for it and mentions it) |
 | S80 | statblock-plugin-unconfigured, tests/workspace-notice.test.sh (Fantasy Statblocks installed after Setup: the session notice says it lacks DM Realm's layouts, and the agent tells the DM to re-run Setup) |
 | S81 | setup-rerun-statblocks-outdated, setup-rerun-statblocks-obsidian-open, tests/statblocks-settings.test.sh (DM Realm's layouts at an older revision: a re-run updates them, and with Obsidian open writes nothing and asks the DM to close it) |
+| S82 | s82-refused-link-named-session (a refused link's fact goes, without asking, in the Session note the request names) |
+| S83 | s83-path-link-name-clash (a second note with an existing name: path links, and the older note's bare links rewritten first) |
+| S84 | s84-chained-promotion (Promotion moves the Campaign-only homebrew the note links to; a request to use it elsewhere is the go-ahead) |
+| S85 | s85-campaign-house-rule |
+| S86 | s86-italian-english-session-title (S29's other half: a title given in English stays English) |
+| S87 | s87-research-records-nothing (a rules answer in the Workspace Language writes no note and no Glossary row) |
 
 ## How to run the manual scenarios
 
@@ -101,6 +107,9 @@ Expected: (a) Reference Setting; (b) World, in a folder named after the world; (
 
 **S21.** The DM starts running a published Adventure, *The Sunken Keep*. Where does the Adventure's content go, and where does an item unique to that Adventure go?
 Expected: Adventures › The_Sunken_Keep, with README, Places, NPCs, Items and Encounters; the unique item goes in its Items (an official magic item from the DMG stays in Reference Magic_Items).
+
+**S88.** Glasstaff, an NPC, appears in two published Adventures, *The Sunken Keep* and *The Salt Crypt*, and the DM runs both. Where do his notes go?
+Expected: One note in each Adventure's NPCs, each as its own book describes him. Neither links to the other, and there is no shared note.
 
 ## Official data
 

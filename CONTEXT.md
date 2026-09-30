@@ -15,7 +15,7 @@ One DM's collection of notes, organised into Scopes, set up once in a single Wor
 _Avoid_: Vault, repo, project
 
 **Workspace Language**:
-The language chosen at Setup; every folder name, file name, frontmatter key and generated note in the Workspace is written in it, except the keys an Obsidian plugin reads, which stay English ([ADR 0006](docs/adr/0006-keys-a-plugin-reads-stay-in-english.md)). Fixed after Setup. DM Realm's documentation and the official sources are in English; the agent translates from them into the Workspace Language.
+The language chosen at Setup; every folder name, file name, frontmatter key and generated note in the Workspace is written in it, except the keys an Obsidian plugin reads, which stay English ([ADR 0006](docs/adr/0006-keys-a-plugin-reads-stay-in-english.md)), and the Workspace Config and dot-folders such as `.obsidian/`, which are never translated. Fixed after Setup. DM Realm's documentation and the official sources are in English; the agent translates from them into the Workspace Language.
 _Avoid_: Locale
 
 **Edition**:
@@ -43,11 +43,11 @@ The single Workspace note recording, for each game term, the translation chosen 
 ### Official data
 
 **Trusted Source**:
-The 5etools data, as published in its public source mirror: the only source from which official material is imported, translated and researched. Official material it does not contain cannot be Reference or Adventure content.
+The 5etools data and its images, as published in its public source and image mirrors at one release: the only source from which official material is imported, translated and researched. Official material it does not contain cannot be Reference or Adventure content.
 _Avoid_: The books, compendium, SRD, 5e.tools website
 
 **Source Cache**:
-The local copy of the Trusted Source that DM Realm keeps outside every Workspace and shares among them, pinned to one release and refreshed only when the DM asks. It holds only the English data; a Workspace's translation choices live in its Translation Glossary.
+The local copy of the Trusted Source that DM Realm keeps outside every Workspace and shares among them, pinned to one release and refreshed only when the DM asks. It holds only the English data and its images; a Workspace's translation choices live in its Translation Glossary.
 _Avoid_: Download, mirror, local data
 
 **Import**:
@@ -80,7 +80,7 @@ The story elements the DM invented and reuses across Campaigns — places, NPCs,
 _Avoid_: Homebrew Setting, lore, Mondo
 
 **House Rules**:
-Homebrew changes to the official rules, applying to every Campaign in the Workspace.
+Homebrew changes to the official rules. Those in Homebrew apply to every Campaign in the Workspace; a Campaign's own apply only to it, until Promotion.
 
 **Character**:
 A player's character, kept apart from every Campaign so it can play in any of them: its identity and its current Build, with no knowledge of what happened at any table. NPCs are never Characters.
@@ -96,6 +96,10 @@ _Avoid_: Import (which is only from the Trusted Source), copy, migrate
 
 **Campaign**:
 One ongoing game with its own party of Characters, Sessions and story; what actually happened at the table, including what happened to its Characters. Set in one world (an official Setting, the DM's World, or both), it may run any number of Adventures — whole or in part, one after another — and may draw on every other Scope. Its party may be empty when it starts.
+
+**Promotion**:
+Moving a note made for one Campaign into Homebrew (material with mechanics) or World (story elements) once something outside that Campaign needs it, after the DM confirms, with every mention of the Campaign removed. The Campaign-only homebrew it depends on moves with it.
+_Avoid_: Export, share, move
 
 **Template**:
 A blank starting note for a kind of content, copied when a new note is created. Not a Scope.

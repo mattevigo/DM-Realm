@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s82-refused-link-named-session
+description: "Structure scenario S82: a refused link's fact goes, without asking, in the Session note the request names, linking back."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Add to the Neverwinter note that the Heroes party first arrived there in Session 5, linking that session.

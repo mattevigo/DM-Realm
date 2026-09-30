@@ -6,9 +6,12 @@ Every folder has a **neutral key** (e.g. `reference.monsters`) and a **default E
 
 ## Workspace root
 
-The Workspace root is the folder the DM opens in Obsidian. Every note lives inside one of the eight top-level folders; no note lives at the root.
+A Workspace is a folder with the Workspace Config at its root: the Config's presence, and nothing else, makes one. Its root is the folder the DM opens in Obsidian. Every note lives inside one of the eight top-level folders; no note lives at the root.
 
 The only other things at the root are the Workspace Config (`workspace-config.yml`, the only DM Realm file in a Workspace — [ADR 0002](../../docs/adr/0002-dm-realm-is-a-plugin-separate-from-the-workspace.md)) and dot-folders such as `.obsidian/`. They are not notes, not top-level folders, and are never translated.
+
+- **A Config with top-level folders missing** is still a Workspace: running Setup there is a re-run, which recreates them.
+- **Top-level folders without a Config** are not a Workspace: Setup refuses to run there and tells the DM the Workspace Config is missing.
 
 ## Top-level folders
 
@@ -23,7 +26,7 @@ The only other things at the root are the Workspace Config (`workspace-config.ym
 | `dm_tools`   | DM_Tools     | not a Scope | Setup   | Aids for running the game that belong to no single Campaign              |
 | `templates`  | Templates    | not a Scope | Setup   | Blank starting notes                                                     |
 
-These eight are fixed: the DM may rename them — by re-running Setup, which moves the folder, rewrites the links into it and updates the Workspace Config (an edit to the Config alone takes effect at that re-run) — but may not add or remove a top-level folder. Material that seems to need a new one belongs inside an existing one (maps of a Campaign go in its Attachments, a reusable map of the DM's world in that world's folder in World).
+These eight are fixed: the DM may rename them — by re-running Setup, which moves the folder, rewrites the links into it and updates the Workspace Config (an edit to the Config alone takes effect at that re-run) — but may not add or remove a top-level folder. Material that seems to need a new one belongs inside an existing one (maps of a Campaign go in its Attachments, a reusable map of the DM's world in that world's Attachments, embedded in a note about the world).
 
 Inside the top-level folders the DM is free to add, rename or remove subfolders. The subfolders documented below are the defaults the agent uses when it places a note and the DM has not organised that part differently.
 
@@ -35,7 +38,7 @@ Each Adventure and each Campaign is a separate unit: "the same Adventure" means 
 
 ## Link rules
 
-A link is any wikilink, Markdown link or embed to another note or file in the Workspace, in the body or in frontmatter.
+A link is any wikilink, Markdown link or embed to another note or file in the Workspace, in the body or in frontmatter. An embedded query (Dataview, Bases) counts as a link to every note it can show: a note may hold one only if it may link to all of them. DM Realm never writes queries.
 
 | From ↓ / to → | Reference | Adventures             | Homebrew | World | Characters | Campaigns | DM Tools | Templates |
 | ------------- | --------- | ---------------------- | -------- | ----- | ---------- | --------- | -------- | --------- |
@@ -46,9 +49,11 @@ A link is any wikilink, Markdown link or embed to another note or file in the Wo
 | **Character** | yes       | yes (any)              | yes      | yes   | yes        | no        | no       | no        |
 | **Campaign**  | yes       | yes (any)              | yes      | yes   | yes        | yes (any) | yes      | yes       |
 | **DM Tools**  | yes       | yes (any)              | yes      | yes   | yes        | yes (any) | yes      | yes       |
+| **Templates** | no        | no                     | no       | no    | no         | no        | no       | no        |
 
 - **Knowledge follows links.** A note that may not link to a Scope does not mention its content either, linked or not. Reference, Adventure, Homebrew and World notes never name a Campaign, a Character or anything that happened at a table; Homebrew notes never name a World note's content, and World notes never name an Adventure's. Character notes never name a Campaign, a Session or anything that happened at a table.
-- **Forbidden links are refused.** When a forbidden link is asked for, the agent does not write it, says why, and writes the fact on the side that is allowed to link, pointing the other way.
+- **Forbidden links are refused.** When a forbidden link is asked for, the agent does not write it and says why. Without asking, it writes the fact on the side that is allowed to link, pointing the other way, and tells the DM which note it went in. That note is the one the request names on the allowed side (the Session 08 note, for "add to Fireball that the PCs first saw it in Session 08"); when the request names none, it is the Campaign's note about that thing, created in the matching default subfolder (its Places, NPCs…) when it does not exist yet. The agent asks only when it cannot tell which Campaign.
+- **A name used twice is linked by its path.** Notes keep their natural names, even when another note in the Workspace has the same one (an Adventure's inn and a Campaign's note about it). A link to a note whose name is not unique in the Workspace is a path link: `[[Campaigns/Heroes/Places/Stonehill_Inn|Stonehill Inn]]`. Before creating a note whose name already exists, the agent rewrites every bare link to the older note as a path link to it.
 - **"Who uses this" comes from backlinks.** Which Characters have a feat, who owns an item, which Session a monster appeared in: never written into the feat, item or monster note. The Character and Campaign notes link to it, and the target's backlinks answer the question. Only current Character notes count: a past Build (in a Character's Past_Builds) describes the Character as it was, so it never says who has something today.
 - **What happened at the table belongs to the Campaign.** Events go in the Session note. A lasting change to something from another Scope — an Adventure's tavern burned down, a Setting's city conquered, a town of the DM's World sacked — goes in a Campaign note about it (e.g. in the Campaign's Places) that links to the original. The original note stays as it was.
 - **What happened to a Character belongs to the Campaign too.** An item attuned in Session 21, a wound, an oath: the agent writes it in that Campaign's notes (usually the Session note), linking to the Character, and leaves the Character note unchanged, even when asked to note it "on" the Character. The Character's backlinks give its history. The Character note changes only when the DM asks to change the Character itself — its identity, its backstory, or its Build (a level gained, an item added to its equipment) — and even then it names no Campaign or Session.
@@ -59,7 +64,7 @@ For each folder: its neutral key, default English name, when it is created (see 
 
 ### Reference — `reference`
 
-Official material, imported faithfully from the Trusted Source. Its rules material is of the Workspace's Edition, plus any Off-Edition Material that fills a gap; Setting lore comes from any book (see [Edition](#edition)). Every official thing has exactly one home here; material an Adventure reprints from another book is linked, not copied.
+Official material, imported faithfully from the Trusted Source. Its rules material is of the Workspace's Edition, plus any Off-Edition Material that fills a gap; Setting lore comes from any book (see [Edition](#edition)). Every official entry has one home: Reference, or its Adventure for what only that Adventure describes — one note in each Adventure that describes it (see [Adventures](#adventures--adventures)); material an Adventure reprints from another book is linked, not copied.
 
 | Key                                  | Default name      | Created    | Holds                                                                                  |
 | ------------------------------------ | ----------------- | ---------- | -------------------------------------------------------------------------------------- |
@@ -82,6 +87,7 @@ Official material, imported faithfully from the Trusted Source. Its rules materi
 | `reference.magic_items`              | Magic_Items       | first note | Magic items                                                                            |
 | `reference.monsters`                 | Monsters          | first note | Every official stat block, including one printed only in an Adventure                  |
 | `reference.setting`                  | Setting           | first note | Lore of official Settings — geography, pantheon, history — one subfolder per Setting   |
+| `reference.attachments`              | Attachments       | first file | The images its notes embed ([Attachments](#attachments))                                |
 
 **One note per entry.** An Import brings one Trusted Source entry into one note, in the folder of its kind:
 
@@ -91,7 +97,7 @@ Official material, imported faithfully from the Trusted Source. Its rules materi
 - **Class options** — Fighting Styles (2014), Maneuvers, Eldritch Invocations, Metamagic and the other kinds — are one note each in Classes › Options › `<Kind>`. 2024 Fighting Styles are feats, in Feats. A class or subclass note names its options in plain text; importing it does not import them.
 - **Species.** The same pattern as classes: Races › Dwarf › Dwarf, and beside it one note per named 2014 subrace (Hill_Dwarf), holding only what the subrace adds. An unnamed 2014 subrace is part of its race's note. 2024 species have no subraces: a lineage is part of its species' note, so asking for a 2024 lineage (Drow) imports its species (Elf).
 - **Magic items.** A specific item the Trusted Source builds from a generic variant and a base item ("+1 Longsword", "Flame Tongue Greatsword") is not an entry: asking for one imports the generic variant ("+1 Weapon", "Flame Tongue") into Magic_Items, and the agent says so ([ADR 0007](../../docs/adr/0007-an-import-renders-only-what-the-data-contains.md)). Its DMG or XDMG version follows the Edition like any other entry.
-- **Descriptions, not images.** An entry's description — the Trusted Source's text about what it is, its "fluff" — is imported with it, into the same note; its images are not imported.
+- **Descriptions and images.** An entry's description — the Trusted Source's text about what it is, its "fluff" — is imported with it, into the same note, and so is every image the entry shows ([Imported notes](#imported-notes)).
 - **One entry at a time.** The one set an Import brings in on request is every Condition, or every Action, of the Edition, one note each; any other bulk request is declined.
 - **No links between Reference notes.** A note names other entries (a monster's spells, a class's options) in plain text, so it never depends on what else was imported.
 
@@ -109,8 +115,11 @@ One folder per official published Adventure, holding its content as the book des
 | `adventures.<adventure>.npcs`   | NPCs             | first note | Its NPCs                                                      |
 | `adventures.<adventure>.items`  | Items            | first note | Items it introduces (unique items, plot items, its treasure)  |
 | `adventures.<adventure>.encounters` | Encounters   | first note | Its encounters                                                |
+| `adventures.<adventure>.attachments` | Attachments | first file | Its maps and the other images its notes embed ([Attachments](#attachments)) |
 
 Monster stat blocks are the one exception: a monster printed in an Adventure — even one that appears in no other book — goes to Reference Monsters, and the Adventure's NPC and Encounter notes link to it. An NPC the Adventure changes ("a bandit captain with 90 hit points") gets a stat block that extends that monster ([Stat blocks](#stat-blocks)). An item the Adventure reprints from a core book (a DMG magic item in its treasure) stays in Reference Magic_Items and is linked.
+
+An NPC, place or item that appears in two published Adventures has one note in each Adventure, each as its own book describes it; neither links to the other.
 
 ### Homebrew — `homebrew`
 
@@ -122,8 +131,9 @@ It mirrors Reference's rules type folders — Classes, Species (Races in 2014), 
 | --------------------- | ------------ | ---------- | ----------------------------------------------------------------------------- |
 | `homebrew.house_rules`| House_Rules  | first note | Changes to the official rules; they apply to every Campaign in the Workspace  |
 | `homebrew.<type>`     | as Reference | first note | The DM's own material of that type                                            |
+| `homebrew.attachments`| Attachments  | first file | The images its notes embed ([Attachments](#attachments))                      |
 
-Every Homebrew subfolder is created by its first note; an empty Workspace has none.
+Every Homebrew subfolder is created by its first note or file; an empty Workspace has none.
 
 Homebrew never links to or names World, so it stays usable in any world: a homebrew spell granted by an invented god says nothing of the god; the god's World note links to the spell.
 
@@ -133,12 +143,13 @@ The story elements the DM invented and reuses across Campaigns — places, NPCs,
 
 | Key                     | Default name   | Created    | Holds                                              |
 | ----------------------- | -------------- | ---------- | -------------------------------------------------- |
-| `world.<world>`         | `<World name>` | first note | One world, and notes about the whole of it (an overview, a map) |
+| `world.<world>`         | `<World name>` | first note | One world, and notes about the whole of it (an overview) |
 | `world.<world>.places`  | Places         | first note | Its places, one note each                          |
 | `world.<world>.npcs`    | NPCs           | first note | Its NPCs                                           |
 | `world.<world>.factions`| Factions       | first note | Its factions and organisations                     |
 | `world.<world>.pantheon`| Pantheon       | first note | Its gods                                           |
 | `world.<world>.history` | History        | first note | Its eras and events                                |
+| `world.<world>.attachments` | Attachments | first file | Its maps and the other files its notes embed ([Attachments](#attachments)) |
 
 - **A world's folder name.** A world the DM invented is named in the DM's words: not translated and not in the Translation Glossary, with the [name rules](#name-rules) applied — Aerth is `Aerth/` in every Workspace Language. The DM's additions to an official Setting use the name that Setting's subfolder has in Reference › Setting (or would have, as [Translating a term](#translating-a-term) gives it), so the two sit side by side: a town the DM invented in the Forgotten Realms is World › Forgotten_Realms › Places, while the official lore stays in Reference › Setting › Forgotten_Realms.
 - **Links point into World, never out of it to a table** (see [Link rules](#link-rules)). A Character's backstory links to the World place it comes from; the place does not name the Character. What a Campaign did to a World place is written in that Campaign, linking to it.
@@ -175,11 +186,15 @@ One folder per Campaign: everything that happens at that table, and everything m
 | `campaigns.<campaign>.factions`   | Factions           | Campaign start    | Factions                                                 |
 | `campaigns.<campaign>.attachments`| Attachments        | Campaign start    | Images, maps, handouts and other non-note files          |
 | `campaigns.<campaign>.homebrew_<type>` | Homebrew_`<Type>` (e.g. Homebrew_Spells) | first note | Homebrew made for this Campaign only: one folder per Homebrew type, with that type's subfolders (Homebrew_Spells › Level_3) |
+| `campaigns.<campaign>.homebrew_house_rules` | Homebrew_House_Rules | first note | House Rules for this Campaign only: they apply to it alone, until Promotion moves them to Homebrew › House_Rules |
 
-- **Anything else the Campaign needs** goes in a subfolder the DM adds (e.g. Narrative, Finances). Notes about running this one Campaign — the DM's personal notes, a to-do board — live here, not in DM Tools.
+- **Anything else the Campaign needs** goes in a subfolder the DM adds (e.g. Narrative, Finances). Notes about running this one Campaign — the DM's personal notes, a to-do board — live here, not in DM Tools: in the DM's subfolder for them, or, when there is none, at the Campaign root next to the README.
+- **The `Homebrew_` prefix** is the name the Homebrew top-level folder has in use, then `_` and the type's folder name in the Workspace Language: `Homebrew_Incantesimi` in Italian, `Brew_Spells` when the DM named Homebrew `Brew`. The whole name is not a Translation Glossary row. When a Setup re-run renames Homebrew, it renames every Campaign's prefixed folders with it.
 - **The DM's own plot is never an Adventure**, which is only official: it is its Campaign's, in its Quests, Places, NPCs and Factions, and reaches World only by Promotion. So is a change the DM makes to an Adventure it runs (their own dungeon in place of chapter 3), as [What happened at the table belongs to the Campaign](#link-rules) says.
 - **The party is linked, not kept here.** A Campaign has no Characters folder: its Characters live in the Characters folder, and the Campaign's README lists its party by linking to them.
-- **Promotion.** When Campaign homebrew is wanted in a second Campaign, the agent moves it — its stat block intact — to the matching Homebrew folder, removes every link to and mention of the first Campaign — and of its Characters — from it (anything worth keeping moves into that Campaign's notes), and updates the links to it.
+- **Promotion.** When Campaign homebrew is wanted outside its Campaign, the agent first shows the DM a preview — which notes move, where to, and what is stripped from each — and promotes on a yes; a request that already says to use the homebrew elsewhere ("I want the ring in my Villains campaign too") is the go-ahead. It moves each note — its stat block intact — to the matching Homebrew folder, removes every link to and mention of the first Campaign — and of its Characters — from it (anything worth keeping moves into that Campaign's notes), and updates the links to it.
+- **The chain moves together.** Promotion moves every Campaign-only homebrew note the promoted note links to or names, and every one those link to or name, in the same preview. A dependency on a Campaign place, NPC or faction is not part of the chain: it is a separate Promotion to World, asked for on its own.
+- **A name clash in the target folder.** When the Homebrew folder already has a note with the same name: if the two notes' mechanics are identical, the homebrew is already promoted, and on the DM's yes the agent repoints the links to the Homebrew note and deletes the Campaign copy; otherwise it writes nothing and asks the DM for another name.
 - **Promotion to World.** When a Campaign's Places, NPCs or Factions note is wanted by a second Campaign, or by a Character's backstory (which cannot link to a Campaign), the agent asks the DM to promote it to World; on a yes it moves the note to the matching World folder (World › `<world>` › Places, NPCs or Factions, in the world the Campaign is set in, as its README's World section names it — the agent asks when it cannot tell), removes from it every link to and mention of the Campaign, its Characters and its Sessions, as for Homebrew (anything worth keeping moves into that Campaign's notes), and updates the links to it. An NPC's mechanics — its stat block — do not go to World: they become a Homebrew Monsters note that the World note links to. Until then the note stays in the Campaign, and a Character does not name it.
 - **A Character gaining Campaign homebrew** (an item it now carries, a spell it learns) cannot link to it where it is. The agent says so and asks the DM to promote it; on a yes it promotes it as above and the Character note links to the Homebrew note. Until then the Character note does not name it; the Campaign's notes record who holds it.
 
@@ -192,16 +207,39 @@ Aids for running and preparing the game, reusable across Campaigns. Not a Scope.
 | `dm_tools.translation_glossary` | Translation_Glossary (a note) | first entry       | The Translation Glossary (see [Language and names](#language-and-names)) |
 | `dm_tools.checklists`           | Checklists                    | first note        | Prep and session checklists                                   |
 | `dm_tools.random_tables`        | Random_Tables                 | first note        | Random tables (names, encounters, weather, loot…)             |
+| `dm_tools.attachments`          | Attachments                   | first file        | Files no note embeds (a reusable map of no world, a handout) and the files DM Tools notes embed |
 
 ### Templates — `templates`
 
-Blank starting notes, one per kind of note, copied when a new note is created. Not a Scope. Their content is not defined here.
+Blank starting notes, copied when a new note is created. Not a Scope. There is one for each kind of note that no skill formats; Characters, imported notes and the Campaign README have none, since their skills give their format.
+
+| Key                          | Default name               | Created     | Holds                                         |
+| ---------------------------- | -------------------------- | ----------- | --------------------------------------------- |
+| `templates.session`          | Session (a note)           | first Setup | A Session's prep and recap                    |
+| `templates.npc`              | NPC (a note)               | first Setup | An NPC                                        |
+| `templates.place`            | Place (a note)             | first Setup | A place                                       |
+| `templates.faction`          | Faction (a note)           | first Setup | A faction                                     |
+| `templates.quest`            | Quest (a note)             | first Setup | A quest                                       |
+| `templates.house_rule`       | House_Rule (a note)        | first Setup | A House Rule                                  |
+| `templates.homebrew_spell`   | Homebrew_Spell (a note)    | first Setup | A homebrew spell                              |
+| `templates.homebrew_item`    | Homebrew_Item (a note)     | first Setup | A homebrew item                               |
+| `templates.homebrew_monster` | Homebrew_Monster (a note)  | first Setup | A homebrew monster, with an empty [stat block](#stat-blocks) fence |
+
+- **The first Setup writes them**, in the Workspace Language; their content is the `dmr-setup` skill's. A Setup re-run never overwrites one: it offers to add a missing one, and adds it only on the DM's yes.
+- **The agent creates a note of these kinds from the Template in use**, the DM's edits included. A Template links to nothing ([Link rules](#link-rules)); if the DM's Template holds a link anyway, the new note keeps it only where its own Scope allows it, and the agent says which it left out.
+- **The DM changes a Template by asking**: the agent edits the Template and leaves the notes already made from it as they are.
+
+### Attachments
+
+A non-note file the agent places — an image, a map, a handout, a PDF — goes in the Attachments folder of the Scope whose note embeds it: Reference › Attachments, the Adventure's, Homebrew's, the world's in World, the Character's or the Campaign's, as the tables above list them. A file no note embeds, and a file a DM Tools note embeds, goes in DM Tools › Attachments.
+
+Files the DM adds in Obsidian land in an Attachments subfolder beside the note they are pasted into: Setup sets Obsidian's attachment location to "In subfolder under current folder" with the subfolder named Attachments in the Workspace Language, and a Setup re-run repairs it. Such a subfolder is inside the note's Scope, so the agent leaves those files where they are.
 
 ## Folder creation
 
-- **Setup** creates the eight top-level folders and nothing else. It does not touch the Source Cache. (The Translation Glossary note appears with its first entry — usually at Setup, when the top-level folder names are translated.)
-- **Starting a Campaign** creates its folder with the core listed above.
-- **Every other folder** — including an Adventure's folder and all its subfolders, a Character's folder and a world's folder — is created when the first note that belongs in it is written. The agent never creates empty folders in advance.
+- **Setup** creates the eight top-level folders, and no other folder; the first Setup also writes the [Templates](#templates--templates) into Templates. It does not touch the Source Cache. (The Translation Glossary note appears with its first entry — usually at Setup, when the top-level folder names are translated.)
+- **Starting a Campaign** creates its folder with the core listed above, empty folders included.
+- **Every other folder** — including an Adventure's folder and all its subfolders, a Character's folder, a world's folder and every Attachments folder but a Campaign's — is created when the first note or file that belongs in it is written. Apart from Setup and Campaign start, the agent never creates empty folders in advance.
 
 ## Edition
 
@@ -228,11 +266,11 @@ Official rules material of the other Edition enters only to fill a gap:
 
 ### Trusted Source
 
-The Trusted Source is the 5etools data as published in its public source mirror (`5etools-mirror-3/5etools-src` on GitHub), not the 5e.tools website ([ADR 0003](../../docs/adr/0003-official-material-comes-only-from-5etools.md)). It is the only source for:
+The Trusted Source is the 5etools data as published in its public source mirror (`5etools-mirror-3/5etools-src` on GitHub), and its images as published in the image mirror (`5etools-mirror-3/5etools-img`) at the same release tag — not the 5e.tools website ([ADR 0003](../../docs/adr/0003-official-material-comes-only-from-5etools.md), [ADR 0008](../../docs/adr/0008-an-imports-images-come-from-the-trusted-sources-image-mirror.md)). It is the only source for:
 
 - **Importing** Reference and Adventure content. Official material it does not contain cannot be in the Workspace. The DM may write their own version as Homebrew; the agent never copies official text into it. Text the DM copied from a published book, PDF or site is official text, whether or not the Trusted Source has it.
 - **Translating** official text: the English original is always the Trusted Source's.
-- **Research**: when the DM asks a rules question, the agent answers from the Source Cache in the Workspace's Edition and names the book and page. Answering creates no note unless the DM asks for one.
+- **Research**: when the DM asks a rules question, the agent answers from the Source Cache in the Workspace's Edition, in the Workspace Language, with the rules text translated faithfully, and names the book and page. Its terms come from the Translation Glossary; a term not yet in it is translated as [Translating a term](#translating-a-term) says and shown as a fallback term is, with its English original, but not recorded. Answering changes nothing in the Workspace — no note, no Glossary row — unless the DM asks for a note.
 
 No official content — rules text, stats, descriptions — is ever written from memory or from another site. The names of translated game terms follow [Translating a term](#translating-a-term). When an entry is neither in the Source Cache nor reachable, the agent stops, tells the DM, and writes nothing.
 
@@ -242,8 +280,8 @@ DM Realm never ships any of this data, not even as examples or eval fixtures; it
 
 The agent reaches the Trusted Source only through the Source Cache, with the `dmr-trusted-source` skill.
 
-- **One per machine, outside every Workspace**, shared by all the Workspaces on it. It holds only the English data; translations live in each Workspace's Translation Glossary.
-- **Pinned to one release** of the Trusted Source. Each file is fetched from that release the first time it is needed, so every cached file is from the same release. The first import or research that needs data creates it; Setup does not.
+- **One per machine, outside every Workspace**, shared by all the Workspaces on it. It holds only the English data and its images; translations live in each Workspace's Translation Glossary.
+- **Pinned to one release** of the Trusted Source. Each file — data or image — is fetched from that release the first time it is needed, one file at a time, so every cached file is from the same release. The image mirror is never cloned whole. The first import or research that needs data creates it; Setup does not.
 - **Refreshed only when the DM asks**: the pin moves to the latest release and the files already cached are fetched again. A refresh changes no note, in any Workspace.
 
 ### Source property
@@ -256,6 +294,7 @@ Every note imported from the Trusted Source records its source in a frontmatter 
 - **Its frontmatter** holds only the source property — and, for a monster, the `statblock` flag ([Stat blocks](#stat-blocks)).
 - **Its body** starts with the translated name as a `#` heading, then the entry's text, translated faithfully: every paragraph, list, table and number, nothing added. A monster's stat lines are one section of the note, and its [stat block](#stat-blocks) sits right under the heading.
 - **Its description**, when the Trusted Source has one, is a section of the body headed Description (translated): for a monster before its stat lines, as the Monster Manual puts it; for any other entry at the end of the note. A subrace's holds only what it adds to its race's. It is never in the stat block.
+- **Its images** — every image the entry shows, such as a monster's picture or an Adventure's map — are fetched through the Source Cache, copied into the [Attachments](#attachments) folder of the note's Scope (Reference › Attachments, or the Adventure's), and embedded where the Trusted Source places them. Each file is named after its note, with the image's own extension: `Palla_di_Fuoco.webp`, or `Palla_di_Fuoco_01.webp`, `Palla_di_Fuoco_02.webp` when there are several. A note never embeds a remote URL.
 - **An Off-Edition note** has, right under its heading, an Obsidian callout in the Workspace Language naming the Edition it belongs to: `> [!warning] Off-Edition Material (2014)`.
 - **It is found by its path.** The translated name comes from the Translation Glossary, so an entry always gets the same path. When a note is already at that path, an Import of the entry writes nothing and tells the DM; replacing it is the [update check](#checking-for-updates).
 
@@ -265,7 +304,7 @@ When the DM asks, in any Workspace, the agent compares each imported note's entr
 
 The check does not refresh the Source Cache: it states the release the cache is pinned to and whether a newer one exists, and offers to refresh first.
 
-A re-import replaces the note's official content wholesale and records the new release. Reference and Adventure notes are not meant to be edited by the DM: a change to official material is a House Rule, Homebrew, or a Campaign note linking to it. If a note differs from its recorded import, the agent warns before overwriting it and offers to move the DM's addition where it belongs.
+A re-import replaces the note's official content wholesale, and its images with it, and records the new release. Reference and Adventure notes are not meant to be edited by the DM: a change to official material is a House Rule, Homebrew, or a Campaign note linking to it. If a note differs from its recorded import, the agent warns before overwriting it and offers to move the DM's addition where it belongs.
 
 ## Stat blocks
 
@@ -320,6 +359,7 @@ actions:
 | Character | A fence in the Character layout, written by the agent from the Build with the same numbers as its calculation (the `dmr-character` skill's format) |
 | A Character's past Build, kept at a level-up or rebuild | Its copy of the fence stays, as a snapshot, with `bestiary: false`; its frontmatter drops the `statblock` flag |
 | A past Build brought by a Transfer | None: it is plain history, with no computed numbers |
+| The Homebrew monster [Template](#templates--templates) | An empty fence, filled in the note made from it |
 
 A Promotion to World moves a Campaign NPC's fence out of the NPC note into a new Homebrew Monsters note, which the World note then links to.
 
@@ -369,11 +409,11 @@ The Workspace Language is chosen at Setup and recorded in the [Workspace Config]
 
 For every game term and every default folder name, the agent uses, in this order:
 
-1. **The Translation Glossary**, if the term is already in it. A recorded translation is always reused, never re-translated.
+1. **The Translation Glossary**, if the term is already in it. A recorded translation is always reused, never re-translated; only the DM corrects it ([Correcting the Glossary](#correcting-the-glossary)).
 2. **The Official Translation** — the term the publisher's own books of the Workspace's Edition, in the Workspace Language, use, as the agent knows it or finds it on the web. A term the agent is not sure is official is a fallback (step 3).
 3. **A faithful translation**, when no Official Translation exists. The agent may search the web for an existing correspondence (fan wikis, community glossaries) before coining one.
 
-Whenever it chooses a translation (steps 2 and 3), the agent adds it to the Translation Glossary before writing the note.
+Whenever it chooses a translation (steps 2 and 3) for a note, the agent adds it to the Translation Glossary before writing the note.
 
 A fallback term — one recorded as a fallback, whether chosen now or taken from the Glossary — shows its English original at its first occurrence in each note that uses it — once per note: `Translated term (EN: Original term)`. Official Translations never do, and folder and file names never carry the English original.
 
@@ -381,17 +421,23 @@ A fallback term — one recorded as a fallback, whether chosen now or taken from
 
 A single note at the root of DM Tools (`dm_tools.translation_glossary`), one row per term:
 
-| English     | Translation      | Source                         | Key (folders only)   |
-| ----------- | ---------------- | ------------------------------ | -------------------- |
+| English     | Translation      | Source                         | Key (top-level folders only) |
+| ----------- | ---------------- | ------------------------------ | ---------------------------- |
 | `<English>` | `<translation>`  | Official Translation / fallback / DM's choice | `<key>` or empty |
+
+Every folder name below the top level is an ordinary term row, one per English term: Monsters has one row, whether it names Reference's folder or Homebrew's.
 
 Names the DM chooses — a Campaign's name, a Session's title, an invented NPC, a Character's name, an invented world's name — are the DM's words, not game terms, and are not recorded. The one exception is a top-level folder the DM named: its row records the name with the source *DM's choice*, so the Glossary lists every top-level folder in use.
 
 In an English Workspace nothing is translated, so there is no Translation Glossary.
 
+#### Correcting the Glossary
+
+A recorded translation changes only when the DM asks, for instance because an Official Translation has appeared for a fallback. The agent updates the row and its source, then lists the folder and file names and the notes that use the old term. On the DM's yes it renames those folders and files (rewriting the links to them) and replaces the term in the notes' text. When a fallback becomes an Official Translation, it also drops the term's `(EN: …)` from those notes.
+
 ### Fixed after Setup
 
-- **The Workspace Language** is fixed once Setup has happened, that is once the top-level folders exist.
+- **The Workspace Language** is fixed once Setup has happened, that is once the Workspace Config exists.
 - **The Edition** is fixed once the first rules material is imported into Reference. Until then nothing in the Workspace depends on it, and the Workspace Config's `edition` is the Edition.
 
 Once fixed, if `language` or `edition` in the Workspace Config is edited, the agent does not act on it, keeps working in the value in use, and tells the DM that changing it is not supported.
@@ -406,7 +452,7 @@ Because the Workspace Config can be edited, the values in use are read from the 
 - Words in file and folder names are joined with underscores: `Magic_Missile.md`, `Magic_Items`. Apostrophes become underscores too: `L_Imboscata`.
 - Characters that break links or file names (`# ^ [ ] | \ / : * ? " < >`) are left out.
 - Folders have no number prefixes: `Campaigns`, not `01_Campaigns`.
-- Session notes are named `Session_<NN>_<Title>.md` — with the word "Session" and the title in the Workspace Language, the number zero-padded to two digits so they sort in play order: `Session_03_The_Ambush.md` in English, `Sessione_03_L_Imboscata.md` in Italian.
+- Session notes are named `Session_<NN>_<Title>.md` — the word "Session" in the Workspace Language, the title as the DM gave it (with the name rules applied, never translated), the number zero-padded to two digits so they sort in play order: `Session_03_The_Ambush.md` in English, `Sessione_03_L_Imboscata.md` for the title «L'Imboscata» in Italian, `Sessione_03_The_Ambush.md` for the title "The Ambush" in an Italian Workspace.
 
 ## Workspace Config
 

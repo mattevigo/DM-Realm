@@ -16,14 +16,14 @@ reference_stub_it Riferimento/Equipaggiamento/Giubba_di_Cuoio.md "EMBC p. 152" "
 reference_stub_it Riferimento/Equipaggiamento/Acciarino.md "EMBC p. 160" "Acciarino"
 cat >> Strumenti_DM/Glossario_Traduzioni.md <<'MD'
 | source | fonte | fallback | |
-| Classes | Classi | Traduzione Ufficiale | reference.classes |
-| Species | Specie | Traduzione Ufficiale | reference.species |
-| Backgrounds | Background | Traduzione Ufficiale | reference.backgrounds |
-| Feats | Talenti | Traduzione Ufficiale | reference.feats |
-| Spells | Incantesimi | Traduzione Ufficiale | reference.spells |
-| Cantrips | Trucchetti | Traduzione Ufficiale | reference.spells.cantrips |
-| Level_1 | Livello_1 | Traduzione Ufficiale | reference.spells.level_1 |
-| Equipment | Equipaggiamento | Traduzione Ufficiale | reference.equipment |
+| Classes | Classi | Traduzione Ufficiale | |
+| Species | Specie | Traduzione Ufficiale | |
+| Backgrounds | Background | Traduzione Ufficiale | |
+| Feats | Talenti | Traduzione Ufficiale | |
+| Spells | Incantesimi | Traduzione Ufficiale | |
+| Cantrips | Trucchetti | Traduzione Ufficiale | |
+| Level_1 | Livello_1 | Traduzione Ufficiale | |
+| Equipment | Equipaggiamento | Traduzione Ufficiale | |
 | Lamplighter | Accendilampade | fallback | |
 | Mothfolk | Popolo Falena | fallback | |
 | Night Owl | Gufo Notturno | fallback | |

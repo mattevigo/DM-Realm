@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s85-campaign-house-rule
+description: "Structure scenario S85: a House Rule for one Campaign only goes in that Campaign's Homebrew_House_Rules, not in Homebrew."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Add a house rule for the Heroes campaign only: drinking a potion is a bonus action.

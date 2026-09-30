@@ -5,10 +5,10 @@ WS_LANG=it
 mkdir -p Campagne/Eroi/PNG Campagne/Eroi/Sessioni Campagne/Eroi/Luoghi Campagne/Eroi/Missioni Campagne/Eroi/Fazioni Campagne/Eroi/Allegati
 printf '# Eroi\n\nUna campagna sul confine settentrionale.\n' > Campagne/Eroi/README.md
 cat >> Strumenti_DM/Glossario_Traduzioni.md <<'MD'
-| NPCs | PNG | Traduzione Ufficiale | campaigns.<campaign>.npcs |
-| Sessions | Sessioni | fallback | campaigns.<campaign>.sessions |
-| Places | Luoghi | fallback | campaigns.<campaign>.places |
-| Quests | Missioni | fallback | campaigns.<campaign>.quests |
-| Factions | Fazioni | fallback | campaigns.<campaign>.factions |
-| Attachments | Allegati | fallback | campaigns.<campaign>.attachments |
+| NPCs | PNG | Traduzione Ufficiale | |
+| Sessions | Sessioni | fallback | |
+| Places | Luoghi | fallback | |
+| Quests | Missioni | fallback | |
+| Factions | Fazioni | fallback | |
+| Attachments | Allegati | fallback | |
 MD
