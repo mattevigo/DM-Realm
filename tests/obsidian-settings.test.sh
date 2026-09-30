@@ -12,20 +12,21 @@ json() { python3 -c "import json,sys; d=json.load(open(sys.argv[1])); print(eval
 
 # Fresh folder: the three files appear with exactly DM Realm's keys.
 W="$TMP/fresh"; mkdir -p "$W/Modelli"
-python3 "$HELPER" merge "$W" Modelli >/dev/null || fail "fresh: exit $?"
+python3 "$HELPER" merge "$W" Modelli Allegati >/dev/null || fail "fresh: exit $?"
 [ "$(json "$W/.obsidian/app.json" 'd["useMarkdownLinks"], d["newLinkFormat"]')" = "(False, 'shortest')" ] || fail "fresh: app.json keys"
 [ "$(json "$W/.obsidian/core-plugins.json" 'type(d).__name__, d.get("templates")')" = "('dict', True)" ] || fail "fresh: core-plugins.json must be an object with templates true"
 [ "$(json "$W/.obsidian/templates.json" 'd["folder"]')" = "Modelli" ] || fail "fresh: templates folder"
+[ "$(json "$W/.obsidian/app.json" 'd["attachmentFolderPath"]')" = "./Allegati" ] || fail "fresh: attachments must go in a subfolder under the note's folder"
 [ "$(ls -A "$W/.obsidian" | sort | tr '\n' ' ')" = "app.json core-plugins.json templates.json " ] || fail "fresh: unexpected files: $(ls -A "$W/.obsidian")"
 
 # The DM's own settings stay as they are; only DM Realm's keys change.
 W="$TMP/existing"; mkdir -p "$W/.obsidian"
-printf '{"vimMode": true, "useMarkdownLinks": true}' > "$W/.obsidian/app.json"
+printf '{"vimMode": true, "useMarkdownLinks": true, "attachmentFolderPath": "/"}' > "$W/.obsidian/app.json"
 printf '{"graph": false, "templates": false}' > "$W/.obsidian/core-plugins.json"
 printf '{"dateFormat": "DD/MM/YYYY"}' > "$W/.obsidian/templates.json"
 printf '{"theme": "moonstone"}' > "$W/.obsidian/appearance.json"
-python3 "$HELPER" merge "$W" Templates >/dev/null || fail "existing: exit $?"
-[ "$(json "$W/.obsidian/app.json" 'd["vimMode"], d["useMarkdownLinks"]')" = "(True, False)" ] || fail "existing: app.json"
+python3 "$HELPER" merge "$W" Templates Attachments >/dev/null || fail "existing: exit $?"
+[ "$(json "$W/.obsidian/app.json" 'd["vimMode"], d["useMarkdownLinks"], d["attachmentFolderPath"]')" = "(True, False, './Attachments')" ] || fail "existing: app.json"
 [ "$(json "$W/.obsidian/core-plugins.json" 'd["graph"], d["templates"]')" = "(False, True)" ] || fail "existing: core-plugins.json"
 [ "$(json "$W/.obsidian/templates.json" 'd["dateFormat"], d["folder"]')" = "('DD/MM/YYYY', 'Templates')" ] || fail "existing: templates.json"
 [ "$(cat "$W/.obsidian/appearance.json")" = '{"theme": "moonstone"}' ] || fail "existing: appearance.json was touched"
@@ -33,13 +34,13 @@ python3 "$HELPER" merge "$W" Templates >/dev/null || fail "existing: exit $?"
 # Legacy array form becomes the object form without changing which plugins are on.
 W="$TMP/legacy"; mkdir -p "$W/.obsidian"
 printf '["file-explorer", "global-search"]' > "$W/.obsidian/core-plugins.json"
-python3 "$HELPER" merge "$W" Templates >/dev/null || fail "legacy: exit $?"
+python3 "$HELPER" merge "$W" Templates Attachments >/dev/null || fail "legacy: exit $?"
 [ "$(json "$W/.obsidian/core-plugins.json" 'type(d).__name__, d["file-explorer"], d["global-search"], d["templates"], d["graph"], d["canvas"]')" = "('dict', True, True, True, False, False)" ] || fail "legacy: array not converted faithfully: $(cat "$W/.obsidian/core-plugins.json")"
 
 # A settings file that is not valid JSON: touch nothing, exit 2.
 W="$TMP/broken"; mkdir -p "$W/.obsidian"
 printf '{"vimMode": true,' > "$W/.obsidian/app.json"
-OUT=$(python3 "$HELPER" merge "$W" Templates 2>&1); CODE=$?
+OUT=$(python3 "$HELPER" merge "$W" Templates Attachments 2>&1); CODE=$?
 [ "$CODE" -eq 2 ] || fail "broken: expected exit 2, got $CODE"
 [ "$(cat "$W/.obsidian/app.json")" = '{"vimMode": true,' ] || fail "broken: app.json was rewritten"
 [ ! -e "$W/.obsidian/templates.json" ] || fail "broken: wrote templates.json anyway"
@@ -48,15 +49,33 @@ OUT=$(python3 "$HELPER" merge "$W" Templates 2>&1); CODE=$?
 W="$TMP/fresh"
 stamps() { python3 -c "import os,sys; print([os.stat(p).st_mtime_ns for p in sorted(sys.argv[1:])])" "$W/.obsidian"/*.json; }
 before=$(stamps); sleep 0.1
-OUT=$(python3 "$HELPER" merge "$W" Modelli) || fail "no-op: exit $?"
+OUT=$(python3 "$HELPER" merge "$W" Modelli Allegati) || fail "no-op: exit $?"
 [ "$before" = "$(stamps)" ] || fail "no-op: files were rewritten"
 case "$OUT" in *"already"*) ;; *) fail "no-op: should say the settings are already right: $OUT";; esac
 
 # Drift: it names what it restored.
 printf '{"useMarkdownLinks": true, "newLinkFormat": "shortest", "vimMode": true}' > "$W/.obsidian/app.json"
-OUT=$(python3 "$HELPER" merge "$W" Modelli) || fail "drift: exit $?"
+OUT=$(python3 "$HELPER" merge "$W" Modelli Allegati) || fail "drift: exit $?"
 case "$OUT" in *"app.json"*) ;; *) fail "drift: should name app.json: $OUT";; esac
 case "$OUT" in *"templates.json"*) fail "drift: templates.json was already right but is named: $OUT";; esac
+
+# Attachment location drifted (the DM picked "Vault folder" or another subfolder): restored.
+for drifted in '"/"' '"./"' '"Files"' '"./Files"'; do
+  printf '{"useMarkdownLinks": false, "newLinkFormat": "shortest", "attachmentFolderPath": %s, "vimMode": true}' "$drifted" > "$W/.obsidian/app.json"
+  OUT=$(python3 "$HELPER" merge "$W" Modelli Allegati) || fail "attachments drift $drifted: exit $?"
+  [ "$(json "$W/.obsidian/app.json" 'd["attachmentFolderPath"], d["vimMode"]')" = "('./Allegati', True)" ] || fail "attachments drift $drifted: not restored: $(cat "$W/.obsidian/app.json")"
+  case "$OUT" in *"app.json"*) ;; *) fail "attachments drift $drifted: should name app.json: $OUT";; esac
+done
+
+# The Attachments name is used as given, and must be a single folder name, never a path.
+W="$TMP/attach-name"; mkdir -p "$W"
+python3 "$HELPER" merge "$W" Templates "Pièces_jointes" >/dev/null || fail "attachments name: exit $?"
+[ "$(json "$W/.obsidian/app.json" 'd["attachmentFolderPath"]')" = "./Pièces_jointes" ] || fail "attachments name: expected ./Pièces_jointes, got $(cat "$W/.obsidian/app.json")"
+for bad in "a/b" "" ".." 'a\b'; do
+  W="$TMP/attach-bad"; rm -rf "$W"; mkdir -p "$W"
+  OUT=$(python3 "$HELPER" merge "$W" Templates "$bad" 2>&1); CODE=$?
+  [ "$CODE" -eq 2 ] && [ ! -e "$W/.obsidian" ] || fail "attachments '$bad': expected exit 2 and nothing written, got $CODE"
+done
 
 # Version: the higher of the installer version and the newest downloaded app package.
 # Run in an empty environment with a fake HOME and PATH, so the machine's own

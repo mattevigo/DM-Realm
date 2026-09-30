@@ -60,6 +60,18 @@ Research date: 2026-09-25. Question: a skill creates a new Obsidian vault folder
   - The Wikilinks toggle is written as `setConfig("useMarkdownLinks", !toggle)`.
 - **Both values you want are already Obsidian's defaults.** Writing them explicitly is harmless. It also pins them, so a future change to the defaults won't affect this vault.
 
+### Attachment location: `app.json` (added 2026-09-30)
+
+| UI setting (Settings → Files and links) | Key in `app.json` | Value DM Realm wants | Built-in default |
+|---|---|---|---|
+| **Default location for new attachments** → "In subfolder under current folder", with a subfolder name | `attachmentFolderPath` | `"./<subfolder name>"`, e.g. `"./Attachments"` | `"/"` (vault folder) |
+
+- Read from the app code of `obsidian-1.13.7.asar` (see "How to read this"), not from any help page:
+  - The defaults object contains `attachmentFolderPath:"/"`.
+  - The dropdown reads the value back as `"/"` → vault folder ("root"), `"."` or `"./"` → same folder as the current file ("current"), any other value starting with `"./"` → "In subfolder under current folder" ("subfolder"), anything else → "In the folder specified below" ("folder").
+  - It writes "subfolder" as `"./" + <subfolder name>`.
+  - `getAvailablePathForAttachments` strips the `"./"` and puts the file in `<note's folder>/<subfolder name>`, creating that folder when it is missing.
+
 ### (2) Templates: `core-plugins.json` and `templates.json`
 
 **The Templates settings are stored in `templates.json`.**

@@ -1,0 +1,11 @@
+schema_version: "1.1"
+name: setup-refuses-no-config
+description: Top-level folders without a Workspace Config are not a Workspace; Setup refuses, says the Config is missing, and writes nothing.
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 12
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Bash]
+  prompt: |
+    /dm-realm:dmr-setup English, 2024 rules, default names, Markdown statistics, go ahead
