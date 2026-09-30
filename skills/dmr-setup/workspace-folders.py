@@ -7,10 +7,13 @@ Validates the new name as the Workspace rules require (a single folder name, not
 empty after the name rules, not a duplicate), moves the folder, rewrites every
 link in the Workspace's notes whose path starts with the old name, updates the
 key's line in the Workspace Config and, for the templates key, Obsidian's
-template folder. The folder on disk is the Config's current name, or --from when
-the DM already edited the Config to the new name.
+template folder. For the homebrew key it also renames every Campaign's
+<old name>_<Type> folders (Homebrew_Spells, Homebrew_House_Rules…) to the new
+prefix, and rewrites the links into them. The folder on disk is the Config's
+current name, or --from when the DM already edited the Config to the new name.
 
-Exit 2: invalid name or key (nothing changed). Exit 3: the folder is not on disk.
+Exit 2: invalid name or key, or a folder to rename onto already exists (nothing
+changed). Exit 3: the folder is not on disk.
 """
 import json
 import os
@@ -48,6 +51,22 @@ def rewrite_links(text, old, new):
     return text
 
 
+def prefixed_folders(workspace, campaigns, old, new):
+    """Each Campaign's <old>_<Type> folders, as (path, new path) relative to the Workspace."""
+    root = os.path.join(workspace, campaigns)
+    if not campaigns or not os.path.isdir(root):
+        return []
+    moves = []
+    for campaign in sorted(os.listdir(root)):
+        folder = os.path.join(root, campaign)
+        if campaign.startswith(".") or not os.path.isdir(folder):
+            continue
+        for sub in sorted(os.listdir(folder)):
+            if sub.startswith(f"{old}_") and os.path.isdir(os.path.join(folder, sub)):
+                moves.append((f"{campaigns}/{campaign}/{sub}", f"{campaigns}/{campaign}/{new}_{sub[len(old) + 1:]}"))
+    return moves
+
+
 def rename(workspace, key, requested, old=None):
     if key not in KEYS:
         return fail(2, f"unknown key '{key}'; keys are {', '.join(KEYS)}.")
@@ -72,7 +91,15 @@ def rename(workspace, key, requested, old=None):
         print(f"'{old}' already has that name; nothing changed.")
         return 0
 
+    prefixed = prefixed_folders(workspace, names["campaigns"], old, new) if key == "homebrew" else []
+    for _, target in prefixed:
+        if os.path.lexists(os.path.join(workspace, target)):
+            return fail(2, f"'{target}' already exists; nothing changed.")
+
+    for source, target in prefixed:
+        os.rename(os.path.join(workspace, source), os.path.join(workspace, target))
     os.rename(os.path.join(workspace, old), os.path.join(workspace, new))
+    moves = [(old, new), *prefixed]
 
     rewritten = 0
     for root, dirs, files in os.walk(workspace):
@@ -83,7 +110,9 @@ def rename(workspace, key, requested, old=None):
             path = os.path.join(root, name)
             with open(path, encoding="utf-8") as f:
                 text = f.read()
-            updated = rewrite_links(text, old, new)
+            updated = text
+            for source, target in moves:
+                updated = rewrite_links(updated, source, target)
             if updated != text:
                 with open(path, "w", encoding="utf-8") as f:
                     f.write(updated)
@@ -95,7 +124,10 @@ def rename(workspace, key, requested, old=None):
     with open(config_path, "w", encoding="utf-8") as f:
         f.write(config_text)
 
-    done = [f"moved the folder", f"rewrote links in {rewritten} note(s)", "updated the Workspace Config"]
+    done = ["moved the folder"]
+    if key == "homebrew":
+        done.append(f"renamed {len(prefixed)} Campaign folder(s) to the '{new}_' prefix")
+    done += [f"rewrote links in {rewritten} note(s)", "updated the Workspace Config"]
     templates_json = os.path.join(workspace, ".obsidian", "templates.json")
     if key == "templates" and os.path.exists(templates_json):
         with open(templates_json, encoding="utf-8") as f:

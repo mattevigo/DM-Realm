@@ -6,6 +6,7 @@ set -e
 mkdir -p Campaigns/Heroes/Sessions DM_Tools/Checklists
 printf '# Session 1\n\nThe party meets in Phandalin.\n' > Campaigns/Heroes/Sessions/Session_01.md
 printf '# Prep\n\nLast time: [[Campaigns/Heroes/Sessions/Session_01|Session 1]].\nRecap: [Session 1](Campaigns/Heroes/Sessions/Session_01.md)\n' > DM_Tools/Checklists/Prep.md
-# Drift: the DM switched to Markdown links and turned the Templates plugin off; vim mode and graph are the DM's own.
-printf '{"useMarkdownLinks": true, "newLinkFormat": "shortest", "vimMode": true}\n' > .obsidian/app.json
+# Drift: the DM switched to Markdown links, put attachments back in the vault folder and turned the
+# Templates plugin off; vim mode and graph are the DM's own.
+printf '{"useMarkdownLinks": true, "newLinkFormat": "shortest", "attachmentFolderPath": "/", "vimMode": true}\n' > .obsidian/app.json
 printf '{"templates": false, "graph": false}\n' > .obsidian/core-plugins.json

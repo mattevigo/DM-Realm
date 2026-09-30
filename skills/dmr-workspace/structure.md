@@ -226,7 +226,8 @@ Blank starting notes, copied when a new note is created. Not a Scope. There is o
 | `templates.homebrew_monster` | Homebrew_Monster (a note)  | first Setup | A homebrew monster, with empty [statistics](#stat-blocks) in the Workspace's form |
 
 - **The first Setup writes them**, in the Workspace Language; their content is the `dmr-setup` skill's. A Setup re-run never overwrites one: it offers to add a missing one, and adds it only on the DM's yes.
-- **The agent creates a note of these kinds from the Template in use**, the DM's edits included. A Template links to nothing ([Link rules](#link-rules)); if the DM's Template holds a link anyway, the new note keeps it only where its own Scope allows it, and the agent says which it left out.
+- **A Template is only a body**: no `#` heading, no frontmatter, no Obsidian template variables; `—` marks a value to fill in. The Homebrew monster's empty statistics carry `bestiary: false`, so the Template never enters the bestiary; a Setup re-run that changes `stat_blocks` converts it with the other notes.
+- **The agent creates a note of these kinds from the Template in use**, the DM's edits included: its `#` heading first, then the Template's body filled in, replacing each `—` it has a value for. A monster made from the Template drops `bestiary: false` and takes the Workspace's frontmatter flag, as any monster note does. A Template links to nothing ([Link rules](#link-rules)); if the DM's Template holds a link anyway, the new note keeps it only where its own Scope allows it, and the agent says which it left out.
 - **The DM changes a Template by asking**: the agent edits the Template and leaves the notes already made from it as they are.
 
 ### Attachments

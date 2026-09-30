@@ -89,6 +89,10 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S85 | s85-campaign-house-rule |
 | S86 | s86-italian-english-session-title (S29's other half: a title given in English stays English) |
 | S87 | s87-research-records-nothing (a rules answer in the Workspace Language writes no note and no Glossary row) |
+| S89 | setup-fresh-english, setup-fresh-italian, setup-rerun-templates, tests/setup-templates.test.sh (the first Setup writes the nine Templates, translated and with no links; a re-run keeps an edited one byte for byte and only offers a missing one) |
+| S90 | setup-fresh-english, setup-fresh-italian, setup-rerun-drifted, tests/obsidian-settings.test.sh (Obsidian puts pasted files in an Attachments subfolder, its name translated; a re-run restores a drifted location) |
+| S91 | setup-rerun-config-only, setup-refuses-no-config (the Config alone makes a Workspace: with every folder gone Setup re-runs and asks; folders without it are refused, naming the missing Config) |
+| S92 | tests/workspace-folders.test.sh (renaming Homebrew renames every Campaign's `Homebrew_<Type>` folders and the links into them) |
 
 ## How to run the manual scenarios
 

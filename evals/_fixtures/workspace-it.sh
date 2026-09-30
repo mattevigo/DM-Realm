@@ -10,5 +10,4 @@ cat >> Strumenti_DM/Glossario_Traduzioni.md <<'MD'
 | Places | Luoghi | fallback | |
 | Quests | Missioni | fallback | |
 | Factions | Fazioni | fallback | |
-| Attachments | Allegati | fallback | |
 MD

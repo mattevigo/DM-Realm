@@ -96,4 +96,57 @@ sed -i.bak 's/^  campaigns: Campaigns.*/  campaigns: Games/' "$W/workspace-confi
 python3 "$HELPER" rename "$W" campaigns Games --from Campaigns >/dev/null || fail "from: exit $?"
 [ -d "$W/Games" ] && [ ! -e "$W/Campaigns" ] && grep -qF '[[Games/Heroes/README]]' "$W/DM_Tools/Checklists/Prep.md" || fail "from: rename with --from failed"
 
+# Renaming Homebrew renames every Campaign's Homebrew_<Type> folders to the new prefix,
+# and rewrites the links into them; the DM's other Campaign subfolders stay.
+homebrew_ws() {
+  new_ws "$1"
+  mkdir -p "$W/Homebrew/Spells/Level_2" "$W/Campaigns/Heroes/Homebrew_Spells/Level_3" "$W/Campaigns/Heroes/Homebrew_House_Rules" "$W/Campaigns/Heroes/Narrative" "$W/Campaigns/Villains/Homebrew_Magic_Items"
+  printf '# Tidecall\n' > "$W/Homebrew/Spells/Level_2/Tidecall.md"
+  printf '# Emberbolt\n' > "$W/Campaigns/Heroes/Homebrew_Spells/Level_3/Emberbolt.md"
+  printf '# Short Rests\n' > "$W/Campaigns/Heroes/Homebrew_House_Rules/Short_Rests.md"
+  printf '# Plot\n' > "$W/Campaigns/Heroes/Narrative/Plot.md"
+  printf '# Ring\n\nKin of [[Campaigns/Heroes/Homebrew_Spells/Level_3/Emberbolt|Emberbolt]].\n' > "$W/Campaigns/Villains/Homebrew_Magic_Items/Ring.md"
+  cat > "$W/Campaigns/Heroes/Sessions/Session_02.md" <<'MD'
+# Session 2
+
+Mira cast [[Campaigns/Heroes/Homebrew_Spells/Level_3/Emberbolt|Emberbolt]] ([recap](Campaigns/Heroes/Homebrew_Spells/Level_3/Emberbolt.md)).
+Rule: ![[Campaigns/Heroes/Homebrew_House_Rules/Short_Rests]]. Also [[Homebrew/Spells/Level_2/Tidecall]].
+Untouched: [[Campaigns/Heroes/Narrative/Plot]], [[Homebrew_Spells_Index]] and Campaigns/Heroes/Homebrew_Spells as prose.
+MD
+}
+homebrew_ws 9
+OUT=$(python3 "$HELPER" rename "$W" homebrew Brew) || fail "homebrew: exit $? ($OUT)"
+[ -f "$W/Brew/Spells/Level_2/Tidecall.md" ] && [ ! -e "$W/Homebrew" ] || fail "homebrew: top-level folder not moved"
+[ -f "$W/Campaigns/Heroes/Brew_Spells/Level_3/Emberbolt.md" ] && [ ! -e "$W/Campaigns/Heroes/Homebrew_Spells" ] || fail "homebrew: Heroes' Homebrew_Spells not renamed"
+[ -f "$W/Campaigns/Heroes/Brew_House_Rules/Short_Rests.md" ] || fail "homebrew: Heroes' Homebrew_House_Rules not renamed"
+[ -f "$W/Campaigns/Villains/Brew_Magic_Items/Ring.md" ] || fail "homebrew: Villains' Homebrew_Magic_Items not renamed"
+[ -f "$W/Campaigns/Heroes/Narrative/Plot.md" ] || fail "homebrew: the DM's Narrative folder moved"
+S="$W/Campaigns/Heroes/Sessions/Session_02.md"
+for want in '[[Campaigns/Heroes/Brew_Spells/Level_3/Emberbolt|Emberbolt]]' '(Campaigns/Heroes/Brew_Spells/Level_3/Emberbolt.md)' '![[Campaigns/Heroes/Brew_House_Rules/Short_Rests]]' '[[Brew/Spells/Level_2/Tidecall]]' '[[Campaigns/Heroes/Narrative/Plot]]' '[[Homebrew_Spells_Index]]' 'Campaigns/Heroes/Homebrew_Spells as prose'; do
+  grep -qF -- "$want" "$S" || fail "homebrew: '$want' missing from Session_02.md: $(cat "$S")"
+done
+grep -qF '[[Campaigns/Heroes/Brew_Spells/Level_3/Emberbolt|Emberbolt]]' "$W/Campaigns/Villains/Brew_Magic_Items/Ring.md" || fail "homebrew: link inside a renamed folder not rewritten"
+grep -q '^  homebrew: Brew' "$W/workspace-config.yml" || fail "homebrew: config not updated"
+case "$OUT" in *"3 Campaign folder"*) ;; *) fail "homebrew: should report 3 Campaign folders renamed: $OUT";; esac
+
+# The Campaigns folder is found by the name the Config gives it, with the name rules applied to the prefix.
+homebrew_ws 10
+mv "$W/Campaigns" "$W/Games"
+sed -i.bak 's/^  campaigns: Campaigns.*/  campaigns: Games/' "$W/workspace-config.yml" && rm "$W/workspace-config.yml.bak"
+python3 "$HELPER" rename "$W" homebrew "Our Brew" >/dev/null || fail "homebrew games: exit $?"
+[ -d "$W/Games/Heroes/Our_Brew_Spells" ] && [ -d "$W/Games/Villains/Our_Brew_Magic_Items" ] || fail "homebrew games: prefixed folders not renamed under Games"
+
+# A Campaign that already has a folder with the new prefixed name: nothing changes, exit 2.
+homebrew_ws 11
+mkdir -p "$W/Campaigns/Heroes/Brew_Spells"
+OUT=$(python3 "$HELPER" rename "$W" homebrew Brew 2>&1); CODE=$?
+[ "$CODE" -eq 2 ] || fail "homebrew clash: expected exit 2, got $CODE"
+[ -d "$W/Homebrew" ] && [ -d "$W/Campaigns/Heroes/Homebrew_Spells" ] && [ -d "$W/Campaigns/Villains/Homebrew_Magic_Items" ] && grep -q '^  homebrew: Homebrew' "$W/workspace-config.yml" || fail "homebrew clash: something changed"
+case "$OUT" in *"Brew_Spells"*) ;; *) fail "homebrew clash: should name the folder: $OUT";; esac
+
+# Renaming another folder leaves the Campaigns' Homebrew_ folders alone.
+homebrew_ws 12
+python3 "$HELPER" rename "$W" campaigns Games >/dev/null || fail "campaigns with homebrew: exit $?"
+[ -d "$W/Games/Heroes/Homebrew_Spells" ] || fail "campaigns with homebrew: Homebrew_Spells renamed"
+
 [ "$FAILS" -eq 0 ] && echo "workspace-folders: all pass" || { echo "workspace-folders: $FAILS failure(s)"; exit 1; }

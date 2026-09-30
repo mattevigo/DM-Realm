@@ -1,5 +1,5 @@
 ---
-max_turns: 20
+max_turns: 25
 timeout_seconds: 300
 allowed_tools: [Read, Glob, Grep, Skill, Write, Bash]
 ---

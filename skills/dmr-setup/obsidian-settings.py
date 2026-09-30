@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """Obsidian settings for a DM Realm Workspace.
 
-  obsidian-settings.py merge <workspace> <templates-folder>
+  obsidian-settings.py merge <workspace> <templates-folder> <attachments-name>
       Merge DM Realm's keys into <workspace>/.obsidian/ and leave every other
-      setting as it is: wikilinks with the shortest-path format (app.json), the
+      setting as it is: wikilinks with the shortest-path format and new attachments
+      in a subfolder named <attachments-name> under the note's folder (app.json), the
       Templates core plugin on (core-plugins.json, always the object form) and the
       template folder (templates.json). Writes no other file, and rewrites none that is
       already right; prints which files it set.
-      Exit 2, touching nothing, when an existing file is not valid JSON.
+      Exit 2, touching nothing, when an existing file is not valid JSON or
+      <attachments-name> is not a single folder name (empty, or a path).
 
   obsidian-settings.py version
       Print "found X.Y.Z", "found X.Y.Z, older than 1.13.7" or "not found".
@@ -47,7 +49,10 @@ def load(path, default):
         return json.load(f)
 
 
-def merge(workspace, templates_folder):
+def merge(workspace, templates_folder, attachments):
+    if not attachments.strip() or any(c in attachments for c in "/\\") or attachments.strip() in (".", ".."):
+        print(f"obsidian-settings: '{attachments}' is not a single folder name; nothing was changed.", file=sys.stderr)
+        return 2
     config = os.path.join(workspace, ".obsidian")
     paths = {name: os.path.join(config, name) for name in ("app.json", "core-plugins.json", "templates.json")}
     try:
@@ -58,7 +63,8 @@ def merge(workspace, templates_folder):
         print(f"obsidian-settings: an Obsidian settings file is not valid JSON ({e}); nothing was changed.", file=sys.stderr)
         return 2
 
-    app.update({"useMarkdownLinks": False, "newLinkFormat": "shortest"})
+    # "./<name>" is Obsidian's "In subfolder under current folder" (Files and links).
+    app.update({"useMarkdownLinks": False, "newLinkFormat": "shortest", "attachmentFolderPath": f"./{attachments}"})
     if isinstance(core, list):
         listed = set(core)
         core = {plugin: True for plugin in core}
@@ -77,6 +83,7 @@ def merge(workspace, templates_folder):
         changed.append(name)
     if changed:
         print(f"Obsidian settings set in {', '.join(changed)}: wikilinks, shortest-path links, "
+              f"attachments in a '{attachments}' subfolder under the note's folder, "
               f"Templates plugin on, template folder '{templates_folder}'.")
     else:
         print("Obsidian settings already as DM Realm needs them; nothing changed.")
@@ -175,8 +182,8 @@ def version():
 
 
 def main(argv):
-    if len(argv) == 4 and argv[1] == "merge":
-        return merge(argv[2], argv[3])
+    if len(argv) == 5 and argv[1] == "merge":
+        return merge(argv[2], argv[3], argv[4])
     if len(argv) == 2 and argv[1] == "version":
         return version()
     print(__doc__, file=sys.stderr)
