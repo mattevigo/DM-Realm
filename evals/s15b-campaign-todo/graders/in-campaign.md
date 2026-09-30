@@ -4,4 +4,4 @@ target: files
 match: contains
 flags: m
 ---
-^Campaigns/Heroes/.+\.md$
+^Campaigns/Heroes/(?!README\.md$)[^/]+\.md$

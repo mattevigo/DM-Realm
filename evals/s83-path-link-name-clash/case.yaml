@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s83-path-link-name-clash
+description: "Structure scenario S83: a note named like an existing one gets path links, and the bare links to the older note are rewritten as path links first."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Write a Heroes campaign place note called Stonehill Inn: in our campaign the party burned it down in Session 5, and it is now a ruin.

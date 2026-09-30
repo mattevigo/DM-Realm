@@ -1,6 +1,6 @@
 # DM Realm is a Claude Code plugin, separate from the Workspace
 
-DM Realm ships as a Claude Code plugin: its `dmr-` skills, the Workspace structure documentation they follow, and their evals. A Workspace is any folder the DM opens in Obsidian; it holds only the Workspace Config, the top-level folders with the DM's notes, and Obsidian's own settings. No DM Realm file lives in a Workspace, so DM Realm updates arrive as plugin updates and never touch or merge with the DM's notes.
+DM Realm ships as a Claude Code plugin: its `dmr-` skills, the Workspace structure documentation they follow, and their evals. A Workspace is a folder with the Workspace Config at its root, which the DM opens in Obsidian; it holds only the Workspace Config, the top-level folders with the DM's notes, and Obsidian's own settings. No DM Realm file lives in a Workspace, so DM Realm updates arrive as plugin updates and never touch or merge with the DM's notes.
 
 ## Considered Options
 

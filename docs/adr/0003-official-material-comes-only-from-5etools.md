@@ -2,6 +2,8 @@
 
 Reference and Adventure content is imported, translated and researched only from the 5etools data as published in its public source mirror (`5etools-mirror-3/5etools-src`), never from a DM's books, another site or the agent's memory. A single machine-readable source makes every import repeatable and checkable, and lets a later errata be found and re-imported. The data is kept in one Source Cache per machine, outside every Workspace, pinned to one release and refreshed only when the DM asks; DM Realm never ships any of it.
 
+*Amended by [ADR 0008](0008-an-imports-images-come-from-the-trusted-sources-image-mirror.md): the Trusted Source includes 5etools' image mirror at the same release, and an Import brings the entry's images.*
+
 ## Considered Options
 
 - **The DM's own books (pasted text).** Rejected: not repeatable, not checkable, and a refresh has nothing to compare against.
