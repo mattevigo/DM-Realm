@@ -118,6 +118,11 @@ OUT=$(helper image "bestiary/TEST/Quill Hound.webp") || fail "image: exit $?"
 [ "$OUT" = "$DMR_SOURCE_CACHE/v1.2.0/img/bestiary/TEST/Quill Hound.webp" ] || fail "image: got '$OUT'"
 [ "$(cat "$OUT" 2>/dev/null)" = "IMG-1.2.0" ] || fail "image: should hold the v1.2.0 image"
 
+# A name curl would read as a URL pattern ([ ] { }) is fetched as it is.
+printf 'MAP-PLAYER' > "$MIRROR/img/v1.2.0/adventure/TEST/Map [Player] {1}.webp"
+OUT=$(helper image "adventure/TEST/Map [Player] {1}.webp") || fail "image brackets: exit $?"
+[ "$(cat "$OUT" 2>/dev/null)" = "MAP-PLAYER" ] || fail "image brackets: got '$OUT'"
+
 # Fetched only once: the mirror's copy gone, the cached one is still served.
 rm "$MIRROR/img/v1.2.0/bestiary/TEST/Quill Hound.webp"
 OUT=$(DMR_SOURCE_IMG="http://127.0.0.1:9/img" helper image "bestiary/TEST/Quill Hound.webp") || fail "image cached: exit $?"

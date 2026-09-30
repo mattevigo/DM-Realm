@@ -40,6 +40,7 @@ import os
 import re
 import subprocess
 import sys
+from collections import namedtuple
 
 SOURCE_CACHE_HELPER = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "..", "dmr-trusted-source", "source-cache.sh")
@@ -696,6 +697,11 @@ def file_stem(name):
     return re.sub(r"[\s'’]+", "_", kept.strip())
 
 
+def valid_note(name):
+    """A note's file name without `.md`, with the name rules already applied."""
+    return bool(name) and file_stem(name) == name and not name.lower().endswith(".md")
+
+
 def embed_images(text, stem):
     """Number the placeholders in the note's order and embed each image's file."""
     order = [int(m.group(1)) for m in IMAGE_TOKEN.finditer(text)]
@@ -1118,11 +1124,15 @@ def fence_items(items):
     out = []
     for item in items:
         if isinstance(item, dict) and "name" in item:
-            out.append({"name": plain(item["name"]),
-                        "desc": "\n\n".join(render_entries(children(item), 3))})
+            out.append({"name": plain(item["name"]), "desc": fence_text(render_entries(children(item), 3))})
         else:
-            out.append({"name": "", "desc": "\n\n".join(render_entry(item, 3))})
+            out.append({"name": "", "desc": fence_text(render_entry(item, 3))})
     return out
+
+
+def fence_text(blocks):
+    """An item's text in the stat block: its images are the body's alone."""
+    return "\n\n".join(b for b in blocks if not IMAGE_TOKEN.fullmatch(b))
 
 
 def fence_ac(acs):
@@ -1631,8 +1641,12 @@ def fluff_ref(key, entry):
     return ref
 
 
+Fluff = namedtuple("Fluff", "entries images")
+NO_FLUFF = Fluff([], [])
+
+
 def fluff_entries(prop, path, ref):
-    """The entries and the images of the fluff that ref names: ([], []) when there is none."""
+    """The Fluff (entries and images) that ref names: NO_FLUFF when there is none."""
     for f in load_optional(path).get(prop, []):
         if isinstance(f, dict) and all(same(f.get(k), v) for k, v in ref.items()):
             f = resolve(prop, f, path)
@@ -1648,8 +1662,8 @@ def fluff_entries(prop, path, ref):
                     if flag not in shared:
                         malformed(f"the description of '{ref['name']}' appends a missing '{flag}' text")
                     entries = entries + [shared[flag]]
-            return entries, images
-    return [], []
+            return Fluff(entries, images)
+    return NO_FLUFF
 
 
 def description(key, entry, path):
@@ -1661,7 +1675,7 @@ def description(key, entry, path):
 
 def description_parts(key, entry, path):
     if key == "subrace" and not entry.get("name"):
-        return [], []
+        return NO_FLUFF
     prop = FLUFF_OF.get(key, key) + "Fluff"
     own = entry.get("fluff")
     if isinstance(own, dict):
@@ -1671,24 +1685,24 @@ def description_parts(key, entry, path):
         entries, images = list(own.get("entries") or []), list(own.get("images") or [])
         if own.get(f"_{prop}"):
             copied = fluff_entries(prop, fluff_file(path), own[f"_{prop}"])
-            entries, images = copied[0] or entries, copied[1] or images
+            entries, images = copied.entries or entries, copied.images or images
         appended = own.get(f"_append{prop[0].upper()}{prop[1:]}")
         if appended:
             more = fluff_entries(prop, fluff_file(path), appended)
-            entries, images = entries + more[0], images + more[1]
-        return entries, images
+            entries, images = entries + more.entries, images + more.images
+        return Fluff(entries, images)
     # The text only with hasFluff; the images whenever the fluff is fetched (hasFluffImages).
     if not entry.get("hasFluff") and not entry.get("hasFluffImages"):
-        return [], []
+        return NO_FLUFF
     entries, images = fluff_entries(prop, fluff_file(path), fluff_ref(key, entry))
     if not entry.get("hasFluff"):
         entries = []
     if key == "subrace":  # a subrace's note holds only what it adds to its race's
         race = fluff_entries(prop, fluff_file(path), {"name": entry.get("raceName"),
                                                       "source": entry.get("raceSource")})
-        entries = [e for e in entries if e not in race[0]]
-        images = [i for i in images if i not in race[1]]
-    return entries, images
+        entries = [e for e in entries if e not in race.entries]
+        images = [i for i in images if i not in race.images]
+    return Fluff(entries, images)
 
 
 def render(key, entry, path, edition=None, note=None):
@@ -1782,7 +1796,7 @@ def main(argv):
     if len(args) != 3 or not args[0].startswith("data/") \
             or opts.get("--edition", "2024") not in MONSTER_LAYOUTS \
             or flags >= {"--meta", "--images"} \
-            or "--note" in opts and file_stem(opts["--note"]) != opts["--note"]:
+            or "--note" in opts and not valid_note(opts["--note"]):
         raise Failure(2, "usage: render-entry.py data/<file> <name> <source> "
                          "[--key <key>] [--class-source <source>] [--edition 2014|2024] "
                          "[--note <note file name, name rules applied>] [--meta | --images]")

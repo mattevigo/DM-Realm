@@ -1136,6 +1136,26 @@ expect_exit "no such image, listed" 4 data/pictures.json "Lost Picture" CNR --im
 DMR_SOURCE_IMG="http://127.0.0.1:9/img"
 expect_exit "remote image" 6 data/pictures.json "Far Picture" CNR
 expect_exit "bad --note" 2 data/pictures.json "Warden's Glow" CNR --note "a/b"
+expect_exit "empty --note" 2 data/pictures.json "Warden's Glow" CNR --note ""
+expect_exit "--note with .md" 2 data/pictures.json "Warden's Glow" CNR --note "Warden_s_Glow.md"
+# An image in a monster's action is the body's alone: never in the stat block fence.
+python3 - "$DATA/bestiary/bestiary-cnr.json" <<'PY'
+import json, sys
+p = sys.argv[1]; d = json.load(open(p))
+d["monster"].append({"name": "Glass Moth", "source": "CNR", "page": 54, "size": ["T"], "type": "beast",
+  "ac": [12], "hp": {"average": 2, "formula": "1d4"}, "speed": {"walk": 5, "fly": 30}, "passive": 10, "cr": "0",
+  "action": [{"name": "Shimmer", "entries": ["It glints.", {"type": "image", "href": {"type": "internal", "path": "g/moth.webp"}}]}]})
+json.dump(d, open(p, "w"))
+PY
+seed_image g/moth.webp
+OUT=$(render data/bestiary/bestiary-cnr.json "Glass Moth" CNR) || fail "action image: exit $?: $(cat "$TMP/err")"
+FENCE=$(printf '%s\n' "$OUT" | sed -n '/^```statblock$/,/^```$/p')
+hasnt "action image, fence" "$FENCE" "![["
+hasnt "action image, fence" "$FENCE" "IMAGE"
+has "action image, fence" "$FENCE" 'desc: It glints.'
+has "action image, body" "$OUT" "It glints.
+
+![[Glass_Moth.webp]]"
 expect_exit "usage" 2 data/conditionsdiseases.json Dazzled
 expect_exit "path outside data" 2 ../x.json Dazzled CNR
 

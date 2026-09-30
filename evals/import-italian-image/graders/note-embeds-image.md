@@ -1,6 +1,7 @@
 ---
 type: regex
-target: trace
+target: {source: file, path: Riferimento/Mostri/Segugio_Fatuo.md}
 match: contains
+flags: m
 ---
-!\[\[Segugio_Fatuo\.webp\]\]
+^!\[\[([^\]|]*/)?Segugio_Fatuo\.webp\]\]\s*$

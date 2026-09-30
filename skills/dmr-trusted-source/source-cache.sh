@@ -36,9 +36,8 @@ case "$CACHE" in
 esac
 
 # file://~/… endpoints mean the home folder (evals pass them from case.yaml).
-case "$API" in "file://~/"*) API="file://$HOME/${API#file://\~/}" ;; esac
-case "$RAW" in "file://~/"*) RAW="file://$HOME/${RAW#file://\~/}" ;; esac
-case "$IMG" in "file://~/"*) IMG="file://$HOME/${IMG#file://\~/}" ;; esac
+home_url() { case "$1" in "file://~/"*) printf 'file://%s/%s' "$HOME" "${1#file://\~/}" ;; *) printf '%s' "$1" ;; esac; }
+API=$(home_url "$API"); RAW=$(home_url "$RAW"); IMG=$(home_url "$IMG")
 
 die() { echo "source-cache: $2" >&2; exit "$1"; }
 unreachable() { die 3 "the Trusted Source (5etools mirror) cannot be reached, and $1."; }
@@ -52,7 +51,8 @@ done
 
 fetch() { # url dest: download atomically. Returns 0 done, 4 no such file, 3 unreachable.
   mkdir -p "$(dirname "$2")" || return 3
-  code=$(curl -sSL --max-time 60 -w '%{http_code}' "$1" -o "$2.part" 2>/dev/null); rc=$?
+  # --globoff: an image's name may hold [ ] { }, which curl would read as a URL pattern.
+  code=$(curl -sSL --globoff --max-time 60 -w '%{http_code}' "$1" -o "$2.part" 2>/dev/null); rc=$?
   if [ "$rc" -eq 0 ] && { [ "$code" = 200 ] || [ "$code" = 000 ]; }; then
     mv "$2.part" "$2" && return 0
   fi
