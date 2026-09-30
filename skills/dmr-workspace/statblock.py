@@ -15,7 +15,7 @@ note converts between them with the same values and translations.
       Print the Markdown of the fence fields read from standard input (the YAML inside a
       ```statblock fence), for a note being written in a Markdown Workspace.
 
---labels is a JSON object mapping the layouts' English labels (`statblocks-settings.py
+--labels is a JSON object (`-` reads it from standard input) mapping the layouts' English labels (`statblocks-settings.py
 labels`: Armor Class, STR, Actions…) to their translations, as the Translation Glossary
 records them; a label missing from it stays English.
 
@@ -540,8 +540,11 @@ def convert(note, to, labels=None):
 
 def read_labels(path):
     try:
-        with open(path, encoding="utf-8") as f:
-            labels = json.load(f)
+        if path == "-":
+            labels = json.load(sys.stdin)
+        else:
+            with open(path, encoding="utf-8") as f:
+                labels = json.load(f)
     except (OSError, ValueError) as e:
         raise Failure(2, f"the labels are not a readable JSON object ({e}).")
     if not isinstance(labels, dict) or not all(isinstance(v, str) for v in labels.values()):

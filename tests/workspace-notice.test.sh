@@ -38,7 +38,14 @@ for name in Reference Adventures Homebrew World Characters Campaigns DM_Tools Te
 done
 expect_contains workspace "$OUT" "dmr-workspace"
 expect_contains workspace "$OUT" "Edition: 2024"
+# No stat_blocks in the Config (a Workspace from before ADR 0009): it counts as true.
+expect_contains workspace "$OUT" "Stat blocks (stat_blocks): true (not in the Config yet"
 expect_contains workspace "$OUT" "dmr-trusted-source"
+
+# The Config's choice of Markdown is passed on.
+WSM="$TMP/wsm"; mkdir -p "$WSM"
+{ cat "$WS/workspace-config.yml"; echo "stat_blocks: false"; } > "$WSM/workspace-config.yml"
+expect_contains "stat blocks off" "$(run_hook "$WSM")" "Stat blocks (stat_blocks): false"
 
 # Custom names and trailing comments are read from the config, not assumed
 WS2="$TMP/ws2"; mkdir -p "$WS2"
