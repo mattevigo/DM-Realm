@@ -20,9 +20,10 @@ DMR_SOURCE_CACHE="${CLAUDE_PLUGIN_DATA}/source-cache" sh "<this skill's base dir
 ```
 
 - It prints the local path of the file, fetched from the pinned release the first time it is needed; read that path with Read and Grep.
+- `image <path>` instead of `file …` does the same for an image, by the path an entry gives it (`bestiary/MM/Goblin.webp`), from the Trusted Source's image mirror at the pinned release. The Import's helper fetches an entry's images itself; call it directly only to look at one.
 - `release` instead of `file …` prints the pinned release.
-- `refresh` updates the Source Cache — run it only when the DM asks. It prints the old and the new release (or that the cache is up to date) and any cached file the new release no longer has; report that to the DM.
-- **Exit 4**: the pinned release has no such file — check the path against the table below.
+- `refresh` updates the Source Cache, its images included — run it only when the DM asks. It prints the old and the new release (or that the cache is up to date) and any cached file the new release no longer has; report that to the DM.
+- **Exit 4**: the pinned release has no such file or image — check the path against the table below.
 - **Exit 3**: the Trusted Source cannot be reached and the file is not cached (or a refresh could not complete, and the cache stays on its release): tell the DM so and stop there.
 
 ## Where things are

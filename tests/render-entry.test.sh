@@ -13,11 +13,14 @@ fail() { echo "FAIL $1"; FAILS=$((FAILS+1)); }
 export DMR_SOURCE_CACHE="$TMP/cache"
 export DMR_SOURCE_API="http://127.0.0.1:9/latest"   # never online: everything is seeded
 export DMR_SOURCE_RAW="http://127.0.0.1:9/raw"
-unset EVAL_DMR_SOURCE_CACHE EVAL_DMR_SOURCE_API EVAL_DMR_SOURCE_RAW
+export DMR_SOURCE_IMG="http://127.0.0.1:9/img"
+unset EVAL_DMR_SOURCE_CACHE EVAL_DMR_SOURCE_API EVAL_DMR_SOURCE_RAW EVAL_DMR_SOURCE_IMG
 DATA="$DMR_SOURCE_CACHE/v9.9.9/data"
 mkdir -p "$DATA"
 echo v9.9.9 > "$DMR_SOURCE_CACHE/release"
 seed() { mkdir -p "$(dirname "$DATA/$1")"; cat > "$DATA/$1"; }
+# seed_image <path in the image mirror>: invented bytes, never a real image (ADR 0003).
+seed_image() { mkdir -p "$(dirname "$DMR_SOURCE_CACHE/v9.9.9/img/$1")"; printf 'IMG %s' "$1" > "$DMR_SOURCE_CACHE/v9.9.9/img/$1"; }
 
 render() { python3 "$HELPER" "$@" 2>"$TMP/err"; }
 # has <label> <text> <expected substring>
@@ -136,6 +139,7 @@ seed variantrules.json <<'JSON'
   ]}
 ]}
 JSON
+seed_image x.webp
 OUT=$(render data/variantrules.json "Lantern Law" CNR) || fail "structure: exit $?: $(cat "$TMP/err")"
 has structure "$OUT" "# Lantern Law
 
@@ -183,7 +187,11 @@ has structure "$OUT" "## Deep
 #### Deepest
 
 - y"
-hasnt structure "$OUT" "x.webp"
+has structure "$OUT" "---
+
+![[Lantern_Law.webp]]
+
+- Bright Ward"
 
 # --- Spells ---------------------------------------------------------------------------
 seed spells/spells-cnr.json <<'JSON'
@@ -931,12 +939,18 @@ seed bestiary/fluff-bestiary-cnr.json <<'JSON'
    "images": [{"type": "image", "href": {"type": "internal", "path": "drakes.webp"}}]},
   {"name": "Lamp Drake", "source": "CNR", "_copy": {"name": "Drakes", "source": "CNR", "_mod": {
     "entries": {"mode": "prependArr", "items": {"type": "section", "entries": ["Lamp drakes guard the lamplighters."]}},
-    "images": {"mode": "appendArr", "items": {"type": "image", "href": {"type": "internal", "path": "lamp.webp"}}}}}},
+    "images": {"mode": "appendArr", "items": {"type": "image", "href": {"type": "internal", "path": "lamp.webp"},
+                                              "title": "A lamp drake at rest", "credit": "Invented Artist"}}}}},
   {"name": "Old Drake", "source": "CNR", "_copy": {"name": "Drakes", "source": "CNR", "_mod": {
     "entries": {"mode": "setProp", "value": [{"type": "entries", "entries": ["Old drakes have forgotten fire."]}]}}}},
   {"name": "Ember Moth", "source": "CNR", "entries": ["Nothing points here: the moth has no hasFluff."]}
 ]}
 JSON
+seed bestiary/fluff-bestiary-tor.json <<'JSON'
+{"monsterFluff": [{"name": "Quill Hound", "source": "TOR",
+  "images": [{"type": "image", "href": {"type": "internal", "path": "bestiary/TOR/Quill Hound.webp"}}]}]}
+JSON
+seed_image drakes.webp; seed_image lamp.webp; seed_image "bestiary/TOR/Quill Hound.webp"
 seed fluff-races.json <<'JSON'
 {"raceFluff": [
   {"name": "Lampkin", "source": "TOR", "uncommon": true, "entries": [{"type": "entries", "entries": ["Lampkin are born in lanterns."]}]},
@@ -953,31 +967,63 @@ seed class/fluff-class-lamplighter.json <<'JSON'
   "classSource": "CNR", "entries": ["Wick walkers keep the night roads."]}]}
 JSON
 OUT=$(render data/bestiary/bestiary-cnr.json "Lamp Drake" CNR) || fail "monster description: exit $?: $(cat "$TMP/err")"
-# Under the fence, before the stat lines; its own text first, then what it copies.
+# Under the fence, before the stat lines; its own text first, then what it copies. Its
+# images as 5etools shows a description's: the first above the text, the others after it,
+# each embedded by a file named after the note, and a title as the caption.
 has "monster description" "$OUT" '```
 
 ## Description
+
+![[Lamp_Drake_01.webp]]
 
 Lamp drakes guard the lamplighters.
 
 ***Drakes.*** Drakes nest in old lamps.
 
+![[Lamp_Drake_02.webp]]
+
+*A lamp drake at rest*
+
 ## Stat Block'
 FENCE=$(printf '%s\n' "$OUT" | sed -n '/^```statblock$/,/^```$/p')
 hasnt "description not in the fence" "$FENCE" "drakes"
 hasnt "description not in the fence" "$FENCE" "Description"
-hasnt "description images" "$OUT" ".webp"
+hasnt "description images" "$FENCE" ".webp"
+hasnt "no remote image" "$OUT" "http"
+# --note names the files after the note's own (translated) name.
+OUT=$(render data/bestiary/bestiary-cnr.json "Lamp Drake" CNR --note Drago_Lanterna) || fail "--note: exit $?: $(cat "$TMP/err")"
+has "--note" "$OUT" "![[Drago_Lanterna_01.webp]]"
+has "--note" "$OUT" "![[Drago_Lanterna_02.webp]]"
+# --images lists each image, in the note's order, for the agent to copy into Attachments.
+OUT=$(render data/bestiary/bestiary-cnr.json "Lamp Drake" CNR --note Drago_Lanterna --images) || fail "--images: exit $?: $(cat "$TMP/err")"
+printf '%s' "$OUT" | python3 -c '
+import json, sys
+got = json.load(sys.stdin)
+cache = sys.argv[1] + "/v9.9.9/img/"
+want = [{"image": "drakes.webp", "cached": cache + "drakes.webp", "file": "Drago_Lanterna_01.webp"},
+        {"image": "lamp.webp", "cached": cache + "lamp.webp", "file": "Drago_Lanterna_02.webp"}]
+sys.exit(0 if got == want else 1)' "$DMR_SOURCE_CACHE" || fail "--images: got $OUT"
 OUT=$(render data/bestiary/bestiary-cnr.json "Old Drake" CNR) || fail "setProp: exit $?: $(cat "$TMP/err")"
 has setProp "$OUT" "## Description
+
+![[Old_Drake.webp]]
 
 Old drakes have forgotten fire."
 hasnt setProp "$OUT" "Drakes nest"
 # Without hasFluff there is no description, even when the fluff file names the entry;
-# with only images (hasFluffImages) there is none either, and no fluff file is fetched.
+# with only images (hasFluffImages), the description holds only them.
 OUT=$(render data/bestiary/bestiary-cnr.json "Ember Moth" CNR)
 hasnt "no hasFluff" "$OUT" "## Description"
 OUT=$(render data/bestiary/bestiary-tor.json "Quill Hound" TOR) || fail "images only: exit $?: $(cat "$TMP/err")"
-hasnt "images only" "$OUT" "## Description"
+has "images only" "$OUT" "## Description
+
+![[Quill_Hound.webp]]
+
+## Stat Block"
+OUT=$(render data/bestiary/bestiary-tor.json "Quill Hound" TOR --images) || fail "images only list: exit $?: $(cat "$TMP/err")"
+has "images only list" "$OUT" '"image": "bestiary/TOR/Quill Hound.webp"'
+OUT=$(render data/conditionsdiseases.json Dazzled CNR --images) || fail "no images: exit $?: $(cat "$TMP/err")"
+[ "$OUT" = "[]" ] || fail "no images: expected [], got '$OUT'"
 # Any other entry's description closes the note.
 OUT=$(render data/races.json Lampkin TOR) || fail "race description: exit $?: $(cat "$TMP/err")"
 has "race description" "$OUT" "***Languages.*** Common and Lampish.
@@ -1060,6 +1106,56 @@ mkdir -p "$TMP/mirror/v9.9.9/data"   # reachable, but without the file
 DMR_SOURCE_RAW="file://$TMP/mirror"
 expect_exit "no such file" 4 data/spells/spells-zzz.json Glow CNR
 DMR_SOURCE_RAW="http://127.0.0.1:9/raw"
+# Images: a gallery in place, the default file name by the name rules; an image the
+# Source Cache cannot get stops the render like missing data; a remote one is refused.
+seed pictures.json <<'JSON'
+{"condition": [
+  {"name": "Warden's Glow", "source": "CNR", "page": 6, "entries": ["Before.",
+    {"type": "gallery", "images": [{"type": "image", "href": {"type": "internal", "path": "g/one.png"}},
+                                   {"type": "image", "href": {"type": "internal", "path": "g/two.jpg"}}]},
+    "After."]},
+  {"name": "Lost Picture", "source": "CNR", "page": 7, "entries": [{"type": "image", "href": {"type": "internal", "path": "g/lost.webp"}}]},
+  {"name": "Far Picture", "source": "CNR", "page": 8, "entries": [{"type": "image", "href": {"type": "external", "url": "https://example.com/x.webp"}}]}
+]}
+JSON
+seed_image g/one.png; seed_image g/two.jpg
+OUT=$(render data/pictures.json "Warden's Glow" CNR) || fail "gallery: exit $?: $(cat "$TMP/err")"
+has gallery "$OUT" "Before.
+
+![[Warden_s_Glow_01.png]]
+
+![[Warden_s_Glow_02.jpg]]
+
+After."
+expect_exit "image unreachable" 3 data/pictures.json "Lost Picture" CNR
+has "image unreachable" "$(cat "$TMP/err")" "Trusted Source"
+mkdir -p "$TMP/imgmirror/v9.9.9"
+DMR_SOURCE_IMG="file://$TMP/imgmirror"
+expect_exit "no such image" 4 data/pictures.json "Lost Picture" CNR
+expect_exit "no such image, listed" 4 data/pictures.json "Lost Picture" CNR --images
+DMR_SOURCE_IMG="http://127.0.0.1:9/img"
+expect_exit "remote image" 6 data/pictures.json "Far Picture" CNR
+expect_exit "bad --note" 2 data/pictures.json "Warden's Glow" CNR --note "a/b"
+expect_exit "empty --note" 2 data/pictures.json "Warden's Glow" CNR --note ""
+expect_exit "--note with .md" 2 data/pictures.json "Warden's Glow" CNR --note "Warden_s_Glow.md"
+# An image in a monster's action is the body's alone: never in the stat block fence.
+python3 - "$DATA/bestiary/bestiary-cnr.json" <<'PY'
+import json, sys
+p = sys.argv[1]; d = json.load(open(p))
+d["monster"].append({"name": "Glass Moth", "source": "CNR", "page": 54, "size": ["T"], "type": "beast",
+  "ac": [12], "hp": {"average": 2, "formula": "1d4"}, "speed": {"walk": 5, "fly": 30}, "passive": 10, "cr": "0",
+  "action": [{"name": "Shimmer", "entries": ["It glints.", {"type": "image", "href": {"type": "internal", "path": "g/moth.webp"}}]}]})
+json.dump(d, open(p, "w"))
+PY
+seed_image g/moth.webp
+OUT=$(render data/bestiary/bestiary-cnr.json "Glass Moth" CNR) || fail "action image: exit $?: $(cat "$TMP/err")"
+FENCE=$(printf '%s\n' "$OUT" | sed -n '/^```statblock$/,/^```$/p')
+hasnt "action image, fence" "$FENCE" "![["
+hasnt "action image, fence" "$FENCE" "IMAGE"
+has "action image, fence" "$FENCE" 'desc: It glints.'
+has "action image, body" "$OUT" "It glints.
+
+![[Glass_Moth.webp]]"
 expect_exit "usage" 2 data/conditionsdiseases.json Dazzled
 expect_exit "path outside data" 2 ../x.json Dazzled CNR
 

@@ -2,7 +2,7 @@
 """Render one Trusted Source entry as English Markdown, for an Import.
 
   render-entry.py <data file> <name> <source> [--key <key>] [--class-source <source>]
-                  [--edition 2014|2024] [--meta]
+                  [--edition 2014|2024] [--note <note name>] [--meta | --images]
 
 <data file> is a Source Cache path (`data/spells/spells-xphb.json`); the file, and
 any file a copied entry comes from, is fetched through the Source Cache helper
@@ -13,8 +13,15 @@ a subclass under one version of its class (`XPHB`), or a subrace under one race.
 
 Prints the entry's Markdown: `# <name>`, then its text, deterministically, with
 5etools tags as plain text; the entry's description (its 5etools fluff, from the
-`fluff-*` file beside its data, images left out) is a `## Description` section, before
-a monster's stat lines and at the end of any other entry. A monster also gets its stat block, a Fantasy Statblocks
+`fluff-*` file beside its data) is a `## Description` section, before
+a monster's stat lines and at the end of any other entry. Every image the entry shows
+(ADR 0008) is fetched through the Source Cache and embedded where 5etools places it — in
+its text where it stands; a description's first image above its text and the others after
+it — as `![[<note name>.<ext>]]`, or `<note name>_01.<ext>`, `_02`… when there are several,
+numbered in the note's order. --note is the note's file name without `.md` (by default
+the entry's name with the name rules applied). --images prints, instead of the Markdown,
+a JSON list of those images in the same order: the image's path in the image mirror, its
+cached copy, and the file name the note embeds. A monster also gets its stat block, a Fantasy Statblocks
 fence (```statblock) with the plugin's English keys, under the heading; --edition is the
 Workspace's Edition, and a monster of the other one names its own Edition's layout
 (without --edition, no layout is named). --meta prints JSON facts about the entry instead: its
@@ -22,9 +29,9 @@ key, source property (`XPHB p. 12, v2.36.1`), Edition by its book's date, reprin
 and what placing its note needs (spell level, class, race, option kind…).
 
 Exit 2: bad usage. Exit 3 and 4: passed through from the Source Cache helper
-(the Trusted Source is unreachable; no such file). Exit 5: no such entry.
-Exit 6: a copied entry uses a `_copy` modifier this helper does not support, or the
-description holds a field it does not know.
+(the Trusted Source is unreachable; no such file or image). Exit 5: no such entry.
+Exit 6: a copied entry uses a `_copy` modifier this helper does not support, the
+description holds a field it does not know, or an image is outside the image mirror.
 Exit 7: a malformed entry, or one that cannot be rendered. Exit 8: several entries match.
 Nothing is printed on stdout on any error.
 """
@@ -33,6 +40,7 @@ import os
 import re
 import subprocess
 import sys
+from collections import namedtuple
 
 SOURCE_CACHE_HELPER = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "..", "dmr-trusted-source", "source-cache.sh")
@@ -641,8 +649,10 @@ def render_entry(entry, depth):
         return [name + plain(entry.get("text", ""))]
     if kind == "hr":
         return ["---"]
-    if kind in ("image", "gallery"):
-        return []  # images are out of scope
+    if kind == "image":
+        return image_blocks(entry)
+    if kind == "gallery":
+        return [b for image in entry.get("images", []) for b in image_blocks(image)]
     if kind in ("refOptionalfeature", "refFeat"):
         return [uid_name(entry.get("optionalfeature" if kind == "refOptionalfeature" else "feat", ""))]
     if kind in ("refClassFeature", "refSubclassFeature"):
@@ -656,6 +666,52 @@ def render_entry(entry, depth):
     if "items" in entry:
         return ["\n".join(list_lines(entry["items"]))]
     malformed(f"unknown entry type '{kind}'")
+
+
+# --- Images: fetched through the Source Cache, embedded by a file named after the note --
+
+_images = []  # every image rendered so far, by its placeholder's number
+IMAGE_TOKEN = re.compile("\x00IMAGE(\\d+)\x00")
+
+
+def image_blocks(entry):
+    """An image as a placeholder, numbered once the note's order is known, and its title."""
+    if not isinstance(entry, dict):
+        malformed(f"unexpected image {json.dumps(entry)[:80]}")
+    href = entry.get("href") or {}
+    path = href.get("path")
+    if href.get("type") != "internal" or not path:
+        raise Failure(6, "an image outside the Trusted Source's image mirror "
+                         f"({json.dumps(href)[:80]}) cannot be imported.")
+    _images.append({"image": path, "cached": source_cache("image", path)})
+    title = [f"*{plain(entry['title'])}*"] if entry.get("title") else []
+    return [f"\x00IMAGE{len(_images) - 1}\x00"] + title
+
+
+# Characters the name rules leave out of a file name; an apostrophe becomes an underscore.
+NAME_DROPPED = set('#^[]|\\/:*?"<>')
+
+
+def file_stem(name):
+    kept = "".join(c for c in str(name) if c not in NAME_DROPPED)
+    return re.sub(r"[\s'’]+", "_", kept.strip())
+
+
+def valid_note(name):
+    """A note's file name without `.md`, with the name rules already applied."""
+    return bool(name) and file_stem(name) == name and not name.lower().endswith(".md")
+
+
+def embed_images(text, stem):
+    """Number the placeholders in the note's order and embed each image's file."""
+    order = [int(m.group(1)) for m in IMAGE_TOKEN.finditer(text)]
+    listed = []
+    for n, index in enumerate(order, 1):
+        image = _images[index]
+        suffix = f"_{n:02d}" if len(order) > 1 else ""
+        listed.append(dict(image, file=f"{stem}{suffix}{os.path.splitext(image['image'])[1]}"))
+    files = iter(listed)
+    return IMAGE_TOKEN.sub(lambda m: f"![[{next(files)['file']}]]", text), listed
 
 
 def render_generic(key, entry):
@@ -1068,11 +1124,15 @@ def fence_items(items):
     out = []
     for item in items:
         if isinstance(item, dict) and "name" in item:
-            out.append({"name": plain(item["name"]),
-                        "desc": "\n\n".join(render_entries(children(item), 3))})
+            out.append({"name": plain(item["name"]), "desc": fence_text(render_entries(children(item), 3))})
         else:
-            out.append({"name": "", "desc": "\n\n".join(render_entry(item, 3))})
+            out.append({"name": "", "desc": fence_text(render_entry(item, 3))})
     return out
+
+
+def fence_text(blocks):
+    """An item's text in the stat block: its images are the body's alone."""
+    return "\n\n".join(b for b in blocks if not IMAGE_TOKEN.fullmatch(b))
 
 
 def fence_ac(acs):
@@ -1551,7 +1611,7 @@ FLUFF_OF = {"baseitem": "item", "magicvariant": "item", "subrace": "race"}
 # Data files whose fluff is not in `fluff-<file name>` beside them.
 FLUFF_FILES = {"data/items-base.json": "data/fluff-items.json",
                "data/magicvariants.json": "data/fluff-items.json"}
-# What a fluff entry may hold besides its text; its images are out of scope.
+# What a fluff entry may hold besides its text.
 FLUFF_FIELDS = {"name", "source", "page", "shortName", "className", "classSource", "type",
                 "entries", "images", "_meta"}
 # Flags that append a text the fluff file shares, from `<prop>Meta` (the 2014 PHB's sidebars
@@ -1581,15 +1641,20 @@ def fluff_ref(key, entry):
     return ref
 
 
+Fluff = namedtuple("Fluff", "entries images")
+NO_FLUFF = Fluff([], [])
+
+
 def fluff_entries(prop, path, ref):
+    """The Fluff (entries and images) that ref names: NO_FLUFF when there is none."""
     for f in load_optional(path).get(prop, []):
         if isinstance(f, dict) and all(same(f.get(k), v) for k, v in ref.items()):
             f = resolve(prop, f, path)
             unknown = sorted(k for k in f if k not in FLUFF_FIELDS and k not in FLUFF_SHARED)
             if unknown:
                 unsupported_fluff(", ".join(unknown), ref["name"])
-            entries = f.get("entries") or []
-            if not isinstance(entries, list):
+            entries, images = f.get("entries") or [], f.get("images") or []
+            if not isinstance(entries, list) or not isinstance(images, list):
                 malformed(f"the description of '{ref['name']}' is not a list")
             shared = load_optional(path).get(f"{prop}Meta") or {}
             for flag in FLUFF_SHARED:
@@ -1597,38 +1662,51 @@ def fluff_entries(prop, path, ref):
                     if flag not in shared:
                         malformed(f"the description of '{ref['name']}' appends a missing '{flag}' text")
                     entries = entries + [shared[flag]]
-            return entries
-    return []
+            return Fluff(entries, images)
+    return NO_FLUFF
 
 
 def description(key, entry, path):
-    """The entry's description (its fluff), as entries: [] when it has none, or only images."""
+    """The entry's description (its fluff), as entries: [] when it has none. Its images
+    come as 5etools shows them: the first above the text, the others after it."""
+    entries, images = description_parts(key, entry, path)
+    return images[:1] + entries + images[1:]
+
+
+def description_parts(key, entry, path):
     if key == "subrace" and not entry.get("name"):
-        return []
+        return NO_FLUFF
     prop = FLUFF_OF.get(key, key) + "Fluff"
     own = entry.get("fluff")
     if isinstance(own, dict):
         for k in own:
             if k not in FLUFF_FIELDS and k not in (f"_{prop}", f"_append{prop[0].upper()}{prop[1:]}"):
                 unsupported_fluff(f"'{k}'", entry.get("name"))
-        entries = list(own.get("entries") or [])
+        entries, images = list(own.get("entries") or []), list(own.get("images") or [])
         if own.get(f"_{prop}"):
-            entries = fluff_entries(prop, fluff_file(path), own[f"_{prop}"]) or entries
+            copied = fluff_entries(prop, fluff_file(path), own[f"_{prop}"])
+            entries, images = copied.entries or entries, copied.images or images
         appended = own.get(f"_append{prop[0].upper()}{prop[1:]}")
         if appended:
-            entries += fluff_entries(prop, fluff_file(path), appended)
-        return entries
+            more = fluff_entries(prop, fluff_file(path), appended)
+            entries, images = entries + more.entries, images + more.images
+        return Fluff(entries, images)
+    # The text only with hasFluff; the images whenever the fluff is fetched (hasFluffImages).
+    if not entry.get("hasFluff") and not entry.get("hasFluffImages"):
+        return NO_FLUFF
+    entries, images = fluff_entries(prop, fluff_file(path), fluff_ref(key, entry))
     if not entry.get("hasFluff"):
-        return []
-    entries = fluff_entries(prop, fluff_file(path), fluff_ref(key, entry))
+        entries = []
     if key == "subrace":  # a subrace's note holds only what it adds to its race's
         race = fluff_entries(prop, fluff_file(path), {"name": entry.get("raceName"),
                                                       "source": entry.get("raceSource")})
-        entries = [e for e in entries if e not in race]
-    return entries
+        entries = [e for e in entries if e not in race.entries]
+        images = [i for i in images if i not in race.images]
+    return Fluff(entries, images)
 
 
-def render(key, entry, path, edition=None):
+def render(key, entry, path, edition=None, note=None):
+    """The note's Markdown, and the images it embeds in its order."""
     data = load(path)
     add_features(data)
     if key in ("race", "subrace"):
@@ -1643,7 +1721,8 @@ def render(key, entry, path, edition=None):
         blocks[at:at] = ["## Description"] + about
     if key == "monster":
         blocks.insert(1, statblock_fence(entry, edition))
-    return "\n\n".join(b for b in blocks if b) + "\n"
+    stem = note or file_stem(entry["name"])
+    return embed_images("\n\n".join(b for b in blocks if b) + "\n", stem)
 
 
 # --- Meta ----------------------------------------------------------------------------
@@ -1703,26 +1782,32 @@ def main(argv):
     i = 0
     while i < len(argv):
         a = argv[i]
-        if a in ("--key", "--class-source", "--edition"):
+        if a in ("--key", "--class-source", "--edition", "--note"):
             if i + 1 >= len(argv):
                 raise Failure(2, f"{a} needs a value.")
             opts[a] = argv[i + 1]
             i += 2
-        elif a == "--meta":
+        elif a in ("--meta", "--images"):
             flags.add(a)
             i += 1
         else:
             args.append(a)
             i += 1
     if len(args) != 3 or not args[0].startswith("data/") \
-            or opts.get("--edition", "2024") not in MONSTER_LAYOUTS:
+            or opts.get("--edition", "2024") not in MONSTER_LAYOUTS \
+            or flags >= {"--meta", "--images"} \
+            or "--note" in opts and not valid_note(opts["--note"]):
         raise Failure(2, "usage: render-entry.py data/<file> <name> <source> "
-                         "[--key <key>] [--class-source <source>] [--edition 2014|2024] [--meta]")
+                         "[--key <key>] [--class-source <source>] [--edition 2014|2024] "
+                         "[--note <note file name, name rules applied>] [--meta | --images]")
     path, name, source = args
     key, entry = find(path, name, source, opts.get("--key"), opts.get("--class-source"))
     if "--meta" in flags:
         return json.dumps(meta(key, entry), indent=2, ensure_ascii=False) + "\n"
-    return render(key, entry, path, opts.get("--edition"))
+    text, images = render(key, entry, path, opts.get("--edition"), opts.get("--note"))
+    if "--images" in flags:
+        return json.dumps(images, indent=2, ensure_ascii=False) + "\n"
+    return text
 
 
 if __name__ == "__main__":
