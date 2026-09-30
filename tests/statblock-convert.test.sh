@@ -173,107 +173,52 @@ OUT=$(convert "$TMP/witch.md" --to fence) || fail "links again: exit $?: $(cat "
 [ "$(grep -c 'Tidecall\]\]' "$TMP/witch.md")" -eq 1 ] || fail "links: the line must not be doubled:
 $(cat "$TMP/witch.md")"
 
-# --- A Character: its Build keeps its links; only Statistics changes form ----------------
+# --- A Character is never converted: its stat block stays, whatever stat_blocks says ------
 cat > "$TMP/wren.md" <<'MD'
 ---
 player: Carla
-status: active
 level: 3
 statblock: inline
 ---
 
 # Wren
 
-## Identity
-
-Wren trims lamps.
+```statblock
+layout: DM Realm Character
+name: Wren
+level: 3
+hp: 24
+```
 
 ## Build
 
 - **Species:** [[Mothfolk]]
-
-## Statistics
-
-```statblock
-layout: DM Realm Character
-name: Wren
-size: Small
-species: Mothfolk
-class: Lamplighter (Path of the Wick)
-level: 3
-player: Carla
-ac: 13
-hp: 24
-hit_dice: 3d8
-initiative: 2
-speed: 30 ft., fly 30 ft.
-stats: [8, 14, 14, 11, 18, 10]
-saves:
-  - Strength: -1
-  - Wisdom ●: 6
-skillsaves:
-  - Perception: 6
-senses: darkvision 60 ft., passive Perception 16
-languages: Common, Lampish
-actions:
-  - name: Lantern Pole
-    desc: "+4 to hit, reach 5 ft., 1d6 + 2 bludgeoning"
-spells:
-  - Wisdom, spell save DC 14, spell attack +6
-  - 1st level: 4 slots
-traits:
-  - name: Kindle
-    desc: Lights any wick she touches.
-  - name: Night Owl
-```
 MD
 cp "$TMP/wren.md" "$TMP/wren-original.md"
-OUT=$(convert "$TMP/wren.md" --to markdown) || fail "character to markdown: exit $?: $(cat "$TMP/err")"
-NOTE=$(cat "$TMP/wren.md")
-has "character markdown: build kept" "$NOTE" "- **Species:** [[Mothfolk]]"
-has "character markdown: kind" "$NOTE" "*Small Mothfolk, Lamplighter (Path of the Wick)*"
-has "character markdown: core" "$NOTE" "**Level** 3
-**Player** Carla
-**Armor Class** 13
-**Hit Point Maximum** 24
-**Hit Dice** 3d8
-**Initiative** +2
-**Speed** 30 ft., fly 30 ft."
-has "character markdown: saves" "$NOTE" "**Saving Throws** Strength -1, Wisdom ● +6"
-has "character markdown: attacks" "$NOTE" "### Attacks
+convert "$TMP/wren.md" --to markdown >/dev/null; CODE=$?
+[ "$CODE" -eq 8 ] || fail "character: exit $CODE, expected 8"
+cmp -s "$TMP/wren.md" "$TMP/wren-original.md" || fail "character: the note changed"
 
-- ***Lantern Pole.*** +4 to hit, reach 5 ft., 1d6 + 2 bludgeoning"
-has "character markdown: spells" "$NOTE" "### Spellcasting
-
-- Wisdom, spell save DC 14, spell attack +6
-- 1st level: 4 slots"
-has "character markdown: name-only trait" "$NOTE" "- ***Night Owl.***"
-convert "$TMP/wren.md" --to fence >/dev/null || fail "character to fence: exit $?: $(cat "$TMP/err")"
-cmp -s "$TMP/wren.md" "$TMP/wren-original.md" || fail "character round trip: the note changed:
-$(diff "$TMP/wren-original.md" "$TMP/wren.md")"
-
-# A past Build (bestiary: false) never carries the frontmatter flag, in either form.
+# A stat block kept out of the bestiary (bestiary: false) never carries the frontmatter
+# flag, in either form.
 cat > "$TMP/past.md" <<'MD'
 ---
-player: Carla
-level: 2
+source: EMBC p. 140, v3.0.0
 ---
 
-# Wren
+# Old Goblin
 
-## Statistics
+## Stat Block
 
 ```statblock
-layout: DM Realm Character
-name: Wren
+name: Old Goblin
 bestiary: false
-level: 2
 hp: 17
 ```
 MD
-convert "$TMP/past.md" --to markdown >/dev/null && convert "$TMP/past.md" --to fence >/dev/null || fail "past build: exit $?: $(cat "$TMP/err")"
-hasnt "past build: no flag" "$(cat "$TMP/past.md")" "statblock: inline"
-has "past build: bestiary kept" "$(cat "$TMP/past.md")" "bestiary: false"
+convert "$TMP/past.md" --to markdown >/dev/null && convert "$TMP/past.md" --to fence >/dev/null || fail "no bestiary: exit $?: $(cat "$TMP/err")"
+hasnt "no bestiary: no flag" "$(cat "$TMP/past.md")" "statblock: inline"
+has "no bestiary: bestiary kept" "$(cat "$TMP/past.md")" "bestiary: false"
 
 # An NPC's extends fence: only the changed values, as Markdown too.
 cat > "$TMP/npc.md" <<'MD'

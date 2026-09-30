@@ -4,4 +4,4 @@ target: {source: file, path: Characters/Wren/Wren.md}
 match: contains
 flags: m
 ---
-^## Statistics\s*\n\s*%% statblock\n[\s\S]*^\*\*Hit Point Maximum\*\* 24$
+^statblock: inline\n---\n\n# Wren\n\n```statblock\n(?![\s\S]*%% statblock)

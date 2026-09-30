@@ -105,7 +105,7 @@ _Avoid_: Export, share, move
 A blank starting note for a kind of content, copied when a new note is created. Not a Scope.
 
 **Stat block**:
-The game statistics of a monster, an NPC or a Character as a Fantasy Statblocks fence in its note, in a Workspace that chose stat blocks at Setup; a Workspace that did not writes the same statistics as Markdown instead, never both. Either way they come last in the note, after its images and description, and no link lives only in a fence.
+The game statistics of a monster, an NPC or a Character as a Fantasy Statblocks fence in its note. A monster's or an NPC's is written once, last in the note, and only in a Workspace that chose stat blocks at Setup; one that did not writes those statistics as Markdown instead. A Character's is always a fence under its heading, derived from its Build. No link lives only in a fence.
 _Avoid_: Sheet, statblock note
 
 **DM Tools**:

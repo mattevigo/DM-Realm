@@ -16,11 +16,11 @@ Turn the current folder into a DM Realm Workspace, in any Workspace Language, le
    - **Anything else** — notes or other files outside a Workspace: refuse and write nothing. When it holds Markdown notes, tell the DM it looks like an existing vault, and that migrating a vault into a Workspace is a separate skill DM Realm does not have yet.
 3. **Workspace Language.** Use the language the DM's request names, in any language ("italiano", "Deutsch"…). When it names none, ask which language the Workspace will be written in — every folder, file and note, fixed for good after Setup — and end your turn. Ask in the language the DM's request is written in (English when there is no text). Take the language only from the DM's explicit words; the language the request happens to be written in is not a choice. **From here on, write to the DM in the Workspace Language.**
 4. **Edition.** Use the Edition the DM's request names ("2024 rules", "5.5e" and "One D&D" mean 2024; "5e 2014" means 2014). When it names none, ask it as structure.md's "Edition" section says, in one message, and end your turn. In that question, 2024 means the 2024 Player's Handbook, Dungeon Master's Guide and Monster Manual; 2014 means the 2014 core books and the books that followed them. Take the Edition only from the DM's explicit answer.
-5. **Stat blocks.** Use the choice the DM's request makes ("with stat blocks", "Markdown only"). Otherwise take the recommendation: `true` when Fantasy Statblocks is installed (`.obsidian/plugins/obsidian-5e-statblocks/` exists), `false` when it is not. It is not a question of its own: the preview shows it and invites the DM to change it.
+5. **Stat blocks.** Use the choice the DM's request makes ("with stat blocks", "Markdown only"). When it makes none, ask the [stat blocks question](#the-stat-blocks-question) in a message of its own and end your turn. Take `stat_blocks` only from the DM's explicit answer.
 6. **Folder names.** For each top-level folder:
    - **Named by the DM** (in the request or an answer): use that name exactly, after checking it as structure.md's "Workspace Config" requires — a single folder name, not empty after the name rules, not a duplicate. An invalid name: say why, ask for another, and end your turn; the folder stays as it is.
    - **Otherwise**: its default English name, translated into the Workspace Language as structure.md's "Translating a term" says (Official Translation, else a faithful fallback), with the name rules applied. In English, the default name itself.
-7. **Preview.** Show exactly what Setup will create: `workspace-config.yml` with its content — Workspace Language, Edition, `stat_blocks` with one line on what it means (monsters, NPCs and Characters as the plugin's stat blocks, or as Markdown that needs no plugin but that MapForge cannot read) and every folder name; every top-level folder, each empty; in a non-English Workspace, the Translation Glossary with its rows; the Obsidian settings Setup merges (below); and, when Fantasy Statblocks is installed, what [Fantasy Statblocks](#fantasy-statblocks) sets. Unless the request already settled the names ("default names", or names given), invite the DM to rename any folder.
+7. **Preview.** Show exactly what Setup will create: `workspace-config.yml` with its content — Workspace Language, Edition, `stat_blocks` with one line on what it means (monsters and NPCs as the plugin's stat blocks, or as Markdown that needs no plugin but that MapForge cannot read; Characters keep their stat block either way) and every folder name; every top-level folder, each empty; in a non-English Workspace, the Translation Glossary with its rows; the Obsidian settings Setup merges (below); and, when Fantasy Statblocks is installed, what [Fantasy Statblocks](#fantasy-statblocks) sets. Unless the request already settled the names ("default names", or names given), invite the DM to rename any folder.
 8. **Confirmation.** Continue on an explicit go-ahead from the DM: one already in the request ("go ahead", "proceed", "procedi", "create it") counts. Otherwise ask for it and end your turn; the folder stays as it is until then.
 9. **Create.**
    1. Write `workspace-config.yml` at the folder root in the example's format, every value filled in (each folder name written out).
@@ -57,8 +57,8 @@ A Workspace is set up once. A re-run keeps its Workspace Language and Edition, r
    ```
 
    It checks the name as structure.md requires (exit 2: say why and ask for another), moves the folder, rewrites every link whose path starts with the old name, updates the Workspace Config and, for the Templates folder, Obsidian's template folder. In a non-English Workspace, then update that folder's row in the Translation Glossary: the name in use, with the source *DM's choice* in the Workspace Language.
-4. **Stat blocks.** A Config without `stat_blocks` (a Workspace set up before it existed) counts as `true`: ask the DM which they want, recommending as the first Setup does, write the answer into the Config, and convert if it is `false`. Convert, too, when the DM asks to change it, or when the Config's value is not the form the notes are in (a ```` ```statblock ```` fence, or Markdown starting with a `%% statblock` comment — the DM edited the Config):
-   1. **Preview** every note with statistics and the form it moves to; continue only on an explicit go-ahead (one already in the request counts).
+4. **Stat blocks.** A Config without `stat_blocks` (a Workspace set up before it existed) counts as `true`. Unless the request makes the choice, ask the [stat blocks question](#the-stat-blocks-question) in a message of its own, before any other change, and end your turn; on the DM's answer, write it into the Config and convert if it is `false`. Convert, too, when the DM asks to change it, or when the Config's value is not the form the notes are in (a ```` ```statblock ```` fence, or Markdown starting with a `%% statblock` comment — the DM edited the Config). The notes to convert are every monster and NPC note with statistics; a Character's note and its past Builds are never converted:
+   1. **Preview** every note to convert and the form it moves to; continue only on an explicit go-ahead (one already in the request counts).
    2. **Convert** each note with the helper next to the `dmr-workspace` skill's structure.md, passing the layouts' labels as Fantasy Statblocks gets them (below) — in English, none:
 
       ```sh
@@ -67,12 +67,21 @@ A Workspace is set up once. A re-run keeps its Workspace Language and Edition, r
       JSON
       ```
 
-      It rewrites the note in place with the same values and translations, and moves the `statblock` frontmatter flag. Exit 6 or 7 leaves that note as it was: name it in the report and go on.
+      It rewrites the note in place with the same values and translations, and moves the `statblock` frontmatter flag. Exit 6 or 7 leaves that note as it was: name it in the report and go on. Exit 8 means it is a Character's: it stays as it is, and needs no mention.
    3. **Write the value** into the Config once every note is converted.
 5. **Repair Obsidian settings**: run `python3 "<this skill's base directory>/obsidian-settings.py" merge . "<Templates folder name in use>"`. It restores only DM Realm's keys that drifted and rewrites nothing that is right. Then set up [Fantasy Statblocks](#fantasy-statblocks): run its helper even when the plugin looks configured, with the layout labels the Translation Glossary already holds.
 6. **Report** what changed — renamed folders and rewritten notes, converted statistics (and any note left as it was), restored settings, Fantasy Statblocks, recreated folders — or that the Workspace was already in order.
 
 Done when every change the DM confirmed is made, the Obsidian settings (Fantasy Statblocks' included, when installed) are as DM Realm needs them, and nothing else in the Workspace changed.
+
+## The stat blocks question
+
+How the Workspace writes monsters' and NPCs' statistics, asked in the Workspace Language:
+
+- **Stat blocks** (`stat_blocks: true`): Fantasy Statblocks renders them, and MapForge reads them from its bestiary.
+- **Markdown** (`stat_blocks: false`): readable with no plugin, but MapForge cannot place those creatures.
+
+Recommend stat blocks when Fantasy Statblocks is installed (`.obsidian/plugins/obsidian-5e-statblocks/` exists) and Markdown when it is not, and say that Characters keep their stat block either way.
 
 ## Fantasy Statblocks
 

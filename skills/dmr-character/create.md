@@ -14,7 +14,7 @@ A new Character, single class, at any level: level 1's choices, then each higher
    Ask for the open ones as SKILL.md's "Choices" says, in the mode the DM picks ([Guided or Recap](#guided-or-recap)).
 3. **Link every option** as SKILL.md's "Links" says, importing each missing Reference note with `dmr-import`.
 4. **Compute the numbers** in Statistics from the Build, as SKILL.md's "Numbers come from the Trusted Source" says.
-5. **Write the note** in SKILL.md's format, with `status` active and `level` the Character's level, and its Statistics from the numbers just computed (SKILL.md's "Statistics"), their `name` checked as structure.md's "Names in the bestiary" says.
+5. **Write the note** in SKILL.md's format, with `status` active and `level` the Character's level, and its stat block from the numbers just computed, its `name` checked as structure.md's "Names in the bestiary" says.
 6. **Report**: the note's path, its level and player, each Reference note imported, and each option the DM chose that is Off-Edition.
 
 Done when the note holds every choice, links every option, its numbers follow from the Build and the Trusted Source rules, and no past Build was written.

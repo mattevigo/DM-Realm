@@ -2,6 +2,6 @@
 type: regex
 target: {source: file, path: Characters/Wren/Wren.md}
 match: contains
-flags: mi
+flags: i
 ---
-hit point maximum[^\n]*\b31\b|^hp:\s*31\s*$
+hit point maximum[^\n]*\b31\b

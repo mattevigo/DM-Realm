@@ -10,11 +10,11 @@ A level-up adds a level. A rebuild changes the species, class, background or abi
    Ask for the open ones as SKILL.md's "Choices" says.
 3. **Keep the past Build**, at the next past Build path structure.md's Characters section gives. Copy the whole note there (`cp`), then change only:
    - the frontmatter: keep `player` and `level`, drop `status` and `statblock`;
-   - its statistics: add `bestiary: false` after their `name` — in the fence, or in the Markdown's `%% statblock` comment — so the past Build stays a snapshot and out of the bestiary;
+   - the stat block fence: add `bestiary: false` after its `name`, so the past Build stays a snapshot and out of the bestiary;
    - right under the `#` heading, a callout in the Workspace Language naming the level and linking to the current note: `> [!info] Past Build: level 3. The current Build is [[Wren]].`
 
    Every other line, links included, stays as it was.
-4. **Update the note**: the level (frontmatter and Build) and every change the gains or the rebuild bring, each new option linked as SKILL.md's "Links" says (importing what is missing with `dmr-import`), every number in Statistics recomputed and the section written again from them (SKILL.md's "Statistics"). The Identity section stays as it is.
+4. **Update the note**: the level (frontmatter and Build) and every change the gains or the rebuild bring, each new option linked as SKILL.md's "Links" says (importing what is missing with `dmr-import`), every number in Statistics recomputed, and the stat block written again from them. The Identity section stays as it is.
 5. **Report**: the new level or what the rebuild changed, the past Build's path, each Reference note imported, and each Off-Edition option the DM chose.
 
-Done when the past Build holds the whole Build as it was, with its callout, without `status` or `statblock`, and with `bestiary: false` in its statistics; and the note shows the new Build with its Statistics recomputed.
+Done when the past Build holds the whole Build as it was, with its callout, without `status` or `statblock`, and with `bestiary: false` in its fence; and the note shows the new Build with its numbers and stat block recomputed.

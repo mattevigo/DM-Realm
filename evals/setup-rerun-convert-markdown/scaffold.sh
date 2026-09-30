@@ -1,5 +1,5 @@
 #!/bin/sh
-# A stat block Workspace with an imported monster and a Character, both as fences.
+# A stat block Workspace with an imported monster and a Character, both as fences; only the monster converts.
 set -e
 . "$(dirname "$0")/../_fixtures/character-workspace.sh"
 . "$(dirname "$0")/../_fixtures/character-wren.sh"

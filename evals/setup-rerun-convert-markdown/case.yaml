@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: setup-rerun-convert-markdown
-description: "A Setup re-run asked to switch to Markdown converts every note's statistics (a monster, a Character and its past Build) with the same values, drops the statblock flag, and records stat_blocks: false (ADR 0009)."
+description: "A Setup re-run asked to switch to Markdown converts a monster's statistics with the same values, drops its statblock flag, records stat_blocks: false, and leaves the Character and its past Build as they were (ADR 0009)."
 tags: [setup, statblock]
 context:
   scaffold_script: scaffold.sh

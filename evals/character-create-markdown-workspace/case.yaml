@@ -1,6 +1,6 @@
 schema_version: "1.1"
-name: character-create-markdown
-description: "In a Workspace with stat_blocks: false, a new Character's Statistics are Markdown, last, with no fence and no statblock flag, while its Build keeps every link (ADR 0009)."
+name: character-create-markdown-workspace
+description: "stat_blocks does not reach Characters: in a Workspace with stat_blocks: false, a new Character still has its stat block fence under its heading and the statblock flag (ADR 0009)."
 tags: [character, scenario]
 context:
   scaffold_script: scaffold.sh

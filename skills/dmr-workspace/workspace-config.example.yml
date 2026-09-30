@@ -13,9 +13,10 @@ language: English
 # Fixed once official rules material is imported into Reference.
 edition:   # 2014 or 2024 — Setup asks, recommending 2024; no default
 
-# How notes write their game statistics (monsters, NPCs, Characters), once and last:
-# true as Fantasy Statblocks fences, false as Markdown. Setup recommends true when the
-# plugin is installed. A change takes effect at a Setup re-run, which converts the notes.
+# How monsters and NPCs write their game statistics, once and last: true as Fantasy
+# Statblocks fences, false as Markdown. Characters always keep their stat block. Setup asks,
+# recommending true when the plugin is installed. A change takes effect at a Setup re-run,
+# which converts the notes.
 stat_blocks: true
 
 # Names of the eight top-level folders, by neutral key. Leave a name empty to use

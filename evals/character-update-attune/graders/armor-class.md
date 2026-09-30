@@ -2,6 +2,6 @@
 type: regex
 target: {source: file, path: Characters/Wren/Wren.md}
 match: contains
-flags: mi
+flags: i
 ---
-armor class[^\n]*\b14\b|^ac:\s*14\s*$
+armor class[^\n]*\b14\b

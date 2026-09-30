@@ -20,7 +20,8 @@ labels`: Armor Class, STR, Actions…) to their translations, as the Translation
 records them; a label missing from it stays English.
 
 Exit 2: bad usage or labels. Exit 4: the note has no statistics. Exit 6: the statistics
-hold a key this module cannot write as Markdown. Exit 7: they cannot be parsed. The note
+hold a key this module cannot write as Markdown. Exit 7: they cannot be parsed. Exit 8:
+they are a Character's, which keeps its stat block whatever the Workspace chose. The note
 is not touched on any error.
 """
 import json
@@ -36,20 +37,17 @@ XP = {"0": 10, "1/8": 25, "1/4": 50, "1/2": 100, "1": 200, "2": 450, "3": 700, "
       "24": 62000, "25": 75000, "26": 90000, "27": 105000, "28": 120000, "29": 135000,
       "30": 155000}
 
-# Each kind's keys in the order its fence lists them. The Markdown shows every key but
-# the hidden ones, which it keeps in its `%% statblock` comment.
+# The keys in the order a fence lists them. The Markdown shows every key but the hidden
+# ones, which it keeps in its `%% statblock` comment.
 MONSTER_KEYS = ("name", "layout", "extends", "bestiary", "size", "type", "alignment", "ac", "ac_class",
                 "hp", "hit_dice", "speed", "initiative", "stats", "saves", "skillsaves",
                 "damage_vulnerabilities", "damage_resistances", "damage_immunities",
                 "condition_immunities", "gear", "senses", "languages", "cr", "traits", "actions",
                 "bonus_actions", "reactions", "legendary_description", "legendary_actions",
                 "mythic_description", "mythic_actions", "lair_actions", "regional_effects")
-CHARACTER_KEYS = ("layout", "name", "bestiary", "size", "species", "class", "level", "player", "ac",
-                  "hp", "hit_dice", "initiative", "speed", "stats", "saves", "skillsaves", "senses",
-                  "languages", "actions", "spells", "traits")
 HIDDEN = ("name", "layout", "extends", "bestiary")
 
-# Label lines: key, label, per kind.
+# Label lines: key, label.
 MONSTER_LINES = (("ac", "Armor Class"), ("hp", "Hit Points"), ("speed", "Speed"),
                  ("initiative", "Initiative"))
 MONSTER_DETAILS = (("saves", "Saving Throws"), ("skillsaves", "Skills"),
@@ -62,15 +60,9 @@ MONSTER_SECTIONS = (("traits", "Traits"), ("actions", "Actions"), ("bonus_action
                     ("reactions", "Reactions"), ("legendary_actions", "Legendary Actions"),
                     ("mythic_actions", "Mythic Actions"), ("lair_actions", "Lair Actions"),
                     ("regional_effects", "Regional Effects"))
-CHARACTER_LINES = (("level", "Level"), ("player", "Player"), ("ac", "Armor Class"),
-                   ("hp", "Hit Point Maximum"), ("hit_dice", "Hit Dice"), ("initiative", "Initiative"),
-                   ("speed", "Speed"))
-CHARACTER_DETAILS = (("saves", "Saving Throws"), ("skillsaves", "Skills"), ("senses", "Senses"),
-                     ("languages", "Languages"))
-CHARACTER_SECTIONS = (("actions", "Attacks"), ("spells", "Spellcasting"), ("traits", "Features and Traits"))
 DESCRIPTIONS = {"legendary_actions": "legendary_description", "mythic_actions": "mythic_description"}
 BONUS_LISTS = ("saves", "skillsaves")
-TEXT_LISTS = ("spells",)
+TEXT_LISTS = ("spells",)  # lists of plain lines, as Fantasy Statblocks writes spellcasting
 
 LINK = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
 LINKS_LINE = re.compile(r"\[\[[^\]]+\]\](?:, \[\[[^\]]+\]\])*")
@@ -85,18 +77,13 @@ class Failure(Exception):
         self.code = code
 
 
-def kind_of(fields):
-    return "character" if dict(fields).get("layout") == CHARACTER_LAYOUT else "monster"
+def refuse_character(fields):
+    if dict(fields).get("layout") == CHARACTER_LAYOUT:
+        raise Failure(8, "the statistics are a Character's, which keeps its stat block whatever the Workspace chose.")
 
 
-def layout_of(kind):
-    if kind == "character":
-        return CHARACTER_KEYS, CHARACTER_LINES, CHARACTER_DETAILS, CHARACTER_SECTIONS
-    return MONSTER_KEYS, MONSTER_LINES, MONSTER_DETAILS, MONSTER_SECTIONS
-
-
-def ordered(fields, kind):
-    keys = layout_of(kind)[0]
+def ordered(fields):
+    keys = MONSTER_KEYS
     unknown = [k for k, _ in fields if k not in keys]
     if unknown:
         raise Failure(6, f"the stat block has keys DM Realm does not write: {', '.join(unknown)}.")
@@ -245,22 +232,19 @@ def modifier(score):
     return (score - 10) // 2 if isinstance(score, int) else None
 
 
-def kind_line(values, kind):
-    if kind == "character":
-        who = " ".join(str(values[k]) for k in ("size", "species") if values.get(k))
-        return ", ".join(x for x in (who, str(values.get("class") or "")) if x)
+def kind_line(values):
     what = " ".join(str(values[k]) for k in ("size", "type") if values.get(k))
     return ", ".join(x for x in (what, str(values.get("alignment") or "")) if x)
 
 
-def line_value(key, values, kind, label):
+def line_value(key, values, label):
     v = values[key]
     if key == "ac" and values.get("ac_class"):
         return f"{v} ({values['ac_class']})"
-    if key == "hp" and kind == "monster" and values.get("hit_dice"):
+    if key == "hp" and values.get("hit_dice"):
         return f"{v} ({values['hit_dice']})"
     if key == "initiative":
-        return f"{signed(v)} ({10 + v})" if kind == "monster" and isinstance(v, int) else signed(v)
+        return f"{signed(v)} ({10 + v})" if isinstance(v, int) else signed(v)
     if key == "cr":
         v = str(v)
         if v in XP:
@@ -293,17 +277,17 @@ def item_markdown(item):
 def markdown(fields, labels=None):
     """DM Realm's Markdown for a note's statistics, from its fence fields."""
     label = lambda english: (labels or {}).get(english, english)
-    kind = kind_of(fields)
-    fields = ordered(fields, kind)
+    refuse_character(fields)
+    fields = ordered(fields)
     values = {k: v for k, v in fields if v not in (None, "", [])}
-    _, lines, details, sections = layout_of(kind)
+    lines, details, sections = MONSTER_LINES, MONSTER_DETAILS, MONSTER_SECTIONS
     hidden = [f"{k}: {'false' if v is False else 'true' if v is True else yaml_scalar(v)}"
               for k, v in fields if k in HIDDEN and k in values]
     blocks = ["\n".join(["%% statblock"] + hidden + ["%%"])]
-    kind_text = kind_line(values, kind)
+    kind_text = kind_line(values)
     if kind_text:
         blocks.append(f"*{kind_text}*")
-    core = [f"**{label(l)}** {line_value(k, values, kind, label)}" for k, l in lines if k in values]
+    core = [f"**{label(l)}** {line_value(k, values, label)}" for k, l in lines if k in values]
     if core:
         blocks.append("\n".join(core))
     if "stats" in values:
@@ -311,7 +295,7 @@ def markdown(fields, labels=None):
         blocks.append("\n".join([
             "| " + " | ".join(label(a) for a in ABILITIES) + " |", "|" + " --- |" * 6,
             "| " + " | ".join(f"{s} ({signed(modifier(s))})" for s in scores) + " |"]))
-    rest = [f"**{label(l)}** {line_value(k, values, kind, label)}" for k, l in details if k in values]
+    rest = [f"**{label(l)}** {line_value(k, values, label)}" for k, l in details if k in values]
     if rest:
         blocks.append("\n".join(rest))
     for key, title in sections:
@@ -333,8 +317,7 @@ def markdown(fields, labels=None):
 def parse_markdown(text, labels=None):
     """The fence fields of DM Realm's Markdown statistics (from `%% statblock` on)."""
     back = {}
-    for english in {l for group in (MONSTER_LINES, MONSTER_DETAILS, MONSTER_SECTIONS, CHARACTER_LINES,
-                                     CHARACTER_DETAILS, CHARACTER_SECTIONS) for _, l in group}:
+    for english in {l for group in (MONSTER_LINES, MONSTER_DETAILS, MONSTER_SECTIONS) for _, l in group}:
         back[(labels or {}).get(english, english)] = english
     lines = text.split("\n")
     if not lines or lines[0].strip() != "%% statblock":
@@ -346,10 +329,9 @@ def parse_markdown(text, labels=None):
             raise Failure(7, f"unexpected line in the '%% statblock' comment: {lines[i][:60]}")
         hidden.append((k, (v.lower() not in ("false", "no")) if k == "bestiary" else parse_scalar(v)))
         i += 1
-    kind = "character" if dict(hidden).get("layout") == CHARACTER_LAYOUT else "monster"
-    _, line_keys, detail_keys, section_keys = layout_of(kind)
-    by_label = {l: k for k, l in line_keys + detail_keys}
-    by_title = {l: k for k, l in section_keys}
+    refuse_character(hidden)
+    by_label = {l: k for k, l in MONSTER_LINES + MONSTER_DETAILS}
+    by_title = {l: k for k, l in MONSTER_SECTIONS}
     values, section, paragraphs = {}, None, split_paragraphs(lines[i + 1:])
     for para in paragraphs:
         first = para.split("\n", 1)[0]
@@ -361,7 +343,7 @@ def parse_markdown(text, labels=None):
             values.setdefault(section, [])
         elif section:
             if para.startswith("- "):
-                values[section].append(parse_item(para, section))
+                values[section].append(parse_item(para))
             elif LINKS_LINE.fullmatch(para):
                 continue
             elif section in DESCRIPTIONS and not values[section]:
@@ -380,14 +362,14 @@ def parse_markdown(text, labels=None):
                 english = back.get(m.group(1), m.group(1))
                 if english not in by_label:
                     raise Failure(7, f"unknown statistics label '{m.group(1)}'.")
-                read_line(by_label[english], m.group(2), values, kind)
+                read_line(by_label[english], m.group(2), values)
         elif first.startswith("*"):
-            read_kind(para.strip("*"), values, kind)
+            read_kind(para.strip("*"), values)
         elif LINKS_LINE.fullmatch(para):
             continue
         else:
             raise Failure(7, f"unexpected paragraph in the statistics: {first[:60]}")
-    return ordered(hidden + [(k, v) for k, v in values.items() if k not in dict(hidden)], kind)
+    return ordered(hidden + [(k, v) for k, v in values.items() if k not in dict(hidden)])
 
 
 def split_paragraphs(lines):
@@ -410,10 +392,8 @@ def split_paragraphs(lines):
     return paragraphs
 
 
-def parse_item(para, section):
+def parse_item(para):
     body = para[2:]
-    if section in TEXT_LISTS:
-        return body
     m = re.match(r"\*\*\*(.+?)\.\*\*\*(?: (.*))?", body, re.S)
     if not m:
         raise Failure(7, f"a list item without its ***Name.***: {body[:60]}")
@@ -434,11 +414,10 @@ def top_level_commas(text):
     return found
 
 
-def read_kind(text, values, kind):
+def read_kind(text, values):
     commas = top_level_commas(text)
-    # A Character's is "size species, class" (a class may list several); a monster's
-    # "size type, alignment".
-    at = (commas[0] if kind == "character" else commas[-1]) if commas else len(text)
+    # "size type, alignment"
+    at = commas[-1] if commas else len(text)
     head, tail = text[:at], text[at + 2:]
     words = head.split(" ")
     # The size is its first word, or "X or Y": the short lowercase word between two sizes.
@@ -446,21 +425,18 @@ def read_kind(text, values, kind):
         and words[2][:1].isupper() == words[0][:1].isupper() else 1
     values["size"] = " ".join(words[:size_words])
     rest = " ".join(words[size_words:])
-    if kind == "character":
-        values["species"], values["class"] = rest, tail
-    else:
-        values["type"], values["alignment"] = rest, tail
+    values["type"], values["alignment"] = rest, tail
     for k in [k for k, v in values.items() if v == ""]:
         del values[k]
 
 
-def read_line(key, text, values, kind):
+def read_line(key, text, values):
     if key == "ac":
         m = re.fullmatch(r"(\d+) \((.*)\)", text)
         values["ac"], extra = (int(m.group(1)), m.group(2)) if m else (parse_scalar(text), "")
         if extra:
             values["ac_class"] = extra
-    elif key == "hp" and kind == "monster":
+    elif key == "hp":
         m = re.fullmatch(r"(\d+) \((.*)\)", text)
         values["hp"] = int(m.group(1)) if m else parse_scalar(text)
         if m:
@@ -475,8 +451,6 @@ def read_line(key, text, values, kind):
             name, _, b = part.rpartition(" ")
             items.append({name: parse_scalar(b)})
         values[key] = items
-    elif key == "level":
-        values[key] = parse_scalar(text)
     else:
         values[key] = int(text) if key == "hp" and INTEGER.fullmatch(text) else text
 

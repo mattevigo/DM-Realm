@@ -39,13 +39,13 @@ Exactly four keys, nothing else:
 | `player` | Who plays the Character, as the DM names them (free text; Players are not notes) |
 | `status` | `active`, `retired` or `dead` |
 | `level` | The Character's level |
-| `statblock` | `inline`, only in a Workspace that writes stat blocks (the Workspace Config's `stat_blocks`) |
+| `statblock` | `inline` |
 
 `player`, `status`, `level` and the `status` values are translated like any term and recorded in the Translation Glossary (structure.md's "Translating a term"); an English Workspace uses them as written. `statblock: inline` is the plugin's flag, always English (structure.md's "Stat blocks").
 
 ### Body
 
-1. `# <Character name>`.
+1. `# <Character name>`, then the [stat block](#stat-block).
 2. `## Identity` — the backstory, appearance and personality: the DM's words, naming no Campaign, Session or table event.
 3. `## Build` — everything the Character is made of:
    - species, class with its level and subclass, background, each a link;
@@ -55,26 +55,13 @@ Exactly four keys, nothing else:
    - `### Features`: each feature by name and level, under a link to the note it comes from (class, subclass, species, background); each feat a link;
    - `### Spells`: cantrips and spells known or prepared, each a link;
    - `### Equipment`: each item a link, with what is worn or wielded; coins; and which items are attuned.
-4. `## Statistics`, last — the derived numbers, as [Statistics](#statistics) says: Armor Class, Hit Point Maximum, Hit Dice, Initiative, Speed, abilities, saving throws, skills, senses with passive Perception, languages, attacks, spellcasting (ability, save DC, attack bonus, spell slots per level), and each feature with its uses per rest. Nothing else in the note repeats these numbers.
+4. `## Statistics` — the derived numbers, in one self-contained section: Armor Class, Hit Point Maximum, Hit Dice, Initiative, Speed, Proficiency Bonus, Passive Perception, saving throws, skills, attacks, spellcasting (ability, save DC, attack bonus, spell slots per level), and the uses per rest of limited features. Nothing else in the note repeats these numbers, except the stat block derived from them.
 
 **Maximums only.** A Character note records what the Build allows — slots per level, the Hit Point maximum, Hit Dice, uses per rest — never what is spent: no current hit points, spent slots, conditions or checkboxes. Those are a table's state and belong to its Campaign.
 
-### Statistics
+### Stat block
 
-The Character's numbers for the table, written once as structure.md's "Stat blocks" defines it, in the `DM Realm Character` layout: computed from the Build, and written again whenever it changes. Write them as the stat block fence's fields, in the order below, leaving out a key the Character has nothing for; keys and values follow structure.md's "Keys and values".
-
-- **In a Workspace that writes stat blocks** (`stat_blocks: true`, or none in the Config), the ```` ```statblock ```` fence is the `## Statistics` section, and the frontmatter has `statblock: inline`.
-- **In a Markdown Workspace** (`stat_blocks: false`), write the note with the fence first, then turn it into Markdown with the helper next to the `dmr-workspace` skill's structure.md, passing the layouts' labels as the Translation Glossary translates them (none in English):
-
-  ```sh
-  python3 "<dmr-workspace base directory>/statblock.py" convert "<note>" --to markdown --labels - <<'JSON'
-  {"Armor Class": "<translation>", "Hit Point Maximum": "<translation>", …}
-  JSON
-  ```
-
-  It rewrites only the Statistics section and drops the frontmatter flag.
-
-The fields:
+The compact view of the Character for the table, as structure.md's "Stat blocks" defines it: one ```` ```statblock ```` fence right under the `#` heading, in the `DM Realm Character` layout, written from the Build and Statistics — the same numbers, never others — and written again whenever they change. Keys and values follow structure.md's "Keys and values". In this order, leaving out a key the Character has nothing for:
 
 | Key | Value |
 | --- | --- |
@@ -95,7 +82,7 @@ The fields:
 | `spells` | Spellcasting: first the ability, save DC and attack bonus as one line, then one line per slot level, maximums only: `1st level: 4 slots` |
 | `traits` | Each feature and trait by name, with a one-line summary of what it does in play |
 
-No backstory, equipment list, full spell list or full feature text, and no link: those stay in the Build, where every link lives. Nothing spent (see "Maximums only").
+No backstory, equipment list, full spell list or full feature text: those stay in the body. Nothing spent, as for Statistics.
 
 ### Links
 
@@ -112,7 +99,7 @@ Every rules value — ability score methods and point costs, hit points per leve
 
 Dice are the DM's: a rolled value — ability scores, hit points, starting wealth — is the result the DM gives.
 
-**Recompute** every number in Statistics from the Build and these rules whenever the Build changes, item bonuses included, and write the Statistics section again from them.
+**Recompute** every number in Statistics from the Build and these rules whenever the Build changes, item bonuses included, then write the stat block again from them.
 
 ### Backstory and the DM's world
 

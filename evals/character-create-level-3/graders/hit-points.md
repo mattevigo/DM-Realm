@@ -2,6 +2,6 @@
 type: regex
 target: {source: file, path: Characters/Ossian/Ossian.md}
 match: contains
-flags: mi
+flags: i
 ---
-hit point[^\n]*\b24\b|^hp:\s*24\s*$
+hit point[^\n]*\b24\b
