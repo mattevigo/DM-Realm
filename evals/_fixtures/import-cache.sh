@@ -9,6 +9,8 @@
 #   2024 books: EMBC Ember Codex (2025), FAR Far Reaches Bestiary (2025; listed, never cached)
 #   Adventure:  SACR The Salt Crypt (2025)
 #   Descriptions (fluff): only the Wisp Hound's, in bestiary/fluff-bestiary-embc.json
+#   Images: only the Wisp Hound's, bestiary/EMBC/Wisps.webp — invented bytes, not an image
+#               (no real 5etools image in the repository, ADR 0003)
 CACHE="$HOME/.dm-realm/source-cache"
 D="$CACHE/v3.0.0/data"
 mkdir -p "$D/spells" "$D/bestiary" "$D/class"
@@ -126,6 +128,8 @@ cat > "$D/bestiary/fluff-bestiary-embc.json" <<'JSON'
     "entries": {"mode": "prependArr", "items": {"type": "section", "entries": ["Wisp hounds follow travelers who whistle after dark, and never bark."]}}}}}
 ]}
 JSON
+mkdir -p "$CACHE/v3.0.0/img/bestiary/EMBC"
+printf 'INVENTED IMAGE: bestiary/EMBC/Wisps.webp' > "$CACHE/v3.0.0/img/bestiary/EMBC/Wisps.webp"
 cat > "$D/bestiary/bestiary-bofi.json" <<'JSON'
 {"monster": [
   {"name": "Tidecaller Wyrm", "source": "BOFI", "page": 240,

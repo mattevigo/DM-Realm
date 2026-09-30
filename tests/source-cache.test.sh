@@ -103,6 +103,54 @@ OUT=$(helper refresh) || fail "refresh dropped file: exit $?"
 case "$OUT" in *"spells/spells-test.json"*) ;; *) fail "refresh dropped file: should name the dropped file: $OUT";; esac
 [ -f "$DMR_SOURCE_CACHE/v1.2.0/data/conditionsdiseases.json" ] || fail "refresh dropped file: kept files must be re-fetched"
 
+# --- Images: the image mirror, at the pinned data release's tag (ADR 0008) ----------
+# Invented bytes stand in for images: no real 5etools image here (ADR 0003).
+export DMR_SOURCE_CACHE="$TMP/cache5"
+export DMR_SOURCE_IMG="file://$MIRROR/img"
+mkdir -p "$MIRROR/img/v1.2.0/bestiary/TEST" "$MIRROR/img/v1.3.0/bestiary/TEST" "$MIRROR/img/v1.2.0/adventure/TEST"
+printf 'IMG-1.2.0' > "$MIRROR/img/v1.2.0/bestiary/TEST/Quill Hound.webp"
+printf 'MAP-1.2.0' > "$MIRROR/img/v1.2.0/adventure/TEST/map.png"
+printf 'IMG-1.3.0' > "$MIRROR/img/v1.3.0/bestiary/TEST/Quill Hound.webp"
+printf '{"tag_name": "v1.2.0"}\n' > "$MIRROR/latest.json"
+
+# Fetched from the pinned tag, cached beside the data, printed as a local path.
+OUT=$(helper image "bestiary/TEST/Quill Hound.webp") || fail "image: exit $?"
+[ "$OUT" = "$DMR_SOURCE_CACHE/v1.2.0/img/bestiary/TEST/Quill Hound.webp" ] || fail "image: got '$OUT'"
+[ "$(cat "$OUT" 2>/dev/null)" = "IMG-1.2.0" ] || fail "image: should hold the v1.2.0 image"
+
+# Fetched only once: the mirror's copy gone, the cached one is still served.
+rm "$MIRROR/img/v1.2.0/bestiary/TEST/Quill Hound.webp"
+OUT=$(DMR_SOURCE_IMG="http://127.0.0.1:9/img" helper image "bestiary/TEST/Quill Hound.webp") || fail "image cached: exit $?"
+[ "$(cat "$OUT" 2>/dev/null)" = "IMG-1.2.0" ] || fail "image cached: should serve the cached copy offline"
+
+# No such image in the pinned release: exit 4; unreachable and not cached: exit 3, no file.
+OUT=$(helper image bestiary/TEST/Nothing.webp 2>&1); CODE=$?
+[ "$CODE" -eq 4 ] || fail "image missing: expected exit 4, got $CODE ($OUT)"
+OUT=$(DMR_SOURCE_IMG="http://127.0.0.1:9/img" helper image adventure/TEST/map.png 2>&1); CODE=$?
+[ "$CODE" -eq 3 ] || fail "image unreachable: expected exit 3, got $CODE"
+[ ! -e "$DMR_SOURCE_CACHE/v1.2.0/img/adventure/TEST/map.png" ] || fail "image unreachable: left a file"
+
+# Only paths inside the image mirror.
+helper image ../x.webp >/dev/null 2>&1 && fail "image path: accepted '..'"
+helper image /etc/passwd >/dev/null 2>&1 && fail "image path: accepted an absolute path"
+helper image "" >/dev/null 2>&1 && fail "image path: accepted an empty path"
+
+# refresh re-fetches cached images from the new tag, like the data.
+helper image adventure/TEST/map.png >/dev/null || fail "image refresh setup"
+mkdir -p "$MIRROR/raw/v1.3.0/data" "$MIRROR/img/v1.3.0/adventure/TEST"
+printf 'MAP-1.3.0' > "$MIRROR/img/v1.3.0/adventure/TEST/map.png"
+printf '{"tag_name": "v1.3.0"}\n' > "$MIRROR/latest.json"
+OUT=$(helper refresh) || fail "image refresh: exit $?: $OUT"
+[ "$(cat "$DMR_SOURCE_CACHE/v1.3.0/img/bestiary/TEST/Quill Hound.webp" 2>/dev/null)" = "IMG-1.3.0" ] || fail "image refresh: image not re-fetched from v1.3.0"
+[ "$(cat "$DMR_SOURCE_CACHE/v1.3.0/img/adventure/TEST/map.png" 2>/dev/null)" = "MAP-1.3.0" ] || fail "image refresh: map not re-fetched from v1.3.0"
+[ ! -e "$DMR_SOURCE_CACHE/v1.2.0" ] || fail "image refresh: old release copy should be gone"
+
+# The eval override wins for the image mirror too.
+OUT=$(EVAL_DMR_SOURCE_IMG="http://127.0.0.1:9/img" helper image bestiary/TEST/Other.webp 2>&1); CODE=$?
+[ "$CODE" -eq 3 ] || fail "image eval precedence: EVAL_DMR_SOURCE_IMG should win, got exit $CODE"
+unset DMR_SOURCE_IMG
+printf '{"tag_name": "v1.2.0"}\n' > "$MIRROR/latest.json"
+
 # No cache directory given at all: refuse rather than guess one.
 OUT=$(env -u DMR_SOURCE_CACHE -u CLAUDE_PLUGIN_DATA -u EVAL_DMR_SOURCE_CACHE sh -c 'cd "$1" && sh "$2" release' _ "$WS" "$HELPER" 2>&1); CODE=$?
 [ "$CODE" -eq 2 ] || fail "no cache dir: expected exit 2, got $CODE"
