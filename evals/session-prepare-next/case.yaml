@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: session-prepare-next
+description: "The next Session after a consolidated Session 03: Session_04.md with number 4 and the date, the README's party as Present, each of Session 03's Loose threads and where the party stands in Prep, the rest empty, and no other file written or changed. The Side Session among the notes does not shift the number."
+tags: [session]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Prepare the next session of the Ashfall campaign. We play on 2026-10-10.

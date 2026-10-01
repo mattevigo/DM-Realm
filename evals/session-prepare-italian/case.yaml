@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: session-prepare-italian
+description: "In an Italian Workspace the next Session is Sessione_04.md, with the Template's Italian properties and headings, the party as Presenti and Session 03's threads in Preparazione."
+tags: [session]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Prepara la prossima sessione della campagna Cenere. Giochiamo il 2026-10-10.

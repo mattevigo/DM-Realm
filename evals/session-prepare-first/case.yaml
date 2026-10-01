@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: session-prepare-first
+description: "A Campaign with no Session yet gets Session_01.md, number 1, with the README's party as Present, and nothing else is written."
+tags: [session]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Prepare the next session of the Ashfall campaign, for 2026-10-10.

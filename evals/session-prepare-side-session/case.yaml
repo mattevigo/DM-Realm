@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: session-prepare-side-session
+description: "A Side Session with its own name and two named Characters is created under that name with no number and only those two as Present; the next Session prepared after it is still 04."
+tags: [session]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 50
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Prepare a side session for the Ashfall campaign, outside the numbered run, on 2026-10-03, with only Ayla and Durga: call it "Spin Off The Mystery of Ambika". Then prepare the next regular session, on 2026-10-10.
