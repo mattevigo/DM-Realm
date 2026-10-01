@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: session-prepare-unconsolidated
+description: "The previous Session was played but has no Diary entry: the skill warns, says what is missing, asks whether to consolidate first or prepare anyway, and writes nothing in that turn."
+tags: [session]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Prepare the next session of the Ashfall campaign. We play on 2026-10-10.

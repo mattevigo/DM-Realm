@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: session-prepare-idea
+description: "The DM's idea given in the request appears in Prep; Live notes, Recap and Loose threads stay empty; nothing else is written."
+tags: [session]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Prepare the next session of the Ashfall campaign, on 2026-10-10. My idea: it opens with the gatehouse bell ringing by itself at midnight, and a smuggler called Old Marrow offers to sell the party a map of the vault.
