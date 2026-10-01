@@ -8,6 +8,7 @@
 #                    Session, Diary or Party State
 #   SC_CONSOLIDATED  yes (default), or no: Session 03 was played but not consolidated —
 #                    it has Live Notes only, and the Diary has no entry for it
+# The Italian Campaign is always played and consolidated, and runs no Adventure.
 WS_LANG=${WS_LANG:-en}
 SC_SESSIONS=${SC_SESSIONS:-played}
 SC_CONSOLIDATED=${SC_CONSOLIDATED:-yes}
