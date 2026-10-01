@@ -9,4 +9,4 @@ execution:
   timeout_seconds: 600
   allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
   prompt: |
-    Create the note for a session of the Heroes campaign, played on 2026-09-20. I name my session notes my own way: call this one "Interlude The Long Night".
+    Create the note for a session of the Heroes campaign, played on 2026-09-20. I name my session notes my own way: call this one "Interlude The Long Night", with no number.
