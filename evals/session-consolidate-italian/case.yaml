@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: session-consolidate-italian
+description: "In an Italian Workspace the Session is consolidated in Italian: Sessione_03.md renamed with its title and the link to it rewritten, Riepilogo and Fili in sospeso written, Stato del Gruppo and the Diario updated."
+tags: [session]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 50
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Consolida la sessione 3 della campagna Cenere. Applica tutto quello che trovi senza chiedermi conferma, e intitolala «Il Corpo di Guardia».
