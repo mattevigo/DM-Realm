@@ -1,7 +1,7 @@
 # Shared starting state for the Consolidation cases: session-campaign.sh's Campaign with
 # one Session played and not consolidated — Live Notes only, no Recap, no Loose threads,
-# no Diary entry — and a Campaign note that links to it. Every note here is INVENTED test
-# content. Set before sourcing:
+# no Diary entry — and, for a numbered Session, a Campaign note that links to it. Every
+# note here is INVENTED test content. Set before sourcing:
 #   WS_LANG        en (default) or it
 #   SP_SESSION     numbered (default): Session 03, in the untitled Session_03.md
 #                  (Sessione_03.md in Italian); or side: the Side Session

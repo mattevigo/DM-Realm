@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: session-consolidate-empty-live-notes
-description: "A Session with empty Live Notes: the skill asks the DM what happened and writes nothing, not even a Recap from the Prep."
+description: "A Session with empty Live Notes: the skill asks the DM what happened and writes nothing."
 tags: [session]
 context:
   scaffold_script: scaffold.sh
