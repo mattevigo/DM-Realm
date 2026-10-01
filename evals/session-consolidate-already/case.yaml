@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: session-consolidate-already
+description: "A Session the Diary already has: the skill says it is consolidated, asks what the DM wants changed, and writes nothing."
+tags: [session]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 50
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Consolidate session 3 of the Ashfall campaign.

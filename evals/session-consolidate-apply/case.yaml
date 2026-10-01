@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: session-consolidate-apply
+description: "With the DM's go-ahead and title, Session_03.md is consolidated: Recap and Loose threads written with the Live Notes byte for byte, the note renamed and a link to it rewritten, the Present line corrected, the milestone recorded without a level-up, Party State overwritten for the Characters present only, unowned loot in the Party treasure, and the Diary entry last by date."
+tags: [session]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 60
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Consolidate session 3 of the Ashfall campaign. Apply everything you find without asking me first, and title it "The Gatehouse".

@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: session-consolidate-side-session
+description: "A Side Session the DM named, dated between two consolidated numbered Sessions: its note keeps its name, its Diary entry lands between them, and Party State — already at a later Session's end — stays as it is, with the DM told what was left out."
+tags: [session]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 50
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Consolidate the Interlude The Long Night session of the Ashfall campaign. Apply everything you find without asking me first.
