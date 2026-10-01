@@ -1,3 +1,10 @@
+---
+number:
+date:
+---
+
+**Present:** —
+
 ## Prep
 
 ### Strong start
@@ -13,6 +20,8 @@
 ### Encounters
 
 ### Treasure
+
+## Live notes
 
 ## Recap
 
