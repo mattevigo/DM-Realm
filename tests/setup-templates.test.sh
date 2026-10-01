@@ -1,6 +1,7 @@
 #!/bin/sh
 # Tests the basic Template set Setup writes (skills/dmr-setup/templates/): one file per
-# row of structure.md's Templates table, no links and no heading in any, and the
+# row of structure.md's Templates table, no links and no heading in any, the Session's
+# properties, Present line and sections, and the
 # Homebrew monster's empty statistics converting to Markdown and back unchanged.
 # Usage: sh tests/setup-templates.test.sh   (exit 0 = all pass)
 set -u
@@ -26,6 +27,18 @@ for t in "$SET"/*.md; do
   grep -qE '^# |\{\{' "$t" && fail "$name: has a '# ' heading or a {{variable}}"
   [ -s "$t" ] || fail "$name: empty"
 done
+
+# Only the Session Template has frontmatter: its two empty properties, and nothing else.
+for t in "$SET"/*.md; do
+  [ "$(basename "$t")" = Session.md ] && continue
+  head -1 "$t" | grep -q '^---' && fail "$(basename "$t"): frontmatter on a Template that has no properties"
+done
+S="$SET/Session.md"
+[ "$(sed -n '1,4p' "$S")" = "$(printf -- '---\nnumber:\ndate:\n---')" ] || fail "session: frontmatter is not the empty number and date properties: $(sed -n '1,4p' "$S")"
+grep -qxF '**Present:** —' "$S" || fail "session: no empty Present line"
+# Present, then Prep, Live notes, Recap and Loose threads, in that order.
+ORDER=$(grep -nE '^(\*\*Present:\*\*|## (Prep|Live notes|Recap|Loose threads)$)' "$S" | sed 's/^[0-9]*://; s/^\*\*Present:.*/Present/; s/^## //' | tr '\n' ',')
+[ "$ORDER" = "Present,Prep,Live notes,Recap,Loose threads," ] || fail "session: sections are '$ORDER'"
 
 # The monster's statistics stay out of the bestiary and survive a change of form.
 M="$SET/Homebrew_Monster.md"

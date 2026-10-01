@@ -25,7 +25,7 @@ Turn the current folder into a DM Realm Workspace, in any Workspace Language, le
 9. **Create.**
    1. Write `workspace-config.yml` at the folder root in the example's format, every value filled in (each folder name written out).
    2. Create the top-level folders with `mkdir`.
-   3. In a non-English Workspace, write the Translation Glossary note at the root of the DM Tools folder, its name translated from `Translation_Glossary`, in the format structure.md's "Translation Glossary" gives: one row per top-level folder (English name, name in use, source, key), and a row for each term the next steps translate (the Templates' names, Attachments).
+   3. In a non-English Workspace, write the Translation Glossary note at the root of the DM Tools folder, its name translated from `Translation_Glossary`, in the format structure.md's "Translation Glossary" gives: one row per top-level folder (English name, name in use, source, key), and a row for each term the next steps translate (the Templates' names, the Session Template's property keys, Attachments).
    4. Write [the Templates](#the-templates) into the Templates folder.
    5. Merge the Obsidian settings with the helper next to this file, passing the Templates folder's name in use and Attachments in the Workspace Language (translated as structure.md's "Translating a term" says; in English, `Attachments`):
 
@@ -81,7 +81,7 @@ Done when every change the DM confirmed is made, every Template that was there i
 The basic set structure.md's "Templates" lists, in the form it gives a Template: one English note per Template in `templates/` next to this file, named by its default English name.
 
 - **In English**, copy every file into the Templates folder as it is (`cp`).
-- **In another language**, Read each and Write it into the Templates folder, translated as structure.md's "Translating a term" says: its file name (a term, with the name rules applied) and every heading and word, faithfully and with the same structure. The `—` marks, the `- [ ]` task and the Homebrew monster's fence (English keys, `—` values) stay as they are.
+- **In another language**, Read each and Write it into the Templates folder, translated as structure.md's "Translating a term" says: its file name (a term, with the name rules applied) and every heading and word, the Session Template's two property keys included, faithfully and with the same structure. The `—` marks, the `- [ ]` task and the Homebrew monster's fence (English keys, `—` values) stay as they are.
 - **With `stat_blocks: false`**, then convert the Homebrew monster Template to Markdown with the helper next to the `dmr-workspace` skill's structure.md, passing the layouts' labels translated as [Fantasy Statblocks](#fantasy-statblocks) gets them (in English, no `--labels`):
 
   ```sh

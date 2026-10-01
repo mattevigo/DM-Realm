@@ -93,6 +93,10 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S90 | setup-fresh-english, setup-fresh-italian, setup-rerun-drifted, tests/obsidian-settings.test.sh (Obsidian puts pasted files in an Attachments subfolder, its name translated; a re-run restores a drifted location) |
 | S91 | setup-rerun-config-only, setup-refuses-no-config (the Config alone makes a Workspace: with every folder gone Setup re-runs and asks; folders without it are refused, naming the missing Config) |
 | S92 | tests/workspace-folders.test.sh (renaming Homebrew renames every Campaign's `Homebrew_<Type>` folders and the links into them) |
+| S93 | s93-session-dm-name (a Session note the DM names their own way keeps that name) |
+| S94 | s94-side-session (a Side Session has no number and does not shift the run; an untitled Session is `Session_<NN>.md`) |
+| S95 | s95-spent-resources-party-state (a Character's spent hit points and spell slots go in the Campaign's Party State; the Character note is unchanged) |
+| S96 | setup-fresh-english, tests/setup-templates.test.sh (the Session Template has the `number` and `date` properties, the Present line and a Live notes section between Prep and Recap) |
 
 ## How to run the manual scenarios
 

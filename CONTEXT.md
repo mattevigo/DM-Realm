@@ -115,5 +115,25 @@ _Avoid_: DM resources, utilities
 ### Play
 
 **Session**:
-One real-world game meeting of a Campaign, with its prep and recap.
+One real-world game meeting of exactly one Campaign, with its prep, Live Notes and recap. A Campaign progresses Session by Session.
 _Avoid_: Episode
+
+**Side Session**:
+A Session of a Campaign played outside its numbered run, often with only some of its Characters. It has no number, and takes its place among the others by its date. A side story that grows its own party and Sessions is another Campaign.
+_Avoid_: Spin-off, one-shot, interlude
+
+**Live Notes**:
+What the DM writes down while a Session is played, kept word for word afterwards. They are the only source of that Session's recap.
+_Avoid_: Development, log, transcript
+
+**Consolidation**:
+Closing a played Session from its Live Notes: its recap and title, its Diary entry, the lasting changes to its Characters' Builds, and the party's spent resources recorded in the Campaign.
+_Avoid_: Closing, wrap-up, import
+
+**Party State**:
+A Campaign's one note of where its party stands now: each Character's spent resources (hit points, spell slots, class uses, conditions) and the treasure the party holds in common. It keeps no history, and a Character's own items and coins are its Build's, not Party State.
+_Avoid_: Tracker, ledger, finances
+
+**Diary**:
+A Campaign's one note listing its Sessions in play order, each with a sentence or two and a link to the Session, whose recap holds the detail.
+_Avoid_: Journal, log, chronicle

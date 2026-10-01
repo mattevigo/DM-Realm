@@ -4,6 +4,8 @@ A Character lives in a seventh top-level folder, Characters, not inside the Camp
 
 *Amended by [ADR 0005](0005-the-dms-world-is-a-scope-apart-from-homebrew.md): World is a sixth Scope, in an eighth top-level folder; a Character may link to it.*
 
+*Amended by [ADR 0010](0010-a-characters-spent-resources-are-the-campaigns.md): Consolidation brings a Session's lasting changes into the Build on the DM's yes, and a Character's spent resources live in the Campaign's Party State.*
+
 ## Considered Options
 
 - **Characters inside each Campaign** (the earlier `Campaigns/<campaign>/Characters`). Rejected: a Character playing in a second Campaign belongs to the first one's folder, and its sheet collects that Campaign's story.

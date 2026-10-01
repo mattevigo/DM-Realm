@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s94-side-session
+description: "Structure scenario S94: a Side Session gets no number and does not shift the run; the next Session is the highest number plus one, untitled until it has a title."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Two notes for the Heroes campaign. First a side session, outside the numbered run, played on 2026-09-20 with Ayla only: "The Mystery of Ambika". Then the note for the next regular session, on 2026-09-27; it has no title yet.

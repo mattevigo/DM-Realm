@@ -1,6 +1,7 @@
 # Shared starting state, sourced by case scaffolds and the other fixtures: a Workspace
 # exactly as Setup leaves it — the Workspace Config, the eight top-level folders, empty
-# but for the Templates (short stand-ins, named as Setup names them), Obsidian's
+# but for the Templates (short stand-ins, named as Setup names them; the Session's is
+# the one Setup writes), Obsidian's
 # settings and, in Italian, the Translation Glossary with one row per top-level folder
 # and per term Setup translated (the Templates' names, Attachments). The one place eval
 # scaffolds write the Config's folder list. Set before sourcing:
@@ -53,6 +54,70 @@ printf '{"folder": "%s"}\n' "$(ws_folder 8)" > .obsidian/templates.json
 for t in $WS_TEMPLATES; do   # unquoted: one Template per word
   printf '## Notes\n\n—\n' > "$(ws_folder 8)/$t.md"
 done
+# The Session Template as Setup writes it: the Session cases read its properties and sections.
+if [ "$WS_LANG" = it ]; then
+  cat > "$(ws_folder 8)/Sessione.md" <<'MD'
+---
+numero:
+data:
+---
+
+**Presenti:** —
+
+## Preparazione
+
+### Inizio forte
+
+### Scene
+
+### Segreti e indizi
+
+### PNG
+
+### Luoghi
+
+### Incontri
+
+### Tesoro
+
+## Note dal vivo
+
+## Riepilogo
+
+## Fili in sospeso
+MD
+else
+  cat > "$(ws_folder 8)/Session.md" <<'MD'
+---
+number:
+date:
+---
+
+**Present:** —
+
+## Prep
+
+### Strong start
+
+### Scenes
+
+### Secrets and clues
+
+### NPCs
+
+### Places
+
+### Encounters
+
+### Treasure
+
+## Live notes
+
+## Recap
+
+## Loose threads
+MD
+fi
 # The Homebrew monster's empty statistics, in the Workspace's form, out of the bestiary.
 MONSTER="$(ws_folder 8)/$WS_MONSTER_TEMPLATE.md"
 if [ "$WS_STAT_BLOCKS" = false ]; then
@@ -85,5 +150,7 @@ if [ "$WS_LANG" = it ]; then
 | Homebrew_Item | Oggetto_Homebrew | fallback | |
 | Homebrew_Monster | Mostro_Homebrew | fallback | |
 | Attachments | Allegati | fallback | |
+| number | numero | fallback | |
+| date | data | fallback | |
 MD
 fi
