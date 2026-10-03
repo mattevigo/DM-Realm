@@ -450,7 +450,7 @@ DM Realm ships three layouts, named in English and never renamed; Setup installs
 | --- | --- |
 | `DM Realm Monster 2014` | 2014 monsters: the plugin's Basic 5e layout |
 | `DM Realm Monster 2024` | 2024 monsters, in the style of the 2025 Monster Manual: initiative with its score, abilities and saving throws in one table, passive Perception in the senses |
-| `DM Realm Character` | Characters: what matters in combat — AC, Hit Point maximum, Hit Dice, initiative, speed, abilities and saves, proficient skills, senses and languages, attacks, spellcasting, features |
+| `DM Realm Character` | Characters: what matters in combat — AC, Hit Point maximum, Hit Dice, initiative, speed, abilities and saves, proficient skills, senses and languages, attacks, spellcasting, features, in one column as wide as a note |
 
 The Workspace's Edition sets the default layout, so a monster of the Edition names none. An [Off-Edition](#off-edition-material) monster names its own Edition's (`layout: DM Realm Monster 2014`), and a Character's fence names `DM Realm Character`.
 

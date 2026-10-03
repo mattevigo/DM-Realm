@@ -1,6 +1,8 @@
 {
   "id": "dm-realm-character",
   "name": "DM Realm Character",
+  "columns": 1,
+  "columnWidth": 620,
   "blocks": [
     {
       "type": "inline",
