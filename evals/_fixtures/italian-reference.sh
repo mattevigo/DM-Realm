@@ -33,3 +33,4 @@ cat >> Strumenti_DM/Glossario_Traduzioni.md <<'MD'
 | Leather Coat | Giubba di Cuoio | fallback | |
 | Tinderbox | Acciarino | Traduzione Ufficiale | |
 MD
+. "$(dirname "$0")/../_fixtures/spell-index.sh"

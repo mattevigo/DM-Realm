@@ -12,7 +12,8 @@ kind when the file holds several (`subclass`, `itemMastery`…); --class-source 
 a subclass under one version of its class (`XPHB`), or a subrace under one race.
 
 Prints the entry's Markdown: `# <name>`, then its text, deterministically, with
-5etools tags as plain text; the entry's description (its 5etools fluff, from the
+5etools tags as plain text; a spell's ends with the classes whose spell list has it
+(`**Classes:** Sorcerer, Wizard`, from `data/spells/sources.json`), when any has; the entry's description (its 5etools fluff, from the
 `fluff-*` file beside its data) is a `## Description` section, before
 a monster's stat lines and at the end of any other entry. Every image the entry shows
 (ADR 0008) is fetched through the Source Cache and embedded where 5etools places it — in
@@ -26,7 +27,7 @@ fence (```statblock) with the plugin's English keys, under the heading; --editio
 Workspace's Edition, and a monster of the other one names its own Edition's layout
 (without --edition, no layout is named). --meta prints JSON facts about the entry instead: its
 key, source property (`XPHB p. 12, v2.36.1`), Edition by its book's date, reprints,
-and what placing its note needs (spell level, class, race, option kind…).
+and what placing its note needs (spell level, a spell's classes, class, race, option kind…).
 
 Exit 2: bad usage. Exit 3 and 4: passed through from the Source Cache helper
 (the Trusted Source is unreachable; no such file or image). Exit 5: no such entry.
@@ -794,6 +795,16 @@ def durations(ds):
     return ", or ".join(out)
 
 
+def spell_classes(spell):
+    """The classes whose spell list has the spell, by name, from the Trusted Source's lookup."""
+    listed = load_optional("data/spells/sources.json")
+    books = listed.items() if isinstance(listed, dict) else []
+    book = next((v for k, v in books if same(k, spell.get("source")) and isinstance(v, dict)), {})
+    entry = next((v for k, v in book.items() if same(k, spell.get("name")) and isinstance(v, dict)), {})
+    names = {c["name"] for c in entry.get("class") or [] if isinstance(c, dict) and c.get("name")}
+    return sorted(names)
+
+
 def render_spell(key, spell):
     if not isinstance(spell.get("level"), int):
         malformed(f"spell '{spell['name']}' has no level")
@@ -807,8 +818,10 @@ def render_spell(key, spell):
         f"**Components:** {components(spell.get('components', {}))}",
         f"**Duration:** {durations(spell.get('duration'))}",
     ])
+    classes = spell_classes(spell)  # last in the spell's own text: the Spell Indexes read it
     return [f"# {spell['name']}", f"*{kind}*", stats] + render_entries(spell.get("entries", [])) \
-        + render_entries(spell.get("entriesHigherLevel", []))
+        + render_entries(spell.get("entriesHigherLevel", [])) \
+        + ([f"**Classes:** {', '.join(classes)}"] if classes else [])
 
 
 SIZES = {"T": "Tiny", "S": "Small", "M": "Medium", "L": "Large", "H": "Huge", "G": "Gargantuan"}
@@ -1645,6 +1658,7 @@ def meta(key, entry):
     }
     if key == "spell":
         facts["level"] = entry.get("level")
+        facts["classes"] = spell_classes(entry)
     if key in ("item", "baseitem", "magicvariant"):
         facts["magic"] = is_magic(key, entry)
     if key == "magicvariant":

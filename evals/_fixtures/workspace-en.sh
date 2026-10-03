@@ -36,3 +36,4 @@ mkdir -p World/Orsenna/Places World/Orsenna/Pantheon Homebrew/Spells/Level_2
 printf '# Porto Ladro\n\nA harbour town of smugglers on the Orsenna coast.\n' > World/Orsenna/Places/Porto_Ladro.md
 printf '# Sethra\n\nGoddess of the tides, worshipped along the coast.\n' > World/Orsenna/Pantheon/Sethra.md
 printf '# Tidecall\n\n2nd-level evocation. A wave strikes a 20-foot line: 3d8 bludgeoning damage.\n' > Homebrew/Spells/Level_2/Tidecall.md
+. "$(dirname "$0")/../_fixtures/spell-index.sh"

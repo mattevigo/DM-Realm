@@ -4,4 +4,4 @@ target: files
 match: count:1
 flags: m
 ---
-\.md$
+^(?!Reference/Spells/Spells(_[^/]+)?\.md$).+\.md$
