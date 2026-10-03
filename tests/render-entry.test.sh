@@ -220,6 +220,14 @@ seed spells/spells-cnr.json <<'JSON'
    "entries": ["Silence."]}
 ]}
 JSON
+# The class spell lists: Cinder Bloom is on two (one listed from two books), Quiet Glow on none.
+seed spells/sources.json <<'JSON'
+{"CNR": {"Cinder Bloom": {"class": [{"name": "Warden", "source": "CNR"}, {"name": "Ashcaller", "source": "CNR"},
+                                    {"name": "Warden", "source": "OLD"}],
+                          "classVariant": [{"name": "Scribe", "source": "CNR"}]},
+         "Warding Hush": {"class": [{"name": "Warden", "source": "CNR"}]}},
+ "OLD": {"Quiet Glow": {"class": [{"name": "Warden", "source": "OLD"}]}}}
+JSON
 OUT=$(render data/spells/spells-cnr.json "Cinder Bloom" CNR) || fail "spell: exit $?: $(cat "$TMP/err")"
 has spell "$OUT" "# Cinder Bloom
 
@@ -232,10 +240,14 @@ has spell "$OUT" "# Cinder Bloom
 
 Ash blooms into fire. Each creature makes a DC 14 Dexterity save, taking 6d6 fire damage.
 
-***Using a Higher-Level Spell Slot.*** The damage increases by 1d6 for each slot level above 3."
+***Using a Higher-Level Spell Slot.*** The damage increases by 1d6 for each slot level above 3.
+
+**Classes:** Ashcaller, Warden"
 OUT=$(render data/spells/spells-cnr.json "Cinder Bloom" CNR --meta)
 has "spell meta" "$OUT" '"level": 3'
+has "spell meta classes" "$(printf '%s' "$OUT" | tr -d ' \n')" '"classes":["Ashcaller","Warden"]'
 OUT=$(render data/spells/spells-cnr.json "Quiet Glow" CNR) || fail "cantrip: exit $?: $(cat "$TMP/err")"
+hasnt "cantrip on no class list" "$OUT" "**Classes:**"
 has cantrip "$OUT" "*Illusion Cantrip*
 
 **Casting Time:** 1 bonus action

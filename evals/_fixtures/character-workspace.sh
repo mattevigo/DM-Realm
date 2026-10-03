@@ -23,3 +23,4 @@ reference_stub Reference/Spells/Level_2/Whisper_Veil.md "EMBC p. 214" "Whisper V
 reference_stub Reference/Equipment/Lantern_Pole.md "EMBC p. 150" "Lantern Pole"
 reference_stub Reference/Equipment/Leather_Coat.md "EMBC p. 152" "Leather Coat"
 reference_stub Reference/Equipment/Tinderbox.md "EMBC p. 160" "Tinderbox"
+. "$(dirname "$0")/../_fixtures/spell-index.sh"

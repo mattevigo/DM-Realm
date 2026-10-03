@@ -80,7 +80,7 @@ Official material, imported faithfully from the Trusted Source. Its rules materi
 | `reference.species.<species>`        | `<Species name>`  | first note | The species note and, in 2014, one note per named subrace                              |
 | `reference.backgrounds`              | Backgrounds       | first note | Backgrounds                                                                            |
 | `reference.feats`                    | Feats             | first note | Feats                                                                                  |
-| `reference.spells`                   | Spells            | first note | One subfolder per spell level, and nothing else                                        |
+| `reference.spells`                   | Spells            | first note | One subfolder per spell level and the [Spell Indexes](#spell-indexes), and nothing else |
 | `reference.spells.cantrips`          | Cantrips          | first note | Cantrips                                                                               |
 | `reference.spells.level_1` … `_9`    | Level_1 … Level_9 | first note | Spells of that level                                                                   |
 | `reference.equipment`                | Equipment         | first note | Weapons, armor, tools, gear                                                            |
@@ -100,9 +100,26 @@ Official material, imported faithfully from the Trusted Source. Its rules materi
 - **Magic items.** A specific item the Trusted Source builds from a generic variant and a base item ("+1 Longsword", "Flame Tongue Greatsword") is not an entry: asking for one imports the generic variant ("+1 Weapon", "Flame Tongue") into Magic_Items, and the agent says so ([ADR 0007](../../docs/adr/0007-an-import-renders-only-what-the-data-contains.md)). Its DMG or XDMG version follows the Edition like any other entry.
 - **Descriptions and images.** An entry's description — the Trusted Source's text about what it is, its "fluff" — is imported with it, into the same note, and so is every image the entry shows ([Imported notes](#imported-notes)).
 - **One entry at a time.** The one set an Import brings in on request is every Condition, or every Action, of the Edition, one note each; any other bulk request is declined.
-- **No links between Reference notes.** A note names other entries (a monster's spells, a class's options) in plain text, so it never depends on what else was imported.
+- **No links between Reference notes.** A note names other entries (a monster's spells, a class's options) in plain text, so it never depends on what else was imported. The only notes that link are the [Spell Indexes](#spell-indexes), which list only what is there.
 
 The note's own format is in [Imported notes](#imported-notes).
+
+#### Spell Indexes
+
+Notes in Spells, beside the level folders, listing Reference's spell notes by level — a section per level folder, headed with the folder's name, Cantrips first, each spell a link by its name:
+
+- **One of every spell**, named after the folder: `Spells/Spells.md`, `Incantesimi/Incantesimi.md`.
+- **One per class**, named after the folder and the class: `Spells_Wizard.md`, `Incantesimi_Mago.md`. It lists the spells whose note names that class, so a class has an index once one of its spells is imported, and only the imported ones are in it.
+
+**The Classes line.** A spell note ends its own text — before its Description, when it has one — with the classes whose spell list has the spell, as the Trusted Source gives them: `**Classes:** Sorcerer, Wizard`. The label is the Glossary's term for Classes, the same as the folder's, and each class its Glossary term: `**Classi:** Mago, Stregone`. A spell on no class's list has no such line.
+
+The indexes are not imported, so they have no frontmatter, and they list Reference's spells only — never Homebrew's.
+
+DM Realm keeps them, not the agent and not the DM: the `spell-index.py` helper next to this file writes them again from the spell notes on disk, and the plugin's hook runs that helper after every spell note written and every shell command. So an Import, a re-import, a renamed or deleted spell all leave them right. Never edit one by hand; after writing spell notes, run the helper and report what it says:
+
+```sh
+python3 "<the dmr-workspace skill's base directory>/spell-index.py" rebuild .
+```
 
 ### Adventures — `adventures`
 

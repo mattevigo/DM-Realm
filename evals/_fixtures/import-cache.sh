@@ -50,6 +50,13 @@ JSON
 cat > "$D/spells/index.json" <<'JSON'
 {"OLDC": "spells-oldc.json", "LOTD": "spells-lotd.json", "EMBC": "spells-embc.json"}
 JSON
+# The class spell lists (the Trusted Source's spell-to-class lookup).
+cat > "$D/spells/sources.json" <<'JSON'
+{"EMBC": {"Cinder Bloom": {"class": [{"name": "Lamplighter", "source": "EMBC"}]},
+          "Whisper Veil": {"class": [{"name": "Lamplighter", "source": "EMBC"}]},
+          "Glimmerlance": {"class": [{"name": "Lamplighter", "source": "EMBC"}]}},
+ "OLDC": {"Cinder Bloom": {"class": [{"name": "Lamplighter", "source": "OLDC"}]}}}
+JSON
 cat > "$D/spells/spells-oldc.json" <<'JSON'
 {"spell": [
   {"name": "Cinder Bloom", "source": "OLDC", "page": 221, "level": 3, "school": "V", "reprintedAs": ["Cinder Bloom|EMBC"],

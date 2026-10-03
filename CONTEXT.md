@@ -54,6 +54,10 @@ _Avoid_: Download, mirror, local data
 Bringing one official entry from the Trusted Source into the Workspace as a note, translated into the Workspace Language — into Reference, or into an Adventure. It is the only way official material enters a Workspace.
 _Avoid_: Download, copy, Transfer (which is only for Characters)
 
+**Spell Index**:
+A note listing Reference's imported spells by level, each a link: one of every spell, and one per class of the spells on that class's list. DM Realm writes them again from the spell notes on disk whenever those change; nobody edits them.
+_Avoid_: Spell list (a class's), spellbook, catalogue
+
 ### Scopes
 
 **Scope**:
