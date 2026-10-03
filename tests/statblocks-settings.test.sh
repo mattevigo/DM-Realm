@@ -45,6 +45,8 @@ D="$W/$PLUGIN/data.json"
 [ "$(layout "$D" 'DM Realm Monster 2014' '[b["display"] for b in l["all"] if b.get("properties") == ["ac"]]')" = "['Armor Class']" ] || fail "fresh: English labels"
 [ "$(layout "$D" 'DM Realm Monster 2024' '[b["type"] for b in l["all"] if b.get("properties") == ["initiative"]]')" = "['property']" ] || fail "fresh: 2024 layout shows initiative"
 [ "$(layout "$D" 'DM Realm Character' '{p for b in l["all"] for p in b.get("properties", [])} >= {"level", "player", "ac", "hp", "hit_dice", "initiative", "stats", "saves", "skillsaves", "senses", "actions", "spells", "traits"}')" = "True" ] || fail "fresh: the Character layout lacks a property"
+# One column as wide as a note (Obsidian's readable line length, less the plugin's menu icon).
+[ "$(layout "$D" 'DM Realm Character' 'l.get("columns"), l.get("columnWidth")')" = "(1, 620)" ] || fail "fresh: the Character layout should be one 620px column"
 case "$(cat "$D")" in *'t("'*) fail "fresh: an untranslated t(\"…\") label is left in a callback";; esac
 
 # A 2014 Workspace defaults to the 2014 monster layout.
