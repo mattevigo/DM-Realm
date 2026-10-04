@@ -1,6 +1,8 @@
 {
   "id": "dm-realm-monster-2014",
   "name": "DM Realm Monster 2014",
+  "columns": 1,
+  "columnWidth": 620,
   "blocks": [
     {
       "type": "inline",
