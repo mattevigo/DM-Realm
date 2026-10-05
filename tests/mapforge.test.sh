@@ -37,6 +37,7 @@ YML
   fence "$W/Reference/Monsters/Orc.md" Orc
   fence "$W/Homebrew/Monsters/Bog_Goblin.md" "Bog Goblin"
   fence "$W/Campaigns/Heroes/NPCs/Sildar.md" Sildar
+  fence "$W/Campaigns/Villains/NPCs/Vex.md" Vex
   fence "$W/Characters/Ayla/Ayla.md" Ayla
   fence "$W/Characters/Ayla/Builds/Ayla_Level_1.md" Ayla "bestiary: false"
   fence "$W/Templates/Homebrew_Monster.md" "—" "bestiary: false"
@@ -66,12 +67,21 @@ OUT=$(python3 "$HELPER" report "$W") || fail "subfolder: exit $?"
 [ "$(field "$OUT" "d['scopes']['reference']['reads']")" = "part" ] || fail "subfolder: reference should be part: $OUT"
 [ "$(field "$OUT" "d['scopes']['homebrew']['reads']")" = "none" ] || fail "subfolder: homebrew should be none: $OUT"
 [ "$(field "$OUT" "d['scopes']['homebrew']['missed']")" = "1" ] || fail "subfolder: homebrew missed 1: $OUT"
-[ "$(field "$OUT" "d['scopes']['campaigns']['missed']")" = "1" ] || fail "subfolder: campaigns missed 1: $OUT"
+[ "$(field "$OUT" "d['scopes']['campaigns']['missed']")" = "2" ] || fail "subfolder: campaigns missed 2: $OUT"
+[ "$(field "$OUT" "d['scopes']['campaigns']['missed_in']")" = "{'Heroes': 1, 'Villains': 1}" ] || fail "subfolder: missed per Campaign: $OUT"
 [ "$(field "$OUT" "d['scopes']['adventures']['folder']")" = "Adventures" ] || fail "subfolder: adventures folder name: $OUT"
 [ "$(field "$OUT" "d['characters_read']")" = "0" ] || fail "subfolder: no Character read: $OUT"
 [ "$(field "$OUT" "d['kept_out_read']")" = "0" ] || fail "subfolder: nothing kept out read: $OUT"
 [ "$(field "$OUT" "'characters' in d['scopes']")" = "True" ] || fail "subfolder: characters scope listed: $OUT"
 [ "$(snapshot)" = "$BEFORE" ] || fail "subfolder: .mapforge changed"
+
+# One Campaign: part of Campaigns, the other Campaign named as missed; an unclosed fence is no Monster.
+new_ws 12; mapforge '{"bestiaryStatBlockPath": "Campaigns/Heroes"}'
+printf '# Draft\n\n```statblock\nname: Draft\n' > "$W/Campaigns/Heroes/NPCs/Draft.md"
+OUT=$(python3 "$HELPER" report "$W") || fail "campaign: exit $?"
+[ "$(field "$OUT" "d['scopes']['campaigns']['reads']")" = "part" ] || fail "campaign: part: $OUT"
+[ "$(field "$OUT" "d['scopes']['campaigns']['missed_in']")" = "{'Villains': 1}" ] || fail "campaign: Villains missed: $OUT"
+[ "$(field "$OUT" "d['read']")" = "1" ] || fail "campaign: reads Sildar only, not the unclosed fence: $OUT"
 
 # The Workspace root: reads everything, Characters as Monsters, and the notes kept out of the bestiary.
 new_ws 3; mapforge '{"bestiaryStatBlockPath": "."}'
@@ -80,6 +90,10 @@ OUT=$(python3 "$HELPER" report "$W") || fail "root: exit $?"
 [ "$(field "$OUT" "d['characters_read']")" = "1" ] || fail "root: one Character read: $OUT"
 [ "$(field "$OUT" "d['kept_out_read']")" = "2" ] || fail "root: past Build and Template read: $OUT"
 [ "$(field "$OUT" "sum(s['missed'] for s in d['scopes'].values())")" = "0" ] || fail "root: nothing missed: $OUT"
+# MapForge reads hidden folders too: a note in .trash is listed at the root.
+fence "$W/.trash/Old_Goblin.md" "Old Goblin"
+OUT=$(python3 "$HELPER" report "$W") || fail "root trash: exit $?"
+[ "$(field "$OUT" "d['read']")" = "8" ] || fail "root: 7 names plus the one in .trash: $OUT"
 
 # A top-level folder by its name, with a trailing slash: all of that Scope.
 new_ws 4; mapforge '{"bestiaryStatBlockPath": "Characters/"}'
@@ -93,7 +107,7 @@ new_ws 5; mapforge ''
 OUT=$(python3 "$HELPER" report "$W") || fail "no config: exit $?"
 [ "$(field "$OUT" "d['config']")" = "missing" ] || fail "no config: $OUT"
 [ ! -e "$W/.mapforge/config.json" ] || fail "no config: created config.json"
-for case in 'no-key|{"somethingElse": true}' 'invalid|{"bestiaryStatBlockPath": "x",}' 'invalid|["Reference"]' 'not-found|{"bestiaryStatBlockPath": "Bestiary"}' 'outside|{"bestiaryStatBlockPath": "../Elsewhere"}' 'outside|{"bestiaryStatBlockPath": "Reference/../../x"}' 'outside|{"bestiaryStatBlockPath": "/Users/dm/Bestiary"}' 'outside|{"bestiaryStatBlockPath": ""}'; do
+for case in 'no-key|{"somethingElse": true}' 'invalid|{"bestiaryStatBlockPath": "x",}' 'invalid|["Reference"]' 'invalid|{"bestiaryStatBlockPath": 5}' 'no-key|{"bestiaryStatBlockPath": null}' 'not-found|{"bestiaryStatBlockPath": "Bestiary"}' 'outside|{"bestiaryStatBlockPath": "../Elsewhere"}' 'outside|{"bestiaryStatBlockPath": "Reference/../../x"}' 'outside|{"bestiaryStatBlockPath": "/Users/dm/Bestiary"}' 'outside|{"bestiaryStatBlockPath": ""}'; do
   want=${case%%|*}; json=${case#*|}
   new_ws 6; mapforge "$json"; BEFORE=$(snapshot)
   OUT=$(python3 "$HELPER" report "$W") || fail "$want: exit $?"

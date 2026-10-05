@@ -1,6 +1,6 @@
 # DM Realm reads MapForge's files and writes them only when the DM asks
 
-MapForge, the DM's table app, is supported by DM Realm and stays independent of it. MapForge owns `.mapforge/` (its Manifest `workspace.json`, `config.json`, `parties.json`, `preferences.json`, its Session Logs) and the files beside a Map (`<map>.fog.json`, `<map>.combat/`). DM Realm reads them — to tell the DM what MapForge will see of the Workspace, and for the Table Record in Consolidation — and on its own initiative never creates, edits or deletes any of them: not at Setup, not after an Import, not when a Character changes. It writes one only when the DM's own request names that change ("point MapForge's bestiary at the Bestiary folder"). A question DM Realm raises itself, even an opt-in line in a preview, is not such a request. Nor does DM Realm shape the Workspace to fit MapForge: what MapForge cannot read of a Workspace is MapForge's to lift, in MapForge.
+MapForge, the DM's table tool, is supported by DM Realm and stays independent of it. MapForge owns `.mapforge/` (its Manifest `workspace.json`, `config.json`, `parties.json`, `preferences.json`, its Session Logs) and the files beside a Map (`<map>.fog.json`, `<map>.combat/`). DM Realm reads them — to tell the DM what MapForge will see of the Workspace, and for the Table Record in Consolidation — and on its own initiative never creates, edits or deletes any of them: not at Setup, not after an Import, not when a Character changes. It writes one only when the DM's own request names that change ("point MapForge's bestiary at the Bestiary folder"). A question DM Realm raises itself, even an opt-in line in a preview, is not such a request. Nor does DM Realm shape the Workspace to fit MapForge: what MapForge cannot read of a Workspace is MapForge's to lift, in MapForge.
 
 ## Considered Options
 
@@ -11,7 +11,7 @@ MapForge, the DM's table app, is supported by DM Realm and stays independent of 
 
 ## Consequences
 
-- MapForge's Bestiary holds what its `bestiaryStatBlockPath` names. Until MapForge reads more than one folder, the stat blocks in other Scopes are missing from it; DM Realm reports this, and does not fix it.
+- MapForge's bestiary holds what its `bestiaryStatBlockPath` names. Until MapForge reads more than one folder, the stat blocks in other Scopes are missing from it; DM Realm reports this, and does not fix it.
 - A Party reaches MapForge by being typed in MapForge, by MapForge reading the Character notes, or by DM Realm writing `parties.json` at the DM's request.
 - Consolidation reads the Table Record and leaves it as it is.
 - An eval whose prompt does not ask for MapForge must leave `.mapforge/` unchanged.

@@ -124,7 +124,7 @@ The Obsidian plugin that renders the Workspace's stat blocks (structure.md's "St
 
 ## MapForge
 
-MapForge, the DM's table app, owns `.mapforge/` ([ADR 0011](../../docs/adr/0011-dm-realm-reads-mapforges-files-and-writes-them-only-when-the-dm-asks.md), structure.md's "MapForge"). Setup reads it and, on its own, writes nothing in it — not the Manifest, not `config.json` — and never offers to; with no `.mapforge/`, Setup says nothing of MapForge beyond the stat blocks question.
+Setup follows structure.md's "MapForge" rule: it reads `.mapforge/`, and sets the bestiary folder only when the DM's request asks for it (below). With no `.mapforge/`, Setup says nothing of MapForge beyond the stat blocks question.
 
 - **Report.** When the folder has `.mapforge/`, run the helper next to this file once everything else is done; it reads and never writes:
 
@@ -133,7 +133,7 @@ MapForge, the DM's table app, owns `.mapforge/` ([ADR 0011](../../docs/adr/0011-
   ```
 
   It prints one JSON object. Tell the DM, in the Workspace Language, by its `config`:
-  - `ok` — MapForge's bestiary reads `path`: each Scope in `scopes` it reads all of, part of (`part`: only that subfolder) or none of, with the monster and NPC stat blocks it misses there (`missed`), so the DM knows which creatures MapForge will not find; `read`, the Monsters it lists today. When `characters_read` is above 0, or the Characters Scope is read at all, say that MapForge will list those Characters as Monsters; when `kept_out_read` is above 0, that it also lists the stat blocks DM Realm keeps out of the bestiary (a Character's past Builds, the Homebrew monster Template).
+  - `ok` — MapForge's bestiary reads `path`: each Scope in `scopes` it reads all of, part of (`part`: only that subfolder) or none of, with the monster and NPC stat blocks it misses there (`missed`), naming the subfolders they are in (`missed_in`: which Adventures, which Campaigns), so the DM knows which creatures MapForge will not find; `read`, the Monsters it lists today. When `characters_read` is above 0, or the Characters Scope is read at all, say that MapForge will list those Characters as Monsters; when `kept_out_read` is above 0, that it also lists the stat blocks DM Realm keeps out of the bestiary (a Character's past Builds, the Homebrew monster Template).
   - `missing` or `no-key` — MapForge's bestiary reads nothing of this Workspace until a folder is named in `bestiaryStatBlockPath`, in `.mapforge/config.json`.
   - `invalid` — `.mapforge/config.json` could not be read (not a JSON object), so MapForge's bestiary is off.
   - `not-found` — the folder `path` it names is not in the Workspace.
