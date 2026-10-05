@@ -15,6 +15,7 @@ Consolidate one played Session from its Live Notes. The rules — what a Session
 4. **Which Session**: the one the request names, or the latest Session with Live Notes and no Diary entry (with none, the latest with no Diary entry). When that leaves several or none: say which Sessions exist, ask, and write nothing.
    - **One already consolidated**, as structure.md's Diary rule tells it: say so, ask what the DM wants changed, and write nothing.
 5. **Its Live Notes are the source**, as structure.md's Live Notes rule keeps them.
+   - **A MapForge subsection** in them (its Table Record) names Pawns by their MapForge labels: read them as you read the DM's shorthand, matching each to a Character present or a creature. A label you cannot match with certainty is a line of the preview for the DM to settle.
    - **Empty Live Notes**: ask the DM what happened, and write nothing. The DM's answer — or the account the request already gives — is written into the note's Live Notes section in the DM's words, before anything else, and is the source from then on.
 6. **Work out [what the Session changes](#what-a-session-changes)**, reading each Character present and each note the Live Notes name.
 7. **Preview, then a yes.** Show the DM every change in one message — the table's rows, each as its own line the DM can drop — and end your turn with nothing written. A go-ahead the request already gives ("apply everything without asking") is the yes, and a line it drops is dropped; a title it does not pick leaves the note untitled, with the titles offered in the report.

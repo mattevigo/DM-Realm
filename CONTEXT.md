@@ -131,15 +131,15 @@ A Session of a Campaign played outside its numbered run, often with only some of
 _Avoid_: Spin-off, one-shot, interlude
 
 **Live Notes**:
-What the DM writes down while a Session is played, kept word for word afterwards. With the Table Record, they are the source of that Session's recap.
+What the DM writes down while a Session is played, by hand or through MapForge's Table Record, kept word for word afterwards. They are the only source of that Session's recap.
 _Avoid_: Development, log, transcript
 
 **Table Record**:
-What MapForge, the DM's table tool, records while a Session is played: the moves and comments of the evening, and each fight turn by turn, with the hit points and conditions it left. It is as much a source of what happened as the Live Notes. A Session played without MapForge has none.
+What MapForge, the DM's table tool, records while a Session is played: the moves and comments of the evening, and each fight turn by turn, with the hit points and conditions it left. It reaches the Session by being written into its Live Notes, after the DM's own words; from then on it is Live Notes like the rest. A Session played without MapForge has none.
 _Avoid_: Session Log, Combat Log (MapForge's names for its parts), Live Notes, transcript
 
 **Consolidation**:
-Closing a played Session from its Live Notes and Table Record: its recap and title, its Diary entry, the lasting changes to its Characters' Builds, and the party's spent resources recorded in the Campaign.
+Closing a played Session from its Live Notes: its recap and title, its Diary entry, the lasting changes to its Characters' Builds, and the party's spent resources recorded in the Campaign.
 _Avoid_: Closing, wrap-up, import
 
 **Party State**:

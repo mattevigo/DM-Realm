@@ -8,7 +8,7 @@ An Import already puts every map an Adventure shows into the Workspace, in the A
 
 What is left is the work MapForge does on a map: Grid Fit, the Wall Editor, Lights and Pawns. Their result is MapForge's own file beside the image (`<map>.fog.json`), authored in its Live View. DM Realm writing that file would be a second author of a file MapForge owns, with a format DM Realm would have to follow release by release, to save the DM a few minutes of fitting a grid they want to check by eye anyway.
 
-The integration DM Realm does take on is in the Workspace and the Session: MapForge reading the Workspace's stat blocks and party, and Consolidation reading MapForge's Table Record.
+The integration DM Realm does take on is in the Workspace and the Session: MapForge reading the Workspace's stat blocks and party, and a Session's Live Notes taking in MapForge's Table Record.
 
 ## Prior requests
 
