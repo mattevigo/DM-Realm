@@ -486,7 +486,7 @@ MapForge, the DM's table tool, is independent of DM Realm ([ADR 0011](../../docs
 
 DM Realm guarantees the plugin's standard keys, `initiative` and `size` included, and nothing else of MapForge. Two known limits are MapForge's to lift: it reads one bestiary folder (`bestiaryStatBlockPath` in `.mapforge/config.json`, relative to the Workspace root) while a Workspace's stat blocks span several Scopes, and it takes the party from its own `parties.json`, not from the Character notes. MapForge reads every fence under that folder, `bestiary: false` ones included, so a folder holding Characters lists them, and their past Builds, as Monsters. Setup tells the DM what that folder reads of the Workspace.
 
-MapForge's Session Logs (`.mapforge/sessions/`) and the Combat Logs they point at are a Session's Table Record. It reaches the Workspace only by being written into that Session's Live Notes, when the DM asks; Consolidation reads the Live Notes alone.
+MapForge's Session Logs (`.mapforge/sessions/`) and the Combat Logs they point at are a Session's Table Record. It reaches the Workspace only by being written into that Session's Live Notes, when the DM asks.
 
 ## Language and names
 

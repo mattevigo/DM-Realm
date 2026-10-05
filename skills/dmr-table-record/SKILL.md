@@ -1,13 +1,13 @@
 ---
 name: dmr-table-record
-description: Bring MapForge's Table Record of a played Session into its Live Notes in a DM Realm Workspace ("bring MapForge's record into session 21", "add what MapForge recorded to the last session") — the DM's comments, the Maps and each fight as it ended. It does not consolidate the Session.
+description: Bring MapForge's Table Record of a played Session into its Live Notes in a DM Realm Workspace ("bring MapForge's record into session 21", "add what MapForge recorded to the last session") — the DM's comments, the Maps and each fight as it ended.
 argument-hint: <the Session, e.g. the last session of Heroes>
 allowed-tools: Read, Glob, Grep, Edit, Skill, Bash(python3:*), Bash(ls:*)
 ---
 
 # Bring a Table Record into the Live Notes
 
-Write what MapForge recorded of one played Session — its Table Record — into that Session's Live Notes ([ADR 0012](../../docs/adr/0012-the-table-record-enters-a-session-as-its-live-notes.md)). The rules — what a Session is, Live Notes, MapForge's files, translation and names — are the `dmr-workspace` skill's structure.md; the Session note's format is the Workspace's Session Template. This skill only adds to the Live Notes: Consolidation is the `dmr-session-consolidate` skill's, on a request of its own. Speak to the DM in the Workspace Language.
+Write what MapForge recorded of one played Session — its Table Record — into that Session's Live Notes ([ADR 0012](../../docs/adr/0012-the-table-record-enters-a-session-as-its-live-notes.md)). The rules — what a Session is, Live Notes, MapForge's files, translation and names — are the `dmr-workspace` skill's structure.md; the Session note's format is the Workspace's Session Template. This skill only adds to the Live Notes. Speak to the DM in the Workspace Language.
 
 1. **Load the rules.** Invoke `dmr-workspace` (read its structure.md in full), and find the Workspace Language in use as its "Fixed after Setup" reads it.
 2. **The Campaign** is the one the request names, or the Workspace's only one. With several and none named: ask which, and write nothing.
@@ -31,7 +31,7 @@ Write what MapForge recorded of one played Session — its Table Record — into
 
    It prints the evening's events in order: each Map, each comment, each fight as MapForge folds it.
 7. **Write each** into the Session note's Live Notes, where and under the marker structure.md's Live Notes rule gives it, in [this shape](#the-shape), after any written there before. The rest of the note stays byte for byte — the DM's own Live Notes above all — and no other file is written. MapForge's files are only read (structure.md's MapForge rule).
-8. **Report**: for each log written, its time, how many comments and fights it brought in; each log left out, and why; and that the Session is ready to consolidate when the DM asks ("consolidate session 3").
+8. **Report**: for each log written, its time, how many comments and fights it brought in; and each log left out, and why.
 
 Done when every log of the Session that can be written is in its Live Notes, or the DM has the one question that stopped it and nothing was written.
 
