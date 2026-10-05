@@ -1,5 +1,5 @@
 schema_version: "1.1"
-name: table-record-italian
+name: mapforge-import-italian
 description: "In an Italian Workspace, MapForge's log is written into Sessione_03's Live Notes in Italian, with the DM's comments word for word."
 tags: [session, mapforge]
 context:

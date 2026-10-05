@@ -1,6 +1,6 @@
 ---
-name: dmr-table-record
-description: Bring MapForge's Table Record of a played Session into its Live Notes in a DM Realm Workspace ("bring MapForge's record into session 21", "add what MapForge recorded to the last session") — the DM's comments, the Maps and each fight as it ended.
+name: dmr-mapforge-import
+description: Bring MapForge's Table Record of a played Session into its Live Notes in a DM Realm Workspace ("import the MapForge log into session 21", "bring MapForge's record into the last session") — the DM's comments, the Maps and each fight as it ended.
 argument-hint: <the Session, e.g. the last session of Heroes>
 allowed-tools: Read, Glob, Grep, Edit, Skill, Bash(python3:*), Bash(ls:*)
 ---

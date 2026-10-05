@@ -3,7 +3,7 @@
 # what one holds for its Live Notes (ADR 0012). MapForge's files are only read (ADR 0011).
 # Usage: sh tests/table-record.test.sh   (exit 0 = all pass)
 set -u
-HELPER="$(cd "$(dirname "$0")/.." && pwd)/skills/dmr-table-record/table-record.py"
+HELPER="$(cd "$(dirname "$0")/.." && pwd)/skills/dmr-mapforge-import/table-record.py"
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
 FAILS=0

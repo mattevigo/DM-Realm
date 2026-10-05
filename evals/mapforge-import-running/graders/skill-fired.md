@@ -1,5 +1,5 @@
 ---
 type: tool_used
 tool: Skill
-input_match: dmr-table-record
+input_match: dmr-mapforge-import
 ---
