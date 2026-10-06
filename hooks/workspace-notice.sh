@@ -35,7 +35,8 @@ Stat blocks (stat_blocks): ${STAT_BLOCKS}
 Top-level folders, by key:${FOLDERS}
 (The dmr-workspace rules, "Fixed after Setup", say how to confirm the language and Edition in use.)
 Before writing, moving, renaming or linking any note or folder here, load the dmr-workspace skill and follow its rules.
-For official D&D material — a rules question, rules text, a stat block — load the dmr-trusted-source skill first.
+For official D&D material — a question about it, rules text, a stat block — load the dmr-trusted-source skill first.
+For a question about using DM Realm, this Workspace or its Campaigns, use the dmr-ask skill.
 NOTICE
 
 # Fantasy Statblocks installed after Setup has none of DM Realm's layouts, and one set up by

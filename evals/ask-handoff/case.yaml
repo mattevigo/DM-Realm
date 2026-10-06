@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: ask-handoff
+description: "Asked what to do next with the go-ahead already given, dmr-ask recommends consolidating the played Session 03 and invokes dmr-session-consolidate."
+tags: [ask]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 50
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    What should I do next with Ashfall? Whatever skill you recommend, go ahead and run it.

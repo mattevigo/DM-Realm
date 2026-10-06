@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: ask-what-happened-unconsolidated
+description: "The silver chalice appears only in the Live Notes of Session 03, played and not consolidated: dmr-ask finds it there and names the Session, and writes nothing."
+tags: [ask]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    In the Ashfall campaign, where did the party get the silver chalice?
