@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: session-consolidate-npc
+description: "Two NPCs the Live Notes name have no note: after the go-ahead the one the DM kept gets a Campaign NPC note, and the one the DM dropped from the preview gets none."
+tags: [session]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 50
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Consolidate session 3 of the Ashfall campaign. Apply everything you find without asking me first, with one exception: drop the note for Sergeant Holt, I do not want one. Title it "The Keys".

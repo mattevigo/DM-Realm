@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s24-italian-glossary-reuse
+description: "Structure scenarios S22 and S24: the first note of a kind creates its translated folder, recorded in the Glossary; a term already in the Glossary is reused unchanged; a fallback shows the English original at its first use."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Aggiungi un mostro homebrew riutilizzabile, il Divoratore di Vetro (Glass Devourer): CR 3, 45 hit points.

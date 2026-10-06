@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s29-italian-session-name
+description: "Structure scenario S29: an Italian Session note is named Sessione_NN_<translated title>."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Crea la nota della sessione 3 della campagna Eroi, intitolata «L'Imboscata».

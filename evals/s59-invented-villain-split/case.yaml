@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s59-invented-villain-split
+description: "Structure scenario S59: an invented villain is split: the NPC in World, the stat block in Homebrew Monsters, and the World note links to it."
+tags: [scenario, statblock]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Create Vorn, a villain I invented for my world Orsenna: a lich-priest who rules the drowned city of Karth. Include his stat block: CR 12 undead, AC 17, 180 hit points, a necrotic touch.

@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s11-campaign-homebrew-spell
+description: "Structure scenario S11: homebrew for one Campaign goes in its Homebrew_<Type> folder, by level."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    I invented a 2nd-level spell only for the Heroes campaign: Border Ward, a shimmering barrier. Add it.

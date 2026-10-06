@@ -1,0 +1,33 @@
+# EXAMPLE ONLY — not a Workspace Config. Setup writes the real one as
+# `workspace-config.yml` at a Workspace root, from the DM's answers.
+# Fields documented in structure.md#workspace-config (next to this file).
+
+# The Workspace Language: every folder name, file name and note in the Workspace
+# is written in it. Any language, named in any language (English, Italiano, Deutsch…).
+# Fixed after Setup.
+language: English
+
+# The Edition: the D&D rules the Workspace follows, 2014 or 2024.
+# Decides which official rules material is Reference, the default folder names and
+# which Official Translations apply.
+# Fixed once official rules material is imported into Reference.
+edition:   # 2014 or 2024 — Setup asks, recommending 2024; no default
+
+# How monsters and NPCs write their game statistics, once and last: true as Fantasy
+# Statblocks fences, false as Markdown. Characters always keep their stat block. Setup asks,
+# recommending true when the plugin is installed. A change takes effect at a Setup re-run,
+# which converts the notes.
+stat_blocks: true
+
+# Names of the eight top-level folders, by neutral key. Leave a name empty to use
+# the agent's translation of the default English name into the Workspace Language.
+# Each name is a single folder name directly under the Workspace root, never a path.
+folders:
+  reference:   # default: Reference
+  adventures:  # default: Adventures
+  homebrew:    # default: Homebrew
+  world:       # default: World
+  characters:  # default: Characters
+  campaigns:   # default: Campaigns
+  dm_tools:    # default: DM_Tools
+  templates:   # default: Templates

@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s93-session-dm-name
+description: "Structure scenario S93: a Session note the DM names their own way keeps that name; the default Session_NN_Title is not applied."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 20
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Create the note for a session of the Heroes campaign, played on 2026-09-20. I name my session notes my own way: call this one "Interlude The Long Night", with no number.

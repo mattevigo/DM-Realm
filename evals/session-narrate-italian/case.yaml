@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: session-narrate-italian
+description: "In an Italian Workspace the Chapter, its folder and its name are Italian, the Chronicle's name is the one the Translation Glossary records, and the prose is Italian."
+tags: [session]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 50
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Scrivi il capitolo della sessione 3 della campagna Cenere.

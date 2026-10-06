@@ -1,0 +1,11 @@
+schema_version: "1.1"
+name: setup-rerun-config-only
+description: A folder holding only the Workspace Config is a Workspace; Setup re-runs and asks before recreating the missing top-level folders.
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 25
+  timeout_seconds: 400
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    /dm-realm:dmr-setup

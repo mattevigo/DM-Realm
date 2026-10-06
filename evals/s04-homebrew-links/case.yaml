@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s04-homebrew-links
+description: "Structure scenario S04: Homebrew may link to Reference, never to an Adventure."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    In my homebrew monster Ash Wraith, link the Fireball spell it casts, and note that it serves Glasstaff from the Sunken Keep adventure.

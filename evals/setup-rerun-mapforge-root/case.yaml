@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: setup-rerun-mapforge-root
+description: "Re-running Setup where MapForge's bestiary reads the Workspace root warns that Characters will be listed as Monsters, and leaves .mapforge/ as it was."
+tags: [setup, mapforge]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 15
+  timeout_seconds: 240
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  env:
+    EVAL_DMR_OBSIDIAN_RUNNING: "0"
+  prompt: |
+    /dm-realm:dmr-setup English, default names, go ahead

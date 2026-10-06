@@ -1,0 +1,16 @@
+schema_version: "1.1"
+name: transfer-old-vault
+description: "Transfer from an old vault's note: identity and Build come with options linked, the table story, play state and copied rules text are dropped and listed."
+tags: [character, transfer, scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 80
+  timeout_seconds: 1500
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  env:
+    EVAL_DMR_SOURCE_CACHE: "~/.dm-realm/source-cache"
+    EVAL_DMR_SOURCE_API: http://127.0.0.1:9/latest
+    EVAL_DMR_SOURCE_RAW: http://127.0.0.1:9/raw
+  prompt: |
+    Transfer Tamsin Reed from my old vault: .old-vault/Tamsin_Reed.md. Go ahead, no need to show me a preview.

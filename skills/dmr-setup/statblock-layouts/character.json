@@ -1,0 +1,271 @@
+{
+  "id": "dm-realm-character",
+  "name": "DM Realm Character",
+  "columns": 1,
+  "columnWidth": 620,
+  "blocks": [
+    {
+      "type": "inline",
+      "id": "dmr-head",
+      "properties": [],
+      "hasRule": true,
+      "nested": [
+        {
+          "type": "group",
+          "id": "dmr-title",
+          "properties": [
+            "name",
+            "size",
+            "species",
+            "class"
+          ],
+          "conditioned": true,
+          "nested": [
+            {
+              "type": "inline",
+              "id": "dmr-title-line",
+              "properties": [],
+              "hasRule": false,
+              "nested": [
+                {
+                  "type": "heading",
+                  "id": "dmr-name",
+                  "properties": [
+                    "name"
+                  ],
+                  "conditioned": true,
+                  "size": 1
+                },
+                {
+                  "type": "inline",
+                  "id": "dmr-tracker",
+                  "properties": [],
+                  "hasRule": false,
+                  "nested": [
+                    {
+                      "type": "action",
+                      "id": "dmr-encounter",
+                      "icon": "sword",
+                      "callback": "try { InitiativeTracker.newEncounter({roll: true, creatures: [monster]}); } catch(e) {}"
+                    },
+                    {
+                      "type": "action",
+                      "id": "dmr-add-creature",
+                      "icon": "plus-with-circle",
+                      "callback": "try { InitiativeTracker.addCreatures([monster]); } catch(e) {}"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "subheading",
+              "id": "dmr-kind",
+              "properties": [
+                "size",
+                "species",
+                "class"
+              ],
+              "conditioned": true,
+              "separator": ", "
+            },
+            {
+              "type": "inline",
+              "id": "dmr-who",
+              "properties": [],
+              "hasRule": false,
+              "nested": [
+                {
+                  "type": "property",
+                  "id": "dmr-level",
+                  "properties": [
+                    "level"
+                  ],
+                  "display": "Level",
+                  "conditioned": true
+                },
+                {
+                  "type": "property",
+                  "id": "dmr-player",
+                  "properties": [
+                    "player"
+                  ],
+                  "display": "Player",
+                  "conditioned": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "image",
+          "id": "dmr-image",
+          "properties": [
+            "image"
+          ],
+          "conditioned": true
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "dmr-core",
+      "properties": [
+        "ac",
+        "hit_dice",
+        "hp",
+        "initiative",
+        "speed"
+      ],
+      "nested": [
+        {
+          "type": "property",
+          "id": "dmr-ac",
+          "properties": [
+            "ac"
+          ],
+          "display": "Armor Class",
+          "conditioned": true,
+          "callback": "if (monster.ac == null || monster.ac === \"\") return \"\";\nconst ac = [monster.ac];\nif (monster.ac_class) ac.push(\"(\" + monster.ac_class + \")\");\nreturn ac.join(\" \");"
+        },
+        {
+          "type": "property",
+          "id": "dmr-hp",
+          "properties": [
+            "hp"
+          ],
+          "display": "Hit Point Maximum",
+          "conditioned": true
+        },
+        {
+          "type": "property",
+          "id": "dmr-hit-dice",
+          "properties": [
+            "hit_dice"
+          ],
+          "display": "Hit Dice",
+          "conditioned": true
+        },
+        {
+          "type": "property",
+          "id": "dmr-initiative",
+          "properties": [
+            "initiative"
+          ],
+          "display": "Initiative",
+          "conditioned": true,
+          "callback": "if (monster.initiative == null || monster.initiative === \"\") return \"\";\nconst i = Number(monster.initiative);\nif (isNaN(i)) return String(monster.initiative);\nreturn (i < 0 ? \"−\" : \"+\") + Math.abs(i);"
+        },
+        {
+          "type": "property",
+          "id": "dmr-speed",
+          "properties": [
+            "speed"
+          ],
+          "display": "Speed",
+          "conditioned": true
+        }
+      ],
+      "conditioned": true,
+      "hasRule": true
+    },
+    {
+      "type": "table",
+      "id": "dmr-stats",
+      "properties": [
+        "stats"
+      ],
+      "headers": [
+        "STR",
+        "DEX",
+        "CON",
+        "INT",
+        "WIS",
+        "CHA"
+      ],
+      "calculate": true,
+      "hasRule": true,
+      "conditioned": true
+    },
+    {
+      "type": "group",
+      "id": "dmr-details",
+      "properties": [
+        "languages",
+        "saves",
+        "senses",
+        "skillsaves"
+      ],
+      "nested": [
+        {
+          "type": "saves",
+          "id": "dmr-saves",
+          "properties": [
+            "saves"
+          ],
+          "display": "Saving Throws",
+          "conditioned": true
+        },
+        {
+          "type": "saves",
+          "id": "dmr-skills",
+          "properties": [
+            "skillsaves"
+          ],
+          "display": "Skills",
+          "conditioned": true
+        },
+        {
+          "type": "property",
+          "id": "dmr-senses",
+          "properties": [
+            "senses"
+          ],
+          "display": "Senses",
+          "conditioned": true
+        },
+        {
+          "type": "property",
+          "id": "dmr-languages",
+          "properties": [
+            "languages"
+          ],
+          "display": "Languages",
+          "conditioned": true
+        }
+      ],
+      "conditioned": true,
+      "hasRule": true
+    },
+    {
+      "type": "traits",
+      "id": "dmr-attacks",
+      "properties": [
+        "actions"
+      ],
+      "conditioned": true,
+      "dice": true,
+      "heading": "Attacks"
+    },
+    {
+      "type": "spells",
+      "id": "dmr-spellcasting",
+      "properties": [
+        "spells"
+      ],
+      "heading": "Spellcasting",
+      "conditioned": true,
+      "dice": true
+    },
+    {
+      "type": "traits",
+      "id": "dmr-features",
+      "properties": [
+        "traits"
+      ],
+      "conditioned": true,
+      "dice": true,
+      "heading": "Features and Traits"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: session-narrate-one-off
+description: "An instruction given for one Chapter is followed in it and not saved: no Voice note is created, and the report offers to keep it."
+tags: [session]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 50
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Write the chapter of session 3 of the Ashfall campaign. This time, tell it from Durga's point of view, in the first person.

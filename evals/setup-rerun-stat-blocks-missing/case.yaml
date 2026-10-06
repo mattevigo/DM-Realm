@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: setup-rerun-stat-blocks-missing
+description: "A Setup re-run whose Workspace Config has no stat_blocks asks the DM whether to write statistics as stat blocks or Markdown, and writes nothing until they answer."
+tags: [setup, statblock]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 20
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  env:
+    EVAL_DMR_OBSIDIAN_RUNNING: "0"
+  prompt: |
+    /dm-realm:dmr-setup

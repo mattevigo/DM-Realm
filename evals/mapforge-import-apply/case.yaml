@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: mapforge-import-apply
+description: "MapForge's log of the evening is written into Session_03's Live Notes, after the DM's own words: its marker, the Maps, the comments word for word, the fight as it ended with the Correction applied, the DM's note; not the moves, the roll or the Villains table's log of the same day. Nothing else changes: no Recap, Diary, Party State or MapForge file, and no Consolidation."
+tags: [session, mapforge]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Import the MapForge log into session 3 of the Ashfall campaign.
