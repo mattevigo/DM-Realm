@@ -1,0 +1,6 @@
+---
+type: regex
+target: {source: file, path: Campaigns/Ashfall/Sessions/Session_03_The_Gatehouse.md}
+match: contains
+---
+^(?<![\s\S])---\nnumber: 3\ndate: 2026-09-19\n---\n\n# Session 3: The Gatehouse\n\n\*\*Present:\*\* \[\[Ayla\]\], \[\[Durga\]\]\n\n## Prep\n\n### Strong start\n\n### Scenes\n\n### Secrets and clues\n\n### NPCs\n\n### Places\n\n### Encounters\n\n### Treasure\n\n## Live notes\n\n- crossed the causeway at dusk, cinder cultists on the walls\n- Durga broke the gate with her axe; Ayla shot the bell-ringer before he raised the alarm\n- the sergeant fled through the sluice\n- Ayla ends at 17 hp, two 1st-level slots spent; Durga at 22 hp\n- sealed letter on the desk, no sender\n- \[\[Tessa_Brannock\]\] waiting at the gate, asks for an escort to the harbour\. Durga: "To the harbour, and not a step further\."\n- \(they didn't notice\) the sergeant is Tessa's brother\n\n## Recap\n\nThe party crossed the causeway at dusk and took the gatehouse of the Sunken Keep from the cinder cultists; their sergeant fled through the sluice\. Tessa Brannock asked for an escort to the harbour\.\n\n## Loose threads\n\n- Who sent the sealed letter found on the desk\?\n- Tessa Brannock asked the party for an escort to the harbour\.\n(?![\s\S])

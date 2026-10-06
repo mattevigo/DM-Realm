@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: session-narrate-again
+description: "Session 03 already has a Chapter the DM edited by hand: asked to write it again, the skill warns that the edits would be lost, asks, and writes nothing."
+tags: [session]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 50
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Write the chapter of session 3 of the Ashfall campaign again, darker this time.

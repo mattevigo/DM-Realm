@@ -148,4 +148,12 @@ _Avoid_: Tracker, ledger, finances
 
 **Diary**:
 A Campaign's one note listing its Sessions in play order, each with a sentence or two and a link to the Session, whose recap holds the detail.
-_Avoid_: Journal, log, chronicle
+_Avoid_: Journal, log, chronicle (which is the Campaign's told story)
+
+**Chronicle**:
+A Campaign's story told as prose for its players, one Chapter per consolidated Session, in the voice the DM has set for that Campaign.
+_Avoid_: Story, tales, saga, Diary (which only lists the Sessions)
+
+**Chapter**:
+One Session of a Campaign told as prose in its Chronicle: what the party lived through, faithful to that Session's Live Notes and Recap, with only the telling invented. Not an Adventure's chapter, which is a part of the book.
+_Avoid_: Tale, story, narration

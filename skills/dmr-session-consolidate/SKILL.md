@@ -27,7 +27,7 @@ Consolidate one played Session from its Live Notes. The rules — what a Session
    6. **Party State**, as structure.md's Party State rule keeps it: the section of each Character present, and the Party treasure. Every other section stays byte for byte.
    7. **The Session note**: the Present line as the Live Notes show who played; the [Recap](#the-recap) and the Loose threads — what the Live Notes leave open, one line each; the title, added to its heading after the number. Its Prep stays byte for byte, like its Live Notes. Then its name, as structure.md's Session name rule gives it.
    8. **The Diary, last**: this Session's entry, as structure.md's Diary rule and the entries already there shape it.
-9. **Report** what was written: the Session's new name; each Character's changes, with every number that changed; Party State; each note created, imported or promoted; each line the DM dropped; and each level gained, with where to ask for the level-up.
+9. **Report** what was written: the Session's new name; each Character's changes, with every number that changed; Party State; each note created, imported or promoted; each line the DM dropped; each level gained, with where to ask for the level-up; and the offer to tell the Session as a Chapter of the Campaign's Chronicle, with the `dmr-session-narrate` skill.
 
 Done when the Diary has the Session's entry and every change the DM kept is written, or the DM has the one question that stopped it and nothing was written.
 
