@@ -97,6 +97,7 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S94 | s94-side-session (a Side Session has no number and does not shift the run; an untitled Session is `Session_<NN>.md`) |
 | S95 | s95-spent-resources-party-state (a Character's spent hit points and spell slots go in the Campaign's Party State; the Character note is unchanged) |
 | S96 | setup-fresh-english, tests/setup-templates.test.sh (the Session Template has the `number` and `date` properties, the Present line and a Live notes section between Prep and Recap) |
+| S97 | session-narrate-apply, session-narrate-italian (a consolidated Session's Chapter goes in its Campaign's Chronicle, named after the Session note and linking to it, and the Session note does not link back) |
 
 ## How to run the manual scenarios
 
