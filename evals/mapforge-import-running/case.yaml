@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: mapforge-import-running
+description: "MapForge has not closed the evening (no sessionEnded): the skill says so and writes nothing."
+tags: [session, mapforge]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Bring what MapForge recorded into session 3 of the Ashfall campaign.

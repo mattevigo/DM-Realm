@@ -11,7 +11,7 @@ Turn the current folder into a DM Realm Workspace, in any Workspace Language, le
 
 1. **Load the rules.** Invoke the `dmr-workspace` skill. Its structure.md gives the top-level folders with their keys and default English names, the Edition question, and the Workspace Config; `workspace-config.example.yml` next to it shows the Config's format.
 2. **Classify the folder**, before asking the DM anything. List it with hidden entries (`ls -A`) and look for Markdown notes anywhere below it (Glob `**/*.md`):
-   - **Fresh** — empty, or holding only dot-entries such as `.obsidian/`, `.git/` or `.DS_Store`: continue with step 3.
+   - **Fresh** — empty, or holding only dot-entries such as `.obsidian/`, `.git/`, `.mapforge/` (MapForge's, never touched: [MapForge](#mapforge)) or `.DS_Store`: continue with step 3.
    - **Already a Workspace** — `workspace-config.yml` at the root, whatever is or is not beside it (a Config alone, with every top-level folder gone, is still a Workspace): this is a re-run; follow [Re-run](#re-run) instead of the steps below.
    - **Anything else** — no Config, and folders, notes or other files: refuse and write nothing. When it holds folders named like a Workspace's top-level folders (Reference, Campaigns… in any language), tell the DM the Workspace Config is missing: without it Setup cannot tell a Workspace, so the DM puts it back (from a backup or the folder's history) and runs Setup again. When it holds Markdown notes, tell the DM it looks like an existing vault, and that migrating a vault into a Workspace is a separate skill DM Realm does not have yet.
 3. **Workspace Language.** Use the language the DM's request names, in any language ("italiano", "Deutsch"…). When it names none, ask which language the Workspace will be written in — every folder, file and note, fixed for good after Setup — and end your turn. Ask in the language the DM's request is written in (English when there is no text). Take the language only from the DM's explicit words; the language the request happens to be written in is not a choice. **From here on, write to the DM in the Workspace Language.**
@@ -20,7 +20,7 @@ Turn the current folder into a DM Realm Workspace, in any Workspace Language, le
 6. **Folder names.** For each top-level folder:
    - **Named by the DM** (in the request or an answer): use that name exactly, after checking it as structure.md's "Workspace Config" requires — a single folder name, not empty after the name rules, not a duplicate. An invalid name: say why, ask for another, and end your turn; the folder stays as it is.
    - **Otherwise**: its default English name, translated into the Workspace Language as structure.md's "Translating a term" says (Official Translation, else a faithful fallback), with the name rules applied. In English, the default name itself.
-7. **Preview.** Show exactly what Setup will create: `workspace-config.yml` with its content — Workspace Language, Edition, `stat_blocks` with one line on what it means (monsters and NPCs as the plugin's stat blocks, or as Markdown that needs no plugin but that MapForge cannot read; Characters keep their stat block either way) and every folder name; every top-level folder, empty but for Templates; the [Templates](#the-templates) it writes, each by its file name; in a non-English Workspace, the Translation Glossary with its rows; the Obsidian settings Setup merges (below), the attachment location with its Attachments name included; and, when Fantasy Statblocks is installed, what [Fantasy Statblocks](#fantasy-statblocks) sets. Unless the request already settled the names ("default names", or names given), invite the DM to rename any folder.
+7. **Preview.** Show exactly what Setup will create: `workspace-config.yml` with its content — Workspace Language, Edition, `stat_blocks` with one line on what it means (monsters and NPCs as the plugin's stat blocks, or as Markdown that needs no plugin but that MapForge cannot read; Characters keep their stat block either way) and every folder name; every top-level folder, empty but for Templates; the [Templates](#the-templates) it writes, each by its file name; in a non-English Workspace, the Translation Glossary with its rows; the Obsidian settings Setup merges (below), the attachment location with its Attachments name included; when Fantasy Statblocks is installed, what [Fantasy Statblocks](#fantasy-statblocks) sets; and, only when the DM's request asks for it, the folder Setup will name for MapForge's bestiary ([MapForge](#mapforge)). Unless the request already settled the names ("default names", or names given), invite the DM to rename any folder.
 8. **Confirmation.** Continue on an explicit go-ahead from the DM: one already in the request ("go ahead", "proceed", "procedi", "create it") counts. Otherwise ask for it and end your turn; the folder stays as it is until then.
 9. **Create.**
    1. Write `workspace-config.yml` at the folder root in the example's format, every value filled in (each folder name written out).
@@ -36,10 +36,11 @@ Turn the current folder into a DM Realm Workspace, in any Workspace Language, le
       It sets wikilinks with shortest-path links, puts the files the DM pastes into a note in an Attachments subfolder beside it, turns the Templates core plugin on and points it at the Templates folder, and leaves every other Obsidian setting as the DM had it. On exit 2 (a settings file that is not valid JSON) it changed nothing: name the file for the DM and go on. Without `python3`, make the same changes by hand with Read and Write — `app.json`: `useMarkdownLinks: false`, `newLinkFormat: "shortest"`, `attachmentFolderPath: "./<Attachments>"`; `core-plugins.json`, always a JSON object: `templates: true`; `templates.json`: `folder` — keeping every other key.
 
    6. Set up [Fantasy Statblocks](#fantasy-statblocks).
+   7. Only when the DM's request asks for it, set MapForge's bestiary folder ([MapForge](#mapforge)).
 
    These are the whole new Workspace; an English Workspace has no Translation Glossary.
 10. **Check Obsidian** with `python3 "<this skill's base directory>/obsidian-settings.py" version`: it prints the version found, the version found and that it is older than the one DM Realm was built for, or that none was found. This never stops Setup.
-11. **Report**, in the Workspace Language: what was created, the Templates by name; with `stat_blocks: false`, that MapForge cannot place creatures without stat blocks; the Obsidian version found (with a warning to update when it is older), or that Obsidian was not found and can be installed later; Fantasy Statblocks, as its section says; and the one step left to the DM — open this folder in Obsidian with **Open folder as vault**.
+11. **Report**, in the Workspace Language: what was created, the Templates by name; with `stat_blocks: false`, that MapForge cannot place creatures without stat blocks; the Obsidian version found (with a warning to update when it is older), or that Obsidian was not found and can be installed later; Fantasy Statblocks, as its section says; when the folder has `.mapforge/`, what MapForge's bestiary reads of the Workspace ([MapForge](#mapforge)); and the one step left to the DM — open this folder in Obsidian with **Open folder as vault**.
 
 Done when the folder holds `workspace-config.yml`, the top-level folders, empty but for every Template of the set, and, in a non-English Workspace, the Translation Glossary, and Fantasy Statblocks, when installed, has DM Realm's layouts — and nothing else of Setup's.
 
@@ -72,7 +73,8 @@ A Workspace is set up once. A re-run keeps its Workspace Language and Edition, r
       It rewrites the note in place with the same values and translations, and moves the `statblock` frontmatter flag. Exit 6 or 7 leaves that note as it was: name it in the report and go on. Exit 8 means it is a Character's: it stays as it is, and needs no mention.
    3. **Write the value** into the Config once every note is converted.
 6. **Repair Obsidian settings**: run `python3 "<this skill's base directory>/obsidian-settings.py" merge . "<Templates folder name in use>" "<Attachments>"`, Attachments as the Translation Glossary's row gives it (in English, `Attachments`; with no row yet, translated and added as a first Setup does). It restores only DM Realm's keys that drifted and rewrites nothing that is right. Then set up [Fantasy Statblocks](#fantasy-statblocks): run its helper even when the plugin looks configured, with the layout labels the Translation Glossary already holds.
-7. **Report** what changed — renamed folders and rewritten notes, converted statistics (and any note left as it was), restored settings, Fantasy Statblocks, recreated folders, added Templates — or that the Workspace was already in order.
+7. **MapForge's bestiary**, only when the DM's request asks for it: preview the folder and the one line of `.mapforge/config.json` it sets, and set it on an explicit go-ahead (one already in the request counts), as [MapForge](#mapforge) says.
+8. **Report** what changed — renamed folders and rewritten notes, converted statistics (and any note left as it was), restored settings, Fantasy Statblocks, recreated folders, added Templates, MapForge's bestiary folder — or that the Workspace was already in order; and, when the folder has `.mapforge/`, what MapForge's bestiary reads of the Workspace ([MapForge](#mapforge)).
 
 Done when every change the DM confirmed is made, every Template that was there is as it was, the Obsidian settings (Fantasy Statblocks' included, when installed) are as DM Realm needs them, and nothing else in the Workspace changed.
 
@@ -119,3 +121,29 @@ The Obsidian plugin that renders the Workspace's stat blocks (structure.md's "St
   ```
 
   Exit 2 changed nothing: `data.json` is not valid JSON (name the file for the DM and go on), or a label is missing (the message names it: add it and run again). **Exit 5** changed nothing either: `data.json` needs a change but Obsidian is running, and the plugin would overwrite the file from memory. Ask the DM to close Obsidian and end your turn; on their go-ahead, run the helper again. Without `python3`, leave `data.json` as it is and tell the DM that Fantasy Statblocks was not configured.
+
+## MapForge
+
+Setup follows structure.md's "MapForge" rule: it reads `.mapforge/`, and sets the bestiary folder only when the DM's request asks for it (below). With no `.mapforge/`, Setup says nothing of MapForge beyond the stat blocks question.
+
+- **Report.** When the folder has `.mapforge/`, run the helper next to this file once everything else is done; it reads and never writes:
+
+  ```sh
+  python3 "<this skill's base directory>/mapforge.py" report .
+  ```
+
+  It prints one JSON object. Tell the DM, in the Workspace Language, by its `config`:
+  - `ok` — MapForge's bestiary reads `path`: each Scope in `scopes` it reads all of, part of (`part`: only that subfolder) or none of, with the monster and NPC stat blocks it misses there (`missed`), naming the subfolders they are in (`missed_in`: which Adventures, which Campaigns), so the DM knows which creatures MapForge will not find; `read`, the Monsters it lists today. When `characters_read` is above 0, or the Characters Scope is read at all, say that MapForge will list those Characters as Monsters; when `kept_out_read` is above 0, that it also lists the stat blocks DM Realm keeps out of the bestiary (a Character's past Builds, the Homebrew monster Template).
+  - `missing` or `no-key` — MapForge's bestiary reads nothing of this Workspace until a folder is named in `bestiaryStatBlockPath`, in `.mapforge/config.json`.
+  - `invalid` — `.mapforge/config.json` could not be read (not a JSON object), so MapForge's bestiary is off.
+  - `not-found` — the folder `path` it names is not in the Workspace.
+  - `outside` — the folder it names is not inside the Workspace, so MapForge refuses it.
+
+  These are facts for the DM, and the report states them and stops there: no offer to change them, no suggested folder, no "I can set it" or "just ask". What the DM does with MapForge is theirs to decide.
+- **Setting the bestiary folder**, only when the DM's own request asks for it ("point MapForge's bestiary at the Monsters folder"). Resolve the folder the DM names to a path relative to the Workspace root (the Reference Monsters folder is `<reference>/<Monsters in use>`), then:
+
+  ```sh
+  python3 "<this skill's base directory>/mapforge.py" set-bestiary . "<folder>"
+  ```
+
+  It merges only `bestiaryStatBlockPath` into `.mapforge/config.json`, creating the file when absent and keeping every other key; it never writes the Manifest (MapForge writes it when it adopts the folder, and keeps this config). Exit 2 changed nothing: the folder is not inside the Workspace, or `config.json` is not a JSON object (name it for the DM). Exit 3: no such folder; say so. Then report as above.

@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: setup-rerun-mapforge-set
+description: "When the DM's request asks for it, Setup sets bestiaryStatBlockPath in .mapforge/config.json, keeping the DM's other keys and the Manifest."
+tags: [setup, mapforge]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 15
+  timeout_seconds: 240
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  env:
+    EVAL_DMR_OBSIDIAN_RUNNING: "0"
+  prompt: |
+    /dm-realm:dmr-setup point MapForge's bestiary at the Homebrew Monsters folder, go ahead
