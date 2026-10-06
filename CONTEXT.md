@@ -156,4 +156,8 @@ _Avoid_: Story, tales, saga, Diary (which only lists the Sessions)
 
 **Chapter**:
 One Session of a Campaign told as prose in its Chronicle: what the party lived through, faithful to that Session's Live Notes and Recap, with only the telling invented. Not an Adventure's chapter, which is a part of the book.
-_Avoid_: Tale, story, narration
+_Avoid_: Tale, story
+
+**Voice**:
+A Campaign's narration instructions for its Chronicle, in the DM's words, kept only when the DM asks; every Chapter is told in it.
+_Avoid_: Style, tone, settings

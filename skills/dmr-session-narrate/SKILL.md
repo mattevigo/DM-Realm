@@ -11,11 +11,11 @@ Write one Chapter of a Campaign's Chronicle from one consolidated Session. The r
 
 1. **Load the rules.** Invoke `dmr-workspace` (read its structure.md in full), and find the Workspace Language in use as its "Fixed after Setup" reads it.
 2. **The Campaign** is the one the request names, or the Workspace's only one. With several and none named: ask which, and write nothing.
-3. **Which Session**: the one the request names, or the latest Session, by its `date`, that is consolidated and has no Chapter. When that leaves several or none: say which Sessions exist and which have a Chapter, ask, and write nothing.
+3. **Which Session**: the one the request names, or the latest played Session by its `date` (one whose Live Notes or Recap hold something). When that leaves several or none: say which Sessions exist and which have a Chapter, ask, and write nothing.
    - **Not consolidated**, as structure.md's Diary rule tells it: say so, say to consolidate it first (the `dmr-session-consolidate` skill), and write nothing.
    - **A Chapter already at its path**: say so, warn that writing it again replaces the note and every edit made to it by hand, ask whether to replace it, and write nothing. Only a yes given after that warning replaces it.
 4. **Read the sources**, and nothing else of the Campaign:
-   - **The Session note**: its Present line, its Live Notes — what happened — and its Recap — what mattered. Where they disagree, the Live Notes win. Its Prep is what was planned, not what was played: never a source.
+   - **The Session note**: its Present line, its Live Notes — what happened — and its Recap — what mattered — weighed as structure.md's Chronicle rule says. Its Prep is what was planned, not what was played: never a source.
    - **The notes its Live Notes and Recap link to**, for how a place, an NPC or a thing looks and sounds.
    - **The previous Chapter**: the Chapter of the latest Session, by `date`, played before this one and told in the Chronicle — where the story was left, and its tone. Not its length, which is [the default telling](#the-default-telling)'s unless the Voice sets one. No other Chapter.
    - **The Voice**, when the Chronicle has one, and any instruction in the request.
@@ -23,23 +23,13 @@ Write one Chapter of a Campaign's Chronicle from one consolidated Session. The r
 6. **Write the Chapter** in the Chronicle, as structure.md's Chapter name rule names it, creating the folder with the first Chapter. The word "Chapter" and the names of the Chronicle and the Voice are translated as structure.md's "Translating a term" says, the Translation Glossary first:
    - **Heading**: the word "Chapter" in the Workspace Language and the Session's number, then `: <Title>` when the Session has one (`# Chapter 3: The Gatehouse`); a Side Session's Chapter is headed with its name.
    - **The line under it** links to the Session note, labelled as the Session's heading reads (`[[Session_03_The_Gatehouse|Session 3: The Gatehouse]]`).
-   - **Then the prose**, told as the Voice and the request say and, where they say nothing, as [the default telling](#the-default-telling) does. Every instruction gives way to the [faithfulness rules](#what-is-never-invented).
+   - **Then the prose**, told as the Voice and the request say and, where they say nothing, as [the default telling](#the-default-telling) does. Every instruction gives way to structure.md's Chronicle rule on what is invented.
 
    The Chapter, the Voice when step 7 keeps an instruction, and the Translation Glossary rows a new term needs are the only files written: the Session note, the other Chapters and every other note stay as they are.
-7. **Keep an instruction** only when the request says to ("from now on", "keep that style", "for every chapter"): add it to the Voice in the DM's words, one line each, creating the note (headed with its name) when it does not exist. An instruction the request gives without saying so applies to this Chapter alone, and the Voice stays as it is.
-8. **Report**: the Chapter's path; the previous Chapter it read, or that it had none; each Session played between that one and this with no Chapter, as a gap in the Chronicle; each fact held back, one line each, with the offer to tell it again with the ones the party did learn; each instruction kept in the Voice. Offer to keep any one-off instruction the request gave.
+7. **Keep an instruction** in the Voice, as structure.md's Voice rule says, when the request asks to ("from now on", "keep that style", "for every chapter"): add it in the DM's words, creating the note, headed with its name, when it does not exist.
+8. **Report**: the Chapter's path; the previous Chapter it read, or that it had none; each Session played before this one and after the previous Chapter's (or, with no previous Chapter, since the Campaign's first) that has no Chapter, as a gap in the Chronicle; each fact held back, one line each, with the offer to tell it again with the ones the party did learn; each instruction kept in the Voice. Offer to keep any one-off instruction the request gave.
 
 Done when the Chapter is written and reported, or the DM has the one question that stopped it and nothing was written.
-
-## What is never invented
-
-The Chapter is faithful to its sources, whatever the Voice or the request asks:
-
-- **No event or outcome** the Live Notes and Recap do not give: no fight, find, meeting, wound or death, and none ending differently.
-- **Nothing a Character decides, thinks or feels** that its player did not give it at the table, as the notes record. What a Character does and says is the notes'; the telling may only word it.
-- **A Character missing from the Present line** is not in the Chapter, and its absence is explained only as the Live Notes explain it.
-
-What is invented is the telling: the setting, light and sound, the mood, the pace, and the wording of a line the notes record.
 
 ## The default telling
 

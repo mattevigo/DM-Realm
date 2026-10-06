@@ -4,13 +4,13 @@
 # is Tessa Brannock's brother), and an NPC note for Tessa. Every note here is INVENTED
 # test content. Set before sourcing:
 #   WS_LANG      en (default) or it
-#   NC_PREVIOUS  yes (default): the Chronicle already holds Session 02's Chapter, so the
+#   SN_PREVIOUS  yes (default): the Chronicle already holds Session 02's Chapter, so the
 #                Side Session between them is a gap; or no: no Chronicle (English only)
-#   NC_VOICE     the Voice's instructions, one per line, or empty for no Voice (English only)
-#   NC_CHAPTER   yes: Session 03 already has a Chapter, edited by the DM (English only)
+#   SN_VOICE     the Voice's instructions, one per line, or empty for no Voice (English only)
+#   SN_CHAPTER   yes: Session 03 already has a Chapter, edited by the DM (English only)
 WS_LANG=${WS_LANG:-en}
-NC_PREVIOUS=${NC_PREVIOUS:-yes}
-NC_CHAPTER=${NC_CHAPTER:-no}
+SN_PREVIOUS=${SN_PREVIOUS:-yes}
+SN_CHAPTER=${SN_CHAPTER:-no}
 SC_CONSOLIDATED=yes
 . "$(dirname "$0")/../_fixtures/session-campaign.sh"
 
@@ -43,9 +43,9 @@ session Session_03_The_Gatehouse 3 2026-09-19 "Session 3: The Gatehouse" '[[Ayla
 - Tessa Brannock asked the party for an escort to the harbour."
 printf '# Tessa Brannock\n\nA ferrywoman of the marsh, red-haired, quick to laugh.\n' > $SC/NPCs/Tessa_Brannock.md
 
-[ "$NC_PREVIOUS" = yes ] || [ -n "$NC_VOICE" ] || [ "$NC_CHAPTER" = yes ] || return 0
+[ "$SN_PREVIOUS" = yes ] || [ -n "$SN_VOICE" ] || [ "$SN_CHAPTER" = yes ] || return 0
 mkdir -p $SC/Chronicle
-if [ "$NC_PREVIOUS" = yes ]; then
+if [ "$SN_PREVIOUS" = yes ]; then
   cat > $SC/Chronicle/Chapter_02_The_Ford.md <<'MD'
 # Chapter 2: The Ford
 
@@ -54,10 +54,10 @@ if [ "$NC_PREVIOUS" = yes ]; then
 The river had swallowed the ford whole. The ferryman swore the water would drop by noon, and he was lying, and they crossed anyway, roped together, the current tearing at their boots. By nightfall the drowned keep rose out of the mist ahead of them, black against a sky the colour of ash.
 MD
 fi
-if [ -n "$NC_VOICE" ]; then
-  printf '# Voice\n\n%s\n' "$NC_VOICE" > $SC/Chronicle/Voice.md
+if [ -n "$SN_VOICE" ]; then
+  printf '# Voice\n\n%s\n' "$SN_VOICE" > $SC/Chronicle/Voice.md
 fi
-if [ "$NC_CHAPTER" = yes ]; then
+if [ "$SN_CHAPTER" = yes ]; then
   cat > $SC/Chronicle/Chapter_03_The_Gatehouse.md <<'MD'
 # Chapter 3: The Gatehouse
 
