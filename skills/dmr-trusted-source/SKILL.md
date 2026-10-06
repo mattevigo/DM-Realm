@@ -1,6 +1,6 @@
 ---
 name: dmr-trusted-source
-description: Official D&D data for DM Realm — the Trusted Source (5etools data) through the Source Cache. Load before answering a D&D rules question, or reading or writing any official rules text, stat block or game entry, in a DM Realm Workspace.
+description: Official D&D data for DM Realm — the Trusted Source (5etools data) through the Source Cache. Load before answering a question about official D&D material (a rule, an entry, an Adventure's or a Setting's text), or reading or writing any official rules text, stat block or game entry, in a DM Realm Workspace.
 user-invocable: false
 allowed-tools: Read, Grep, Bash(sh:*), Bash(DMR_SOURCE_CACHE=*)
 ---
@@ -45,13 +45,16 @@ DMR_SOURCE_CACHE="${CLAUDE_PLUGIN_DATA}/source-cache" sh "<this skill's base dir
 | Class options (Maneuvers, Eldritch Invocations, Metamagic, 2014 Fighting Styles…) | `optionalfeatures.json` | `optionalfeature` |
 | Books, Adventures and their publication dates | `books.json`, `adventures.json` | `book`, `adventure` |
 | An entry's description ("fluff": what a monster, species, background, class or item is like) | `fluff-<its data file>` beside it (`bestiary/fluff-bestiary-xmm.json`, `fluff-races.json`); a base item's is in `fluff-items.json` | `<key>Fluff` (`monsterFluff`, `raceFluff`…) |
-| A book's own text: character creation and advancement (ability score methods, point costs, hit points, proficiency bonus) and other rules no entry holds | `book/book-<book>.json` (e.g. `book-xphb.json`) | `data`: sections by `name` |
+| An Adventure's text: its chapters, places, NPCs and events | `adventure/adventure-<id>.json`, the id lowercased (`adventure-lmop.json`); `adventures.json` lists the Adventures, their ids and chapters | `data`: sections by `name`, with `page` |
+| A book's own text: character creation and advancement (ability score methods, point costs, hit points, proficiency bonus) and other rules no entry holds; a Setting book's lore | `book/book-<book>.json`, the code lowercased (`book-xphb.json`, `book-scag.json`); `books.json` lists the books | `data`: sections by `name` |
 
 ## Finding the entry for the Edition
 
 1. Grep the file for `"name": "<English name>"`, then Read the lines around each match: each entry has `source` (a book code) and `page`.
-2. Take the entry from a book of the Workspace's Edition in use (structure.md, "Fixed after Setup"). A book's Edition follows its `published` date in `books.json` (an Adventure's in `adventures.json`), as structure.md's "Edition" section defines it. A 2014 entry's `reprintedAs` names its 2024 version (`"Goblin Warrior|XMM"`, sometimes under another name); to go from a 2024 entry back to the 2014 one it reprints, Grep for `"<Name>|<BOOK>"` inside `reprintedAs`.
+2. For rules material, take the entry from a book of the Workspace's Edition in use (structure.md, "Fixed after Setup"). A book's Edition follows its `published` date in `books.json` (an Adventure's in `adventures.json`), as structure.md's "Edition" section defines it. A 2014 entry's `reprintedAs` names its 2024 version (`"Goblin Warrior|XMM"`, sometimes under another name); to go from a 2024 entry back to the 2014 one it reprints, Grep for `"<Name>|<BOOK>"` inside `reprintedAs`.
 3. When the Edition has no version of it, structure.md's "Off-Edition Material" decides what happens.
+
+An Adventure's or a Setting's text is not tied to an Edition: take it from its own book, whatever its date.
 
 ## Citing
 

@@ -41,6 +41,7 @@ expect_contains workspace "$OUT" "Edition: 2024"
 # No stat_blocks in the Config (a Workspace from before ADR 0009): it counts as true.
 expect_contains workspace "$OUT" "Stat blocks (stat_blocks): true (not in the Config yet"
 expect_contains workspace "$OUT" "dmr-trusted-source"
+expect_contains workspace "$OUT" "dmr-ask"
 
 # The Config's choice of Markdown is passed on.
 WSM="$TMP/wsm"; mkdir -p "$WSM"

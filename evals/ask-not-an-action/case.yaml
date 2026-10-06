@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: ask-not-an-action
+description: "A request to act is not a question: \"prepare the next session\" runs dmr-session-prepare, and dmr-ask does not fire."
+tags: [ask]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Prepare the next session of the Ashfall campaign. We play on 2026-10-10.
