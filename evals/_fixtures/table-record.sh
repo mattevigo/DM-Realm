@@ -1,9 +1,10 @@
 # Shared starting state for the Table Record cases: session-played.sh's Session 03 of
 # Ashfall (Sessione_03 of Cenere in Italian), played with MapForge and not consolidated,
-# with the DM's own Live Notes and MapForge's files for that evening: its Session Log, two
-# Maps of the Campaign, the fog file naming a Creature's Monster and one Combat Log. In
-# English, MapForge also holds the Villains table's log of the same day (Maps of the
-# Villains Campaign only) and the moves and a roll the Live Notes leave out. Logs start at
+# with the DM's own Live Notes and MapForge's files for that evening: its Session Log (a
+# saving throw among its lines, and a move the Live Notes leave out), two Maps of the
+# Campaign, the fog file naming a Creature's Monster and one Combat Log (an ability check
+# in it). In English, MapForge also holds the Villains table's log of the same day (Maps
+# of the Villains Campaign only). Logs start at
 # 12:00 UTC so the local date is the 19th in any time zone from UTC-11 to UTC+11.
 # Every note and log here is INVENTED test content. Set before sourcing:
 #   WS_LANG   en (default) or it
@@ -71,7 +72,7 @@ B='"armorClass":14,"conditions":[],"exhaustion":0,"initiativeBonus":2,"isConcent
 cat > "$TR_MAPS/$TR_GATE.combat/2026-09-19T121000Z.jsonl" <<JSONL
 {"combatants":[{"block":{$B,"currentHP":24,"maxHP":24},"id":"A","initiative":17,"kind":"player","name":"Ayla"},{"block":{$B,"currentHP":40,"maxHP":45},"id":"D","initiative":12,"kind":"player","name":"Durga"},{"block":{$B,"currentHP":9,"maxHP":9},"id":"C1","initiative":9,"kind":"creature","name":"CC1"},{"block":{$B,"currentHP":9,"maxHP":9},"id":"C2","initiative":5,"kind":"creature","name":"CC2"}],"line":"encounterStarted","order":["A","D","C1","C2"],"startedAt":"2026-09-19T12:10:00Z"}
 {"changes":[{"combatantID":"C2","from":9,"to":4,"type":"hpChanged"}],"combatantID":"A","endedAt":"2026-09-19T12:12:00Z","line":"turn","round":1}
-{"changes":[{"combatantID":"C1","from":9,"to":0,"type":"hpChanged"},{"combatantID":"C1","condition":"unconscious","type":"conditionAdded"},{"combatantID":"D","text":"$TR_NOTE","type":"noteAdded"}],"combatantID":"D","endedAt":"2026-09-19T12:15:00Z","line":"turn","round":1}
+{"changes":[{"combatantID":"C1","from":9,"to":0,"type":"hpChanged"},{"combatantID":"C1","condition":"unconscious","type":"conditionAdded"},{"combatantID":"D","text":"$TR_NOTE","type":"noteAdded"},{"combatantID":"D","d20":12,"difficultyClass":15,"modifier":5,"name":"Durga","skill":"athletics","type":"abilityCheck"}],"combatantID":"D","endedAt":"2026-09-19T12:15:00Z","line":"turn","round":1}
 {"changes":[{"combatantID":"A","from":24,"to":17,"type":"hpChanged"},{"combatantID":"A","condition":"poisoned","type":"conditionAdded"},{"combatantID":"D","from":40,"to":28,"type":"hpChanged"}],"combatantID":"C2","endedAt":"2026-09-19T12:18:00Z","line":"turn","round":1}
 {"changes":[{"combatantID":"D","from":28,"to":22,"type":"hpChanged"}],"line":"correction","recordedAt":"2026-09-19T12:30:00Z","targetCombatantID":"C2","targetRound":1}
 {"changes":[{"combatantID":"C2","type":"combatantRemoved"}],"combatantID":"C2","endedAt":"2026-09-19T12:20:00Z","line":"turn","round":2}

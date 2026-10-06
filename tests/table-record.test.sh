@@ -43,6 +43,7 @@ cat > "$S/2026-09-19T180000Z.jsonl" <<JSONL
 {"at":"2026-09-19T18:01:00Z","line":"comment","map":"$GATE","text":"The party reaches the gatehouse"}
 {"at":"2026-09-19T18:02:00Z","distanceSquares":3.2,"from":{"imagePixels":{"x":1,"y":1}},"label":"Ayla","line":"pawnMoved","map":"$GATE","pawnID":"A","to":{"imagePixels":{"x":2,"y":2}}}
 {"ability":"wisdom","at":"2026-09-19T18:03:00Z","d20":14,"label":"Ayla","line":"savingThrow","map":"$GATE","modifier":1,"pawnID":"A"}
+{"at":"2026-09-19T18:04:00Z","d20":9,"difficultyClass":15,"label":"Jonny","line":"abilityCheck","map":"$GATE","modifier":-1,"pawnID":"B","skill":"sleightOfHand"}
 {"at":"2026-09-19T18:10:00Z","line":"encounterStarted","logFile":"2026-09-19T181000Z.jsonl","map":"$GATE"}
 {"at":"2026-09-19T18:40:00Z","line":"encounterEnded","map":"$GATE"}
 {"at":"2026-09-19T18:45:00Z","line":"comment","text":"short break"}
@@ -62,7 +63,7 @@ B='"armorClass":14,"conditions":[],"exhaustion":0,"initiativeBonus":2,"isConcent
 cat > "$W/Campaigns/Ashfall/Attachments/Gatehouse.combat/2026-09-19T181000Z.jsonl" <<JSONL
 {"combatants":[{"block":{$B,"currentHP":24,"maxHP":24},"id":"A","initiative":17,"kind":"player","name":"Ayla"},{"block":{$B,"currentHP":20,"maxHP":31},"id":"B","initiative":12,"kind":"player","name":"Jonny"},{"block":{$B,"currentHP":27,"maxHP":27},"id":"G1","initiative":9,"kind":"creature","name":"GG1"},{"block":{$B,"currentHP":7,"maxHP":7},"id":"G2","initiative":5,"kind":"creature","name":"GG2"}],"line":"encounterStarted","order":["A","B","G1","G2"],"startedAt":"2026-09-19T18:10:00Z"}
 {"changes":[{"combatantID":"G1","from":27,"to":19,"type":"hpChanged"},{"combatantID":"A","distanceSquares":4,"from":{"imagePixels":{"x":1,"y":1}},"to":{"imagePixels":{"x":2,"y":2}},"type":"moved"}],"combatantID":"A","endedAt":"2026-09-19T18:12:00Z","line":"turn","round":1}
-{"changes":[{"combatantID":"G2","from":7,"to":-2,"type":"hpChanged"},{"combatantID":"G2","condition":"unconscious","type":"conditionAdded"},{"combatantID":"B","text":"swore an oath to the river god","type":"noteAdded"}],"combatantID":"B","endedAt":"2026-09-19T18:14:00Z","line":"turn","round":1}
+{"changes":[{"combatantID":"G2","from":7,"to":-2,"type":"hpChanged"},{"combatantID":"G2","condition":"unconscious","type":"conditionAdded"},{"combatantID":"B","text":"swore an oath to the river god","type":"noteAdded"},{"ability":"constitution","combatantID":"G1","d20":3,"difficultyClass":12,"modifier":2,"name":"GG1","type":"savingThrow"}],"combatantID":"B","endedAt":"2026-09-19T18:14:00Z","line":"turn","round":1}
 {"changes":[{"combatantID":"A","from":24,"to":10,"type":"hpChanged"},{"combatantID":"A","condition":"poisoned","type":"conditionAdded"}],"combatantID":"G1","endedAt":"2026-09-19T18:16:00Z","line":"turn","round":1}
 {"changes":[{"combatantID":"G2","type":"combatantRemoved"}],"combatantID":"G2","endedAt":"2026-09-19T18:17:00Z","line":"turn","round":1}
 {"changes":[{"combatantID":"G1","from":19,"to":3,"type":"hpChanged"},{"combatantID":"A","from":0,"to":1,"type":"exhaustionChanged"}],"combatantID":"A","endedAt":"2026-09-19T18:20:00Z","line":"turn","round":2}
@@ -124,13 +125,16 @@ OUT=$(python3 "$HELPER" find "$W" Campaigns/Villains 2026-09-19) || fail "find v
 # read: the evening in order — Map changes, comments word for word, the fight as it ended.
 OUT=$(python3 "$HELPER" read "$W" 2026-09-19T180000Z.jsonl) || fail "read: exit $?"
 [ "$(field "$OUT" "d['running']")" = "False" ] || fail "read: ended: $OUT"
-[ "$(field "$OUT" "[e['kind'] for e in d['events']]")" = "['map', 'comment', 'fight', 'comment', 'map', 'comment', 'comment']" ] || fail "read: events: $OUT"
+[ "$(field "$OUT" "[e['kind'] for e in d['events']]")" = "['map', 'comment', 'roll', 'roll', 'fight', 'comment', 'map', 'comment', 'comment']" ] || fail "read: events: $OUT"
+# Rolls as MapForge records them, with their total; never resolved. Names as the rules write them.
+[ "$(field "$OUT" "d['events'][2]")" = "{'kind': 'roll', 'time': '20:03', 'name': 'Ayla', 'roll': 'save', 'ability': 'Wisdom', 'skill': None, 'd20': 14, 'modifier': 1, 'total': 15, 'dc': None}" ] || fail "read: saving throw: $OUT"
+[ "$(field "$OUT" "d['events'][3]")" = "{'kind': 'roll', 'time': '20:04', 'name': 'Jonny', 'roll': 'check', 'ability': None, 'skill': 'Sleight of Hand', 'd20': 9, 'modifier': -1, 'total': 8, 'dc': 15}" ] || fail "read: ability check: $OUT"
 [ "$(field "$OUT" "d['events'][0]['map'] + '|' + d['events'][0]['name'] + '|' + d['events'][0]['time']")" = "$GATE|Gatehouse|20:01" ] || fail "read: first Map: $OUT"
 [ "$(field "$OUT" "d['events'][1]['text']")" = "The party reaches the gatehouse" ] || fail "read: comment verbatim: $OUT"
-[ "$(field "$OUT" "d['events'][3]['text']")" = "short break" ] || fail "read: comment with no Map, no Map change: $OUT"
-[ "$(field "$OUT" "d['events'][4]['name']")" = "Vault" ] || fail "read: Map change: $OUT"
+[ "$(field "$OUT" "d['events'][5]['text']")" = "short break" ] || fail "read: comment with no Map, no Map change: $OUT"
+[ "$(field "$OUT" "d['events'][6]['name']")" = "Vault" ] || fail "read: Map change: $OUT"
 
-F="d['events'][2]"
+F="d['events'][4]"
 [ "$(field "$OUT" "$F['time'] + '-' + $F['end_time']")" = "20:10-20:40" ] || fail "fight: times: $OUT"
 [ "$(field "$OUT" "$F['found'] and $F['ended']")" = "True" ] || fail "fight: found and ended: $OUT"
 [ "$(field "$OUT" "$F['log']")" = "Campaigns/Ashfall/Attachments/Gatehouse.combat/2026-09-19T181000Z.jsonl" ] || fail "fight: log path: $OUT"
@@ -143,6 +147,7 @@ C="$F['combatants']"
 [ "$(field "$OUT" "$C[2]['monster'], $C[2]['hp'], $C[2]['dropped']")" = "('Gnoll Warrior', 3, False)" ] || fail "fight: GG1 with its Monster: $OUT"
 [ "$(field "$OUT" "$C[3]['hp'], $C[3]['dropped'], $C[3]['benched'], $C[3]['conditions'], $C[3]['monster']")" = "(-2, True, True, ['unconscious'], None)" ] || fail "fight: GG2 below 0 is down, and benched: $OUT"
 [ "$(field "$OUT" "$F['notes']")" = "[{'name': 'Jonny', 'text': 'swore an oath to the river god'}]" ] || fail "fight: notes: $OUT"
+[ "$(field "$OUT" "$F['rolls']")" = "[{'round': 1, 'name': 'GG1', 'roll': 'save', 'ability': 'Constitution', 'skill': None, 'd20': 3, 'modifier': 2, 'total': 5, 'dc': 12}]" ] || fail "fight: rolls: $OUT"
 
 [ "$(snapshot)" = "$BEFORE" ] || fail "MapForge's files changed"
 

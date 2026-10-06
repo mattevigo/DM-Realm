@@ -30,7 +30,13 @@ the order they happened:
   map      {time, map, name}: the first Map, and each change of Map (a comment with
            no Map changes nothing)
   comment  {time, text}: the DM's own words, as typed
-  fight    {time, end_time, map, log, found, ended, rounds, combatants, notes}: the
+  roll     {time, name, roll, ability, skill, d20, modifier, total, dc}: a saving
+           throw (roll: save, with its ability) or an ability check (roll: check,
+           with its skill) outside a fight, by the Pawn's label; ability and skill
+           named as the rules write them (Wisdom, Sleight of Hand); total is d20 plus
+           modifier, dc null when none was set. MapForge records a Roll and never
+           resolves it, and neither does this.
+  fight    {time, end_time, map, log, found, ended, rounds, combatants, notes, rolls}: the
            Combat Log the Session Log points at, on the Map in use, folded as MapForge
            folds it (Corrections applied at the Turn they target, a later Turn's number
            winning). rounds: the highest Round a Turn was played in. combatants:
@@ -39,9 +45,10 @@ the order they happened:
            or null), hp, max_hp, temp_hp (null when untyped), conditions, exhaustion,
            concentrating, dropped (a Turn left it at 0 hit points or fewer, its
            Corrections applied), benched (out of the Order at the end). notes: each
-           noteAdded, {name, text}. found is false when the Combat Log is not there;
-           ended is false for a fight not closed.
-Moves and rolls are left out.
+           noteAdded, {name, text}. rolls: each Roll made in the fight, as above with
+           the round it was made in instead of the time. found is false when the
+           Combat Log is not there; ended is false for a fight not closed.
+Moves are left out.
 Exit 2: not a Workspace, or a file name that is not a log's. Exit 3: no such log.
 """
 import datetime
@@ -190,6 +197,28 @@ def monsters(workspace, map_path):
         return {}
 
 
+ROLLS = {"savingThrow": "save", "abilityCheck": "check"}
+
+
+def rule_name(key):
+    """MapForge's key for an ability or skill as the rules write it: sleightOfHand → Sleight of Hand."""
+    if not isinstance(key, str):
+        return None
+    words = re.sub(r"(?<!^)([A-Z])", r" \1", key).split()
+    return " ".join(w if w.lower() == "of" and i else w.capitalize() for i, w in enumerate(w.lower() for w in words))
+
+
+def roll(entry, name):
+    """A saving throw or ability check, from a Session Log line or a Combat Log Change."""
+    d20, modifier = entry.get("d20"), entry.get("modifier")
+    total = d20 + modifier if isinstance(d20, int) and isinstance(modifier, int) else None
+    kind = entry.get("line") or entry.get("type")
+    return {"name": name, "roll": ROLLS[kind],
+            "ability": rule_name(entry.get("ability")) if kind == "savingThrow" else None,
+            "skill": rule_name(entry.get("skill")) if kind == "abilityCheck" else None,
+            "d20": d20, "modifier": modifier, "total": total, "dc": entry.get("difficultyClass")}
+
+
 # A Change's type → the Stat Block number it sets to its `to` (absent `to`: untyped).
 NUMBERS = {"hpChanged": "hp", "maxHPChanged": "max_hp", "tempHPChanged": "temp_hp", "exhaustionChanged": "exhaustion"}
 
@@ -208,16 +237,16 @@ def down(c):
 
 
 def fold(log):
-    """{Combatant id: Combatant}, in the order they joined, the fight's notes, the highest
-    Round, and whether it ended — as MapForge's CombatLogFold reads the log."""
-    fighters, notes, rounds, ended = {}, [], 0, False
+    """{Combatant id: Combatant}, in the order they joined, the fight's notes and Rolls, the
+    highest Round, and whether it ended — as MapForge's CombatLogFold reads the log."""
+    fighters, notes, rolls, rounds, ended = {}, [], [], 0, False
     corrections = {}
     for entry in log:
         if entry.get("line") == "correction":
             key = (entry.get("targetRound"), entry.get("targetCombatantID"))
             corrections.setdefault(key, []).extend(entry.get("changes") or [])
 
-    def apply(change):
+    def apply(change, round_):
         kind, cid = change.get("type"), change.get("combatantID")
         if kind == "combatantJoined":
             # Also how a Benched Pawn returns: its snapshot carries the numbers it has now.
@@ -236,6 +265,8 @@ def fold(log):
             c["benched"] = True
         elif kind == "noteAdded":
             notes.append({"name": c["name"], "text": change.get("text")})
+        elif kind in ROLLS:
+            rolls.append({"round": round_, **roll(change, change.get("name") or c["name"])})
 
     for entry in log:
         kind = entry.get("line")
@@ -248,18 +279,18 @@ def fold(log):
             fixed = {f.get("combatantID") for f in fixes if f.get("type") == "hpChanged"}
             # A drop inside the Turn counts, unless a Correction to the Turn rewrites those hit points.
             for change in entry.get("changes") or []:
-                apply(change)
+                apply(change, entry.get("round"))
                 c = fighters.get(change.get("combatantID"))
                 if change.get("type") == "hpChanged" and c and down(c) and change.get("combatantID") not in fixed:
                     c["dropped"] = True
             for change in fixes:
-                apply(change)
+                apply(change, entry.get("round"))
                 c = fighters.get(change.get("combatantID"))
                 if change.get("type") == "hpChanged" and c and down(c):
                     c["dropped"] = True
         elif kind == "encounterEnded":
             ended = True
-    return fighters, notes, rounds, ended
+    return fighters, notes, rolls, rounds, ended
 
 
 def fight(workspace, start, end, map_path):
@@ -269,12 +300,12 @@ def fight(workspace, start, end, map_path):
     path = os.path.join(workspace, log) if log else None
     event = {"kind": "fight", "time": time, "end_time": end_time, "map": map_path, "log": log,
              "found": bool(path and os.path.isfile(path)), "ended": end is not None, "rounds": 0,
-             "combatants": [], "notes": []}
+             "combatants": [], "notes": [], "rolls": []}
     if not event["found"]:
         return event
-    fighters, notes, rounds, ended = fold(entries(path))
+    fighters, notes, rolls, rounds, ended = fold(entries(path))
     named = monsters(workspace, map_path)
-    event.update(ended=ended, rounds=rounds, notes=notes, combatants=[
+    event.update(ended=ended, rounds=rounds, notes=notes, rolls=rolls, combatants=[
         {"name": c["name"], "kind": c["kind"], "monster": named.get(cid) if c["kind"] == "creature" else None,
          "hp": c["hp"], "max_hp": c["max_hp"], "temp_hp": c["temp_hp"], "conditions": sorted(c["conditions"]),
          "exhaustion": c["exhaustion"], "concentrating": c["concentrating"],
@@ -301,6 +332,8 @@ def read(workspace, name):
             events.append({"kind": "map", "time": time, "map": m, "name": os.path.splitext(os.path.basename(m))[0]})
         if kind == "comment":
             events.append({"kind": "comment", "time": time, "text": entry.get("text")})
+        elif kind in ROLLS:
+            events.append({"kind": "roll", "time": time, **roll(entry, entry.get("label"))})
         elif kind == "encounterStarted":
             end = next((e for e in log[i + 1:] if e.get("line") in ("encounterEnded", "encounterStarted")), None)
             end = end if end and end.get("line") == "encounterEnded" else None
