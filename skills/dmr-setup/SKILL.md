@@ -46,7 +46,7 @@ Done when the folder holds `workspace-config.yml`, the top-level folders, empty 
 
 ## Re-run
 
-A Workspace is set up once. A re-run keeps its Workspace Language and Edition, renames top-level folders when the DM asks, converts the notes' statistics when `stat_blocks` changes, restores the Obsidian settings DM Realm needs, and asks before recreating a missing folder or adding a missing Template. Speak the Workspace Language in use.
+A Workspace is set up once. A re-run keeps its Workspace Language and Edition, renames top-level folders when the DM asks, converts the notes' statistics when `stat_blocks` changes, restores the Obsidian settings DM Realm needs, gives stat blocks their missing Portraits, and asks before recreating a missing folder or adding a missing Template. Speak the Workspace Language in use.
 
 1. **Find the Workspace Language and Edition in use** from the Workspace itself, as structure.md's "Fixed after Setup" says: the config's `language` and `edition` lines may have been edited since Setup. When the config or the DM's request names another language or Edition than the one in use, say that changing it is not supported and the Workspace keeps the one in use; if the config was edited, offer to put that line back, and change it only on the DM's yes.
 2. **Compare the top-level folders** on disk with the Workspace Config:
@@ -73,10 +73,11 @@ A Workspace is set up once. A re-run keeps its Workspace Language and Edition, r
       It rewrites the note in place with the same values and translations, and moves the `statblock` frontmatter flag. Exit 6 or 7 leaves that note as it was: name it in the report and go on. Exit 8 means it is a Character's: it stays as it is, and needs no mention.
    3. **Write the value** into the Config once every note is converted.
 6. **Repair Obsidian settings**: run `python3 "<this skill's base directory>/obsidian-settings.py" merge . "<Templates folder name in use>" "<Attachments>"`, Attachments as the Translation Glossary's row gives it (in English, `Attachments`; with no row yet, translated and added as a first Setup does). It restores only DM Realm's keys that drifted and rewrites nothing that is right. Then set up [Fantasy Statblocks](#fantasy-statblocks): run its helper even when the plugin looks configured, with the layout labels the Translation Glossary already holds.
-7. **MapForge's bestiary**, only when the DM's request asks for it: preview the folder and the one line of `.mapforge/config.json` it sets, and set it on an explicit go-ahead (one already in the request counts), as [MapForge](#mapforge) says.
-8. **Report** what changed — renamed folders and rewritten notes, converted statistics (and any note left as it was), restored settings, Fantasy Statblocks, recreated folders, added Templates, MapForge's bestiary folder — or that the Workspace was already in order; and, when the folder has `.mapforge/`, what MapForge's bestiary reads of the Workspace ([MapForge](#mapforge)).
+7. **Portraits**: run the helper structure.md's "The Portrait" names, so every stat block whose note embeds its own picture names it as its Portrait.
+8. **MapForge's bestiary**, only when the DM's request asks for it: preview the folder and the one line of `.mapforge/config.json` it sets, and set it on an explicit go-ahead (one already in the request counts), as [MapForge](#mapforge) says.
+9. **Report** what changed — renamed folders and rewritten notes, converted statistics (and any note left as it was), restored settings, Fantasy Statblocks, recreated folders, added Templates, the Portraits added (and each note skipped, with why), MapForge's bestiary folder — or that the Workspace was already in order; and, when the folder has `.mapforge/`, what MapForge's bestiary reads of the Workspace ([MapForge](#mapforge)).
 
-Done when every change the DM confirmed is made, every Template that was there is as it was, the Obsidian settings (Fantasy Statblocks' included, when installed) are as DM Realm needs them, and nothing else in the Workspace changed.
+Done when every change the DM confirmed is made, every Template that was there is as it was, the Obsidian settings (Fantasy Statblocks' included, when installed) are as DM Realm needs them, every stat block the helper can give a Portrait has one, and nothing else in the Workspace changed.
 
 ## The Templates
 

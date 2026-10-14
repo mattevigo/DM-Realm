@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: import-monster-description
-description: "A monster's description (its 5etools fluff) is imported into the note, before its stat lines and never into its stat block fence, with its image copied into Reference › Attachments, named after the note, and embedded above the text (ADR 0008)."
+description: "A monster's description (its 5etools fluff) is imported into the note, before its stat lines and never into its stat block fence, with its image copied into Reference › Attachments, named after the note, and embedded above the text (ADR 0008); the fence names it as the Portrait, by its full path."
 tags: [import, statblock]
 context:
   scaffold_script: scaffold.sh

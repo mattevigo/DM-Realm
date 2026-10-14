@@ -1031,6 +1031,39 @@ cache = sys.argv[1] + "/v9.9.9/img/"
 want = [{"image": "drakes.webp", "cached": cache + "drakes.webp", "file": "Drago_Lanterna_01.webp"},
         {"image": "lamp.webp", "cached": cache + "lamp.webp", "file": "Drago_Lanterna_02.webp"}]
 sys.exit(0 if got == want else 1)' "$DMR_SOURCE_CACHE" || fail "--images: got $OUT"
+# The Portrait: --attachments (the Attachments folder, from the Workspace root) names the
+# Description's first image in the fence's `image:`, by its full path; the embed stays.
+OUT=$(render data/bestiary/bestiary-cnr.json "Lamp Drake" CNR --note Drago_Lanterna --attachments Riferimento/Allegati) \
+  || fail "portrait: exit $?: $(cat "$TMP/err")"
+FENCE=$(printf '%s\n' "$OUT" | sed -n '/^```statblock$/,/^```$/p')
+has "portrait" "$FENCE" '```statblock
+name: Lamp Drake
+image: "[[Riferimento/Allegati/Drago_Lanterna_01.webp]]"
+size: '
+[ "$(printf '%s\n' "$FENCE" | grep -c '\.webp')" -eq 1 ] || fail "portrait: the fence holds a picture besides its Portrait:
+$FENCE"
+has "portrait, embed kept" "$OUT" "## Description
+
+![[Drago_Lanterna_01.webp]]"
+OUT=$(render data/bestiary/bestiary-tor.json "Quill Hound" TOR --attachments Reference/Attachments) || fail "portrait, one: exit $?: $(cat "$TMP/err")"
+has "portrait, one" "$OUT" 'image: "[[Reference/Attachments/Quill_Hound.webp]]"'
+OUT=$(render data/bestiary/bestiary-cnr.json "Ember Moth" CNR --attachments Reference/Attachments) || fail "no portrait: exit $?: $(cat "$TMP/err")"
+hasnt "no portrait" "$OUT" "image:"
+# In a Markdown Workspace the Portrait is kept in the `%% statblock` comment.
+OUT=$(md data/bestiary/bestiary-cnr.json "Lamp Drake" CNR --attachments Reference/Attachments) || fail "portrait, markdown: exit $?: $(cat "$TMP/err")"
+has "portrait, markdown" "$OUT" '%% statblock
+name: Lamp Drake
+image: "[[Reference/Attachments/Lamp_Drake_01.webp]]"
+%%'
+expect_attachments() {
+  python3 "$HELPER" data/bestiary/bestiary-cnr.json "Lamp Drake" CNR --attachments "$1" >/dev/null 2>&1
+  [ $? -eq 2 ] || fail "--attachments '$1': expected exit 2"
+}
+expect_attachments /Reference/Attachments
+expect_attachments ../Attachments
+expect_attachments Reference/../Attachments
+expect_attachments Reference/Attachments/
+expect_attachments ""
 OUT=$(render data/bestiary/bestiary-cnr.json "Old Drake" CNR) || fail "setProp: exit $?: $(cat "$TMP/err")"
 has setProp "$OUT" "## Description
 
@@ -1188,6 +1221,9 @@ has "action image, under the fence" "$OUT" '```
 has "action image, markdown" "$(md data/bestiary/bestiary-cnr.json "Glass Moth" CNR)" "- ***Shimmer.*** It glints.
 
   ![[Glass_Moth.webp]]"
+# An image in an action is never the Portrait.
+OUT=$(render data/bestiary/bestiary-cnr.json "Glass Moth" CNR --attachments Reference/Attachments) || fail "action image, portrait: exit $?: $(cat "$TMP/err")"
+hasnt "action image, portrait" "$OUT" "image:"
 expect_exit "usage" 2 data/conditionsdiseases.json Dazzled
 expect_exit "path outside data" 2 ../x.json Dazzled CNR
 

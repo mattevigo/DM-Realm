@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: statblock-adventure-npc
-description: "Adventure NPCs get their stat blocks: one the book changes extends its Reference monster with only the change; one it does not change gets a link and no fence."
+description: "Adventure NPCs get their stat blocks: one the book changes extends its Reference monster with only the change; one it does not change gets a link and no fence. The one that extends inherits the monster's Portrait, never repeating it."
 tags: [statblock, scenario]
 context:
   scaffold_script: scaffold.sh

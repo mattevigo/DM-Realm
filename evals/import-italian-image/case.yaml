@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: import-italian-image
-description: "In an Italian Workspace an imported monster's image goes to Riferimento › Allegati, named after the translated note, which embeds it (ADR 0008)."
+description: "In an Italian Workspace an imported monster's image goes to Riferimento › Allegati, named after the translated note, which embeds it (ADR 0008) and names it as its Portrait by its full path."
 tags: [import]
 context:
   scaffold_script: scaffold.sh
