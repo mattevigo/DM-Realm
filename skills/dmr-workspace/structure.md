@@ -300,11 +300,19 @@ The Trusted Source is the 5etools data as published in its public source mirror 
 
 - **Importing** Reference and Adventure content. Official material it does not contain cannot be in the Workspace. The DM may write their own version as Homebrew; the agent never copies official text into it. Text the DM copied from a published book, PDF or site is official text, whether or not the Trusted Source has it.
 - **Translating** official text: the English original is always the Trusted Source's.
-- **Research**: when the DM asks about official material — a rule, an entry, an Adventure's or a Setting's text — the agent answers from the Source Cache, in the Workspace Language, with the official text translated faithfully, and names the book and page. Rules material comes in the Workspace's Edition, as [Edition](#edition) says; an Adventure or a Setting from any book. Material the Workspace has not imported is answered the same way. Its terms come from the Translation Glossary; a term not yet in it is translated as [Translating a term](#translating-a-term) says and shown as a fallback term is, with its English original, but not recorded. Answering changes nothing in the Workspace — no note, no Glossary row — unless the DM asks for a note.
+- **Research**: when the DM asks about official material — a rule, an entry, an Adventure's or a Setting's text — the agent answers from the Source Cache, in the Workspace Language, with the official text translated faithfully, and names the book and page. Rules material comes in the Workspace's Edition, as [Edition](#edition) says; an Adventure or a Setting from any book. Material the Workspace has not imported is answered the same way. Its terms come from the Translation Glossary; a term not yet in it is translated as [Translating a term](#translating-a-term) says and shown as a fallback term is, with its English original, but not recorded. A rules answer then names the House Rules that change the rule, as [House Rules in an answer](#house-rules-in-an-answer) says. Answering changes nothing in the Workspace — no note, no Glossary row — unless the DM asks for a note.
 
 No official content — rules text, stats, descriptions — is ever written from memory or from another site. The names of translated game terms follow [Translating a term](#translating-a-term). When an entry is neither in the Source Cache nor reachable, the agent stops, tells the DM, and writes nothing.
 
 DM Realm never ships any of this data, not even as examples or eval fixtures; it is only ever fetched on the DM's machine.
+
+### House Rules in an answer
+
+Every rule the agent gives the DM — in Research, in advice, in an [Idea](#ideas) — is the official rule, cited as Research cites it, followed by each House Rule that changes it, named and linked as the DM's own, never cited as a book. Which House Rules apply:
+
+- **Homebrew's** (Homebrew › House_Rules) always.
+- **A Campaign's own** (its Homebrew_House_Rules) when the question names that Campaign or it is the Workspace's only one. Where both change the same rule, the Campaign's wins for that Campaign, and the answer names both.
+- **With several Campaigns and none named**, the answer gives the Homebrew version and says which Campaigns have their own House Rule on that rule, linking each.
 
 ### Source Cache
 
@@ -335,6 +343,22 @@ When the DM asks, in any Workspace, the agent compares each imported note's entr
 The check does not refresh the Source Cache: it states the release the cache is pinned to and whether a newer one exists, and offers to refresh first.
 
 A re-import replaces the note's official content wholesale, and its images with it, and records the new release. Reference and Adventure notes are not meant to be edited by the DM: a change to official material is a House Rule, Homebrew, or a Campaign note linking to it. If a note differs from its recorded import, the agent warns before overwriting it and offers to move the DM's addition where it belongs.
+
+## Ideas
+
+An Idea is story content the agent invents at the DM's request for a Campaign — a twist, an NPC's next move, an encounter — for the DM to use or drop. The agent reads every note the limits below name, drafts the Idea, checks the draft against every limit, and reworks it until nothing contradicts; only then does the DM see it. Several Ideas are each checked on their own.
+
+- **Hard limits**, which an Idea never contradicts:
+  - the official rules in the Workspace's Edition, and the House Rules that change them, as [House Rules in an answer](#house-rules-in-an-answer) says;
+  - what happened: the Sessions' Live Notes and Recaps, weighed as the Live Notes and Chronicle rules in [Campaigns](#campaigns--campaigns) weigh them — the dead stay dead, the spent stays spent, the known stays known;
+  - where things stand: the Party State and the Characters' current Builds — an Idea counts only on hit points, spell slots, uses and abilities the party has now;
+  - the Campaign's NPCs, Places, Quests and Factions notes, their secrets included;
+  - the world's lore: the DM's World notes, the official Setting in Reference, and how the Campaign has changed either.
+- **Soft limits**, which an Idea may depart from, saying where and how: the Adventure the Campaign runs, and the Prep of a Session not yet played.
+- **The Chronicle is never a source**: its telling is invented.
+- **Gaps.** What the Workspace does not say may be invented, and the Idea marks each such thing as new. Every mechanic it relies on — a DC, a CR, a spell, a condition — comes from the Trusted Source, cited, or from a House Rule, named; one that neither holds is left out.
+- **What the DM sees**: the Idea alone, then a short list headed "Checked against" (in the Workspace Language) naming the notes and rules that shaped it, by their names in the Workspace, each with the fact it gave (Session 07: the bridge fell; House Rule Flanking; Mira's Build). Rejected drafts stay unshown.
+- **An Idea is no fact of the Campaign** until it is played: no source for what happened, and written only where a skill's procedure writes the one the DM picks.
 
 ## Stat blocks
 

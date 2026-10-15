@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: session-prepare-idea-respects-campaign
+description: "Ideas asked for while preparing Ashfall's next Session respect the Campaign as dmr-ask's do (Vex dead, Kell without spell slots, Hollis Crane the cult's secret leader), and only the one the DM picks is written into the new Session's Prep."
+tags: [session]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 50
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Prepare the next session of the Ashfall campaign, on 2026-10-17. Give me three ideas for what the cult does to the party at the start of it, and put the first one in the Prep.
