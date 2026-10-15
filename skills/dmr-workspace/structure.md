@@ -300,11 +300,19 @@ The Trusted Source is the 5etools data as published in its public source mirror 
 
 - **Importing** Reference and Adventure content. Official material it does not contain cannot be in the Workspace. The DM may write their own version as Homebrew; the agent never copies official text into it. Text the DM copied from a published book, PDF or site is official text, whether or not the Trusted Source has it.
 - **Translating** official text: the English original is always the Trusted Source's.
-- **Research**: when the DM asks about official material — a rule, an entry, an Adventure's or a Setting's text — the agent answers from the Source Cache, in the Workspace Language, with the official text translated faithfully, and names the book and page. Rules material comes in the Workspace's Edition, as [Edition](#edition) says; an Adventure or a Setting from any book. Material the Workspace has not imported is answered the same way. Its terms come from the Translation Glossary; a term not yet in it is translated as [Translating a term](#translating-a-term) says and shown as a fallback term is, with its English original, but not recorded. Answering changes nothing in the Workspace — no note, no Glossary row — unless the DM asks for a note.
+- **Research**: when the DM asks about official material — a rule, an entry, an Adventure's or a Setting's text — the agent answers from the Source Cache, in the Workspace Language, with the official text translated faithfully, and names the book and page. Rules material comes in the Workspace's Edition, as [Edition](#edition) says; an Adventure or a Setting from any book. Material the Workspace has not imported is answered the same way. Its terms come from the Translation Glossary; a term not yet in it is translated as [Translating a term](#translating-a-term) says and shown as a fallback term is, with its English original, but not recorded. A rules answer then names the House Rules that change the rule, as [House Rules in an answer](#house-rules-in-an-answer) says. Answering changes nothing in the Workspace — no note, no Glossary row — unless the DM asks for a note.
 
 No official content — rules text, stats, descriptions — is ever written from memory or from another site. The names of translated game terms follow [Translating a term](#translating-a-term). When an entry is neither in the Source Cache nor reachable, the agent stops, tells the DM, and writes nothing.
 
 DM Realm never ships any of this data, not even as examples or eval fixtures; it is only ever fetched on the DM's machine.
+
+### House Rules in an answer
+
+Every rule the agent gives the DM — in Research, in advice, in an [Idea](#ideas) — is the official rule, cited as Research cites it, followed by each House Rule that changes it, named and linked as the DM's own, never cited as a book. Which House Rules apply:
+
+- **Homebrew's** (Homebrew › House_Rules) always.
+- **A Campaign's own** (its Homebrew_House_Rules) when the question names that Campaign or it is the Workspace's only one. Where both change the same rule, the Campaign's wins for that Campaign, and the answer names both.
+- **With several Campaigns and none named**, the answer gives the Homebrew version and says which Campaigns have their own House Rule on that rule, linking each.
 
 ### Source Cache
 
@@ -324,7 +332,7 @@ Every note imported from the Trusted Source records its source in a frontmatter 
 - **Its frontmatter** holds only the source property — and, for a monster in a Workspace that writes stat blocks, the `statblock` flag ([Stat blocks](#stat-blocks)).
 - **Its body** starts with the translated name as a `#` heading, then the entry's text, translated faithfully: every paragraph, list, table and number, nothing added. A monster's body is its description, then its [statistics](#stat-blocks), last.
 - **Its description**, when the Trusted Source has one, is a section of the body headed Description (translated): its images first, then its text; for a monster before its statistics, for any other entry at the end of the note. A subrace's holds only what it adds to its race's. It is never in the statistics.
-- **Its images** — every image the entry shows, such as a monster's picture or an Adventure's map — are fetched through the Source Cache, copied into the [Attachments](#attachments) folder of the note's Scope (Reference › Attachments, or the Adventure's), and embedded where the Trusted Source places them: a description's first, an image in the entry's text where it stands. One inside a monster's statistics goes under its stat block fence, which cannot show it. Each file is named after its note, with the image's own extension: `Palla_di_Fuoco.webp`, or `Palla_di_Fuoco_01.webp`, `Palla_di_Fuoco_02.webp` when there are several. A note never embeds a remote URL.
+- **Its images** — every image the entry shows, such as a monster's picture or an Adventure's map — are fetched through the Source Cache, copied into the [Attachments](#attachments) folder of the note's Scope (Reference › Attachments, or the Adventure's), and embedded where the Trusted Source places them: a description's first, an image in the entry's text where it stands. One inside a monster's statistics goes under its stat block fence, which cannot show it. Each file is named after its note, with the image's own extension: `Palla_di_Fuoco.webp`, or `Palla_di_Fuoco_01.webp`, `Palla_di_Fuoco_02.webp` when there are several. A note never embeds a remote URL. A monster's statistics also name the first image of its description, its [Portrait](#the-portrait).
 - **An Off-Edition note** has, right under its heading, an Obsidian callout in the Workspace Language naming the Edition it belongs to: `> [!warning] Off-Edition Material (2014)`.
 - **It is found by its path.** The translated name comes from the Translation Glossary, so an entry always gets the same path. When a note is already at that path, an Import of the entry writes nothing and tells the DM; replacing it is the [update check](#checking-for-updates).
 
@@ -335,6 +343,22 @@ When the DM asks, in any Workspace, the agent compares each imported note's entr
 The check does not refresh the Source Cache: it states the release the cache is pinned to and whether a newer one exists, and offers to refresh first.
 
 A re-import replaces the note's official content wholesale, and its images with it, and records the new release. Reference and Adventure notes are not meant to be edited by the DM: a change to official material is a House Rule, Homebrew, or a Campaign note linking to it. If a note differs from its recorded import, the agent warns before overwriting it and offers to move the DM's addition where it belongs.
+
+## Ideas
+
+An Idea is story content the agent invents at the DM's request for a Campaign — a twist, an NPC's next move, an encounter — for the DM to use or drop. The agent reads every note the limits below name, drafts the Idea, checks the draft against every limit, and reworks it until nothing contradicts; only then does the DM see it. Several Ideas are each checked on their own.
+
+- **Hard limits**, which an Idea never contradicts:
+  - the official rules in the Workspace's Edition, and the House Rules that change them, as [House Rules in an answer](#house-rules-in-an-answer) says;
+  - what happened: the Sessions' Live Notes and Recaps, weighed as the Live Notes and Chronicle rules in [Campaigns](#campaigns--campaigns) weigh them — the dead stay dead, the spent stays spent, the known stays known;
+  - where things stand: the Party State and the Characters' current Builds — an Idea counts only on hit points, spell slots, uses and abilities the party has now;
+  - the Campaign's NPCs, Places, Quests and Factions notes, their secrets included;
+  - the world's lore: the DM's World notes, the official Setting in Reference, and how the Campaign has changed either.
+- **Soft limits**, which an Idea may depart from, saying where and how: the Adventure the Campaign runs, and the Prep of a Session not yet played.
+- **The Chronicle is never a source**: its telling is invented.
+- **Gaps.** What the Workspace does not say may be invented, and the Idea marks each such thing as new. Every mechanic it relies on — a DC, a CR, a spell, a condition — comes from the Trusted Source, cited, or from a House Rule, named; one that neither holds is left out.
+- **What the DM sees**: the Idea alone, then a short list headed "Checked against" (in the Workspace Language) naming the notes and rules that shaped it, by their names in the Workspace, each with the fact it gave (Session 07: the bridge fell; House Rule Flanking; Mira's Build). Rejected drafts stay unshown.
+- **An Idea is no fact of the Campaign** until it is played: no source for what happened, and written only where a skill's procedure writes the one the DM picks.
 
 ## Stat blocks
 
@@ -421,7 +445,7 @@ name: Bog Goblin
 
 - **One set of statistics, in two forms.** Both hold the same keys ([Keys and values](#keys-and-values)); the Markdown's labels are the layouts' own ([Layouts](#layouts)), translated through the Translation Glossary, and its `%% statblock` comment, which Obsidian does not show, keeps the keys it does not display (`name`, `layout`, `extends`, `bestiary`). The `statblock.py` helper next to this file writes the Markdown from a fence and converts a note between the two, with the same values and translations.
 - **Written once, and last.** A note never holds both forms, and nothing else in it repeats their numbers. They come after everything else: a monster's images and description. Whenever the note changes (an Import, a Promotion), its statistics are written again, in the Workspace's form.
-- **No link lives only in a fence**: Obsidian does not index links inside one. Statistics that name other notes (the spells a Homebrew monster casts) name them as plain text in the fence, and the links stand on one line right under it.
+- **No link lives only in a fence**: Obsidian does not index links inside one. Statistics that name other notes (the spells a Homebrew monster casts) name them as plain text in the fence, and the links stand on one line right under it. The one link a fence holds is its [Portrait](#the-portrait), a picture the body embeds already.
 - **Changing the form is a [Setup](#workspace-config) re-run**, which converts every note with statistics but a Character's, after a preview. An edit to `stat_blocks` alone changes nothing until then.
 - **The plugin is optional.** DM Realm never installs it, and never uses its own 5etools import or its bundled SRD ([ADR 0003](../../docs/adr/0003-official-material-comes-only-from-5etools.md)): Setup turns the SRD off. Without it a fence shows as a YAML code block, so Setup recommends Markdown when the plugin is not installed; without fences, MapForge has no creature to place.
 - **Game statistics only.** A monster's description stays in the body, never in its statistics.
@@ -453,7 +477,7 @@ A Character note keeps its stat block whatever `stat_blocks` says, and a Setup r
 The keys the plugin (and MapForge) read stay English; every value is in the Workspace Language ([ADR 0006](../../docs/adr/0006-keys-a-plugin-reads-stay-in-english.md)). These are the only English keys in a Workspace:
 
 - **Frontmatter:** `statblock`.
-- **In the fence:** `name`, `layout`, `extends`, `bestiary`, `size`, `type`, `alignment`, `ac`, `ac_class`, `hp`, `hit_dice`, `initiative`, `speed`, `stats`, `saves`, `skillsaves`, `damage_vulnerabilities`, `damage_resistances`, `damage_immunities`, `condition_immunities`, `gear`, `senses`, `languages`, `cr`, `traits`, `actions`, `bonus_actions`, `reactions`, `legendary_description`, `legendary_actions`, `mythic_description`, `mythic_actions`, `lair_actions`, `regional_effects`, `spells`, and in each list item `name` and `desc`; for a Character also `species`, `class`, `level`, `player`.
+- **In the fence:** `name`, `layout`, `extends`, `bestiary`, `image`, `size`, `type`, `alignment`, `ac`, `ac_class`, `hp`, `hit_dice`, `initiative`, `speed`, `stats`, `saves`, `skillsaves`, `damage_vulnerabilities`, `damage_resistances`, `damage_immunities`, `condition_immunities`, `gear`, `senses`, `languages`, `cr`, `traits`, `actions`, `bonus_actions`, `reactions`, `legendary_description`, `legendary_actions`, `mythic_description`, `mythic_actions`, `lair_actions`, `regional_effects`, `spells`, and in each list item `name` and `desc`; for a Character also `species`, `class`, `level`, `player`.
 
 Every other frontmatter key stays in the Workspace Language. In the fence:
 
@@ -484,11 +508,29 @@ The plugin's bestiary is keyed by `name`: a second fence with the same name sile
 - **Its `name` is unique** among the Workspace's statistics in the bestiary (every one without `bestiary: false`), in either form, so that a later change of form cannot clash: Grep the Workspace for a `name:` line with it inside a `statblock` fence or a `%% statblock` comment. On a clash the agent writes nothing and asks the DM for another name — an NPC called "Bog Goblin" when a Reference monster already is. The same monster imported again is not a clash: it is already imported.
 - **Its `extends` target exists**: the `name` of a fence already in the Workspace, importing the Reference monster first when it is missing.
 
+### The Portrait
+
+A monster's or an NPC's statistics name its Portrait — the one picture MapForge cuts a Pawn's Face from — with the plugin's `image` key:
+
+- **Which picture**: the first one of the note's Description, which an Import places above its text. A note whose Description has none names none; a picture elsewhere in the note — in an action, under the statistics, a lair, a map — is never its Portrait.
+- **Its value is a wikilink with the picture's full path** from the Workspace root, quoted as [Keys and values](#keys-and-values) says: `image: "[[Riferimento/Allegati/Nothic.webp]]"`. Never a bare name — MapForge gives no Face for a name two files share, and Obsidian, which does not index a fence, would not update the link — and never a URL. A folder rename at Setup rewrites it like any path link.
+- **The picture stays embedded in the body**, so the link does not live only in the fence. In Markdown statistics, `image` is kept in the `%% statblock` comment, and a change of form keeps it.
+- **An NPC that `extends` a monster inherits its Portrait**, and names one only when its own Description has its own picture. An NPC with no statistics has none: MapForge places its monster.
+- **Written, never changed**: an Import writes it, a re-import writes it again with the rest of the official content, the agent writes it for a Homebrew or Campaign monster or NPC whose Description has a picture, and a Promotion keeps it when the picture moves with the note, its path rewritten. Statistics that move without their picture — at a Promotion to World, into a new Homebrew Monsters note — name none: a Homebrew note may not link to a World or Campaign file. An `image:` already in a note the DM owns — another picture, or one set by hand — is the DM's choice and stays as it is.
+- **Statistics with none yet** — imported before DM Realm wrote it — get it from the `portraits.py` helper next to this file, which every Import and Setup re-run runs:
+
+  ```sh
+  python3 "<the dmr-workspace skill's base directory>/portraits.py" .
+  ```
+
+  It adds `image:` wherever a note embeds its own picture — named after the note, as an Import names it — before its statistics, never touches an `image:` already there, and lists what it added and what it could not find (no file by that name, or several).
+- **A Character's stat block** names no Portrait yet, and the helper leaves it as it is.
+
 ### MapForge
 
 MapForge, the DM's table tool, is independent of DM Realm ([ADR 0011](../../docs/adr/0011-dm-realm-reads-mapforges-files-and-writes-them-only-when-the-dm-asks.md)). It owns `.mapforge/` at the Workspace root (its Manifest `workspace.json`, `config.json`, `parties.json`, `preferences.json`, its Session Logs) and the files beside a Map (`<map>.fog.json`, `<map>.combat/`). The agent reads them and, on its own initiative, never creates, edits or deletes any of them, nor offers to: it writes one only when the DM's own request names that change ("point MapForge's bestiary at the Monsters folder"). Nor does it move or arrange the Workspace's folders to suit MapForge.
 
-DM Realm guarantees the plugin's standard keys, `initiative` and `size` included, and nothing else of MapForge. Two known limits are MapForge's to lift: it reads one bestiary folder (`bestiaryStatBlockPath` in `.mapforge/config.json`, relative to the Workspace root) while a Workspace's stat blocks span several Scopes, and it takes the party from its own `parties.json`, not from the Character notes. MapForge reads every fence under that folder, `bestiary: false` ones included, so a folder holding Characters lists them, and their past Builds, as Monsters. Setup tells the DM what that folder reads of the Workspace.
+DM Realm guarantees the plugin's standard keys, `initiative`, `size` and the [Portrait](#the-portrait)'s `image` included, and nothing else of MapForge. Two known limits are MapForge's to lift: it reads one bestiary folder (`bestiaryStatBlockPath` in `.mapforge/config.json`, relative to the Workspace root) while a Workspace's stat blocks span several Scopes, and it takes the party from its own `parties.json`, not from the Character notes. MapForge reads every fence under that folder, `bestiary: false` ones included, so a folder holding Characters lists them, and their past Builds, as Monsters. Setup tells the DM what that folder reads of the Workspace.
 
 MapForge's Session Logs (`.mapforge/sessions/`) and the Combat Logs they point at are a Session's Table Record. It reaches the Workspace only by being written into that Session's Live Notes, when the DM asks.
 

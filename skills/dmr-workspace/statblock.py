@@ -39,13 +39,16 @@ XP = {"0": 10, "1/8": 25, "1/4": 50, "1/2": 100, "1": 200, "2": 450, "3": 700, "
 
 # The keys in the order a fence lists them. The Markdown shows every key but the hidden
 # ones, which it keeps in its `%% statblock` comment.
-MONSTER_KEYS = ("name", "layout", "extends", "bestiary", "size", "type", "alignment", "ac", "ac_class",
-                "hp", "hit_dice", "speed", "initiative", "stats", "saves", "skillsaves",
+MONSTER_KEYS = ("name", "layout", "extends", "bestiary", "image", "size", "type", "alignment", "ac",
+                "ac_class", "hp", "hit_dice", "speed", "initiative", "stats", "saves", "skillsaves",
                 "damage_vulnerabilities", "damage_resistances", "damage_immunities",
                 "condition_immunities", "gear", "senses", "languages", "cr", "traits", "actions",
                 "bonus_actions", "reactions", "legendary_description", "legendary_actions",
                 "mythic_description", "mythic_actions", "lair_actions", "regional_effects")
-HIDDEN = ("name", "layout", "extends", "bestiary")
+HIDDEN = ("name", "layout", "extends", "bestiary", "image")
+# The Portrait (`image:`): a link MapForge and the plugin read in the fence, never made plain
+# text, and never on the links line, since the note's body embeds the picture already.
+PORTRAIT = "image"
 
 # Label lines: key, label.
 MONSTER_LINES = (("ac", "Armor Class"), ("hp", "Hit Points"), ("speed", "Speed"),
@@ -89,6 +92,18 @@ def ordered(fields):
         raise Failure(6, f"the stat block has keys DM Realm does not write: {', '.join(unknown)}.")
     values = dict(fields)
     return [(k, values[k]) for k in keys if k in values]
+
+
+def portrait_at(keys):
+    """Where the Portrait's `image:` goes among a stat block's keys: after the last one before it."""
+    before = MONSTER_KEYS[:MONSTER_KEYS.index(PORTRAIT)]
+    return max((i + 1 for i, k in enumerate(keys) if k in before), default=0)
+
+
+def with_portrait(fields, link):
+    """The fields with the Portrait's `image:` (a wikilink) in its place among the keys."""
+    at = portrait_at([k for k, _ in fields])
+    return fields[:at] + [(PORTRAIT, link)] + fields[at:]
 
 
 # --- The fence: a small YAML subset, the one DM Realm writes ----------------------------
@@ -506,7 +521,7 @@ def convert(note, to, labels=None):
     for para in split_paragraphs(section.split("\n")):
         if LINKS_LINE.fullmatch(para):
             found.extend(m.group(0) for m in LINK.finditer(para) if m.group(0) not in found)
-    fields = [(k, unlink(v, found)) for k, v in fields]
+    fields = [(k, v if k == PORTRAIT else unlink(v, found)) for k, v in fields]
     text = fence(fields) + ("\n\n" + ", ".join(found) if found else "")
     note = note[:comment.start()] + text + ("\n\n" if end else "\n") + note[stop:].lstrip("\n")
     return set_flag(note, dict(fields).get("bestiary", True) is not False), "converted to a stat block"

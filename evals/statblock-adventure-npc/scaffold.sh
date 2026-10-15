@@ -1,12 +1,14 @@
 #!/bin/sh
 # An English 2024 Workspace with the Salt Wight imported (its stat block included) and two
-# NPC notes of The Salt Crypt, as imported, whose text says which statistics they use.
+# NPC notes of The Salt Crypt, as imported, whose text says which statistics they use. The
+# Salt Wight has its picture and names it as its Portrait, which an NPC extending it inherits.
 # INVENTED content throughout (ADR 0003).
 set -e
 WS_LANG=en WS_EDITION=2024
 . "$(dirname "$0")/../_fixtures/workspace-setup.sh"
 . "$(dirname "$0")/../_fixtures/import-cache.sh"
-mkdir -p Reference/Monsters Adventures/The_Salt_Crypt/NPCs
+mkdir -p Reference/Monsters Reference/Attachments Adventures/The_Salt_Crypt/NPCs
+printf 'INVENTED IMAGE: Salt Wight' > Reference/Attachments/Salt_Wight.webp
 cat > Reference/Monsters/Salt_Wight.md <<'MD'
 ---
 source: SACR p. 88, v3.0.0
@@ -15,10 +17,15 @@ statblock: inline
 
 # Salt Wight
 
+## Description
+
+![[Salt_Wight.webp]]
+
 ## Stat Block
 
 ```statblock
 name: Salt Wight
+image: "[[Reference/Attachments/Salt_Wight.webp]]"
 size: Medium
 type: undead
 alignment: lawful evil

@@ -2,7 +2,8 @@
 """Render one Trusted Source entry as English Markdown, for an Import.
 
   render-entry.py <data file> <name> <source> [--key <key>] [--class-source <source>]
-                  [--edition 2014|2024] [--note <note name>] [--meta | --images]
+                  [--edition 2014|2024] [--stat-blocks true|false] [--note <note name>]
+                  [--attachments <folder>] [--meta | --images]
 
 <data file> is a Source Cache path (`data/spells/spells-xphb.json`); the file, and
 any file a copied entry comes from, is fetched through the Source Cache helper
@@ -25,7 +26,11 @@ a JSON list of those images in the same order: the image's path in the image mir
 cached copy, and the file name the note embeds. A monster also gets its stat block, a Fantasy Statblocks
 fence (```statblock) with the plugin's English keys, under the heading; --edition is the
 Workspace's Edition, and a monster of the other one names its own Edition's layout
-(without --edition, no layout is named). --meta prints JSON facts about the entry instead: its
+(without --edition, no layout is named); --stat-blocks false writes its statistics as
+Markdown instead. --attachments is the Attachments folder its images go in, from the
+Workspace root (`Riferimento/Allegati`): the statistics then name the monster's Portrait,
+its description's first image, as `image: "[[<folder>/<file>]]"` (none without one, nor
+without --attachments). --meta prints JSON facts about the entry instead: its
 key, source property (`XPHB p. 12, v2.36.1`), Edition by its book's date, reprints,
 and what placing its note needs (spell level, a spell's classes, class, race, option kind…).
 
@@ -709,14 +714,22 @@ def valid_note(name):
     return bool(name) and file_stem(name) == name and not name.lower().endswith(".md")
 
 
+def valid_folder(path):
+    """A folder's path from the Workspace root: relative, with no empty, `.` or `..` part."""
+    parts = str(path).split("/")
+    return all(p and p not in (".", "..") and "\\" not in p for p in parts)
+
+
+def image_files(text, stem):
+    """Each placeholder's number and its image's file, numbered in the note's order."""
+    order = [int(m.group(1)) for m in IMAGE_TOKEN.finditer(text)]
+    return [(index, f"{stem}{f'_{n:02d}' if len(order) > 1 else ''}{os.path.splitext(_images[index]['image'])[1]}")
+            for n, index in enumerate(order, 1)]
+
+
 def embed_images(text, stem):
     """Number the placeholders in the note's order and embed each image's file."""
-    order = [int(m.group(1)) for m in IMAGE_TOKEN.finditer(text)]
-    listed = []
-    for n, index in enumerate(order, 1):
-        image = _images[index]
-        suffix = f"_{n:02d}" if len(order) > 1 else ""
-        listed.append(dict(image, file=f"{stem}{suffix}{os.path.splitext(image['image'])[1]}"))
+    listed = [dict(_images[index], file=file) for index, file in image_files(text, stem)]
     files = iter(listed)
     return IMAGE_TOKEN.sub(lambda m: f"![[{next(files)['file']}]]", text), listed
 
@@ -1596,8 +1609,10 @@ def description_parts(key, entry, path):
     return Fluff(entries, images)
 
 
-def render(key, entry, path, edition=None, note=None, stat_blocks=True):
-    """The note's Markdown, and the images it embeds in its order."""
+def render(key, entry, path, edition=None, note=None, stat_blocks=True, attachments=None):
+    """The note's Markdown, and the images it embeds in its order. With attachments (the
+    Attachments folder, from the Workspace root), a monster's statistics name its Portrait,
+    the Description's first image, by its full path (structure.md's "The Portrait")."""
     data = load(path)
     add_features(data)
     if key in ("race", "subrace"):
@@ -1612,16 +1627,24 @@ def render(key, entry, path, edition=None, note=None, stat_blocks=True):
     about = render_entries(description(key, entry, path), 1)
     if about:
         blocks += ["## Description"] + about
-    if key == "monster":  # its statistics come last, once: the fence or Markdown (ADR 0009)
-        fields = statblock_fields(entry, edition)
-        if stat_blocks:  # an image in its statistics goes under the fence, which cannot show it
-            images = []
-            fields = [(k, without_images(v, images)) for k, v in fields]
-            blocks += ["## Stat Block", statblock.fence(fields)] + images
-        else:
-            blocks += ["## Stat Block", statblock.markdown(fields)]
     stem = note or file_stem(entry["name"])
-    return embed_images("\n\n".join(b for b in blocks if b) + "\n", stem)
+    if key != "monster":
+        return embed_images("\n\n".join(b for b in blocks if b) + "\n", stem)
+    # Its statistics come last, once: the fence or Markdown (ADR 0009).
+    fields, images = statblock_fields(entry, edition), []
+    if stat_blocks:  # an image in its statistics goes under the fence, which cannot show it
+        fields = [(k, without_images(v, images)) for k, v in fields]
+
+    def note_text(fields):
+        statistics = statblock.fence(fields) if stat_blocks else statblock.markdown(fields)
+        return "\n\n".join(b for b in blocks + ["## Stat Block", statistics] + images if b) + "\n"
+
+    text = note_text(fields)
+    portrait = next(IMAGE_TOKEN.finditer("\n\n".join(about)), None)
+    if portrait and attachments:  # its file is known once the note's images are numbered
+        file = dict(image_files(text, stem))[int(portrait.group(1))]
+        text = note_text(statblock.with_portrait(fields, f"[[{attachments}/{file}]]"))
+    return embed_images(text, stem)
 
 
 # --- Meta ----------------------------------------------------------------------------
@@ -1682,7 +1705,7 @@ def main(argv):
     i = 0
     while i < len(argv):
         a = argv[i]
-        if a in ("--key", "--class-source", "--edition", "--note", "--stat-blocks"):
+        if a in ("--key", "--class-source", "--edition", "--note", "--stat-blocks", "--attachments"):
             if i + 1 >= len(argv):
                 raise Failure(2, f"{a} needs a value.")
             opts[a] = argv[i + 1]
@@ -1697,16 +1720,18 @@ def main(argv):
             or opts.get("--edition", "2024") not in MONSTER_LAYOUTS \
             or opts.get("--stat-blocks", "true") not in ("true", "false") \
             or flags >= {"--meta", "--images"} \
-            or "--note" in opts and not valid_note(opts["--note"]):
+            or "--note" in opts and not valid_note(opts["--note"]) \
+            or "--attachments" in opts and not valid_folder(opts["--attachments"]):
         raise Failure(2, "usage: render-entry.py data/<file> <name> <source> "
                          "[--key <key>] [--class-source <source>] [--edition 2014|2024] [--stat-blocks true|false] "
-                         "[--note <note file name, name rules applied>] [--meta | --images]")
+                         "[--note <note file name, name rules applied>] "
+                         "[--attachments <Attachments folder, from the Workspace root>] [--meta | --images]")
     path, name, source = args
     key, entry = find(path, name, source, opts.get("--key"), opts.get("--class-source"))
     if "--meta" in flags:
         return json.dumps(meta(key, entry), indent=2, ensure_ascii=False) + "\n"
     text, images = render(key, entry, path, opts.get("--edition"), opts.get("--note"),
-                          opts.get("--stat-blocks", "true") == "true")
+                          opts.get("--stat-blocks", "true") == "true", opts.get("--attachments"))
     if "--images" in flags:
         return json.dumps(images, indent=2, ensure_ascii=False) + "\n"
     return text

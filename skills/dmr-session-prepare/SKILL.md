@@ -1,6 +1,6 @@
 ---
 name: dmr-session-prepare
-description: Prepare a Session of a Campaign in a DM Realm Workspace — create its note and fill its Prep ("prepare the next session", "prep session 12", "a side session for Ayla and Brom called The Mystery of Ambika") from the previous Session's loose threads, the DM's idea, the Adventure the Campaign runs and where the party stands.
+description: Prepare a Session of a Campaign in a DM Realm Workspace — create its note and fill its Prep ("prepare the next session", "prep session 12", "a side session for Ayla and Brom called The Mystery of Ambika") from the previous Session's loose threads, the DM's idea or an Idea it offers, the Adventure the Campaign runs and where the party stands.
 argument-hint: <the Session to prepare, e.g. the next session of Heroes, with your idea for it>
 allowed-tools: Read, Glob, Grep, Write, Skill, Bash(ls:*)
 ---
@@ -29,7 +29,7 @@ Create one Session note and fill its Prep. The rules — what a Session is, its 
    - **Everything after Prep** stays as the Template has it: empty.
 
    This note is the only file written or changed: the Diary, Party State, the README, the other Sessions and every Character stay as they are.
-8. **Report**: the note's path; what was carried over — each thread, the idea, each Adventure note linked, where the party stands; each thing offered for Import; and, when the date is empty, ask for it — "not decided yet" leaves it empty.
+8. **Report**: the note's path; the Ideas offered, when the DM asked for them, each as structure.md's Ideas rule shows it; what was carried over — each thread, the idea, each Adventure note linked, where the party stands; each thing offered for Import; and, when the date is empty, ask for it — "not decided yet" leaves it empty.
 
 Done when the one Session note exists with its Prep filled from the sources that had something to give, or the DM has the one question that stopped it and nothing was written.
 
@@ -39,13 +39,14 @@ The Sessions whose Loose threads the new one inherits: the numbered Session play
 
 ## Prep sources
 
-Prep holds what the DM, the Campaign's notes and the Adventure's notes already say, arranged for the table. Every fact in it comes from one of these sources; when the DM asks for ideas, offer two or three in chat and write only the one the DM picks.
+Prep holds what the DM, the Campaign's notes and the Adventure's notes already say, arranged for the table. Every fact in it comes from one of these sources.
 
 | Source | Goes |
 | --- | --- |
 | **Party State**, when the Campaign has one: who is wounded, who has spent slots or uses, who has a condition, in a line or two. A party at full strength, or no Party State, is said in the report instead | Directly under the Prep heading, first |
 | **The previous Sessions' Loose threads**, every one, each in its Session's words, as a list introduced by a link to that Session | Directly under the Prep heading, after where the party stands |
 | **The DM's idea** in the request, in the DM's words | The Prep sub-section each part fits: the opening scene in the first, an NPC among the NPCs |
+| **The Idea the DM picks**, when the DM asks for Ideas: offer two or three in chat, each made, checked and shown as structure.md's Ideas rule says, and write only the one picked, its new things still marked new and without its "Checked against" list | As the DM's idea goes |
 | **The Adventure**: for each Adventure the README lists as running, the notes in its Workspace folder for the part the party has reached (as the previous Sessions' Recaps, the Diary and the README's current state tell it). Each is a link to the Adventure note with a line on why it matters now; the Adventure's text stays in its note | The Prep sub-section of its kind: a place among the places, an encounter among the encounters |
 
 Material the Prep needs that is not in the Workspace — a monster an encounter names, the next chapter of the Adventure — is named in the report with an offer to import it through the `dmr-import` skill. On the DM's yes, invoke `dmr-import`, then link what it wrote from the Prep. Until then the Prep holds only what the Workspace has.

@@ -71,6 +71,14 @@ OUT=$(python3 "$HELPER" rename "$W" world Mondo) || fail "world: exit $? ($OUT)"
 grep -qF '[[Mondo/Aerth/Places/Port_Thief|Port Thief]]' "$W/Campaigns/Heroes/README.md" || fail "world: link not rewritten: $(cat "$W/Campaigns/Heroes/README.md")"
 grep -q '^  world: Mondo' "$W/workspace-config.yml" || fail "world: config not updated"
 
+# Renaming Reference rewrites a stat block's Portrait, a full path inside its fence.
+new_ws 9
+mkdir -p "$W/Reference/Monsters"
+printf '# Wisp Hound\n\n![[Wisp_Hound.webp]]\n\n```statblock\nname: Wisp Hound\nimage: "[[Reference/Attachments/Wisp_Hound.webp]]"\n```\n' > "$W/Reference/Monsters/Wisp_Hound.md"
+OUT=$(python3 "$HELPER" rename "$W" reference Riferimento) || fail "portrait: exit $? ($OUT)"
+grep -qxF 'image: "[[Riferimento/Attachments/Wisp_Hound.webp]]"' "$W/Riferimento/Monsters/Wisp_Hound.md" \
+  || fail "portrait: image: not rewritten: $(cat "$W/Riferimento/Monsters/Wisp_Hound.md")"
+
 # Invalid names change nothing: a path, empty after the name rules, a duplicate.
 for bad in "Games/Active" "::" "Homebrew" "Characters" "World"; do
   new_ws 3
