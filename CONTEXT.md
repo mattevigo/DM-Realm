@@ -120,6 +120,10 @@ A blank starting note for a kind of content, copied when a new note is created. 
 The game statistics of a monster, an NPC or a Character as a Fantasy Statblocks fence in its note. A monster's or an NPC's is written once, last in the note, and only in a Workspace that chose stat blocks at Setup; one that did not writes those statistics as Markdown instead. A Character's is always a fence under its heading, derived from its Build. No link lives only in a fence.
 _Avoid_: Sheet, statblock note
 
+**Portrait**:
+The one picture of a creature or a Character that its Stat block names, from which MapForge cuts the Face a Pawn wears. By default a monster's is the first picture of its Description, and a picture elsewhere in a note — in an action, a lair, a map — is never its Portrait; in a note the DM owns, the DM may name another.
+_Avoid_: Face (MapForge's cut of it), token, image
+
 **DM Tools**:
 Notes that help the DM run the game — checklists, random tables, prep aids — which sit outside every Scope and may reference anything.
 _Avoid_: DM resources, utilities

@@ -117,6 +117,50 @@ OUT=$(convert "$TMP/goblin.md" --to fence) || fail "already fence: exit $?"
 has "already fence" "$OUT" "already"
 cmp -s "$TMP/goblin.md" "$TMP/goblin-original.md" || fail "already fence: the note changed"
 
+# --- The Portrait: `image:` is kept in both forms, as a link, never as plain text ------
+cat > "$TMP/portrait.md" <<'MD'
+---
+statblock: inline
+---
+
+# Bog Goblin
+
+## Description
+
+![[Bog_Goblin.webp]]
+
+## Stat Block
+
+```statblock
+name: Bog Goblin
+layout: DM Realm Monster 2014
+image: "[[Riferimento/Allegati/Bog_Goblin.webp]]"
+size: Small
+type: fey
+ac: 14
+hp: 11
+```
+MD
+cp "$TMP/portrait.md" "$TMP/portrait-original.md"
+OUT=$(convert "$TMP/portrait.md" --to markdown) || fail "portrait to markdown: exit $?: $(cat "$TMP/err")"
+has "portrait markdown: in the comment" "$(cat "$TMP/portrait.md")" '%% statblock
+name: Bog Goblin
+layout: DM Realm Monster 2014
+image: "[[Riferimento/Allegati/Bog_Goblin.webp]]"
+%%'
+OUT=$(convert "$TMP/portrait.md" --to fence) || fail "portrait to fence: exit $?: $(cat "$TMP/err")"
+cmp -s "$TMP/portrait.md" "$TMP/portrait-original.md" || fail "portrait round trip: the note changed:
+$(diff "$TMP/portrait-original.md" "$TMP/portrait.md")"
+# One the DM wrote unquoted ([[…]] is YAML's list in a list) stays the same link.
+sed 's|^image: .*|image: [[Bog_Goblin.webp]]|' "$TMP/portrait-original.md" > "$TMP/portrait.md"
+convert "$TMP/portrait.md" --to markdown >/dev/null || fail "unquoted portrait to markdown: exit $?: $(cat "$TMP/err")"
+convert "$TMP/portrait.md" --to fence >/dev/null || fail "unquoted portrait to fence: exit $?: $(cat "$TMP/err")"
+NOTE=$(cat "$TMP/portrait.md")
+has "unquoted portrait" "$NOTE" 'image: "[[Bog_Goblin.webp]]"'
+hasnt "unquoted portrait: no links line" "$NOTE" '```
+
+[['
+
 # --- Translated labels: the layouts' own labels, from the Translation Glossary -------
 printf '{"Armor Class": "Classe Armatura", "Hit Points": "Punti Ferita", "Speed": "Velocità", "Initiative": "Iniziativa",
  "STR": "FOR", "DEX": "DES", "CON": "COS", "INT": "INT", "WIS": "SAG", "CHA": "CAR",
