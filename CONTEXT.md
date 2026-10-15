@@ -55,7 +55,7 @@ Bringing one official entry from the Trusted Source into the Workspace as a note
 _Avoid_: Download, copy, Transfer (which is only for Characters)
 
 **Research**:
-Answering the DM's question about official material — a rule, an entry, an Adventure's or a Setting's text — from the Trusted Source, in the Workspace Language, rules material in the Workspace's Edition, naming book and page. It changes nothing in the Workspace; bringing the material in is an Import.
+Answering the DM's question about official material — a rule, an entry, an Adventure's or a Setting's text — from the Trusted Source, in the Workspace Language, rules material in the Workspace's Edition, naming book and page, and naming the House Rules that change it. It changes nothing in the Workspace; bringing the material in is an Import.
 _Avoid_: Consultation, lookup, Import
 
 **Spell Index**:
@@ -88,7 +88,7 @@ The story elements the DM invented and reuses across Campaigns — places, NPCs,
 _Avoid_: Homebrew Setting, lore, Mondo
 
 **House Rules**:
-Homebrew changes to the official rules. Those in Homebrew apply to every Campaign in the Workspace; a Campaign's own apply only to it, until Promotion.
+Homebrew changes to the official rules. Those in Homebrew apply to every Campaign in the Workspace; a Campaign's own apply only to it, until Promotion, and win over Homebrew's where both change the same rule.
 
 **Character**:
 A player's character, kept apart from every Campaign so it can play in any of them: its identity and its current Build, with no knowledge of what happened at any table. NPCs are never Characters.
@@ -157,6 +157,10 @@ _Avoid_: Tracker, ledger, finances
 **Diary**:
 A Campaign's one note listing its Sessions in play order, each with a sentence or two and a link to the Session, whose recap holds the detail.
 _Avoid_: Journal, log, chronicle (which is the Campaign's told story)
+
+**Idea**:
+Story content the agent invents at the DM's request for a Campaign — a twist, an NPC's next move, an encounter — for the DM to use or drop. It contradicts no rule the table plays by and nothing the Campaign has made true, and marks what it invents; it is never a fact of the Campaign until it is played.
+_Avoid_: Suggestion, hook, plot idea, advice (which is about running the game)
 
 **Chronicle**:
 A Campaign's story told as prose for its players, one Chapter per consolidated Session, in the voice the DM has set for that Campaign.
