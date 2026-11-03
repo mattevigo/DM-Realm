@@ -9,6 +9,8 @@
 #   source-cache.sh image <path>       the same for an image, by the path an entry gives
 #                                      it (`bestiary/MM/Goblin.webp`), from the image
 #                                      mirror at the pinned release's tag (ADR 0008)
+#   source-cache.sh cached-image <path> print the local path of that image only when it is
+#                                      already cached (exit 4 when not); never fetches
 #   source-cache.sh refresh            move the pin to the latest release and fetch every
 #                                      cached file and image again from it (only when
 #                                      the DM asks)
@@ -122,6 +124,17 @@ case "${1:-}" in
     esac
     cached "img/$path" "the image $path"
     ;;
+  cached-image)
+    path=${2:-}
+    case "$path" in
+      ""|/*|*://*) die 2 "an image is named by its path in the image mirror: '$path'." ;;
+      *..*) die 2 "'..' is not allowed in '$path'." ;;
+    esac
+    [ -s "$CACHE/release" ] || die 4 "no release is pinned in the Source Cache yet."
+    local_file="$CACHE/$(head -n 1 "$CACHE/release")/img/$path"
+    [ -f "$local_file" ] || die 4 "the image $path is not in the Source Cache."
+    printf '%s\n' "$local_file"
+    ;;
   refresh)
     old=$(pinned_release) || exit $?
     new=$(latest_release)
@@ -148,6 +161,6 @@ case "${1:-}" in
     [ -z "$dropped" ] || echo "No longer in $new, dropped:$dropped"
     ;;
   *)
-    die 2 "usage: source-cache.sh release | file data/<path> | image <path> | refresh"
+    die 2 "usage: source-cache.sh release | file data/<path> | image <path> | cached-image <path> | refresh"
     ;;
 esac
