@@ -241,6 +241,10 @@ has targets "$OUT" '"key": "item|+1 Weapon|DMG"'
 has targets "$OUT" '"folder": "reference.magic_items"'
 has targets "$OUT" '"key": "part|2"'
 hasnt targets "$OUT" '"key": "monster|Brine Imp|MM"'
+# The entry the book tags is listed with the reprint that replaces it.
+has targets "$OUT" '"tagged": [
+        "Brine Imp|MM"
+      ]'
 OUT=$(run SLC --part 1 --list --edition 2014) || fail "targets 2014: exit $?: $(cat "$TMP/err")"
 has "targets 2014" "$OUT" '"key": "monster|Brine Imp|MM"'
 # A tag the Trusted Source has no entry for is listed, and stays plain text.

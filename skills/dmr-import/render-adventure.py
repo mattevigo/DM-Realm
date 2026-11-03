@@ -18,10 +18,12 @@ Part), in book order, each with its index, name, section id, page and ordinal.
 --list prints JSON about one Part, fetching nothing: its word count; its headings (each
 named block with a section id: id, name, type, depth under the Part, page); its images
 (the size of each cached one, null for one not cached); the notes it links to (each
-`links` target: a key, its kind, the entry in the Workspace's Edition, and the folder
-key it lives in, from structure.md: `reference.monsters`, `reference.magic_items`,
+`links` target: a key, its kind, the entry in the Workspace's Edition, the entries the
+book `tagged` that it stands for — itself, or the older entry it reprints — and the key
+of the folder it lives in: `reference.monsters`, `reference.magic_items`,
 `reference.equipment`, `adventures.<adventure>.items`, or `adventures.<adventure>.parts`
-for another Part); and the `unresolved` tags, left as plain text.
+for another Part); and the `unresolved` tags, left as plain text. It fetches no image;
+the data files a link needs (bestiaries, items) come through the Source Cache as usual.
 
 --plan and --links render the Part. The split plan is
 `{"part_note": "<path>", "sections": [{"id": "<section id>", "note": "<path>"}, …]}`, each
@@ -278,16 +280,16 @@ class Links:
         self.targets, self.unresolved = {}, []
 
     def target(self, tag, body):
-        parts = entry.split_top(body, "|")
-        name = entry.plain(parts[0]).strip()
-        source = (parts[1] if len(parts) > 1 else "").strip() or DEFAULT_SOURCES.get(tag)
+        fields = entry.split_top(body, "|")
+        name = entry.plain(fields[0]).strip()
+        source = (fields[1] if len(fields) > 1 else "").strip() or DEFAULT_SOURCES.get(tag)
         if tag == "creature":
             found = find_monster(name, source)
             if found is None:
                 return None
             name, source = in_edition(found, self.edition)
-            return {"key": f"monster|{name}|{source}", "kind": "monster", "name": name,
-                    "source": source, "folder": "reference.monsters"}
+            return {"key": f"monster|{name}|{source}", "kind": "monster", "name": name, "source": source,
+                    "tagged": [f"{found['name']}|{found['source']}"], "folder": "reference.monsters"}
         if tag == "item":
             found, magic = find_item(name, source)
             if found is None:
@@ -298,10 +300,10 @@ class Links:
             else:
                 folder = "reference.magic_items" if magic else "reference.equipment"
                 name, source = in_edition(found, self.edition)
-            return {"key": f"item|{name}|{source}", "kind": "item", "name": name,
-                    "source": source, "folder": folder}
+            return {"key": f"item|{name}|{source}", "kind": "item", "name": name, "source": source,
+                    "tagged": [f"{found['name']}|{found['source']}"], "folder": folder}
         if tag == "area":
-            section = parts[1].strip() if len(parts) > 1 else ""
+            section = fields[1].strip() if len(fields) > 1 else ""
             n = self.part_of.get(section)
             if n is None:
                 return None
@@ -318,7 +320,10 @@ class Links:
             if not found:
                 self.unresolved.append("{@" + f"{tag} {body}" + "}")
             elif found["key"]:
-                self.targets.setdefault(found["key"], found)
+                listed = self.targets.setdefault(found["key"], found)
+                for t in found.get("tagged", []):  # every entry the book tags, reprinted as this one
+                    if t not in listed["tagged"]:
+                        listed["tagged"].append(t)
         return None
 
     def linker(self, paths):
@@ -428,14 +433,17 @@ def render_plan(record, parts, index, plan, paths, edition, check=False):
     part = parts[index]
     check_plan(part, plan)
     try:
-        return render_notes(record, parts, index, plan, paths, edition, check)
-    except Failure as e:
-        if e.code not in (6, 7):
-            raise
-        entry.FETCH_IMAGES = False
-        where = failing_section(part)
-        section = f", section {where['id']} ({entry.plain(where['name'])})" if where is not part else ""
-        raise Failure(e.code, f"Part {index} ({part.get('name')}){section}: {e}")
+        try:
+            return render_notes(record, parts, index, plan, paths, edition, check)
+        except Failure as e:
+            if e.code not in (6, 7):
+                raise
+            entry.FETCH_IMAGES = False
+            where = failing_section(part)
+            section = f", section {where['id']} ({entry.plain(where['name'])})" if where is not part else ""
+            raise Failure(e.code, f"Part {index} ({part.get('name')}){section}: {e}")
+    finally:  # render-entry.py's own rendering, for whatever renders next
+        entry.ALWAYS_HEADINGS, entry.LINK_TAG, entry.FETCH_IMAGES = False, None, True
 
 
 def render_notes(record, parts, index, plan, paths, edition, check):

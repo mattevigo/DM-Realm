@@ -35,7 +35,7 @@ trap 'rm -rf "$TMP"' EXIT
 
 find "$CACHE" -type f | sort > "$TMP/before"
 python3 - "$HELPER" "$CACHE/$RELEASE/data" "$TMP" "$@" <<'PY'
-import importlib.util, json, os, sys
+import importlib.util, json, os, re, sys
 helper, data, tmp, wanted = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4:]
 spec = importlib.util.spec_from_file_location("render_adventure", helper)
 adv = importlib.util.module_from_spec(spec)
@@ -46,7 +46,7 @@ def run(argv):
         return 0, adv.main(argv)
     except (adv.Failure, adv.entry.statblock.Failure) as e:
         return e.code, str(e)
-    except (KeyError, IndexError, TypeError, ValueError, AttributeError) as e:
+    except (re.error, KeyError, IndexError, TypeError, ValueError, AttributeError) as e:
         return 7, f"cannot render the Adventure ({type(e).__name__}: {e})"
 
 ids = [a["id"] for a in json.load(open(f"{data}/adventures.json"))["adventure"]
