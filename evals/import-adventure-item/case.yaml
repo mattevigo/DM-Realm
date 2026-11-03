@@ -13,4 +13,4 @@ execution:
     EVAL_DMR_SOURCE_API: http://127.0.0.1:9/latest
     EVAL_DMR_SOURCE_RAW: http://127.0.0.1:9/raw
   prompt: |
-    Add the Brine Lantern, the item from The Salt Crypt adventure.
+    Add the Brine Lantern.

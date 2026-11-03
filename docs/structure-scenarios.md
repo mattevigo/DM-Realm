@@ -110,7 +110,7 @@ Placement, linking and official-data questions that the Workspace rules must ans
 ## Scenarios without an eval yet
 
 **S10.** An Adventure introduces an official monster that appears in no other book. Where does its stat block go?
-Expected: Reference Monsters. The Adventure's notes (e.g. its NPCs or Encounters) link to it.
+Expected: Reference Monsters. The Adventure's notes (e.g. its NPCs or Encounters, an NPC with a heading of its own) link to it, as a path link written even before the monster is imported.
 
 **S13.** Where do these go: (a) the official lore of the Forgotten Realms; (b) a world the DM invented; (c) the fact that, in one Campaign, the PCs' actions made a Realms city fall?
 Expected: (a) Reference Setting; (b) World, in a folder named after the world; (c) that Campaign (e.g. its Places), linking to the Reference note.

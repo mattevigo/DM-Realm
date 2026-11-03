@@ -28,4 +28,4 @@ Between Sessions, a Character's level-ups and other changes go through `dmr-char
 ## Not built yet
 
 - **Migrate**: no skill does it. Its parts that have one, in a Workspace Setup already created: `dmr-import` for the official material, a Transfer through `dmr-character` for each Character. The DM's own notes have no skill to carry them over.
-- **Importing an Adventure** into the Workspace: no skill does it yet. A question about an Adventure's text is still answered, by Research.
+- **Importing an Adventure** into the Workspace: no skill does it yet — `dmr-import` brings in only an item an Adventure introduces, into that Adventure. A question about an Adventure's text is still answered, by Research.
