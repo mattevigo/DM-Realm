@@ -466,8 +466,13 @@ def tag_text(tag, body):
     return parts[i] if len(parts) > i and parts[i] else parts[0]
 
 
+# An Adventure's notes link some tags: a function (tag, body) giving a tag's link, or
+# None to leave that tag as plain text.
+LINK_TAG = None
+
+
 def plain(s):
-    """s with every 5etools tag ({@tag …}) rendered as plain text."""
+    """s with every 5etools tag ({@tag …}) rendered as plain text, or as LINK_TAG's link."""
     s = str(s)
     out, i = "", 0
     while i < len(s):
@@ -489,7 +494,7 @@ def plain(s):
             malformed(f"unclosed tag in '{s[start:start + 40]}'")
         inner = s[start + 2:j]
         tag, _, body = inner.partition(" ")
-        out += tag_text(tag, body)
+        out += (LINK_TAG and LINK_TAG(tag, body)) or tag_text(tag, body)
         i = j + 1
     return out
 
@@ -530,9 +535,13 @@ def children(entry):
     return content
 
 
+# An Adventure's notes give every named block a heading, which a link can reach.
+ALWAYS_HEADINGS = False
+
+
 def named_blocks(name, content, depth):
     """A named block: its name inline before a leading paragraph, else as a heading."""
-    if content and isinstance(content[0], str) and name:
+    if content and isinstance(content[0], str) and name and not ALWAYS_HEADINGS:
         return [f"***{with_period(name)}*** {plain(content[0])}"] + render_entries(content[1:], depth + 1)
     heading = [f"{'#' * min(depth + 2, 6)} {plain(name)}"] if name else []
     return heading + render_entries(content, depth + 1 if name else depth)
@@ -673,6 +682,14 @@ def render_entry(entry, depth):
     if kind in ("statblock", "statblockInline"):
         data = entry.get("data") or {}
         return [plain(entry.get("displayName") or entry.get("name") or data.get("name", ""))]
+    if kind == "flowchart":
+        return [b for block in entry.get("blocks", []) for b in render_entry(block, depth)]
+    if kind == "wrapper":
+        return render_entries(entry.get("wrappeds", [entry["wrapped"]] if "wrapped" in entry else []), depth)
+    if kind == "spellcasting":
+        heading = [f"{'#' * min(depth + 2, 6)} {plain(entry['name'])}"] if entry.get("name") else []
+        return heading + render_entries(entry.get("headerEntries", []), depth + 1) + spell_lines(entry) \
+            + render_entries(entry.get("footerEntries", []), depth + 1)
     if "entries" in entry or "entry" in entry:
         return named_blocks(entry.get("name"), children(entry), depth)
     if "items" in entry:
@@ -683,6 +700,7 @@ def render_entry(entry, depth):
 # --- Images: fetched through the Source Cache, embedded by a file named after the note --
 
 _images = []  # every image rendered so far, by its placeholder's number
+FETCH_IMAGES = True  # False only renders: its images get no cached copy
 IMAGE_TOKEN = re.compile("\x00IMAGE(\\d+)\x00")
 
 
@@ -695,7 +713,7 @@ def image_blocks(entry):
     if href.get("type") != "internal" or not path:
         raise Failure(6, "an image outside the Trusted Source's image mirror "
                          f"({json.dumps(href)[:80]}) cannot be imported.")
-    _images.append({"image": path, "cached": source_cache("image", path)})
+    _images.append({"image": path, "cached": source_cache("image", path) if FETCH_IMAGES else None})
     title = [f"*{plain(entry['title'])}*"] if entry.get("title") else []
     return [f"\x00IMAGE{len(_images) - 1}\x00"] + title
 
