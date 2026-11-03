@@ -7,7 +7,7 @@
 #   2014 books: OLDC Old Codex of Rules (2015), LOTD Lanterns of the Deep (2016),
 #               BOFI Beasts of the Far Isles (2021)
 #   2024 books: EMBC Ember Codex (2025), FAR Far Reaches Bestiary (2025; listed, never cached)
-#   Adventure:  SACR The Salt Crypt (2025)
+#   Adventure:  SACR The Salt Crypt (2025), levels 2–5, three Parts; its own item the Brine Lantern
 #   Descriptions (fluff): only the Wisp Hound's, in bestiary/fluff-bestiary-embc.json
 #   Images: only the Wisp Hound's, bestiary/EMBC/Wisps.webp — invented bytes, not an image
 #               (no real 5etools image in the repository, ADR 0003)
@@ -27,7 +27,11 @@ cat > "$D/books.json" <<'JSON'
 ]}
 JSON
 cat > "$D/adventures.json" <<'JSON'
-{"adventure": [{"name": "The Salt Crypt", "id": "SACR", "source": "SACR", "published": "2025-08-01"}]}
+{"adventure": [{"name": "The Salt Crypt", "id": "SACR", "source": "SACR", "published": "2025-08-01",
+  "level": {"start": 2, "end": 5},
+  "contents": [{"name": "Into the Brine"},
+               {"name": "The Drowned Stair", "ordinal": {"type": "chapter", "identifier": 1}},
+               {"name": "The Wight's Hall", "ordinal": {"type": "chapter", "identifier": 2}}]}]}
 JSON
 
 cat > "$D/conditionsdiseases.json" <<'JSON'
@@ -177,7 +181,9 @@ JSON
 cat > "$D/items.json" <<'JSON'
 {"item": [
   {"name": "Lamp of Echoes", "source": "EMBC", "page": 280, "wondrous": true, "rarity": "rare", "reqAttune": true,
-   "entries": ["While you hold this lamp, you can hear anything spoken within 10 feet of its light."]}
+   "entries": ["While you hold this lamp, you can hear anything spoken within 10 feet of its light."]},
+  {"name": "Brine Lantern", "source": "SACR", "page": 94, "wondrous": true, "rarity": "uncommon",
+   "entries": ["Its pale flame burns underwater and shows the way to the nearest dry air."]}
 ]}
 JSON
 cat > "$D/magicvariants.json" <<'JSON'

@@ -97,7 +97,7 @@ Official material, imported faithfully from the Trusted Source. Its rules materi
 - **A 2014 subclass listed again under the 2024 class** (the Trusted Source copies every 2014 subclass there) still has its own book's Edition: in a 2024 Workspace it is Off-Edition Material, and its note goes in the folder of the Edition's class.
 - **Class options** — Fighting Styles (2014), Maneuvers, Eldritch Invocations, Metamagic and the other kinds — are one note each in Classes › Options › `<Kind>`. 2024 Fighting Styles are feats, in Feats. A class or subclass note names its options in plain text; importing it does not import them.
 - **Species.** The same pattern as classes: Races › Dwarf › Dwarf, and beside it one note per named 2014 subrace (Hill_Dwarf), holding only what the subrace adds. An unnamed 2014 subrace is part of its race's note. 2024 species have no subraces: a lineage is part of its species' note, so asking for a 2024 lineage (Drow) imports its species (Elf).
-- **Magic items.** A specific item the Trusted Source builds from a generic variant and a base item ("+1 Longsword", "Flame Tongue Greatsword") is not an entry: asking for one imports the generic variant ("+1 Weapon", "Flame Tongue") into Magic_Items, and the agent says so ([ADR 0007](../../docs/adr/0007-an-import-renders-only-what-the-data-contains.md)). Its DMG or XDMG version follows the Edition like any other entry.
+- **Magic items.** A specific item the Trusted Source builds from a generic variant and a base item ("+1 Longsword", "Flame Tongue Greatsword") is not an entry: asking for one imports the generic variant ("+1 Weapon", "Flame Tongue") into Magic_Items, and the agent says so ([ADR 0007](../../docs/adr/0007-an-import-renders-only-what-the-data-contains.md)). Its DMG or XDMG version follows the Edition like any other entry. An item whose source is an Adventure is not Reference: it goes to that Adventure's Items ([Adventures](#adventures--adventures)).
 - **Descriptions and images.** An entry's description — the Trusted Source's text about what it is, its "fluff" — is imported with it, into the same note, and so is every image the entry shows ([Imported notes](#imported-notes)).
 - **One entry at a time.** The one set an Import brings in on request is every Condition, or every Action, of the Edition, one note each; any other bulk request is declined.
 - **No links between Reference notes.** A note names other entries (a monster's spells, a class's options) in plain text, so it never depends on what else was imported. The only notes that link are the [Spell Indexes](#spell-indexes), which list only what is there.
@@ -128,7 +128,8 @@ One folder per official published Adventure, holding its content as the book des
 | Key                             | Default name     | Created    | Holds                                                         |
 | ------------------------------- | ---------------- | ---------- | ------------------------------------------------------------- |
 | `adventures.<adventure>`        | `<Adventure title>` | first note | One Adventure                                              |
-| `adventures.<adventure>.readme` | README (a note)  | first note | Overview of the Adventure: premise, structure, chapters       |
+| `adventures.<adventure>.readme` | README (a note)  | first note | The Adventure's title, book, level range and Parts ([The README](#the-readme)) |
+| `adventures.<adventure>.parts`  | Parts            | first note | One note per imported Part: what of the Part no other note holds |
 | `adventures.<adventure>.places` | Places           | first note | Its locations                                                 |
 | `adventures.<adventure>.npcs`   | NPCs             | first note | Its NPCs                                                      |
 | `adventures.<adventure>.items`  | Items            | first note | Items it introduces (unique items, plot items, its treasure)  |
@@ -137,7 +138,31 @@ One folder per official published Adventure, holding its content as the book des
 
 Monster stat blocks are the one exception: a monster printed in an Adventure — even one that appears in no other book — goes to Reference Monsters, and the Adventure's NPC and Encounter notes link to it. An NPC the Adventure changes ("a bandit captain with 90 hit points") gets a stat block that extends that monster ([Stat blocks](#stat-blocks)). An item the Adventure reprints from a core book (a DMG magic item in its treasure) stays in Reference Magic_Items and is linked.
 
+**An item the Adventure introduces** — one whose source is the Adventure's — is always in that Adventure's Items, even when it is imported on its own ("add the Sunsword"): that Import creates the Adventure's folder and [README](#the-readme) with it. It is imported like any entry ([Imported notes](#imported-notes)), never into Reference.
+
 An NPC, place or item that appears in two published Adventures has one note in each Adventure, each as its own book describes it; neither links to the other.
+
+#### Importing an Adventure
+
+An Adventure is imported a [Part](../../CONTEXT.md) at a time — one top-level division of its book: a chapter, an appendix, a dungeon level. One Import brings one or more Parts; the whole Adventure is every Part.
+
+- **One note per book heading.** Each note in Places, NPCs, Encounters or Items is exactly one heading of the book with everything under it, its text unchanged and in book order. The agent chooses which headings get a note, and the folder: a location (an inn, a keyed area of a dungeon) in Places, an event or an encounter (a timed event, random encounters) in Encounters, an item described under its own heading in Items. A heading inside another note's heading may have its own note too: the outer note then links to it where it stood.
+- **NPCs.** An NPC has a note only when the book gives it a heading of its own; that note links to its Reference monster as the [Adventure NPC](#which-notes-have-one) row says. An NPC the book describes inside other text stays in that text.
+- **The Part note**, in Parts, holds the rest of the Part — its opening, its advice on running it, all the text no other note holds — in book order, and links to each of the Part's other notes where its heading stood. It is named after the Part, as the book titles it.
+- **A Part is imported when its Part note exists**, which the Import writes last, after the Part's other notes. Asking again for an imported Part writes nothing and says so; replacing it is the [update check](#checking-for-updates). An Import that stopped midway resumes, skipping the notes already written.
+- **Names are unique within one Adventure**, across all its subfolders, so that two of its notes never name the same Attachments file: a heading whose name another note of the Adventure already has is qualified by the note it sits in (`Stonehill_Inn_Treasure`). Otherwise a note's name is its heading's, translated, with the [name rules](#name-rules) applied.
+- **A note is found by its section id**: the book's id for its heading, which its [source property](#source-property) records (`CoS p. 41, v2.36.1, #1a2`). The update check and a resumed Import find an Adventure note by it, not by its path.
+- **Links reach notes not imported yet** ([ADR 0013](../../docs/adr/0013-an-adventure-note-links-to-what-is-not-imported-yet.md)). A creature the book names links to its Reference Monsters note — the Edition's version, as [Off-Edition Material](#off-edition-material) says — and an item to its Reference note, or to this Adventure's Items for one the Adventure introduces, always as path links. An area of the same Part links to the note, or the heading, that holds it; an area of another Part links to that Part's note. Each is written whether or not its target is in the Workspace yet, and works once the target is imported: these are the only links in a Workspace to a note that may not exist. Spells, conditions and every other name stay plain text.
+- **What the Part names comes along on one yes.** Before writing, the Import tells the DM which Parts it brings, how long they are, how many images they show and how large, and how many of the monsters and items they name the Workspace lacks, and asks once whether to import those too. On a yes they come in as one batch, the one exception to [never in bulk](#off-edition-material); player options never do. On a no their links are written all the same.
+
+#### The README
+
+The README is written with the Adventure's first note — a Part, or an item imported on its own — and kept current by every Import. It holds only what the Trusted Source's list of Adventures gives, and nothing the agent writes: the data has no premise or summary, which stay in the book's own Parts.
+
+- **Frontmatter**: the Adventure's source property, with no page (`CoS, v2.36.1`).
+- **Body**: the title as a `#` heading; a Book line, its book code and year (`**Book:** CoS, 2016`); a Levels line, its level range (`**Levels:** 1–10`); then a Parts section, one numbered line per Part in book order, each as the book titles it, its ordinal first (`Chapter 1: Into the Mists`), and a link to its Part note once it is imported. The labels are translated like any term.
+
+An Adventure's first Import also turns each plain mention of it in a Campaign README's Adventures Run into a link to this README, keeping the DM's words as the link's text. A mention that might be another Adventure stays as it is, and the Import names it in its report. This is the one note outside the Adventure that importing one changes.
 
 ### Homebrew — `homebrew`
 
@@ -288,7 +313,7 @@ The Edition decides:
 Official rules material of the other Edition enters only to fill a gap:
 
 - **A gap** is something needed by name — the DM asks for it, or a note being imported links to it — that the Edition has no version of. When the Edition has a version (the Trusted Source records the reprint), that version is used instead: a 2014 Adventure run in a 2024 Workspace links its goblins to the 2024 Goblin in Reference Monsters.
-- **Never in bulk**: only the thing needed, one at a time.
+- **Never in bulk**: only the thing needed, one at a time — except the monsters and items an Adventure's Part names, which may come in with it on the DM's one yes ([Importing an Adventure](#importing-an-adventure)).
 - **Player options** — classes, subclasses, species, backgrounds, feats, spells, Weapon Mastery properties — need the DM's consent for each one before import, even when the DM asked for it by name: the agent says it is Off-Edition and which Edition it belongs to, and asks. Monsters and items do not.
 - **Marked**: the note carries the Edition callout ([Imported notes](#imported-notes)). It goes in the folder its kind has in the Edition, which it creates if the Edition has none (Weapon_Masteries in a 2014 Workspace).
 
@@ -324,7 +349,7 @@ The agent reaches the Trusted Source only through the Source Cache, with the `dm
 
 ### Source property
 
-Every note imported from the Trusted Source records its source in a frontmatter property: book code, page and release, e.g. `XPHB p. 239, v2.36.1`. Its key, like every frontmatter key, is in the Workspace Language, recorded in the Translation Glossary like a term.
+Every note imported from the Trusted Source records its source in a frontmatter property: book code, page and release, e.g. `XPHB p. 239, v2.36.1`. A note made from an Adventure's text — a Part note, or one of its headings — adds the heading's section id after a `#`: `CoS p. 41, v2.36.1, #1a2`. Its key, like every frontmatter key, is in the Workspace Language, recorded in the Translation Glossary like a term.
 
 ### Imported notes
 
@@ -334,11 +359,11 @@ Every note imported from the Trusted Source records its source in a frontmatter 
 - **Its description**, when the Trusted Source has one, is a section of the body headed Description (translated): its images first, then its text; for a monster before its statistics, for any other entry at the end of the note. A subrace's holds only what it adds to its race's. It is never in the statistics.
 - **Its images** — every image the entry shows, such as a monster's picture or an Adventure's map — are fetched through the Source Cache, copied into the [Attachments](#attachments) folder of the note's Scope (Reference › Attachments, or the Adventure's), and embedded where the Trusted Source places them: a description's first, an image in the entry's text where it stands. One inside a monster's statistics goes under its stat block fence, which cannot show it. Each file is named after its note, with the image's own extension: `Palla_di_Fuoco.webp`, or `Palla_di_Fuoco_01.webp`, `Palla_di_Fuoco_02.webp` when there are several. A note never embeds a remote URL. A monster's statistics also name the first image of its description, its [Portrait](#the-portrait).
 - **An Off-Edition note** has, right under its heading, an Obsidian callout in the Workspace Language naming the Edition it belongs to: `> [!warning] Off-Edition Material (2014)`.
-- **It is found by its path.** The translated name comes from the Translation Glossary, so an entry always gets the same path. When a note is already at that path, an Import of the entry writes nothing and tells the DM; replacing it is the [update check](#checking-for-updates).
+- **It is found by its path** — a note made from an Adventure's text by its section id instead ([Importing an Adventure](#importing-an-adventure)). The translated name comes from the Translation Glossary, so an entry always gets the same path. When a note is already at that path, an Import of the entry writes nothing and tells the DM; replacing it is the [update check](#checking-for-updates). An empty note there — one Obsidian creates when the DM clicks a link whose note is not imported yet — counts as no note: the Import writes over it.
 
 ### Checking for updates
 
-When the DM asks, in any Workspace, the agent compares each imported note's entry in the release it records with the same entry in the Source Cache's release (an older release is fetched from the mirror's release tag), lists the notes whose official content changed, and re-imports the ones the DM approves.
+When the DM asks, in any Workspace, the agent compares each imported note's entry in the release it records with the same entry in the Source Cache's release (an older release is fetched from the mirror's release tag) — for a note made from an Adventure's text, the heading with the same section id — lists the notes whose official content changed, and re-imports the ones the DM approves.
 
 The check does not refresh the Source Cache: it states the release the cache is pinned to and whether a newer one exists, and offers to refresh first.
 
