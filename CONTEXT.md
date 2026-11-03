@@ -51,7 +51,7 @@ The local copy of the Trusted Source that DM Realm keeps outside every Workspace
 _Avoid_: Download, mirror, local data
 
 **Import**:
-Bringing one official entry from the Trusted Source into the Workspace as a note, translated into the Workspace Language — into Reference, or into an Adventure. It is the only way official material enters a Workspace.
+Bringing official material from the Trusted Source into the Workspace as notes, translated into the Workspace Language: one entry, into Reference or into an Adventure, or one Part of an Adventure. It is the only way official material enters a Workspace.
 _Avoid_: Download, copy, Transfer (which is only for Characters)
 
 **Research**:

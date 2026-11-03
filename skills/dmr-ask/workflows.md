@@ -5,7 +5,7 @@ How DM Realm's skills fit together: the order a DM uses them in, and what has no
 ## Starting
 
 1. `dmr-setup`, run only by its command, in the folder that is to become the Workspace. Run again in a Workspace, it is how top-level folders are renamed or added back, how DM Realm's Obsidian settings and stat block layouts are installed again, and how stat blocks written before DM Realm named their Portrait get one.
-2. `dmr-import` for the official entries the Campaign needs, as they are needed.
+2. `dmr-import` for the official entries the Campaign needs, as they are needed — an item an Adventure introduces goes into that Adventure.
 3. `dmr-campaign` to start a Campaign.
 4. `dmr-character` for each player's Character: created, or brought in by a Transfer.
 
