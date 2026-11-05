@@ -1,0 +1,44 @@
+<!--
+title: dmr-setup
+description: Turns the current folder into a DM Realm Workspace. Run again inside a Workspace, it renames folders, converts stat blocks and repairs settings.
+-->
+<div class="term">
+  <div class="term-bar"><i></i><i></i><i></i><span>claude</span></div>
+<pre><span class="line"><span class="prompt">&gt; </span>/dm-realm:dmr-setup</span></pre>
+</div>
+<p>The only skill that runs only from its command, so no folder becomes a Workspace by accident.</p>
+
+<h2>Ask it like this</h2>
+<ul class="prompts">
+  <li>/dm-realm:dmr-setup</li>
+  <li>/dm-realm:dmr-setup italiano, 2024 rules, with stat blocks, go ahead</li>
+  <li>/dm-realm:dmr-setup rename Campaigns to Tables</li>
+  <li>/dm-realm:dmr-setup switch to Markdown statistics</li>
+</ul>
+
+<h2>A first Setup</h2>
+<ol class="steps">
+  <li>Checks the folder is empty (dot-folders aside). A folder with notes in it is refused, untouched.</li>
+  <li>Asks the <strong>Workspace Language</strong>, the <strong>Edition</strong> (2014 or 2024) and whether monsters and NPCs get <strong>stat blocks</strong> or Markdown, each once, unless your request already says.</li>
+  <li>Shows a <strong>preview</strong>: the Config, folder names, Templates, Obsidian settings, the Translation Glossary. You may rename any folder.</li>
+  <li>On your go-ahead, writes <code>workspace-config.yml</code>, the eight folders, the Templates, the Glossary, the Obsidian settings and, if installed, the Fantasy Statblocks layouts.</li>
+  <li>Reports, and leaves you one step: open the folder in Obsidian as a vault.</li>
+</ol>
+
+<h2>Running it again</h2>
+<ul>
+  <li>Renames a top-level folder and rewrites every link into it.</li>
+  <li>Converts every monster and NPC note between stat blocks and Markdown, after a preview.</li>
+  <li>Recreates missing folders and Templates, on your yes. Templates you changed stay byte for byte.</li>
+  <li>Restores DM Realm's Obsidian settings and Fantasy Statblocks layouts.</li>
+  <li>Names the Portrait of stat blocks that embed their own picture.</li>
+  <li>Points MapForge's bestiary at a folder, only when you ask.</li>
+</ul>
+
+<h2>Never</h2>
+<ul>
+  <li>Changes the Workspace Language, or the Edition once rules material is imported.</li>
+  <li>Adds or removes a top-level folder: there are always eight.</li>
+  <li>Writes anything before your go-ahead.</li>
+</ul>
+<p>Guide: <a href="{{root}}guide/setup/">Set up your Workspace</a>.</p>

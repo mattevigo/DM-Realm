@@ -1,0 +1,52 @@
+<!--
+title: Create the party
+description: Characters live apart from every Campaign, so one hero can play at any table. Create them at any level, level them up, change their gear, or bring them in from an old vault.
+-->
+<p>A <strong>Character</strong> is a player's character: who they are, and their current <strong>Build</strong> (species, class and level, abilities, features, spells, equipment). Characters live in their own top-level folder, outside every Campaign, so the same hero can join any of your tables. <code>dmr-character</code> does everything to them.</p>
+
+<h2>Create a Character</h2>
+<ul class="prompts">
+  <li>a new character for Baldu</li>
+  <li>create Durga, a level 5 half-orc barbarian for Sara</li>
+</ul>
+<p>Claude collects the choices the rules ask for (class, species, background, ability scores, proficiencies, spells, equipment, then each higher level's choices) from your Edition's official data, at any level. It first asks how you want them asked:</p>
+<ul>
+  <li><strong>Guided</strong>: one choice at a time, each checked against the rules before the next.</li>
+  <li><strong>Recap</strong>: every open choice in one message, each marked ❓ open, ✅ answered, 🟡 partly answered or ⚠️ to reconsider, until all are settled.</li>
+</ul>
+<p>Make every choice in your request and it asks nothing. New Characters are single-class. Every official option is linked to its Reference note, imported first when it is missing. The note ends up with:</p>
+<ul>
+  <li>a <strong>stat block</strong> at the top, derived from the Build;</li>
+  <li><strong>Identity</strong>: backstory, appearance, personality, in your words;</li>
+  <li><strong>Build</strong>: everything the Character is made of, each official piece a link;</li>
+  <li><strong>Statistics</strong>: the derived numbers, in one place.</li>
+</ul>
+
+<h2>Level up, rebuild, update</h2>
+<table>
+  <thead><tr><th>You say</th><th>What happens</th></tr></thead>
+  <tbody>
+    <tr><td><em>Durga reaches level 6</em></td><td>A level-up: the choices the new level brings, numbers recomputed. The previous Build is kept as a past Build.</td></tr>
+    <tr><td><em>Durga becomes a wood elf instead</em></td><td>A rebuild, with the old Build kept too.</td></tr>
+    <tr><td><em>Durga attunes the belt</em>, <em>add 40 gp</em>, <em>Durga retires</em></td><td>An update to the Character as it is: equipment, attunement, prepared spells, coins, backstory, status.</td></tr>
+  </tbody>
+</table>
+
+<h2>Maximums here, spent resources in the Campaign</h2>
+<p>A Character note records what the Build <em>allows</em>: hit point maximum, spell slots per level, uses per rest. It never records what is <em>spent</em>. Current hit points, used slots and conditions belong to a table, so they live in each Campaign's <strong>Party State</strong>. A Character playing in two Campaigns has a separate state in each.</p>
+
+<div class="callout"><span class="callout-title">What happened at the table stays at the table</span>
+<p>"Durga swore an oath to the river god in Session 12" is written in Session 12, linking to Durga. The Character note never names a Campaign or a Session, so it stays portable.</p></div>
+
+<h2>Bring in an existing Character</h2>
+<p>Have a Character in an old Obsidian vault or another Workspace? Ask for a <strong>Transfer</strong>:</p>
+<ul class="prompts">
+  <li>transfer Ayla from ~/Old Vault/Characters/Ayla.md</li>
+</ul>
+<p>Claude reads the source and shows you a preview first: what comes over (the identity and the Build, each option mapped to this Workspace's Edition) and what stays behind, item by item:</p>
+<ul>
+  <li><strong>the old table's story</strong>: Sessions, Campaign names, events;</li>
+  <li><strong>play state</strong>: current hit points, spent slots, checkboxes;</li>
+  <li><strong>copied official text</strong>: the Character links to Reference notes instead.</li>
+</ul>
+<p>On your go-ahead it writes the Character, with its numbers recomputed and any older Builds kept as past Builds. The source note is only read, never changed. Old vault notes and other Workspaces are supported; PDFs and D&amp;D Beyond exports are not.</p>

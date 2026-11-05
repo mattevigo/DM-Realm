@@ -1,0 +1,39 @@
+<!--
+title: dmr-character
+description: Creates a Character at any level, levels it up or rebuilds it, changes its equipment, spells, coins, backstory or status, or transfers one from an old vault or another Workspace.
+-->
+<div class="term">
+  <div class="term-bar"><i></i><i></i><i></i><span>claude</span></div>
+<pre><span class="line"><span class="prompt">&gt; </span>/dm-realm:dmr-character &lt;what to do&gt;</span></pre>
+</div>
+
+<h2>Ask it like this</h2>
+<ul class="prompts">
+  <li>a new character for Baldu</li>
+  <li>Durga reaches level 6</li>
+  <li>Durga attunes the belt</li>
+  <li>Durga retires</li>
+  <li>transfer Ayla from my old vault</li>
+</ul>
+
+<h2>Four jobs</h2>
+<table>
+  <thead><tr><th>Job</th><th>What it does</th></tr></thead>
+  <tbody>
+    <tr><td>Create</td><td>A single-class Character at any level, every choice checked against your Edition's rules, Guided (one choice at a time) or Recap (all at once).</td></tr>
+    <tr><td>Level up / rebuild</td><td>Keeps the current Build as a past Build, then applies the new level's choices or the change, numbers recomputed.</td></tr>
+    <tr><td>Update</td><td>Equipment, attunement, prepared spells, coins, backstory, appearance, player, status.</td></tr>
+    <tr><td>Transfer</td><td>Brings a Character in from an old vault note or another Workspace, after a preview of what comes and what stays behind.</td></tr>
+  </tbody>
+</table>
+
+<h2>The Character note</h2>
+<p><code>Characters/&lt;Name&gt;/&lt;Name&gt;.md</code>: a stat block, then Identity, Build and Statistics. Frontmatter holds only <code>player</code>, <code>status</code>, <code>level</code> and <code>statblock</code>. It records maximums only: what is spent lives in each Campaign's Party State.</p>
+
+<h2>Never</h2>
+<ul>
+  <li>Writes what happened at a table onto the Character: that goes in the Campaign, linking to it.</li>
+  <li>Names a Campaign or a Session in the Character note.</li>
+  <li>Changes the source of a Transfer.</li>
+</ul>
+<p>Guide: <a href="{{root}}guide/characters/">Create the party</a>.</p>

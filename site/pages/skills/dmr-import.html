@@ -1,0 +1,37 @@
+<!--
+title: dmr-import
+description: Imports official D&D entries into Reference (or an Adventure's own items into that Adventure), rendered from the Trusted Source and translated into the Workspace Language.
+-->
+<div class="term">
+  <div class="term-bar"><i></i><i></i><i></i><span>claude</span></div>
+<pre><span class="line"><span class="prompt">&gt; </span>/dm-realm:dmr-import &lt;what to import&gt;</span></pre>
+</div>
+
+<h2>Ask it like this</h2>
+<ul class="prompts">
+  <li>add the Goblin</li>
+  <li>import Fireball, Shield and Misty Step</li>
+  <li>import the Wizard and the School of Evocation</li>
+  <li>import all the Conditions</li>
+</ul>
+
+<h2>What it imports</h2>
+<p>Spells, monsters, magic items and equipment, feats, classes and subclasses, class options (invocations, maneuvers…), species, backgrounds, conditions, actions and rules, and Setting lore. One entry per note, one at a time; the only sets it brings in whole are every Condition and every Action.</p>
+
+<h2>How</h2>
+<ol class="steps">
+  <li>Finds the entry in the Trusted Source, in your Edition's version.</li>
+  <li>Asks, once, about anything that needs you: an Off-Edition player option, a name that matches several entries, a stat block name already taken.</li>
+  <li>Renders it with the plugin's helper, never from memory: text, description, images, statistics.</li>
+  <li>Translates it, recording each term in the Translation Glossary.</li>
+  <li>Writes the note and its images, then rebuilds the Spell Indexes and names monsters' Portraits.</li>
+</ol>
+
+<h2>Good to know</h2>
+<ul>
+  <li><strong>Specific magic weapons</strong> like "+1 Longsword" import their generic variant ("+1 Weapon"), and Claude says so.</li>
+  <li><strong>A 2024 lineage</strong> (Drow) imports its species (Elf).</li>
+  <li><strong>Pasted text</strong> is never written in: the entry is looked up by name instead, or offered as Homebrew.</li>
+  <li><strong>Already imported</strong> notes are left as they are.</li>
+</ul>
+<p>Guide: <a href="{{root}}guide/import/">Bring in official material</a>.</p>

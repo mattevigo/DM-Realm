@@ -7,6 +7,8 @@ A [Claude Code](https://claude.com/claude-code) plugin for D&D 5th-edition Dunge
 - **Official material imported, not invented.** Spells, monsters, items, classes and the rest come from one machine-readable data source and are cited by book and page, never written from the model's memory.
 - **The whole Session loop.** Prepare a Session, take live notes at the table, consolidate it into a recap and Character updates, then tell it as a Chapter for your players.
 
+**New here? Read the guide: [mattevigo.github.io/DM-Realm](https://mattevigo.github.io/DM-Realm/)**, from installing the plugin to your first narrated Chapter.
+
 ## Requirements
 
 - Claude Code
@@ -64,6 +66,7 @@ DM Realm is unofficial Fan Content permitted under the Fan Content Policy. Not a
 - Try a change locally: in an empty folder, run `claude --plugin-dir <path to this repo>`, then `/dm-realm:dmr-setup`.
 - Fast script tests: `for t in tests/*.test.sh; do sh "$t"; done`
 - Agent evals live in `evals/`. See `CLAUDE.md` for how to run them.
+- The guide site lives in `site/`: `python3 site/build.py` builds it into `_site/`, and GitHub Pages publishes it from `master`.
 
 ## License
 
