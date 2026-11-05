@@ -1,0 +1,34 @@
+<!--
+title: Skills
+description: The nine DM-facing skills of DM Realm. Run any of them with /dm-realm:<skill>, or just say what you want.
+-->
+<p>Each skill is one job. You can call it by its command, <code>/dm-realm:&lt;skill&gt;</code>, followed by what you want, or describe the job in plain words and Claude Code picks the skill. Only <code>dmr-setup</code> must be called by its command.</p>
+
+<h2>Starting out</h2>
+<div class="cards">
+  <a class="card" href="{{root}}skills/dmr-setup/"><span class="mono-title">dmr-setup</span><p>Turns the current folder into a Workspace, and maintains it when run again.</p><span class="tag">command only</span></a>
+  <a class="card" href="{{root}}skills/dmr-import/"><span class="mono-title">dmr-import</span><p>Imports official spells, monsters, items, classes, species, feats and rules, translated.</p></a>
+  <a class="card" href="{{root}}skills/dmr-campaign/"><span class="mono-title">dmr-campaign</span><p>Starts a Campaign: its folder and a README with pitch, world, party, tone and truths.</p></a>
+  <a class="card" href="{{root}}skills/dmr-character/"><span class="mono-title">dmr-character</span><p>Creates, levels up, rebuilds, updates or transfers a Character.</p></a>
+</div>
+
+<h2>The Session loop</h2>
+<div class="cards">
+  <a class="card" href="{{root}}skills/dmr-session-prepare/"><span class="mono-title">dmr-session-prepare</span><p>Creates the next Session note and fills its Prep.</p></a>
+  <a class="card" href="{{root}}skills/dmr-mapforge-import/"><span class="mono-title">dmr-mapforge-import</span><p>Brings MapForge's record of a played Session into its Live Notes.</p><span class="tag">optional</span></a>
+  <a class="card" href="{{root}}skills/dmr-session-consolidate/"><span class="mono-title">dmr-session-consolidate</span><p>Closes a played Session: recap, loose threads, Party State, Diary, Character changes.</p></a>
+  <a class="card" href="{{root}}skills/dmr-session-narrate/"><span class="mono-title">dmr-session-narrate</span><p>Tells a consolidated Session as a Chapter of the Chronicle.</p></a>
+</div>
+
+<h2>Any time</h2>
+<div class="cards">
+  <a class="card" href="{{root}}skills/dmr-ask/"><span class="mono-title">dmr-ask</span><p>Answers questions about DM Realm, your Campaigns and the rules, and offers Ideas. Changes nothing.</p></a>
+</div>
+
+<h2>Behind the scenes</h2>
+<p>Two more skills are loaded by the others and never called by you:</p>
+<ul>
+  <li><code>dmr-workspace</code> holds the Workspace rules (folders, Scopes, links, names, translation) that every skill follows.</li>
+  <li><code>dmr-trusted-source</code> reaches the official data through the Source Cache.</li>
+</ul>
+<p>The plugin also has two hooks: one tells Claude, at the start of a session, that the folder is a Workspace and in which language and Edition; the other keeps the Spell Indexes up to date after every change.</p>

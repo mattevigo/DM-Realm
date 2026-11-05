@@ -1,0 +1,61 @@
+<!--
+title: Concepts
+description: The words DM Realm uses, and what each one means. The skills use them exactly this way.
+-->
+<p>DM Realm uses a small, fixed vocabulary. Knowing it makes the skills' questions and reports easier to read.</p>
+
+<h2>The Workspace</h2>
+<dl class="glossary">
+  <dt>Workspace</dt><dd>One DM's folder of notes, opened in Obsidian as a vault. Set up once, in one language and one Edition. Its <code>workspace-config.yml</code> is what makes it a Workspace.</dd>
+  <dt>Workspace Language</dt><dd>The language every folder, file name and note is written in. Chosen at Setup, fixed after.</dd>
+  <dt>Edition</dt><dd>The D&amp;D rules the Workspace follows: 2014 or 2024. Fixed once the first official rules material is imported.</dd>
+  <dt>Setup</dt><dd>The one-time act that turns a folder into a Workspace; also how it is maintained (<a href="{{root}}skills/dmr-setup/">dmr-setup</a>).</dd>
+  <dt>Scope</dt><dd>What kind of content a note is, given only by the top-level folder it lives in. It decides what the note may link to.</dd>
+  <dt>Template</dt><dd>A blank starting note for a kind of content, copied when a new note is made. You may edit them.</dd>
+  <dt>Translation Glossary</dt><dd>The note recording how each game term is translated, and whether that is the publisher's official translation, so every note says it the same way.</dd>
+  <dt>DM Tools</dt><dd>Notes that help you run the game (checklists, random tables) and belong to no single Campaign.</dd>
+</dl>
+
+<h2>Official material</h2>
+<dl class="glossary">
+  <dt>Trusted Source</dt><dd>The 5etools data and its images, at one release: the only source official material is imported, translated and researched from.</dd>
+  <dt>Source Cache</dt><dd>The local copy of the Trusted Source on your machine, shared by all your Workspaces, refreshed only when you ask.</dd>
+  <dt>Import</dt><dd>Bringing one official entry into the Workspace as a translated note (<a href="{{root}}skills/dmr-import/">dmr-import</a>). The only way official material enters.</dd>
+  <dt>Research</dt><dd>Answering a question about official material from the Trusted Source, with book and page, without writing anything.</dd>
+  <dt>Off-Edition Material</dt><dd>Official material of the Edition you did not choose. It only fills a gap, is always marked, and a player option needs your consent.</dd>
+  <dt>Spell Index</dt><dd>A note listing the imported spells by level: one of every spell, one per class. Rebuilt automatically.</dd>
+  <dt>Stat block</dt><dd>A creature's or Character's statistics as a Fantasy Statblocks fence. Monsters and NPCs get one only if the Workspace chose stat blocks; Characters always do.</dd>
+  <dt>Portrait</dt><dd>The one picture of a creature or Character that its stat block names, and that MapForge cuts a token face from.</dd>
+</dl>
+
+<h2>The Scopes</h2>
+<dl class="glossary">
+  <dt>Reference</dt><dd>Official material imported faithfully, with no knowledge of any Campaign.</dd>
+  <dt>Adventure</dt><dd>An official published adventure, kept apart from any Campaign that runs it. A plot you write is never an Adventure.</dd>
+  <dt>Part</dt><dd>One top-level division of an Adventure's book: a chapter, an appendix, a dungeon level.</dd>
+  <dt>Setting</dt><dd>The lore of a game world. An official Setting is Reference; your own lore is World.</dd>
+  <dt>Homebrew</dt><dd>Your game material with mechanics, reused across Campaigns.</dd>
+  <dt>World</dt><dd>Your invented story elements (places, NPCs, factions, history) with no mechanics, reused across Campaigns.</dd>
+  <dt>House Rules</dt><dd>Your changes to the official rules: in Homebrew for every Campaign, or in a Campaign for that one alone.</dd>
+  <dt>Character</dt><dd>A player's character, kept apart from every Campaign so it can play in any of them. NPCs are never Characters.</dd>
+  <dt>Build</dt><dd>A Character's game statistics at one moment. One current Build; earlier ones are kept as past Builds.</dd>
+  <dt>Transfer</dt><dd>Bringing an existing Character in from outside the Workspace, keeping its identity and Build but not its old table's story.</dd>
+  <dt>Campaign</dt><dd>One ongoing game with its own party, Sessions and story: what actually happened at the table.</dd>
+  <dt>Promotion</dt><dd>Moving a note made for one Campaign into Homebrew or World once something else needs it, with every mention of the Campaign removed.</dd>
+  <dt>Migrate</dt><dd>Bringing a whole old vault into a Workspace. No skill does it yet.</dd>
+</dl>
+
+<h2>Play</h2>
+<dl class="glossary">
+  <dt>Session</dt><dd>One real-world game meeting of one Campaign, with its Prep, Live Notes and Recap.</dd>
+  <dt>Side Session</dt><dd>A Session played outside the numbered run, often with part of the party. It has a name instead of a number.</dd>
+  <dt>Live Notes</dt><dd>What you write while the Session is played, kept word for word. The only source of the Recap.</dd>
+  <dt>Table Record</dt><dd>What MapForge records while you play: comments, rolls, fights. Once brought into the Live Notes, it is Live Notes.</dd>
+  <dt>Consolidation</dt><dd>Closing a played Session: Recap and title, Diary entry, Character changes, Party State.</dd>
+  <dt>Party State</dt><dd>A Campaign's one note of where the party stands now: hit points, spent resources, conditions, shared treasure. No history.</dd>
+  <dt>Diary</dt><dd>A Campaign's list of Sessions in play order, a sentence or two each.</dd>
+  <dt>Idea</dt><dd>Story content Claude invents at your request: never a fact of the Campaign until it is played.</dd>
+  <dt>Chronicle</dt><dd>A Campaign's story told as prose for the players, one Chapter per consolidated Session.</dd>
+  <dt>Chapter</dt><dd>One Session told as prose in the Chronicle. Not an Adventure's chapter, which is a Part.</dd>
+  <dt>Voice</dt><dd>A Campaign's narration instructions for its Chronicle, in your words.</dd>
+</dl>

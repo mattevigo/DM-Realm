@@ -51,7 +51,7 @@ The local copy of the Trusted Source that DM Realm keeps outside every Workspace
 _Avoid_: Download, mirror, local data
 
 **Import**:
-Bringing one official entry from the Trusted Source into the Workspace as a note, translated into the Workspace Language — into Reference, or into an Adventure. It is the only way official material enters a Workspace.
+Bringing official material from the Trusted Source into the Workspace as notes, translated into the Workspace Language: one entry, into Reference or into an Adventure, or one Part of an Adventure. It is the only way official material enters a Workspace.
 _Avoid_: Download, copy, Transfer (which is only for Characters)
 
 **Research**:
@@ -79,6 +79,10 @@ _Avoid_: Custom, house content
 **Adventure**:
 An official published adventure — its places, NPCs and items as the book describes them — kept apart from any Campaign that runs it. Only official: a plot the DM writes is never an Adventure, but that Campaign's own content.
 _Avoid_: Module, scenario, homebrew adventure
+
+**Part**:
+One top-level division of an Adventure's book: a chapter, an appendix, a dungeon level. It is what an Import of an Adventure brings in, one or more at a time; the whole Adventure is every Part.
+_Avoid_: Chapter (which is the Chronicle's), section
 
 **Setting**:
 The lore of a game world — geography, pantheon, history. An official Setting is Reference; the DM's own lore is World; how a Campaign has changed it belongs to that Campaign.
@@ -167,7 +171,7 @@ A Campaign's story told as prose for its players, one Chapter per consolidated S
 _Avoid_: Story, tales, saga, Diary (which only lists the Sessions)
 
 **Chapter**:
-One Session of a Campaign told as prose in its Chronicle: what the party lived through, faithful to that Session's Live Notes and Recap, with only the telling invented. Not an Adventure's chapter, which is a part of the book.
+One Session of a Campaign told as prose in its Chronicle: what the party lived through, faithful to that Session's Live Notes and Recap, with only the telling invented. Not an Adventure's chapter, which is a Part.
 _Avoid_: Tale, story
 
 **Voice**:

@@ -1,0 +1,46 @@
+<!--
+title: Bring in official material
+description: Spells, monsters, items, classes and rules come into Reference from one trusted source, translated into your language and cited by book and page.
+-->
+<p>Your Workspace starts empty. Official material comes in one entry at a time, when you need it, through <code>dmr-import</code>. Ask in plain words:</p>
+<ul class="prompts">
+  <li>add the Goblin</li>
+  <li>import Fireball, Shield and Misty Step</li>
+  <li>I need the Grappled condition</li>
+  <li>import all the Conditions</li>
+</ul>
+
+<h2>Where it comes from</h2>
+<p>Every official entry comes from one place, the <strong>Trusted Source</strong>: the machine-readable data published by the 5etools project, at one pinned release. DM Realm ships none of it. The first time a skill needs it, a helper downloads it into a <strong>Source Cache</strong> on your machine, shared by all your Workspaces and kept across plugin updates.</p>
+<ul>
+  <li><strong>Pinned.</strong> The cache stays on one release, so a spell does not change under you between Sessions.</li>
+  <li><strong>Refreshed only when you ask.</strong> Say "refresh the Source Cache" when you want the newest data.</li>
+  <li><strong>Never from memory.</strong> A helper renders each entry from the data. If the source does not have it, it is not imported.</li>
+</ul>
+
+<div class="callout warn"><span class="callout-title">Pasted text is not imported</span>
+<p>Paste a spell from a PDF or a website and DM Realm will look it up in the Trusted Source by name instead. If the source has no such entry, it cannot be Reference, and Claude offers to write it as Homebrew in your own words.</p></div>
+
+<h2>What an import writes</h2>
+<ol class="steps">
+  <li><strong>Finds the entry</strong> in the version of your Edition. When one name matches several entries (a spell and a feat), it asks which.</li>
+  <li><strong>Renders it</strong> with the plugin's helper: the full text, its description, its images, and for a monster its statistics as a stat block or as Markdown, whichever the Workspace chose.</li>
+  <li><strong>Translates it</strong> into the Workspace Language, term by term, recording every choice in the Translation Glossary so every note says "Palla di Fuoco" the same way.</li>
+  <li><strong>Writes one note</strong> in the right folder (<code>Reference/Spells/Level_3/Fireball.md</code>), with its source in the frontmatter, and its images in Reference's Attachments.</li>
+</ol>
+<p>An item that only an Adventure describes goes into that Adventure's Items folder instead of Reference. Monster stat blocks always go to Reference, even when a single Adventure prints them.</p>
+
+<h2>Editions and Off-Edition Material</h2>
+<p>A 2024 Workspace imports the 2024 version of an entry; a 2014 Workspace, the 2014 one. When you ask for something your Edition has no version of, it can still come in as <strong>Off-Edition Material</strong>, clearly marked. For a player option (a spell, a feat, a class, a species), Claude first tells you it is from the other Edition and asks for your consent.</p>
+
+<h2>Spell Indexes</h2>
+<p>Every time a spell note is written, DM Realm rebuilds the <strong>Spell Indexes</strong> in the Spells folder: one listing every imported spell by level, and one per class (<code>Spells_Wizard</code>, <code>Spells_Cleric</code>…). They are rebuilt automatically, so never edit them by hand.</p>
+
+<h2>Translation Glossary</h2>
+<p>In a non-English Workspace, the Translation Glossary in DM_Tools records, for each game term, the translation chosen and whether it is the publisher's <strong>official translation</strong> or a faithful fallback. Edit a row there and later notes follow it.</p>
+
+<div class="callout tip"><span class="callout-title">Just asking is not importing</span>
+<p>"How does grappling work?" is a question: <a href="{{root}}skills/dmr-ask/">dmr-ask</a> answers it from the Trusted Source, naming book and page, without writing anything. Import when you want the note in your Workspace.</p></div>
+
+<h2>Adventures</h2>
+<p>An official adventure gets its own folder in Adventures. Today DM Realm imports an Adventure's items into it, and writes its README (title, book, level range, Parts) the first time. Importing an Adventure's chapters is not built yet; you can still ask questions about an Adventure's text, and <code>dmr-ask</code> answers them from the source.</p>

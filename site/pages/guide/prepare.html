@@ -1,0 +1,50 @@
+<!--
+title: Prepare a Session
+description: Create the next Session note with its Prep already filled in from the last Session's loose threads, where the party stands, the Adventure you are running and your idea for tonight.
+-->
+<p>Before you play, ask for the next Session. <code>dmr-session-prepare</code> creates its note in the Campaign's Sessions folder and fills in the <strong>Prep</strong>, so you start from everything the Campaign already knows.</p>
+
+<ul class="prompts">
+  <li>prepare the next session</li>
+  <li>prep session 12: the party reaches the flooded crypt, and the cult strikes first</li>
+  <li>a side session for Ayla and Brom called The Mystery of Ambika</li>
+  <li>prepare the next session of Ashfall, and give me some ideas</li>
+</ul>
+
+<h2>The Session note</h2>
+<p>Every Session note follows the Session Template that Setup wrote (and that you can edit):</p>
+<pre class="tree"><span class="k">---</span>
+number: 12
+date: 2026-11-14
+<span class="k">---</span>
+# Session 12
+
+**Present:** [[Ayla]], [[Brom]], [[Durga]]
+
+<span class="dir">## Prep</span>
+<span class="note">### Strong start · Scenes · Secrets and clues · NPCs · Places · Encounters · Treasure</span>
+<span class="dir">## Live notes</span>        <span class="note">← you, at the table</span>
+<span class="dir">## Recap</span>             <span class="note">← written at Consolidation</span>
+<span class="dir">## Loose threads</span>     <span class="note">← written at Consolidation</span></pre>
+
+<h2>Where the Prep comes from</h2>
+<p>Every fact in the Prep comes from one of these, and nothing else:</p>
+<ol class="steps">
+  <li><strong>Party State</strong>: who is wounded, who has spent slots or uses, in a line or two.</li>
+  <li><strong>The previous Session's loose threads</strong>, every one, in that Session's own words, with a link to it.</li>
+  <li><strong>Your idea</strong>, placed in the section it fits: an opening scene under Strong start, an NPC under NPCs.</li>
+  <li><strong>An Idea you pick</strong>, if you ask for ideas: Claude offers two or three in chat, checked against your rules and what the Campaign has made true, and writes only the one you choose.</li>
+  <li><strong>The Adventure</strong> the Campaign is running: links to the notes for the part the party has reached, each with a line on why it matters tonight.</li>
+</ol>
+<p>Material the Prep needs that the Workspace does not have yet (a monster an encounter names, say) is listed in the report, with an offer to import it.</p>
+
+<div class="callout warn"><span class="callout-title">Consolidate first</span>
+<p>If the last Session you played has not been consolidated, its loose threads are not written yet. Claude warns you and asks whether to consolidate it first or prepare anyway.</p></div>
+
+<h2>Numbers, names and Side Sessions</h2>
+<ul>
+  <li>The next number is the highest one in use plus one. Asking for a number that is taken, or that leaves a gap, gets a question rather than a note.</li>
+  <li>A <strong>Side Session</strong> is played outside the numbered run, often with only part of the party. It has a name instead of a number and takes its place among the others by date.</li>
+  <li>Give a date ("on the 14th") and it goes in the note's properties; otherwise Claude asks for it at the end.</li>
+</ul>
+<p>Preparing writes only the new Session note. The Diary, Party State, the README and the Characters stay as they are.</p>

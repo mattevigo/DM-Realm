@@ -1,0 +1,67 @@
+<!--
+title: Set up your Workspace
+description: Turn an empty folder into a Workspace. Choose its language, its Edition and how statistics are written, then open it in Obsidian.
+-->
+<p>A <strong>Workspace</strong> is the folder that holds all your campaigns. You set it up once, with <code>dmr-setup</code>, and from then on every other skill works inside it.</p>
+
+<h2>Make an empty folder</h2>
+<p>Setup only runs in a folder that is empty (dot-folders like <code>.obsidian/</code> or <code>.git/</code> are fine) or that is already a Workspace. Point it at a folder full of other notes and it refuses, without writing anything.</p>
+<div class="term">
+  <div class="term-bar"><i></i><i></i><i></i><span>terminal</span></div>
+<pre><span class="line"><span class="prompt">$ </span>mkdir "DM Workspace" &amp;&amp; cd "DM Workspace"</span>
+<span class="line"><span class="prompt">$ </span>claude</span></pre>
+</div>
+
+<h2>Run Setup</h2>
+<p>Setup is the one skill you must call by its command:</p>
+<div class="term">
+  <div class="term-bar"><i></i><i></i><i></i><span>claude</span></div>
+<pre><span class="line"><span class="prompt">&gt; </span>/dm-realm:dmr-setup</span></pre>
+</div>
+<p>It asks you three questions, one at a time, and stops after each to wait for your answer.</p>
+<ol class="steps">
+  <li><strong>Workspace Language.</strong> Every folder, file name and note will be written in it, and it is fixed for good. Answer in any language: "italiano", "Deutsch", "English".</li>
+  <li><strong>Edition.</strong> The 2014 rules (the 2014 core books and those that followed) or the 2024 rules (the 2024 Player's Handbook, Dungeon Master's Guide and Monster Manual).</li>
+  <li><strong>Stat blocks.</strong> Whether monsters' and NPCs' statistics are written as Fantasy Statblocks fences, or as plain Markdown that needs no plugin. Setup recommends stat blocks when Fantasy Statblocks is installed. Characters keep their stat block either way.</li>
+</ol>
+<p>You can skip the questions by answering them up front:</p>
+<div class="term">
+  <div class="term-bar"><i></i><i></i><i></i><span>claude</span></div>
+<pre><span class="line"><span class="prompt">&gt; </span>/dm-realm:dmr-setup italiano, 2024 rules, with stat blocks</span></pre>
+</div>
+
+<h2>Read the preview</h2>
+<p>Before writing anything, Setup shows you exactly what it will create: the Workspace Config, the eight top-level folders with their names in your language, the Templates, the Obsidian settings it changes and, in a language other than English, the Translation Glossary. This is your chance to rename a folder.</p>
+
+<div class="chat">
+  <p class="chat-caption">An example; the exact wording varies</p>
+  <div class="msg claude"><span class="who">C</span><div class="bubble">
+    <p>This is what Setup will create in <code>DM Workspace</code>:</p>
+    <ul>
+      <li><code>workspace-config.yml</code>: language English, Edition 2024, stat blocks on</li>
+      <li>Folders: Reference, Adventures, Homebrew, World, Characters, Campaigns, DM_Tools, Templates</li>
+      <li>Templates: Session, NPC, Place, Quest, Faction, House_Rule, Homebrew_Item, Homebrew_Monster, Homebrew_Spell</li>
+      <li>Obsidian: wikilinks, attachments in an <code>Attachments</code> folder beside each note, Templates folder</li>
+    </ul>
+    <p>Want to rename any folder? Otherwise, shall I go ahead?</p>
+  </div></div>
+  <div class="msg dm"><span class="who">DM</span><div class="bubble">Call Campaigns "Tables". Then go ahead.</div></div>
+</div>
+
+<h2>Open it in Obsidian</h2>
+<p>When Setup reports it is done, there is one step left, and it is yours: in Obsidian, choose <strong>Open folder as vault</strong> and pick the Workspace folder. Setup has already set Obsidian to use wikilinks, to put pasted images in an Attachments folder beside the note, and to read Templates from the Templates folder.</p>
+
+<div class="callout tip"><span class="callout-title">Start Claude Code in the Workspace</span>
+<p>Always start Claude Code from the Workspace's root folder. DM Realm notices the <code>workspace-config.yml</code> there and loads the Workspace's language, Edition and folder names at the start of every session.</p></div>
+
+<h2>Running Setup again</h2>
+<p>A Workspace is set up once, but Setup is also how you maintain it. Run <code>/dm-realm:dmr-setup</code> again inside a Workspace to:</p>
+<ul>
+  <li><strong>Rename a top-level folder.</strong> Setup moves it and rewrites every link that points into it.</li>
+  <li><strong>Switch between stat blocks and Markdown.</strong> It converts every monster and NPC note, after a preview.</li>
+  <li><strong>Restore</strong> missing folders, missing Templates (yours are never overwritten) and the Obsidian settings DM Realm needs.</li>
+  <li><strong>Configure Fantasy Statblocks</strong> after you install it, or update its layouts.</li>
+  <li><strong>Point MapForge's bestiary</strong> at a folder, if you ask it to.</li>
+</ul>
+<div class="callout warn"><span class="callout-title">Language and Edition are fixed</span>
+<p>A re-run never changes the Workspace Language. The Edition is fixed once the first rules material is imported. For another language or Edition, set up a second Workspace.</p></div>

@@ -1,0 +1,56 @@
+<!--
+title: Close the Session
+description: Consolidation turns your Live Notes into a Recap, loose threads and a title, updates Party State and the Diary, and applies the lasting changes to the Characters, after showing you every one.
+-->
+<p>After the Session, close it. <code>dmr-session-consolidate</code> reads the Live Notes, works out everything the Session changed, shows you the full list, and writes only what you keep.</p>
+<ul class="prompts">
+  <li>consolidate the last session</li>
+  <li>consolidate session 13 of Ashfall</li>
+  <li>close the last session, apply everything without asking</li>
+</ul>
+
+<h2>The preview</h2>
+<p>Every change is a line you can drop. Nothing is written until you answer.</p>
+<div class="chat">
+  <p class="chat-caption">An example; the exact wording varies</p>
+  <div class="msg claude"><span class="who">C</span><div class="bubble">
+    <p>Session 12 changes:</p>
+    <ul>
+      <li><strong>Present</strong>: Ayla, Brom, Durga</li>
+      <li><strong>Brom's Build</strong>: + silver holy symbol</li>
+      <li><strong>Party treasure</strong>: + 40 gp (now 115 gp)</li>
+      <li><strong>Party State</strong>: Ayla 9/31 hp, two 2nd-level slots spent; Brom 14/27 hp</li>
+      <li><strong>New NPC</strong>: Korr, Vessa's lieutenant</li>
+      <li><strong>Import</strong>: Skeleton (not in Reference yet)</li>
+      <li><strong>Title</strong>: pick one: <em>The Sealed Stair</em> · <em>Bones in the Water</em> · <em>Korr's Flight</em></li>
+    </ul>
+    <p>Drop any line, pick a title, and tell me to go ahead.</p>
+  </div></div>
+  <div class="msg dm"><span class="who">DM</span><div class="bubble">Bones in the Water. Skip Korr's note for now. Go.</div></div>
+</div>
+
+<h2>What it writes</h2>
+<p>In this order, so a run that is interrupted still reads as not consolidated:</p>
+<ol class="steps">
+  <li><strong>Imports</strong> of official monsters, items or spells the Live Notes named.</li>
+  <li><strong>New Campaign notes</strong> for NPCs, Places, Factions and Quests met for the first time, holding only what the Live Notes say.</li>
+  <li><strong>Promotions</strong>, when a Character now holds homebrew made for this Campaign.</li>
+  <li><strong>Character Builds</strong>: items, coins and attunement gained or lost.</li>
+  <li><strong>Quests</strong> that ended.</li>
+  <li><strong>Party State</strong>: each Character's hit points, spent slots and uses, conditions, and the party's shared treasure, as they stand now.</li>
+  <li><strong>The Session note</strong>: the Present line, the Recap, the Loose threads and the title. Its Prep and Live Notes are left exactly as they were.</li>
+  <li><strong>The Diary</strong>, last: the Session's entry. A Session is consolidated once the Diary has it.</li>
+</ol>
+
+<h2>The Recap and the loose threads</h2>
+<p>The <strong>Recap</strong> is written from your point of view and only from the Live Notes: what the party did and how it ended, real outcomes only, about as long as your previous Recaps. Names that have a note are linked. The <strong>Loose threads</strong> are what the Live Notes leave open, one line each, and they are what the next Session's Prep starts from.</p>
+
+<div class="callout"><span class="callout-title">Levels are not gained here</span>
+<p>If the party levelled up, the Recap records it, and the report tells you to ask for the level-up with <a href="{{root}}skills/dmr-character/">dmr-character</a>, because a level-up has choices that are yours to make.</p></div>
+
+<h2>Party State and the Diary</h2>
+<ul>
+  <li><strong>Party State</strong> is one note per Campaign showing the party <em>now</em>: no history, just the current hit points, spent resources, conditions and shared treasure. The history is in the Session notes.</li>
+  <li><strong>The Diary</strong> lists every Session in play order with a sentence or two and a link. The detail stays in each Recap.</li>
+</ul>
+<p>When it is done, Claude offers to tell the Session as a Chapter of the Campaign's Chronicle. That is the next lesson.</p>

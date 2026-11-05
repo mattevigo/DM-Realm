@@ -1,0 +1,58 @@
+<!--
+title: The DM Realm guide
+description: Eleven short lessons, from installing the plugin to telling your first Session as a Chapter for your players.
+-->
+<p>DM Realm is a <a href="https://claude.com/claude-code">Claude Code</a> plugin for Dungeon Masters running D&amp;D 5th edition. It keeps your campaigns in a <strong>Workspace</strong>: a folder of Markdown notes that you open in <a href="https://obsidian.md">Obsidian</a>. You talk to Claude Code in plain words, and the plugin's skills write and update those notes by a fixed set of rules.</p>
+
+<p>The guide follows the order you will actually use DM Realm in. Read it once front to back, then come back to a lesson when you need it.</p>
+
+<h2>Before you start</h2>
+<ul>
+  <li><strong>Claude Code</strong>, installed and signed in.</li>
+  <li><strong>Obsidian</strong>, to read and edit the Workspace. It is optional, but the Workspace is built for it.</li>
+  <li><code>python3</code> and <code>curl</code> on your <code>PATH</code>. macOS and most Linux systems already have both.</li>
+  <li>Optional: the <strong>Fantasy Statblocks</strong> plugin for Obsidian, which renders monsters, NPCs and Characters as stat blocks.</li>
+  <li>Optional: <strong>MapForge</strong>, if you use it at the table; DM Realm can bring its record of a Session into your notes.</li>
+</ul>
+
+<h2>The lessons</h2>
+
+<h3>Getting set up</h3>
+<div class="cards">
+  <a class="card" href="{{root}}guide/install/"><h3>1 · Install DM Realm</h3><p>Add the marketplace, install the plugin, keep it up to date.</p></a>
+  <a class="card" href="{{root}}guide/setup/"><h3>2 · Set up your Workspace</h3><p>Language, Edition, stat blocks, and opening the folder in Obsidian.</p></a>
+  <a class="card" href="{{root}}guide/workspace/"><h3>3 · Tour the Workspace</h3><p>The eight top-level folders, and what may link to what.</p></a>
+  <a class="card" href="{{root}}guide/import/"><h3>4 · Bring in official material</h3><p>Spells, monsters and items imported from the source, translated.</p></a>
+</div>
+
+<h3>Building the campaign</h3>
+<div class="cards">
+  <a class="card" href="{{root}}guide/campaign/"><h3>5 · Start a Campaign</h3><p>Its folder and a README with the pitch, world, party and tone.</p></a>
+  <a class="card" href="{{root}}guide/characters/"><h3>6 · Create the party</h3><p>New Characters, level-ups, and bringing in old ones.</p></a>
+</div>
+
+<h3>The Session loop</h3>
+<div class="cards">
+  <a class="card" href="{{root}}guide/prepare/"><h3>7 · Prepare a Session</h3><p>A Session note whose Prep is filled from loose threads and your idea.</p></a>
+  <a class="card" href="{{root}}guide/play/"><h3>8 · At the table</h3><p>Live Notes, and MapForge's record of the evening.</p></a>
+  <a class="card" href="{{root}}guide/consolidate/"><h3>9 · Close the Session</h3><p>Recap, Party State, Diary and Character changes, previewed first.</p></a>
+  <a class="card" href="{{root}}guide/narrate/"><h3>10 · Tell the story</h3><p>A Chapter of the Chronicle, in the voice you choose.</p></a>
+</div>
+
+<h3>Any time</h3>
+<div class="cards">
+  <a class="card" href="{{root}}guide/ask/"><h3>11 · When you are stuck</h3><p>Questions, rules, "what now?", and Ideas for your story.</p></a>
+</div>
+
+<h2>How to talk to it</h2>
+<p>Every skill has a command, <code>/dm-realm:&lt;skill&gt;</code>, but you rarely need it. Describe what you want and Claude Code picks the right skill:</p>
+<ul class="prompts">
+  <li>add the Goblin and Fireball</li>
+  <li>a new character for Baldu, a level 3 dwarf cleric</li>
+  <li>prepare the next session: the party reaches the flooded crypt</li>
+  <li>consolidate the last session</li>
+</ul>
+<p>The one exception is Setup, which only runs when you type its command. That way nothing turns a folder into a Workspace by accident.</p>
+
+<div class="callout tip"><span class="callout-title">Lost? Ask.</span>
+<p><code>/dm-realm:dmr-ask what should I do now?</code> looks at your Workspace and tells you the next step, with the command to run. It never changes anything.</p></div>
