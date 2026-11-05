@@ -1,0 +1,70 @@
+<!--
+title: Tour the Workspace
+description: Eight top-level folders, each one a kind of content. Where a note lives decides what it may link to, and that keeps your table's story apart from the books.
+-->
+<p>Every note in a Workspace lives in one of eight top-level folders. The folder a note is in is its <strong>Scope</strong>: what kind of content it is, and what it is allowed to know about. You can add your own subfolders inside them freely; the eight themselves are fixed.</p>
+
+<h2>The eight folders</h2>
+<pre class="tree"><span class="dir">DM Workspace/</span>
+├── workspace-config.yml    <span class="note"># language, Edition, folder names</span>
+├── <span class="dir">Reference/</span>              <span class="note"># official material, imported from the source</span>
+├── <span class="dir">Adventures/</span>             <span class="note"># one folder per official published adventure</span>
+├── <span class="dir">Homebrew/</span>               <span class="note"># your own rules, spells, items, monsters</span>
+├── <span class="dir">World/</span>                  <span class="note"># your own worlds: places, NPCs, pantheons</span>
+├── <span class="dir">Characters/</span>             <span class="note"># the players' Characters, one folder each</span>
+├── <span class="dir">Campaigns/</span>              <span class="note"># one folder per Campaign: everything that happens at the table</span>
+├── <span class="dir">DM_Tools/</span>               <span class="note"># checklists, random tables, prep aids</span>
+└── <span class="dir">Templates/</span>              <span class="note"># blank notes Obsidian copies from</span></pre>
+<p>In a Workspace in another language the folders carry translated names (<code>Riferimento</code>, <code>Campagne</code>…), but they play the same eight roles.</p>
+
+<table>
+  <thead><tr><th>Folder</th><th>What goes there</th><th>Who writes it</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Reference</strong></td><td>Spells, monsters, items, classes, species, feats, rules, Setting lore, imported faithfully with no knowledge of any Campaign.</td><td><a href="{{root}}skills/dmr-import/">dmr-import</a></td></tr>
+    <tr><td><strong>Adventures</strong></td><td>An official adventure's places, NPCs, items and encounters, as the book describes them.</td><td><a href="{{root}}skills/dmr-import/">dmr-import</a> (its items)</td></tr>
+    <tr><td><strong>Homebrew</strong></td><td>Your game material with mechanics, reused across Campaigns, and the House Rules that apply to all of them.</td><td>You, or Claude on request</td></tr>
+    <tr><td><strong>World</strong></td><td>Story with no mechanics: the places, NPCs, factions and history of a world you invented or added to.</td><td>You, or Claude on request</td></tr>
+    <tr><td><strong>Characters</strong></td><td>Each player's Character: identity and current Build. Nothing about any table.</td><td><a href="{{root}}skills/dmr-character/">dmr-character</a></td></tr>
+    <tr><td><strong>Campaigns</strong></td><td>One ongoing game: its README, Sessions, Diary, Party State, Chronicle, and the NPCs, Places, Quests and Factions as they are at this table.</td><td>The Campaign and Session skills</td></tr>
+    <tr><td><strong>DM_Tools</strong></td><td>Aids that belong to no single Campaign. In a non-English Workspace, also the Translation Glossary.</td><td>You</td></tr>
+    <tr><td><strong>Templates</strong></td><td>Blank Session, NPC, Place, Quest, Faction and Homebrew notes.</td><td>Setup, then you</td></tr>
+  </tbody>
+</table>
+
+<h2>Inside a Campaign</h2>
+<pre class="tree"><span class="dir">Campaigns/Heroes_of_the_Border/</span>
+├── README.md           <span class="note"># pitch, world, Adventures run, party, tone, current state</span>
+├── Diary.md            <span class="note"># every Session in play order, a line or two each</span>
+├── Party_State.md      <span class="note"># hit points, spent slots and uses, shared treasure: now</span>
+├── <span class="dir">Sessions/</span>           <span class="note"># one note per Session: Prep, Live notes, Recap, Loose threads</span>
+├── <span class="dir">Chronicle/</span>          <span class="note"># the story told as prose, a Chapter per Session</span>
+├── <span class="dir">NPCs/</span>  <span class="dir">Places/</span>  <span class="dir">Quests/</span>  <span class="dir">Factions/</span>
+└── <span class="dir">Attachments/</span>        <span class="note"># maps, handouts, images</span></pre>
+
+<h2>Why the folders matter: links</h2>
+<p>A note may only link to (or even mention) what its Scope is allowed to know. The rule of thumb:</p>
+<ul>
+  <li><strong>Books know nothing about your table.</strong> A spell in Reference never names a Campaign or a Character. "The party first saw Fireball in Session 8" goes in the Session 8 note, linking to Fireball.</li>
+  <li><strong>Characters know nothing about any table either.</strong> They can play in any Campaign. An item attuned in Session 21, a wound or an oath is written in that Campaign's notes, linking to the Character.</li>
+  <li><strong>Campaigns can link to everything.</strong> That is where your story lives.</li>
+</ul>
+<p>So "who has this feat?" or "which Session did this monster appear in?" is answered by Obsidian's <strong>backlinks</strong>, not by notes written into the feat or the monster.</p>
+
+<table>
+  <thead><tr><th>A note in…</th><th>may link to</th></tr></thead>
+  <tbody>
+    <tr><td>Reference</td><td>Reference</td></tr>
+    <tr><td>an Adventure</td><td>Reference, and its own Adventure</td></tr>
+    <tr><td>Homebrew</td><td>Reference, Homebrew</td></tr>
+    <tr><td>World</td><td>Reference, Homebrew, World</td></tr>
+    <tr><td>Characters</td><td>Reference, Adventures, Homebrew, World, Characters</td></tr>
+    <tr><td>a Campaign, DM Tools</td><td>everything</td></tr>
+    <tr><td>Templates</td><td>nothing: they are blank</td></tr>
+  </tbody>
+</table>
+
+<div class="callout"><span class="callout-title">Ask for a forbidden link and you get a better one</span>
+<p>Ask Claude to note on the Goblin's page that your party killed its chief, and it will write that in the Campaign instead, linking to the Goblin, and tell you where it put it.</p></div>
+
+<h2>Promotion</h2>
+<p>Something you made for one Campaign (a homebrew spell, an NPC) can graduate to Homebrew or World once another Campaign needs it. Ask for it in plain words: Claude confirms, moves the note and removes every mention of the Campaign from it.</p>

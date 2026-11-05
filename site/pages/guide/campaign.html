@@ -1,0 +1,51 @@
+<!--
+title: Start a Campaign
+description: A Campaign is one ongoing game with its own party, Sessions and story. All it needs to start is a name.
+-->
+<p>A <strong>Campaign</strong> is everything that happens at one table: its Sessions, its party, and the NPCs, places and quests as they are in this game. <code>dmr-campaign</code> creates its folder and a README that describes it.</p>
+
+<h2>Name it</h2>
+<p>The name is the only thing a Campaign needs. Give as much or as little else as you like:</p>
+<ul class="prompts">
+  <li>start a new campaign called Heroes of the Border</li>
+  <li>a campaign in my world Orsenna, based on The Sunken Keep, starting at level 3</li>
+</ul>
+<p>Claude creates the folder, its subfolders (Sessions, NPCs, Places, Quests, Factions, Attachments) and a README with whatever you told it. Then it asks, once, about every section you left open, each marked optional. Answer any of them, or none.</p>
+
+<h2>The README</h2>
+<table>
+  <thead><tr><th>Section</th><th>Holds</th></tr></thead>
+  <tbody>
+    <tr><td>Pitch</td><td>The premise, in one to three sentences.</td></tr>
+    <tr><td>World</td><td>An official Setting, your own World, or both, linked to their folders when they exist.</td></tr>
+    <tr><td>Adventures Run</td><td>Each official Adventure this Campaign runs, which part, and whether it is planned, running or finished.</td></tr>
+    <tr><td>Party</td><td>A link to each Character. Empty until one joins.</td></tr>
+    <tr><td>Starting Level</td><td>The level the Characters start at.</td></tr>
+    <tr><td>Tone and Table Limits</td><td>Themes and tone; the lines (never at this table) and the veils (only off-screen).</td></tr>
+    <tr><td>Truths</td><td>Up to six short statements that make this world its own: "The gods are silent."</td></tr>
+    <tr><td>Current State</td><td>Where the story stands. At first, the opening scene and the hook.</td></tr>
+  </tbody>
+</table>
+<p>Every value is in your words. A section you never answer is simply left out.</p>
+
+<div class="chat">
+  <p class="chat-caption">An example; the exact wording varies</p>
+  <div class="msg dm"><span class="who">DM</span><div class="bubble">Start a campaign called Ashfall. Give me three ideas for the pitch.</div></div>
+  <div class="msg claude"><span class="who">C</span><div class="bubble">
+    <p>Created <code>Campaigns/Ashfall/</code> with its README. Three pitches to pick from:</p>
+    <ul>
+      <li>A volcano wakes under a trading city, and the guild that sealed it is lying about why.</li>
+      <li>…</li>
+    </ul>
+    <p>The other sections are optional: world, Adventures, party, starting level, tone and limits, truths, opening…</p>
+  </div></div>
+</div>
+
+<div class="callout"><span class="callout-title">Ideas are offered, never written for you</span>
+<p>When you ask for ideas (a pitch, truths, an opening) Claude offers two or three in chat. Only the one you pick or edit goes into the README.</p></div>
+
+<h2>The party</h2>
+<p>Name a party member who is not a Character yet ("Baldu will play a dwarf") and Claude offers to create the Character with <a href="{{root}}skills/dmr-character/">dmr-character</a>, at the Campaign's starting level, then links it in the Party section. That is the next lesson.</p>
+
+<h2>Your own plot</h2>
+<p>A plot you write is never an Adventure: Adventures are only official books. Your quests, villains and dungeons live in the Campaign's own Quests, NPCs, Places and Factions folders. The Templates folder has a blank note for each; ask Claude to create one ("a note for the smuggler Vessa") or create it in Obsidian from the Template.</p>

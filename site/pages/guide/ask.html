@@ -1,0 +1,45 @@
+<!--
+title: When you are stuck
+description: Ask anything — what to do next, what happened with an NPC, how a rule works, or what the villain might do — and get an answer with its sources, without anything changing.
+-->
+<p><code>dmr-ask</code> answers questions and changes nothing in your Workspace. Use its command or just ask. When an answer recommends a skill and you say "yes, do it", Claude runs that skill for you.</p>
+
+<h2>What to do next</h2>
+<ul class="prompts">
+  <li>how do I start?</li>
+  <li>what should I do now?</li>
+  <li>how do I bring in my old vault?</li>
+</ul>
+<p>Claude looks at the Workspace as it stands (your Campaigns, their latest Session, whether it was played, consolidated, narrated) and tells you the next step, with the exact command, for example <code>/dm-realm:dmr-session-consolidate session 3 of Ashfall</code>. A played Session that is not consolidated always comes first.</p>
+
+<h2>Your Campaign</h2>
+<ul class="prompts">
+  <li>what happened with Tessa?</li>
+  <li>how hurt is Brom?</li>
+  <li>which sessions did the cult appear in?</li>
+</ul>
+<p>What happened comes from the Sessions' Live Notes and Recaps; where things stand comes from Party State and the Characters' Builds. Every fact names the note it came from. The Chronicle is never a source: its telling is invented.</p>
+
+<h2>Rules and official material</h2>
+<ul class="prompts">
+  <li>can Durga grapple the ogre from last session?</li>
+  <li>how does the 2024 Exhaustion condition work?</li>
+</ul>
+<p>Rules answers follow your Workspace's Edition, come from the Trusted Source with book and page, and name the House Rules that change them. An entry you have not imported is offered as an Import.</p>
+
+<h2>Running the game</h2>
+<p>Pacing, a chase, an improvised NPC, a fight for this party: Claude gives its own advice, clearly as advice. Every mechanical claim in it (a CR, an XP budget, a DC) is checked against the source like any rules answer.</p>
+
+<h2>Ideas</h2>
+<ul class="prompts">
+  <li>what could the cult do next?</li>
+  <li>give me an idea for the heist</li>
+</ul>
+<p>An <strong>Idea</strong> is story content Claude invents at your request. It contradicts no rule your table plays by and nothing the Campaign has made true, and it marks what it invents. It stays in chat until you use it: Claude offers to put it into the next Session's Prep.</p>
+
+<h2>What is not built yet</h2>
+<ul>
+  <li><strong>Migrating a whole old vault.</strong> No skill does it yet. The parts that exist: Setup a fresh Workspace, import the official material again with <code>dmr-import</code>, and Transfer each Character with <code>dmr-character</code>.</li>
+  <li><strong>Importing an Adventure's chapters.</strong> Questions about an Adventure's text are still answered from the source.</li>
+</ul>
+<p>Notes no skill writes (a Campaign's NPCs, Places, Quests and Factions, your Homebrew and World, House Rules, DM Tools) are still yours to ask for in plain words; Claude writes them by the Workspace's rules.</p>

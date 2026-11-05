@@ -1,0 +1,42 @@
+<!--
+title: Install DM Realm
+description: Add the DM Realm marketplace to Claude Code and install the plugin. It takes two commands.
+-->
+<p>DM Realm is a Claude Code plugin, distributed through its own plugin marketplace on GitHub. You install it once, and it serves every Workspace you make.</p>
+
+<h2>Install</h2>
+<p>Start Claude Code anywhere and type these two commands:</p>
+<div class="term">
+  <div class="term-bar"><i></i><i></i><i></i><span>claude</span></div>
+<pre><span class="line"><span class="prompt">&gt; </span>/plugin marketplace add mattevigo/DM-Realm</span>
+<span class="line"><span class="prompt">&gt; </span>/plugin install dm-realm@dm-realm</span></pre>
+</div>
+<p>The first command tells Claude Code where DM Realm lives. The second installs the plugin, whose skills are then available in every Claude Code session as <code>/dm-realm:&lt;skill&gt;</code>.</p>
+
+<div class="callout"><span class="callout-title">Nothing is copied into your folders</span>
+<p>The plugin lives in Claude Code's own plugin folder. A Workspace holds only your notes and one small file, <code>workspace-config.yml</code>, which records its language, Edition and folder names.</p></div>
+
+<h2>Check it works</h2>
+<p>Type <code>/dm-realm:</code> and the skills appear in the command menu. Or ask a question in any folder:</p>
+<div class="term">
+  <div class="term-bar"><i></i><i></i><i></i><span>claude</span></div>
+<pre><span class="line"><span class="prompt">&gt; </span>/dm-realm:dmr-ask how do I start?</span></pre>
+</div>
+
+<h2>What else you need</h2>
+<table>
+  <thead><tr><th>Tool</th><th>Why</th><th>Required</th></tr></thead>
+  <tbody>
+    <tr><td><code>python3</code>, <code>curl</code></td><td>The plugin's helpers render official entries and fetch the source data.</td><td class="yes">Yes</td></tr>
+    <tr><td>Obsidian</td><td>Reads and edits the Workspace as a vault: links, backlinks, templates.</td><td class="no">Recommended</td></tr>
+    <tr><td>Fantasy Statblocks</td><td>An Obsidian community plugin that renders monsters, NPCs and Characters as stat blocks. Setup configures it when it finds it.</td><td class="no">Optional</td></tr>
+    <tr><td>MapForge</td><td>A table tool whose record of a Session DM Realm can bring into your notes.</td><td class="no">Optional</td></tr>
+  </tbody>
+</table>
+<p>To get Fantasy Statblocks: in Obsidian, open <strong>Settings › Community plugins › Browse</strong> and search for "Fantasy Statblocks". If you install it after Setup, run Setup again in the Workspace to configure it.</p>
+
+<h2>Updating</h2>
+<p>Claude Code updates installed plugins from the marketplace. To check for a new version by hand, run <code>/plugin</code>, open the DM Realm marketplace and update it. Your Workspaces need nothing: the rules travel with the plugin.</p>
+
+<div class="callout tip"><span class="callout-title">Official data is downloaded on first use</span>
+<p>DM Realm ships no D&amp;D content. The first time a skill needs a spell or a monster, it downloads the source data into a local <strong>Source Cache</strong>, shared by all your Workspaces. More in <a href="{{root}}guide/import/">Bring in official material</a>.</p></div>

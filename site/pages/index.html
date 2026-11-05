@@ -1,0 +1,144 @@
+<!--
+title: DM Realm
+description: A Claude Code plugin for D&D 5e Dungeon Masters. It keeps your campaigns as Obsidian notes, imports official material by book and page, and runs the whole Session loop, in any language.
+-->
+<section class="hero">
+  <span class="hero-badge"><b>v{{version}}</b> · A Claude Code plugin for D&amp;D 5e Dungeon Masters</span>
+  <h1>Run your campaign. <em>Let the notes keep themselves.</em></h1>
+  <p class="sub">DM Realm turns a folder into a Workspace for your D&amp;D campaigns: Markdown notes you open in Obsidian, official material imported by book and page, and the whole Session loop, from prep to recap to the story your players read. In any language.</p>
+  <div class="actions">
+    <a class="btn btn-primary" href="{{root}}guide/">Start the guide <span class="arrow">→</span></a>
+    <a class="btn" href="{{root}}skills/">Browse the skills</a>
+  </div>
+  <div class="term">
+    <div class="term-bar"><i></i><i></i><i></i><span>claude</span></div>
+<pre><span class="line"><span class="prompt">&gt; </span>/plugin marketplace add mattevigo/DM-Realm</span>
+<span class="line"><span class="prompt">&gt; </span>/plugin install dm-realm@dm-realm</span></pre>
+  </div>
+</section>
+
+<section class="band">
+  <div class="section-head">
+    <p class="eyebrow">What it does</p>
+    <h2>A co-DM for the paperwork</h2>
+    <p>You keep running the table. DM Realm keeps the notes that hold your campaign together, and asks before it changes anything.</p>
+  </div>
+  <div class="features">
+    <div class="feature">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5v-15Z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M8 7h8M8 11h6"/></svg></div>
+      <h3>2014 or 2024 rules</h3>
+      <p>Pick the Edition at Setup. Every rule, spell and monster you bring in follows it, and anything from the other Edition is marked as such.</p>
+    </div>
+    <div class="feature">
+      <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3Z"/></svg></div>
+      <h3>Any language</h3>
+      <p>Folders, file names and notes are written in the language you choose, using the publisher's official translation of each game term where there is one.</p>
+    </div>
+    <div class="feature">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3 4 6.5v5c0 4.6 3.4 8.6 8 9.5 4.6-.9 8-4.9 8-9.5v-5L12 3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></div>
+      <h3>Imported, not invented</h3>
+      <p>Spells, monsters and items come from one machine-readable source, cited by book and page. Nothing official is written from the model's memory.</p>
+    </div>
+    <div class="feature">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 4v5h-5"/></svg></div>
+      <h3>The whole Session loop</h3>
+      <p>Prepare a Session, take notes at the table, close it into a recap and Character updates, then tell it as a Chapter for your players.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="section-head">
+    <p class="eyebrow">The Session loop</p>
+    <h2>From prep to story, every week</h2>
+    <p>Each step is a skill you can call by name or just ask for in plain words.</p>
+  </div>
+  <div class="loop">
+    <a class="loop-step" href="{{root}}guide/prepare/">
+      <span class="n">01</span>
+      <h3>Prepare</h3>
+      <p>A Session note with loose threads, where the party stands and your idea for tonight.</p>
+      <code>dmr-session-prepare</code>
+    </a>
+    <a class="loop-step play" href="{{root}}guide/play/">
+      <span class="n">02</span>
+      <h3>Play</h3>
+      <p>You run the game and jot Live Notes in Obsidian. No agent at the table.</p>
+      <code>you, in Obsidian</code>
+    </a>
+    <a class="loop-step" href="{{root}}guide/play/#bring-in-mapforges-record">
+      <span class="n">03</span>
+      <h3>Record</h3>
+      <p>Optional: bring MapForge's record of rolls and fights into the Live Notes.</p>
+      <code>dmr-mapforge-import</code>
+    </a>
+    <a class="loop-step" href="{{root}}guide/consolidate/">
+      <span class="n">04</span>
+      <h3>Consolidate</h3>
+      <p>Recap, loose threads, Party State, Diary and Character changes, previewed first.</p>
+      <code>dmr-session-consolidate</code>
+    </a>
+    <a class="loop-step" href="{{root}}guide/narrate/">
+      <span class="n">05</span>
+      <h3>Narrate</h3>
+      <p>The Session told as a Chapter for your players, in the voice you set.</p>
+      <code>dmr-session-narrate</code>
+    </a>
+  </div>
+  <p class="loop-note">Between Sessions: import what the next one needs, level up Characters, and ask anything.</p>
+</section>
+
+<section class="band">
+  <div class="section-head">
+    <p class="eyebrow">Get started</p>
+    <h2>Up and running in three steps</h2>
+  </div>
+  <div class="start-steps">
+    <div class="start-step">
+      <h3>Install the plugin</h3>
+      <p>In Claude Code, add the marketplace and install DM Realm.</p>
+      <a href="{{root}}guide/install/">Install guide →</a>
+    </div>
+    <div class="start-step">
+      <h3>Set up a Workspace</h3>
+      <p>In an empty folder, start Claude Code and run Setup. Choose a language, an Edition and how stat blocks look.</p>
+      <pre>/dm-realm:dmr-setup</pre>
+    </div>
+    <div class="start-step">
+      <h3>Ask in plain words</h3>
+      <p>Open the folder in Obsidian, then just say what you want.</p>
+      <pre>start a new campaign called
+Heroes of the Border</pre>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="section-head">
+    <p class="eyebrow">How it behaves</p>
+    <h2>Three promises</h2>
+  </div>
+  <div class="promises">
+    <div class="promise">
+      <h3>Your notes stay yours</h3>
+      <p>Everything is plain Markdown in a folder you own. Live Notes are kept word for word, and Templates you edit are never overwritten.</p>
+    </div>
+    <div class="promise">
+      <h3>Preview, then a yes</h3>
+      <p>Setup, Consolidation and every bigger change show you exactly what they will write, and wait for your go-ahead.</p>
+    </div>
+    <div class="promise">
+      <h3>Sources, not memory</h3>
+      <p>Rules answers name the book and page, and the House Rules that change them. What the source does not hold is never made up.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <h2>Roll for initiative</h2>
+  <p>The guide takes you from an empty folder to your first narrated Chapter in eleven short lessons.</p>
+  <div class="actions">
+    <a class="btn btn-primary" href="{{root}}guide/">Start the guide <span class="arrow">→</span></a>
+    <a class="btn" href="{{root}}concepts/">Learn the concepts</a>
+  </div>
+</section>
