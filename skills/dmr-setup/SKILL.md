@@ -140,6 +140,8 @@ Setup follows structure.md's "MapForge" rule: it reads `.mapforge/`, and sets th
   - `not-found` — the folder `path` it names is not in the Workspace.
   - `outside` — the folder it names is not inside the Workspace, so MapForge refuses it.
 
+  Whatever the `config`, also say how many items MapForge's Treasury lists (`treasury`: the notes that say `item: true` in their frontmatter, wherever they are) and how many of them have no Portrait (`treasury_no_portrait`), so the DM knows which Treasures will keep their colour instead of wearing the item's picture; with `treasury` at 0, that MapForge has no item to give a Treasure yet.
+
   These are facts for the DM, and the report states them and stops there: no offer to change them, no suggested folder, no "I can set it" or "just ask". What the DM does with MapForge is theirs to decide.
 - **Setting the bestiary folder**, only when the DM's own request asks for it ("point MapForge's bestiary at the Monsters folder"). Resolve the folder the DM names to a path relative to the Workspace root (the Reference Monsters folder is `<reference>/<Monsters in use>`), then:
 

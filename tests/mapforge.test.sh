@@ -1,5 +1,5 @@
 #!/bin/sh
-# Tests the MapForge helper: what MapForge's Bestiary reads of a Workspace, and
+# Tests the MapForge helper: what MapForge's Bestiary and Treasury read of a Workspace, and
 # setting its folder when the DM asks (ADR 0011).
 # Usage: sh tests/mapforge.test.sh   (exit 0 = all pass)
 set -u
@@ -114,6 +114,50 @@ for case in 'no-key|{"somethingElse": true}' 'invalid|{"bestiaryStatBlockPath": 
   [ "$(field "$OUT" "d['config']")" = "$want" ] || fail "$want: got $OUT for $json"
   [ "$(snapshot)" = "$BEFORE" ] || fail "$want: .mapforge changed"
 done
+
+# The Treasury: every note outside hidden folders whose frontmatter says `item: true`, wherever it
+# is, read whatever the bestiary folder; a Portrait is its frontmatter `image:` (MapForge's ADR-0031).
+item() { # item <file> <frontmatter lines>
+  mkdir -p "$(dirname "$1")"
+  printf -- '---\nsource: XPHB p. 225\n%b\n---\n\n# %s\n\nA thing.\n' "$2" "$(basename "$1" .md | tr _ ' ')" > "$1"
+}
+new_ws 13; mapforge ''
+item "$W/Reference/Magic_Items/Fire_Gem.md" 'item: true\nimage: "[[Reference/Attachments/Fire_Gem.webp]]"'
+item "$W/Reference/Equipment/Pouch.md" 'item: true'
+item "$W/Adventures/Mine/Items/Lantern.md" 'item: true\nimage: "[[Adventures/Mine/Attachments/Lantern.webp]]"'
+item "$W/World/Crown.md" 'item: true'
+OUT=$(python3 "$HELPER" report "$W") || fail "treasury: exit $?"
+[ "$(field "$OUT" "d['treasury']")" = "4" ] || fail "treasury: should read 4 items: $OUT"
+[ "$(field "$OUT" "d['treasury_no_portrait']")" = "2" ] || fail "treasury: 2 without a Portrait: $OUT"
+# Only a YAML boolean true is an item: a string, false, a nested key, the key in the body are not;
+# hidden folders are skipped.
+item "$W/Reference/Magic_Items/Quoted.md" 'item: "true"'
+item "$W/Reference/Magic_Items/Single_Quoted.md" "item: 'true'"
+item "$W/Reference/Magic_Items/Not_One.md" 'item: false'
+item "$W/Reference/Magic_Items/Nested.md" 'tags:\n  item: true'
+printf '# Loose\n\nitem: true\n' > "$W/Reference/Magic_Items/Loose.md"
+item "$W/.trash/Old_Gem.md" 'item: true'
+item "$W/Reference/.drafts/Draft_Gem.md" 'item: true\nimage: "[[x.webp]]"'
+OUT=$(python3 "$HELPER" report "$W") || fail "treasury not items: exit $?"
+[ "$(field "$OUT" "d['treasury']")" = "4" ] || fail "treasury: strings, false, nested, body and hidden not counted: $OUT"
+[ "$(field "$OUT" "d['treasury_no_portrait']")" = "2" ] || fail "treasury: no-Portrait count unchanged: $OUT"
+# Two notes with one name are one Item, the first by path (Homebrew's Pouch, with its Portrait,
+# before Reference's, without); an empty `image:`, or one that is no wikilink, is no Portrait,
+# and an unquoted wikilink is one.
+item "$W/Homebrew/Magic_Items/Pouch.md" 'item: true\nimage: "[[Homebrew/Attachments/Pouch.webp]]"'
+item "$W/Homebrew/Magic_Items/Bare_Ring.md" 'item: True\nimage:'
+item "$W/Homebrew/Magic_Items/Web_Ring.md" 'item: true\nimage: https://example.com/ring.webp'
+item "$W/Homebrew/Magic_Items/Plain_Ring.md" 'item: true # an item\nimage: [[Homebrew/Attachments/Plain_Ring.webp|200]]'
+OUT=$(python3 "$HELPER" report "$W") || fail "treasury names: exit $?"
+[ "$(field "$OUT" "d['treasury']")" = "7" ] || fail "treasury: one Pouch read, and the three Rings: $OUT"
+[ "$(field "$OUT" "d['treasury_no_portrait']")" = "3" ] || fail "treasury: Crown, Bare Ring and Web Ring have no Portrait: $OUT"
+# Read with a bestiary folder set too; an empty Treasury is 0.
+mapforge '{"bestiaryStatBlockPath": "Reference/Monsters"}'
+OUT=$(python3 "$HELPER" report "$W") || fail "treasury configured: exit $?"
+[ "$(field "$OUT" "d['treasury']")" = "7" ] || fail "treasury: read with a bestiary folder: $OUT"
+new_ws 14; mapforge '{"bestiaryStatBlockPath": "."}'
+OUT=$(python3 "$HELPER" report "$W") || fail "treasury empty: exit $?"
+[ "$(field "$OUT" "(d['treasury'], d['treasury_no_portrait'])")" = "(0, 0)" ] || fail "treasury: empty: $OUT"
 
 # Not a Workspace: exit 2.
 python3 "$HELPER" report "$TMP/nowhere" >/dev/null 2>&1; [ $? -eq 2 ] || fail "no workspace: expected exit 2"
