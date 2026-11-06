@@ -1715,11 +1715,11 @@ def meta(key, entry, path, note=None, attachments=None):
     }
     if key in ITEM_KEYS and attachments:  # its Portrait, for its frontmatter's `image:`
         global FETCH_IMAGES
-        FETCH_IMAGES = False  # naming its picture needs no cached copy
+        fetching, FETCH_IMAGES = FETCH_IMAGES, False  # naming its picture needs no cached copy
         try:
             facts["portrait"] = render(key, entry, path, note=note, attachments=attachments)[2]
         finally:
-            FETCH_IMAGES = True
+            FETCH_IMAGES = fetching
     if key == "spell":
         facts["level"] = entry.get("level")
         facts["classes"] = spell_classes(entry)

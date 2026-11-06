@@ -19,14 +19,20 @@ Homebrew_Magic_Items, and no other: no Spells, no NPCs. The folders are named by
 Workspace Config and the Translation Glossary, as spell-index.py finds the Spells folder.
 Every item note gets `item: true`, picture or not.
 
-The note's own picture is the first one it embeds (before its statistics, for a stat
-block) whose file is named after the note, as an Import names it: `<note>.<ext>` or
-`<note>_01.<ext>` (png, jpg, jpeg or webp). A stat block's picture under its statistics
-(an action's) is never the Portrait, nor one named otherwise (a map, the DM's own
-picture): those notes are not listed. An `image:` already there is the DM's choice and
-stays as it is; a Character's stat block is left as it is. The picture is found as
-MapForge finds it: by its path, or a path's end, among the Workspace's files outside
-hidden folders, ignoring case.
+The note's own picture is a file named after the note, as an Import names it (png, jpg,
+jpeg or webp). A stat block's is the first one it embeds before its statistics named
+`<note>.<ext>` or `<note>_01.<ext>`. An item's is the first one its Description section
+embeds named `<note>.<ext>` or `<note>_NN.<ext>`: an Import numbers a note's pictures in
+order, so a picture in the item's own text, above its Description, can take `_01`. The
+Description is the section under the heading an Import gives it — the Translation
+Glossary's row for Description, else `Description` — up to the next heading of its level
+or above. An item note with no Description section names no Portrait and is not listed,
+as an Import of an entry with no description names none. A stat block's picture under its
+statistics (an action's) is never the Portrait, nor an item's outside its Description,
+nor one named otherwise (a map, the DM's own picture): those notes are not listed. An
+`image:` already there is the DM's choice and stays as it is; a Character's stat block is
+left as it is. The picture is found as MapForge finds it: by its path, or a path's end,
+among the Workspace's files outside hidden folders, ignoring case.
 
 Prints a JSON report. For stat blocks: `added` (note and the `image:` it now names) and
 `skipped` (note and why: no file by that name, or several). For item notes, under
@@ -71,13 +77,16 @@ def statistics(text):
     return (m.start(1), m.end(1)) if m else None
 
 
-def own_picture(text, before, stem):
-    """The note's own picture, as it embeds it, among its embeds before its statistics."""
+def own_picture(text, start, end, stem, numbered=False):
+    """The note's own picture, as it embeds it, among its embeds from `start` to `end`:
+    `<note>` or `<note>_01`, or with `numbered` any `<note>_NN`."""
     names = {f"{stem}{suffix}".casefold() for suffix in ("", "_01")}
-    for m in EMBED.finditer(text, 0, before):
+    number = re.compile(re.escape(stem.casefold()) + r"_\d{2,}")
+    for m in EMBED.finditer(text, start, end):
         target = m.group(1).strip()
         base, ext = os.path.splitext(target.rsplit("/", 1)[-1])
-        if ext.lower() in PICTURES and base.casefold() in names:
+        if ext.lower() in PICTURES and (base.casefold() in names
+                                        or numbered and number.fullmatch(base.casefold())):
             return target
     return None
 
@@ -103,6 +112,7 @@ def with_line(text, start, end, line):
 
 ITEM = "item"
 FRONTMATTER = re.compile(r"\A---[ \t]*\n(.*?)^---[ \t]*$", re.S | re.M)
+HEADING = re.compile(r"^(#{1,6})[ \t]+(.*?)[ \t#]*$", re.M)
 
 
 def term(terms, english):
@@ -173,10 +183,25 @@ def with_frontmatter(text, lines):
     return text[:m.end(1)] + "".join(l + "\n" for l in lines) + text[m.end(1):]
 
 
-def portrait(text, before, shown, paths):
-    """(the Portrait's link, None) for a note's own picture embedded before `before`;
+def description(text, terms):
+    """(start, end) of the note's Description section — its heading named as an Import names
+    it, the Translation Glossary's row or else the English — up to the next heading of its
+    level or above; None when it has none."""
+    names = {n.casefold() for n in (term(terms, "Description"), "Description") if n}
+    front = FRONTMATTER.match(text)
+    headings = list(HEADING.finditer(text, front.end() if front else 0))
+    for i, m in enumerate(headings):
+        if m.group(2).casefold() in names:
+            level = len(m.group(1))
+            end = next((h.start() for h in headings[i + 1:] if len(h.group(1)) <= level), len(text))
+            return m.end(), end
+    return None
+
+
+def portrait(text, span, shown, paths, numbered=False):
+    """(the Portrait's link, None) for a note's own picture embedded in `span`;
     (None, why) when no file or several have its name; (None, None) when it has none."""
-    target = own_picture(text, before, os.path.splitext(os.path.basename(shown))[0])
+    target = own_picture(text, *span, os.path.splitext(os.path.basename(shown))[0], numbered)
     if not target:
         return None, None
     found = resolve(target, paths)
@@ -199,7 +224,7 @@ def stat_blocks(workspace, paths):
         keys = {key_of(l): l for l in text[span[0]:span[1]].split("\n") if key_of(l)}
         if statblock.PORTRAIT in keys or statblock.CHARACTER_LAYOUT in keys.get("layout", ""):
             continue
-        link, why = portrait(text, span[0], shown, paths)
+        link, why = portrait(text, (0, span[0]), shown, paths)
         if why:
             report["skipped"].append({"note": shown, "why": why})
         if not link:
@@ -211,8 +236,10 @@ def stat_blocks(workspace, paths):
 
 
 def items(workspace, paths):
-    """Give every item note `item: true`, and its Portrait when it embeds its own picture; their report."""
+    """Give every item note `item: true`, and its Portrait when its Description embeds its own
+    picture; their report."""
     report = {"added": [], "skipped": []}
+    terms = spell_index.glossary(workspace)
     for shown in item_notes(workspace):
         path = os.path.join(workspace, shown)
         with open(path, encoding="utf-8") as f:
@@ -222,8 +249,9 @@ def items(workspace, paths):
         added = {}
         if ITEM not in keys:
             added[ITEM] = True
-        if statblock.PORTRAIT not in keys:
-            link, why = portrait(text, len(text), shown, paths)
+        span = description(text, terms)
+        if statblock.PORTRAIT not in keys and span:  # no Description, no Portrait
+            link, why = portrait(text, span, shown, paths, numbered=True)
             if why:
                 report["skipped"].append({"note": shown, "why": why})
             if link:

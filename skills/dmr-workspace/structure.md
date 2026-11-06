@@ -565,7 +565,7 @@ The Portrait is the one picture MapForge cuts a Pawn's Face from, named with the
   python3 "<the dmr-workspace skill's base directory>/portraits.py" .
   ```
 
-  It adds `item: true` to every [item note](#item-notes) without it, and `image:` wherever a note embeds its own picture — named after the note, as an Import names it — a monster's before its statistics. It never touches an `image:` already there, and lists what it added and what it skipped, with why (no file by that name, or several).
+  It adds `item: true` to every [item note](#item-notes) without it, and `image:` wherever a note embeds its own picture — named after the note, as an Import names it — a monster's before its statistics, an item's in its Description. It never touches an `image:` already there, and lists what it added and what it skipped, with why (no file by that name, or several).
 - **A Character's stat block** names no Portrait yet, and the helper leaves it as it is.
 
 ### MapForge

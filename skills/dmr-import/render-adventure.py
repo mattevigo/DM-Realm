@@ -44,13 +44,14 @@ note first, each with its `note` path, `section` id, `source_property`
 note also has its `portrait`, as render-entry.py's --meta gives an item's: the `image:`
 value naming its first image in --attachments (the Adventure's Attachments folder, from
 the Workspace root, which a plan with an item note needs), null without one. --check
-renders the same and prints nothing, fetching no image: exit 0 means the Part renders.
+renders the same and prints nothing, fetching no image: exit 0 means the Part renders;
+it needs no --attachments.
 
 Exit codes are render-entry.py's; exit 2 also refuses a plan naming a section not in the
 Part or not a heading, a section twice, or two notes of the same name (an Adventure's
 note names are unique in it), an `item` neither true nor false, a plan with an item note
-but no --attachments, and a links file without a target the Part needs. A Part
-that does not render (6, 7) is named, with its deepest section that does not.
+but no --attachments (unless --check), and a links file without a target the Part needs.
+A Part that does not render (6, 7) is named, with its deepest section that does not.
 Nothing is printed on stdout on any error.
 """
 import importlib.util
