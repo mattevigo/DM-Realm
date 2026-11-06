@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: homebrew-item-template
+description: "A Homebrew magic item is made from the Homebrew_Item Template in use, which has no frontmatter, and takes item: true in its frontmatter, as any item note does; with no picture in its Description it names no Portrait (ADR 0014)."
+tags: [scenario, mapforge]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    I made up a magic item for any of my campaigns: the Lantern of Quiet Roads, an uncommon wondrous item. While it is lit, creatures in its light leave no tracks. Add it to my Homebrew.
