@@ -4,7 +4,7 @@
   render-adventure.py <adventure id>
   render-adventure.py <adventure id> --part <index> --list [--edition 2014|2024]
   render-adventure.py <adventure id> --part <index> --plan <plan.json> --links <links.json>
-                      [--edition 2014|2024] [--check]
+                      [--edition 2014|2024] [--attachments <folder>] [--check]
 
 <adventure id> is the Adventure's id in `data/adventures.json` (`SLC`); its text is
 `data/adventure/adventure-<id lowercased>.json`, fetched through the Source Cache helper
@@ -28,8 +28,10 @@ the data files a link needs (bestiaries, items) come through the Source Cache as
 --plan and --links render the Part. The split plan is
 `{"part_note": "<path>", "sections": [{"id": "<section id>", "note": "<path>"}, …]}`, each
 path a note's, from the Workspace root, without `.md`, its name with the name rules
-applied: each planned heading becomes its own note, with everything under it but the
-planned headings inside it, and the Part note holds the rest; where a planned heading
+applied; a section also has `"item": true` when it is an item described under its own
+heading, whose note goes in the Adventure's Items. Each planned heading becomes its own
+note, with everything under it but the planned headings inside it, and the Part note
+holds the rest; where a planned heading
 stood, its parent note links to it. The links file maps every target key --list gives
 to its note's path (`{"monster|Goblin Warrior|XMM": "Reference/Monsters/Goblin_Warrior"}`);
 a link is written whether or not that note exists yet (ADR 0013). A creature or item
@@ -37,13 +39,17 @@ tag links to its target, an area tag to the note that holds that section (with a
 anchor when it is not the note's own) or, in another Part, to that Part's note; every
 other tag is plain text. Every named block is a heading. Prints JSON: `notes`, the Part
 note first, each with its `note` path, `section` id, `source_property`
-(`SLC p. 5, v2.36.1, #012`), English Markdown `text`, and `images` (as render-entry.py's
---images lists them, named after that note). --check renders the same and prints
-nothing, fetching no image: exit 0 means the Part renders.
+(`SLC p. 5, v2.36.1, #012`), English Markdown `text`, `images` (as render-entry.py's
+--images lists them, named after that note), and `item` (true for an item note). An item
+note also has its `portrait`, as render-entry.py's --meta gives an item's: the `image:`
+value naming its first image in --attachments (the Adventure's Attachments folder, from
+the Workspace root, which a plan with an item note needs), null without one. --check
+renders the same and prints nothing, fetching no image: exit 0 means the Part renders.
 
 Exit codes are render-entry.py's; exit 2 also refuses a plan naming a section not in the
 Part or not a heading, a section twice, or two notes of the same name (an Adventure's
-note names are unique in it), and a links file without a target the Part needs. A Part
+note names are unique in it), an `item` neither true nor false, a plan with an item note
+but no --attachments, and a links file without a target the Part needs. A Part
 that does not render (6, 7) is named, with its deepest section that does not.
 Nothing is printed on stdout on any error.
 """
@@ -413,6 +419,8 @@ def check_plan(part, plan):
         if not entry.valid_note(name) or folder and not entry.valid_folder(folder):
             problems.append(f"'{path}' is not a note path with the name rules applied")
     for s in sections:
+        if not isinstance(s.get("item", False), bool):
+            problems.append(f"section {s['id']}'s item is neither true nor false")
         node = found.get(s["id"])
         if node is None:
             problems.append(f"section {s['id']} is not in this Part")
@@ -427,14 +435,17 @@ def check_plan(part, plan):
         raise Failure(2, "the split plan cannot be rendered: " + "; ".join(problems) + ".")
 
 
-def render_plan(record, parts, index, plan, paths, edition, check=False):
+def render_plan(record, parts, index, plan, paths, edition, check=False, attachments=None):
     """The Part note and one note per planned section, each with its images; with check,
     the same rendering with no image fetched, and nothing returned."""
     part = parts[index]
     check_plan(part, plan)
+    if not check and not attachments and any(s.get("item") for s in plan["sections"]):
+        raise Failure(2, "the split plan has an item note, whose Portrait needs --attachments "
+                         "(the Adventure's Attachments folder, from the Workspace root).")
     try:
         try:
-            return render_notes(record, parts, index, plan, paths, edition, check)
+            return render_notes(record, parts, index, plan, paths, edition, check, attachments)
         except Failure as e:
             if e.code not in (6, 7):
                 raise
@@ -446,9 +457,10 @@ def render_plan(record, parts, index, plan, paths, edition, check=False):
         entry.ALWAYS_HEADINGS, entry.LINK_TAG, entry.FETCH_IMAGES = False, None, True
 
 
-def render_notes(record, parts, index, plan, paths, edition, check):
+def render_notes(record, parts, index, plan, paths, edition, check, attachments):
     part = parts[index]
     notes = {s["id"]: s["note"] for s in plan["sections"]}
+    items = {s["note"] for s in plan["sections"] if s.get("item")}
     pages = {h["id"]: h["page"] for h in headings(part, 0, part.get("page"))}
     sections = by_id(part)
     links = collect_links(Links(record, edition, parts, index), part)
@@ -466,14 +478,17 @@ def render_notes(record, parts, index, plan, paths, edition, check):
         text = "\n\n".join(b for b in [f"# {entry.plain(node['name'])}"]
                            + entry.render_entries(entry.children(body)) if b) + "\n"
         text, images = entry.embed_images(text, path.rsplit("/", 1)[-1])
-        rendered.append({"note": path, "section": node["id"],
-                         "source_property": source_property(record, node, pages.get(node["id"]), release),
-                         "text": text, "images": images})
+        note = {"note": path, "section": node["id"],
+                "source_property": source_property(record, node, pages.get(node["id"]), release),
+                "text": text, "images": images, "item": path in items}
+        if path in items:  # its Portrait, for its frontmatter's `image:`: its first image
+            note["portrait"] = f"[[{attachments}/{images[0]['file']}]]" if images else None
+        rendered.append(note)
     return None if check else {"adventure": record["id"], "notes": rendered}
 
 
-USAGE = ("usage: render-adventure.py <adventure id> [--edition 2014|2024] "
-         "[--part <index> (--list | --plan <plan.json> --links <links.json> [--check])]")
+USAGE = ("usage: render-adventure.py <adventure id> [--edition 2014|2024] [--part <index> "
+         "(--list | --plan <plan.json> --links <links.json> [--attachments <folder>] [--check])]")
 
 
 def main(argv):
@@ -481,7 +496,7 @@ def main(argv):
     i = 0
     while i < len(argv):
         a = argv[i]
-        if a in ("--part", "--plan", "--links", "--edition"):
+        if a in ("--part", "--plan", "--links", "--edition", "--attachments"):
             if i + 1 >= len(argv):
                 raise Failure(2, f"{a} needs a value.")
             opts[a] = argv[i + 1]
@@ -497,6 +512,7 @@ def main(argv):
             or "--part" in opts and ("--list" in flags) == rendering \
             or "--check" in flags and not rendering \
             or ("--plan" in opts) != ("--links" in opts) \
+            or "--attachments" in opts and not (rendering and entry.valid_folder(opts["--attachments"])) \
             or opts.get("--edition", "2024") not in entry.MONSTER_LAYOUTS:
         raise Failure(2, USAGE)
     record, parts = adventure(args[0])
@@ -512,7 +528,7 @@ def main(argv):
     plan = load_json(opts["--plan"], "split plan")
     paths = load_json(opts["--links"], "links file")
     rendered = render_plan(record, parts, int(index), plan, paths, opts.get("--edition", "2024"),
-                           "--check" in flags)
+                           "--check" in flags, opts.get("--attachments"))
     return "" if rendered is None else json.dumps(rendered, indent=2, ensure_ascii=False) + "\n"
 
 

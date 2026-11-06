@@ -1109,6 +1109,54 @@ has "item description" "$OUT" "A curved blade.
 ## Description
 
 Harbor guards carry it."
+# An item says it is one, and names its Portrait (structure.md's "The Portrait"): --meta
+# gives `item` for every entry and, with --attachments, an item's `portrait`, the `image:`
+# value of its Description's first picture — not the picture in its own text, above it.
+python3 - "$DATA" <<'PY'
+import json, sys
+data = sys.argv[1]
+def edit(path, fn):
+    p = f"{data}/{path}"; d = json.load(open(p)); fn(d); json.dump(d, open(p, "w"))
+edit("items.json", lambda d: d["item"].append(
+  {"name": "Glowcap Pouch", "source": "CNR", "page": 207, "wondrous": True, "rarity": "uncommon",
+   "hasFluff": True, "hasFluffImages": True,
+   "entries": ["It glows when shaken.", {"type": "image", "href": {"type": "internal", "path": "items/CNR/pouch-open.webp"}}]}))
+edit("fluff-items.json", lambda d: d["itemFluff"].append(
+  {"name": "Glowcap Pouch", "source": "CNR", "entries": ["Mushroom farmers sew them."],
+   "images": [{"type": "image", "href": {"type": "internal", "path": "items/CNR/Glowcap Pouch.webp"}},
+              {"type": "image", "href": {"type": "internal", "path": "items/CNR/pouch-back.webp"}}]}))
+PY
+seed_image items/CNR/pouch-open.webp; seed_image "items/CNR/Glowcap Pouch.webp"; seed_image items/CNR/pouch-back.webp
+# meta_field <JSON> <field>: that field, as JSON, or `absent`.
+meta_field() { printf '%s' "$1" | python3 -c '
+import json, sys
+d = json.load(sys.stdin)
+print(json.dumps(d[sys.argv[1]]) if sys.argv[1] in d else "absent")' "$2"; }
+OUT=$(render data/items.json "Glowcap Pouch" CNR --note Borsa_Funghi --attachments Riferimento/Allegati --meta) \
+  || fail "item meta: exit $?: $(cat "$TMP/err")"
+[ "$(meta_field "$OUT" item)" = true ] || fail "item meta: expected item true in $OUT"
+[ "$(meta_field "$OUT" portrait)" = '"[[Riferimento/Allegati/Borsa_Funghi_02.webp]]"' ] \
+  || fail "item meta: expected the Description's first picture as portrait in $OUT"
+has "item portrait, embedded" "$(render data/items.json "Glowcap Pouch" CNR --note Borsa_Funghi)" "## Description
+
+![[Borsa_Funghi_02.webp]]"
+OUT=$(render data/items.json "Glowcap Pouch" CNR --meta) || fail "item meta, no attachments: exit $?: $(cat "$TMP/err")"
+[ "$(meta_field "$OUT" portrait)" = absent ] || fail "item meta, no attachments: expected no portrait in $OUT"
+OUT=$(render data/items.json "Lamp of Echoes" CNR --attachments Riferimento/Allegati --meta) || fail "item meta, no picture: exit $?: $(cat "$TMP/err")"
+[ "$(meta_field "$OUT" item)" = true ] || fail "item meta, no picture: expected item true in $OUT"
+[ "$(meta_field "$OUT" portrait)" = null ] || fail "item meta, no picture: expected portrait null in $OUT"
+OUT=$(render data/items-base.json "Hooked Blade" CNR --attachments Riferimento/Allegati --meta) || fail "base item meta: exit $?: $(cat "$TMP/err")"
+[ "$(meta_field "$OUT" item)" = true ] || fail "base item meta: expected item true in $OUT"
+OUT=$(render data/magicvariants.json "+2 Weapon" CNR --attachments Riferimento/Allegati --meta) || fail "variant item meta: exit $?: $(cat "$TMP/err")"
+[ "$(meta_field "$OUT" item)" = true ] || fail "variant item meta: expected item true in $OUT"
+[ "$(meta_field "$OUT" portrait)" = null ] || fail "variant item meta: expected portrait null in $OUT"
+# A monster's Portrait is in its stat block, never in --meta; a spell is no item.
+OUT=$(render data/bestiary/bestiary-cnr.json "Lamp Drake" CNR --attachments Riferimento/Allegati --meta) || fail "monster meta: exit $?: $(cat "$TMP/err")"
+[ "$(meta_field "$OUT" item)" = false ] || fail "monster meta: expected item false in $OUT"
+[ "$(meta_field "$OUT" portrait)" = absent ] || fail "monster meta: expected no portrait in $OUT"
+OUT=$(render data/spells/spells-cnr.json "Cinder Bloom" CNR --attachments Riferimento/Allegati --meta) || fail "spell meta: exit $?: $(cat "$TMP/err")"
+[ "$(meta_field "$OUT" item)" = false ] || fail "spell meta: expected item false in $OUT"
+[ "$(meta_field "$OUT" portrait)" = absent ] || fail "spell meta: expected no portrait in $OUT"
 OUT=$(render data/class/class-lamplighter.json "Path of the Wick" CNR) || fail "subclass description: exit $?: $(cat "$TMP/err")"
 has "subclass description" "$OUT" "Boom.
 

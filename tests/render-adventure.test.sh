@@ -77,7 +77,10 @@ seed adventure/adventure-slc.json <<'JSON'
        {"type": "image", "href": {"type": "internal", "path": "adventure/SLC/inn.webp"}, "title": "Map 1.1: The Drowned Bell"}]},
      {"type": "entries", "name": "S2. Tidepool Shrine", "id": "014", "page": 6, "entries": [
        "A {@item wand of drizzle} lies on the altar. See {@area area S1|012|x} and {@area the crypt|020|x}.",
-       {"type": "entries", "name": "Treasure", "id": "015", "entries": ["An {@item oar|PHB} and a {@item +1 oar}."]}]}]},
+       {"type": "entries", "name": "Treasure", "id": "015", "entries": ["An {@item oar|PHB} and a {@item +1 oar}.",
+         {"type": "entries", "name": "The Tide Key", "id": "018", "entries": ["A key of green glass that drips.",
+           {"type": "image", "href": {"type": "internal", "path": "adventure/SLC/key.webp"}}]},
+         {"type": "entries", "name": "Salt Coin", "id": "019", "entries": ["It never tarnishes."]}]}]}]},
    {"type": "entries", "name": "Special Events", "id": "016", "entries": [
      {"type": "entries", "name": "The Low Tide", "id": "017", "entries": [
        "Two {@creature brine imp||brine imps} attack. Back to {@area the shrine's treasure|015|x}."]}]}]},
@@ -125,6 +128,7 @@ seed magicvariants.json <<'JSON'
   "inherits": {"namePrefix": "+1 ", "source": "DMG", "page": 213, "rarity": "uncommon", "entries": ["A bonus."]}}]}
 JSON
 seed_image adventure/SLC/inn.webp
+seed_image adventure/SLC/key.webp
 
 # --- The Parts of an Adventure ---------------------------------------------------------
 OUT=$(run SLC) || fail "parts: exit $?: $(cat "$TMP/err")"
@@ -211,6 +215,42 @@ has "source" "$(field "$OUT" "$A/Parts/Saltmere" source_property)" '"SLC p. 4, v
 IMAGES=$(field "$OUT" "$A/Places/The_Drowned_Bell_Inn" images)
 has "images" "$IMAGES" '"file": "The_Drowned_Bell_Inn.webp"'
 has "images" "$IMAGES" "\"cached\": \"$DMR_SOURCE_CACHE/v9.9.9/img/adventure/SLC/inn.webp\""
+
+# --- An item from its own heading says it is one, and names its Portrait ----------------
+# A plan's section marked `"item": true` is an item note (it goes in the Adventure's Items):
+# it gets `item: true` and its `portrait`, the `image:` value naming its first picture in
+# the Adventure's Attachments by its full path (null without one), as an imported item does.
+cat > "$TMP/plan-items.json" <<JSON
+{"part_note": "$A/Parts/Saltmere",
+ "sections": [{"id": "014", "note": "$A/Places/Tidepool_Shrine"},
+              {"id": "018", "note": "$A/Items/Chiave_delle_Maree", "item": true},
+              {"id": "019", "note": "$A/Items/Salt_Coin", "item": true}]}
+JSON
+ITEMS=$(run SLC --part 1 --plan "$TMP/plan-items.json" --links "$TMP/links.json" --attachments "$A/Allegati") \
+  || fail "item note: exit $?: $(cat "$TMP/err")"
+[ "$(field "$ITEMS" "$A/Items/Chiave_delle_Maree" item)" = true ] || fail "item note: expected item true"
+[ "$(field "$ITEMS" "$A/Items/Chiave_delle_Maree" portrait)" = "\"[[$A/Allegati/Chiave_delle_Maree.webp]]\"" ] \
+  || fail "item note: expected its portrait, got $(field "$ITEMS" "$A/Items/Chiave_delle_Maree" portrait)"
+has "item note, embed kept" "$(note "$ITEMS" "$A/Items/Chiave_delle_Maree")" "# The Tide Key
+
+A key of green glass that drips.
+
+![[Chiave_delle_Maree.webp]]"
+[ "$(field "$ITEMS" "$A/Items/Salt_Coin" item)" = true ] || fail "item note, no picture: expected item true"
+[ "$(field "$ITEMS" "$A/Items/Salt_Coin" portrait)" = null ] || fail "item note, no picture: expected portrait null"
+# Every other note is no item, and names no Portrait.
+[ "$(field "$ITEMS" "$A/Places/Tidepool_Shrine" item)" = false ] || fail "not an item: expected item false"
+[ "$(field "$ITEMS" "$A/Parts/Saltmere" item)" = false ] || fail "part note: expected item false"
+[ -z "$(field "$ITEMS" "$A/Places/Tidepool_Shrine" portrait 2>/dev/null)" ] || fail "not an item: expected no portrait"
+# An item note's Portrait needs the Attachments folder; an item mark is a boolean.
+ITEMS=$(run SLC --part 1 --plan "$TMP/plan-items.json" --links "$TMP/links.json"); CODE=$?
+[ "$CODE" -eq 2 ] || fail "item note, no --attachments: expected exit 2, got $CODE"
+[ -z "$ITEMS" ] || fail "item note, no --attachments: printed $ITEMS"
+has "item note, no --attachments" "$(cat "$TMP/err")" "--attachments"
+run SLC --part 1 --plan "$TMP/plan-items.json" --links "$TMP/links.json" --check >/dev/null \
+  || fail "item note, --check: exit $?: $(cat "$TMP/err")"
+ITEMS=$(run SLC --part 1 --plan "$TMP/plan1.json" --links "$TMP/links.json" --attachments /Allegati); CODE=$?
+[ "$CODE" -eq 2 ] || fail "bad --attachments: expected exit 2, got $CODE"
 
 # --- Links: a creature, to its Reference note in the Workspace's Edition ----------------
 has "creature" "$(note "$OUT" "$A/NPCs/Mother_Kelp")" "a [[Reference/Monsters/Salt_Wight|Salt Wight]], keeps"
@@ -322,6 +362,7 @@ refuse "same name" "[{\"id\": \"012\", \"note\": \"$A/Places/Saltmere\"}]" "Salt
 refuse "same name, two folders" "[{\"id\": \"012\", \"note\": \"$A/Places/Inn\"}, {\"id\": \"013\", \"note\": \"$A/NPCs/Inn\"}]" "Inn"
 refuse "not a heading" "[{\"id\": \"010\", \"note\": \"$A/Places/Saltmere_Again\"}]" "010"
 refuse "bad name" "[{\"id\": \"012\", \"note\": \"$A/Places/The Inn\"}]" "The Inn"
+refuse "item not a boolean" "[{\"id\": \"018\", \"note\": \"$A/Items/The_Tide_Key\", \"item\": \"yes\"}]" "018"
 
 [ "$FAILS" -eq 0 ] && echo "render-adventure: all pass" || { echo "render-adventure: $FAILS failed"; exit 1; }
 
