@@ -4,6 +4,8 @@ Every frontmatter key in a Workspace is in the Workspace Language, with one exce
 
 *Amended by [ADR 0009](0009-a-workspace-writes-statistics-once-as-a-stat-block-or-as-markdown.md): a Workspace writes statistics once, as a stat block or as Markdown, and the stat block is no longer a view beside Markdown stat lines.*
 
+*Extended by [ADR 0014](0014-an-item-note-says-so-in-its-frontmatter.md): an item note's `item` and `image` frontmatter keys, which MapForge reads, are English too.*
+
 ## Considered Options
 
 - **Translated keys, with custom layouts mapping them.** Rejected: a layout can read any property name, but MapForge, the dice parsing ("+4 to hit") and the plugin's importers cannot, so stat blocks would render and still fail at the table.

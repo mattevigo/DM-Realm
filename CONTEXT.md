@@ -125,7 +125,7 @@ The game statistics of a monster, an NPC or a Character as a Fantasy Statblocks 
 _Avoid_: Sheet, statblock note
 
 **Portrait**:
-The one picture of a creature or a Character that its Stat block names, from which MapForge cuts the Face a Pawn wears. By default a monster's is the first picture of its Description, and a picture elsewhere in a note — in an action, a lair, a map — is never its Portrait; in a note the DM owns, the DM may name another.
+The one picture of a creature, a Character or an item, from which MapForge cuts the Face a Pawn wears: a creature's Stat block names it, an item note's frontmatter does, and a Treasure Pawn wears its item's. By default a monster's or an item's is the first picture of its Description, and a picture elsewhere in a note — in an action, a lair, a map — is never its Portrait; in a note the DM owns, the DM may name another. An item with no picture has none, and is an item to MapForge all the same.
 _Avoid_: Face (MapForge's cut of it), token, image
 
 **DM Tools**:
