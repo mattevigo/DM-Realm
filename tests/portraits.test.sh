@@ -230,6 +230,30 @@ It burns without oil.
 MD
 picture Reference/Attachments/Ember_Lantern_01.webp
 picture Reference/Attachments/Ember_Lantern_02.webp
+# One with a picture in its own text, above its Description: the Description's first
+# picture is its Portrait, as an Import numbers and names them.
+note Reference/Magic_Items/Glowcap_Pouch.md <<'MD'
+---
+source: XDMG p. 905, v2.36.1
+---
+
+# Glowcap Pouch
+
+It glows when shaken.
+
+![[Glowcap_Pouch_01.webp]]
+
+## Description
+
+![[Glowcap_Pouch_02.webp]]
+
+Mushroom farmers sew them.
+
+![[Glowcap_Pouch_03.webp]]
+MD
+picture Reference/Attachments/Glowcap_Pouch_01.webp
+picture Reference/Attachments/Glowcap_Pouch_02.webp
+picture Reference/Attachments/Glowcap_Pouch_03.webp
 # One whose Portrait the DM set: it stays, and the note still becomes an item.
 note Homebrew/Magic_Items/Star_Ring.md <<'MD'
 ---
@@ -237,6 +261,8 @@ image: "[[Homebrew/Attachments/Other_Ring.png]]"
 ---
 
 # Star Ring
+
+## Description
 
 ![[Star_Ring_01.png]]
 MD
@@ -262,9 +288,31 @@ note Adventures/The_Lamplighters/Items/Tower_Plan.md <<'MD'
 ![[Tower_Map.webp]]
 MD
 picture Adventures/The_Lamplighters/Attachments/Tower_Map.webp
+# One with its own picture but no Description, and one whose picture is in a section
+# after its Description: no Portrait, not reported (an Import would name none).
+note Reference/Magic_Items/Bell_Whistle.md <<'MD'
+# Bell Whistle
+
+![[Bell_Whistle.webp]]
+MD
+picture Reference/Attachments/Bell_Whistle.webp
+note Homebrew/Magic_Items/Moss_Cord.md <<'MD'
+# Moss Cord
+
+## Description
+
+A cord of living moss.
+
+## Properties
+
+![[Moss_Cord.webp]]
+MD
+picture Homebrew/Attachments/Moss_Cord.webp
 # A picture name used twice, and one that is nowhere: skipped, with the reason.
 note Adventures/The_Lamplighters/Items/Twin_Coin.md <<'MD'
 # Twin Coin
+
+## Description
 
 ![[Twin_Coin.webp]]
 MD
@@ -272,6 +320,8 @@ picture Adventures/The_Lamplighters/Attachments/Twin_Coin.webp
 picture Reference/Attachments/Twin_Coin.webp
 note Campaigns/Heroes/Homebrew_Magic_Items/Lost_Charm.md <<'MD'
 # Lost Charm
+
+## Description
 
 ![[Lost_Charm.png]]
 MD
@@ -293,9 +343,9 @@ item: true
 ---
 
 # Glimmer_Cloak'
-[ "$(field 'sorted(a["note"] for a in r["items"]["added"] if a.get("item") is True)')" = "['Adventures/The_Lamplighters/Items/Brass_Key.md', 'Adventures/The_Lamplighters/Items/Tower_Plan.md', 'Adventures/The_Lamplighters/Items/Twin_Coin.md', 'Campaigns/Heroes/Homebrew_Equipment/Thorn_Boots.md', 'Campaigns/Heroes/Homebrew_Magic_Items/Lost_Charm.md', 'Campaigns/Heroes/Homebrew_Magic_Items/Moth_Lamp.md', 'Homebrew/Equipment/Kettle_Shield.md', 'Homebrew/Magic_Items/Ember_Ring.md', 'Homebrew/Magic_Items/Star_Ring.md', 'Reference/Equipment/Lantern_Rope.md', 'Reference/Magic_Items/Ember_Lantern.md', 'Reference/Magic_Items/Glimmer_Cloak.md']" ] \
+[ "$(field 'sorted(a["note"] for a in r["items"]["added"] if a.get("item") is True)')" = "['Adventures/The_Lamplighters/Items/Brass_Key.md', 'Adventures/The_Lamplighters/Items/Tower_Plan.md', 'Adventures/The_Lamplighters/Items/Twin_Coin.md', 'Campaigns/Heroes/Homebrew_Equipment/Thorn_Boots.md', 'Campaigns/Heroes/Homebrew_Magic_Items/Lost_Charm.md', 'Campaigns/Heroes/Homebrew_Magic_Items/Moth_Lamp.md', 'Homebrew/Equipment/Kettle_Shield.md', 'Homebrew/Magic_Items/Ember_Ring.md', 'Homebrew/Magic_Items/Moss_Cord.md', 'Homebrew/Magic_Items/Star_Ring.md', 'Reference/Equipment/Lantern_Rope.md', 'Reference/Magic_Items/Bell_Whistle.md', 'Reference/Magic_Items/Ember_Lantern.md', 'Reference/Magic_Items/Glimmer_Cloak.md', 'Reference/Magic_Items/Glowcap_Pouch.md']" ] \
   || fail "items: added: $OUT"
-[ "$(field '[(a["note"], a["image"]) for a in r["items"]["added"] if "image" in a]')" = "[('Reference/Magic_Items/Ember_Lantern.md', '[[Reference/Attachments/Ember_Lantern_01.webp]]')]" ] \
+[ "$(field '[(a["note"], a["image"]) for a in r["items"]["added"] if "image" in a]')" = "[('Reference/Magic_Items/Ember_Lantern.md', '[[Reference/Attachments/Ember_Lantern_01.webp]]'), ('Reference/Magic_Items/Glowcap_Pouch.md', '[[Reference/Attachments/Glowcap_Pouch_02.webp]]')]" ] \
   || fail "items: images added: $OUT"
 has "items: portrait" "$(cat "$W/Reference/Magic_Items/Ember_Lantern.md")" '---
 source: XDMG p. 902, v2.36.1
@@ -308,12 +358,19 @@ image: "[[Reference/Attachments/Ember_Lantern_01.webp]]"
 ## Description
 
 ![[Ember_Lantern_01.webp]]'
+has "items: the Description's picture, not the text's" "$(cat "$W/Reference/Magic_Items/Glowcap_Pouch.md")" '---
+source: XDMG p. 905, v2.36.1
+item: true
+image: "[[Reference/Attachments/Glowcap_Pouch_02.webp]]"
+---'
 has "items: the DM's image: kept" "$(cat "$W/Homebrew/Magic_Items/Star_Ring.md")" '---
 image: "[[Homebrew/Attachments/Other_Ring.png]]"
 item: true
 ---'
 cmp -s "$W/Reference/Equipment/Flint_Box.md" "$TMP/flint-original.md" || fail "items: an item note with both keys was changed"
 hasnt "items: a map is no Portrait" "$(cat "$W/Adventures/The_Lamplighters/Items/Tower_Plan.md")" "image:"
+hasnt "items: no Description, no Portrait" "$(cat "$W/Reference/Magic_Items/Bell_Whistle.md")" "image:"
+hasnt "items: a picture after the Description is no Portrait" "$(cat "$W/Homebrew/Magic_Items/Moss_Cord.md")" "image:"
 [ "$(field 'sorted(s["note"] for s in r["items"]["skipped"])')" = "['Adventures/The_Lamplighters/Items/Twin_Coin.md', 'Campaigns/Heroes/Homebrew_Magic_Items/Lost_Charm.md']" ] \
   || fail "items: skipped: $OUT"
 has "items: ambiguous" "$(field '[s["why"] for s in r["items"]["skipped"] if s["note"].endswith("Twin_Coin.md")][0]')" "Reference/Attachments/Twin_Coin.webp"
@@ -348,6 +405,7 @@ note Strumenti_DM/Glossario_delle_Traduzioni.md <<'MD'
 | Magic Items | Oggetti Magici | Traduzione Ufficiale | |
 | Items | Oggetti | Traduzione Ufficiale | |
 | Attachments | Allegati | Traduzione Ufficiale | |
+| Description | Descrizione | Traduzione Ufficiale | |
 MD
 note Riferimento/Equipaggiamento/Borsa.md <<'MD'
 ---
@@ -361,6 +419,20 @@ fonte: XPHB p. 225, v2.36.1
 ![[Borsa.webp]]
 MD
 picture Riferimento/Allegati/Borsa.webp
+# A picture in its own text above its Descrizione: the Descrizione's is its Portrait.
+note Riferimento/Oggetti_Magici/Borsa_Funghi.md <<'MD'
+# Borsa dei Funghi
+
+Brilla quando viene scossa.
+
+![[Borsa_Funghi_01.webp]]
+
+## Descrizione
+
+![[Borsa_Funghi_02.webp]]
+MD
+picture Riferimento/Allegati/Borsa_Funghi_01.webp
+picture Riferimento/Allegati/Borsa_Funghi_02.webp
 item Riferimento/Oggetti_Magici/Gemma_di_Fuoco.md
 item Avventure/Le_Cucce/Oggetti/Chiave_di_Ottone.md
 item Fatto_in_Casa/Oggetti_Magici/Anello_di_Brace.md
@@ -369,12 +441,16 @@ item Campagne/Eroi/Fatto_in_Casa_Oggetti_Magici/Lampada_Falena.md
 item Riferimento/Equipaggiamento/Maestrie_nelle_Armi/Fiaccare.md
 cp "$W/Riferimento/Equipaggiamento/Maestrie_nelle_Armi/Fiaccare.md" "$TMP/fiaccare-original.md"
 OUT=$(python3 "$HELPER" "$W" 2>"$TMP/err") || fail "it: exit $?: $(cat "$TMP/err")"
-[ "$(field 'sorted(a["note"] for a in r["items"]["added"])')" = "['Avventure/Le_Cucce/Oggetti/Chiave_di_Ottone.md', 'Campagne/Eroi/Fatto_in_Casa_Equipaggiamento/Stivali_di_Spine.md', 'Campagne/Eroi/Fatto_in_Casa_Oggetti_Magici/Lampada_Falena.md', 'Fatto_in_Casa/Oggetti_Magici/Anello_di_Brace.md', 'Riferimento/Equipaggiamento/Borsa.md', 'Riferimento/Oggetti_Magici/Gemma_di_Fuoco.md']" ] \
+[ "$(field 'sorted(a["note"] for a in r["items"]["added"])')" = "['Avventure/Le_Cucce/Oggetti/Chiave_di_Ottone.md', 'Campagne/Eroi/Fatto_in_Casa_Equipaggiamento/Stivali_di_Spine.md', 'Campagne/Eroi/Fatto_in_Casa_Oggetti_Magici/Lampada_Falena.md', 'Fatto_in_Casa/Oggetti_Magici/Anello_di_Brace.md', 'Riferimento/Equipaggiamento/Borsa.md', 'Riferimento/Oggetti_Magici/Borsa_Funghi.md', 'Riferimento/Oggetti_Magici/Gemma_di_Fuoco.md']" ] \
   || fail "it: added: $OUT"
 has "it: Borsa" "$(cat "$W/Riferimento/Equipaggiamento/Borsa.md")" '---
 fonte: XPHB p. 225, v2.36.1
 item: true
 image: "[[Riferimento/Allegati/Borsa.webp]]"
+---'
+has "it: the Descrizione's picture, not the text's" "$(cat "$W/Riferimento/Oggetti_Magici/Borsa_Funghi.md")" '---
+item: true
+image: "[[Riferimento/Allegati/Borsa_Funghi_02.webp]]"
 ---'
 cmp -s "$W/Riferimento/Equipaggiamento/Maestrie_nelle_Armi/Fiaccare.md" "$TMP/fiaccare-original.md" \
   || fail "it: a Weapon Mastery was changed"

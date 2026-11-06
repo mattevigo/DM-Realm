@@ -155,7 +155,7 @@ def scalar(raw):
     return re.sub(r"(^|\s)#.*$", "", raw).strip(), False
 
 
-def portrait(raw):
+def has_portrait(raw):
     """True when `image:` names a picture as MapForge reads it: a wikilink, quoted or not, with a
     target before any `|` or `#`."""
     text, _ = scalar(raw or "")
@@ -202,7 +202,7 @@ def treasury(workspace):
         if name in names:
             continue
         names.add(name)
-        without += not portrait(image)
+        without += not has_portrait(image)
     return len(names), without
 
 
