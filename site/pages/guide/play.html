@@ -27,7 +27,7 @@ description: During play there is no agent: you run the game and write Live Note
 <p>When you consolidate a Session with empty Live Notes, Claude asks you what happened and writes your answer into the Live Notes, in your words, before anything else.</p></div>
 
 <h2>Bring in MapForge's record</h2>
-<p>If you run your table with <strong>MapForge</strong>, it records the evening as you play: your comments, the Maps you opened, rolls with their DCs, and each fight turn by turn with the hit points and conditions it left. After the Session, bring that <strong>Table Record</strong> into the Live Notes:</p>
+<p>If you run your table with <strong>MapForge</strong>, it records the evening as you play: your comments, the Maps you opened, rolls with their DCs, the Pawns' moves, and each fight turn by turn with the hit points and conditions it left. After the Session, bring that <strong>Table Record</strong> into the Live Notes:</p>
 <ul class="prompts">
   <li>import the MapForge log into session 21</li>
   <li>bring MapForge's record into the last session</li>
@@ -37,11 +37,17 @@ description: During play there is no agent: you run the game and write Live Note
 - **Map: Flooded Crypt**
 - the door is barred from the inside
 - Durga: Strength check, 17 +4 = 21, DC 15
+- Moves: Durga 30 ft, Jonny 25 ft
 - **Fight** 21:05–21:32, 4 rounds
   - Durga: 31/52 hit points
   - SK1 (Skeleton): down
-  - Korr (Bandit Captain): 12/65 hit points, left the fight</pre>
-<p>From then on it is Live Notes like the rest. Your comments are copied exactly as MapForge has them, never translated or tidied. MapForge's own files are only read, never changed.</p>
+  - Korr (Bandit Captain): 12/65 hit points, left the fight
+  - Play by play
+    - Korr: moves 20 ft, round 1
+    - Korr: shoves Durga into the water
+    - Durga: Strength saving throw, 9 +4 = 13, DC 14, round 1
+    - Durga: goes under, comes up coughing</pre>
+<p>A fight's notes, rolls and moves stay in the order they were played, and the moves between two other events make one line, in feet or metres as your books measure them. From then on it is Live Notes like the rest. Your comments are copied exactly as MapForge has them, never translated or tidied. MapForge's own files are only read, never changed.</p>
 <ul>
   <li>A log that is already written into a Session is not written twice.</li>
   <li>A log MapForge has not closed yet is written only if you say to write it as it stands.</li>

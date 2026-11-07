@@ -125,8 +125,12 @@ The game statistics of a monster, an NPC or a Character as a Fantasy Statblocks 
 _Avoid_: Sheet, statblock note
 
 **Portrait**:
-The one picture of a creature or a Character that its Stat block names, from which MapForge cuts the Face a Pawn wears. By default a monster's is the first picture of its Description, and a picture elsewhere in a note — in an action, a lair, a map — is never its Portrait; in a note the DM owns, the DM may name another.
+The one picture of a creature, a Character or an item, from which MapForge cuts the Face a Pawn wears: a creature's Stat block names it, an item note's frontmatter does, and a Treasure Pawn wears its item's. By default a monster's or an item's is the first picture of its Description, and a picture elsewhere in a note — in an action, a lair, a map — is never its Portrait; in a note the DM owns, the DM may name another. An item with no picture has none, and is an item to MapForge all the same.
 _Avoid_: Face (MapForge's cut of it), token, image
+
+**Item note**:
+The note of one piece of equipment or magic item — imported into Reference or an Adventure, or the DM's own in Homebrew or a Campaign. It says it is an item in its frontmatter, picture or not, and names its Portrait when its Description has a picture, so MapForge's Treasury lists it and a Treasure Pawn can be that item. A Weapon Mastery is a property, not an item; which notes are item notes is DM Realm's rule, and MapForge reads only what the note says.
+_Avoid_: Treasure (MapForge's Pawn), loot, item stat block
 
 **DM Tools**:
 Notes that help the DM run the game — checklists, random tables, prep aids — which sit outside every Scope and may reference anything.

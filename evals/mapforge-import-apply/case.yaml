@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: mapforge-import-apply
-description: "MapForge's log of the evening is written into Session_03's Live Notes, after the DM's own words: its marker, the Maps, the comments word for word, the fight as it ended with the Correction applied, the DM's note; not the moves, the roll or the Villains table's log of the same day. Nothing else changes: no Recap, Diary, Party State or MapForge file, and no Consolidation."
+description: "MapForge's log of the evening is written into Session_03's Live Notes, after the DM's own words: its marker, the Maps, the comments word for word, the saving throw, Ayla's move (3.5 squares: 20 ft), the fight as it ended with the Correction applied, then Durga's move, note and check in that order; not the Villains table's log of the same day. Nothing else changes: no Recap, Diary, Party State or MapForge file, and no Consolidation."
 tags: [session, mapforge]
 context:
   scaffold_script: scaffold.sh

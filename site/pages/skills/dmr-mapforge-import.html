@@ -1,6 +1,6 @@
 <!--
 title: dmr-mapforge-import
-description: Brings MapForge's Table Record of a played Session into its Live Notes: the DM's comments, the Maps, the rolls and each fight as it ended.
+description: Brings MapForge's Table Record of a played Session into its Live Notes: the DM's comments, the Maps, the rolls, the moves and each fight as it ended.
 -->
 <div class="term">
   <div class="term-bar"><i></i><i></i><i></i><span>claude</span></div>
@@ -17,8 +17,8 @@ description: Brings MapForge's Table Record of a played Session into its Live No
 <ol class="steps">
   <li>Finds MapForge's Session Logs in the Workspace's <code>.mapforge/</code> folder, with their dates and which Campaign each belongs to.</li>
   <li>Matches them to the Session by its date. A Session with no date gets a question.</li>
-  <li>Writes each log as a <code>### MapForge, &lt;date&gt; &lt;time&gt;</code> subsection after your own Live Notes: Maps, comments word for word, rolls with DCs, and each fight's end state per combatant.</li>
-  <li>Reports how many comments, rolls and fights each log brought in.</li>
+  <li>Writes each log as a <code>### MapForge, &lt;date&gt; &lt;time&gt;</code> subsection after your own Live Notes: Maps, comments word for word, rolls with DCs, moves grouped into one line between two other events, and each fight: its end state per combatant, then its notes, rolls and moves in the order they were played.</li>
+  <li>Reports how many comments, rolls, moves and fights each log brought in.</li>
 </ol>
 
 <h2>Never</h2>

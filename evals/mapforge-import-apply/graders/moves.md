@@ -1,7 +1,7 @@
 ---
 type: regex
 target: {source: file, path: Campaigns/Ashfall/Sessions/Session_03.md}
-match: not_contains
-flags: i
+match: contains
+flags: m
 ---
-\bmove[sd]?\b|3\.5|distance|squares
+^- Moves: Ayla 20 ft[ \t]*$
