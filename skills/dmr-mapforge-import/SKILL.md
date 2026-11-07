@@ -29,9 +29,9 @@ Write what MapForge recorded of one played Session — its Table Record — into
    python3 "<this skill's base directory>/table-record.py" read . "<its file>"
    ```
 
-   It prints the evening's events in order: each Map, each comment, each fight as MapForge folds it.
+   It prints the evening's events in order: each Map, each comment, each roll, each group of moves, each fight as MapForge folds it.
 7. **Write each** into the Session note's Live Notes, where and under the marker structure.md's Live Notes rule gives it, in [this shape](#the-shape), after any written there before. The rest of the note stays byte for byte — the DM's own Live Notes above all — and no other file is written. MapForge's files are only read (structure.md's MapForge rule).
-8. **Report**: for each log written, its time, how many comments, rolls and fights it brought in; and each log left out, and why.
+8. **Report**: for each log written, its time, how many comments, rolls, moves and fights it brought in; and each log left out, and why.
 
 Done when every log of the Session that can be written is in its Live Notes, or the DM has the one question that stopped it and nothing was written.
 
@@ -42,10 +42,16 @@ One subsection per log, its heading `### MapForge, <date> <time>` (the log's loc
 - **A Map**: `- **<Map>: <name>**`, the word Map in the Workspace Language and the Map's `name` as it is.
 - **A comment**: `- <text>`, the DM's words exactly as MapForge has them, never translated, corrected or summarised.
 - **A roll**: `- <label>: <roll>, <d20> <±modifier> = <total>`, then `, DC <dc>` when it has one — the roll being `<ability> saving throw` or `<skill> check`, in the game's terms in the Workspace Language (`Ayla: Wisdom saving throw, 14 +1 = 15, DC 13`). Whether it succeeded is not written: MapForge does not record it.
+- **A group of moves**: `- Moves: <label> <distance>, <label> <distance>…`, one line for the group, each Pawn's total in the order the helper gives (`Moves: Ayla 25 ft, Jonny 10 ft`). A distance is its squares in the unit the official books in the Workspace Language use: 5 feet a square in English, 1.5 metres a square in a language whose books use metres, written with that language's decimal mark (`Movimenti: Ayla 7,5 m`).
 - **A fight**: `- **Fight** <time>–<end time>, <rounds> rounds` (in the Workspace Language), then one sub-item per Combatant, under its MapForge label as it is, a Creature's `monster` in brackets after it (`GG1 (Gnoll Warrior)`):
   - its hit points at the end as `<hp>/<max_hp>` and the word for hit points, its temporary hit points, its conditions, its exhaustion level and concentration — each only when there is one, and the hit points only when typed;
   - `down` when its hit points end at 0 or fewer; `dropped to 0` when they did during the fight and ended above; `left the fight` when it is `benched`.
 
-  Then, when the fight has `notes`, a sub-item `Notes` with one item each, `<name>: <text>`, the text as MapForge has it; and when it has `rolls`, a sub-item `Rolls` with one item each, written as a roll above, followed by `, round <n>`. A fight with no rounds and no notes is left out. A fight not `found` is one line, its time and that its Combat Log is not in the Workspace; one not `ended`, that MapForge has not closed it.
+  Then, when the fight has `entries`, one sub-item `Play by play` with one item each, in the order the helper gives — the order they were played, never regrouped by kind:
+  - a note: `<name>: <text>`, the text as MapForge has it;
+  - a roll: written as a roll above, followed by `, round <n>`;
+  - a move: `<name>: moves <distance>, round <n>`, the distance as a group of moves above (`Ma4: moves 30 ft, round 1`).
 
-Moves are not written.
+  A fight with no rounds and no entries is left out. A fight not `found` is one line, its time and that its Combat Log is not in the Workspace; one not `ended`, that MapForge has not closed it.
+
+Nothing else of the log is written: a Turn's other changes show only in the fight's end state.

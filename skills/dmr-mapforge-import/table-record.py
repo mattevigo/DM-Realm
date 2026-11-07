@@ -30,13 +30,17 @@ the order they happened:
   map      {time, map, name}: the first Map, and each change of Map (a comment with
            no Map changes nothing)
   comment  {time, text}: the DM's own words, as typed
+  moves    {time, moves}: the Pawns moved between two other events, one group — moves:
+           each Pawn's total, {name (its label), squares}, first mover first, in whole
+           squares (half rounds up); a Pawn whose total rounds to none is left out, and
+           so is a group with no Pawn left
   roll     {time, name, roll, ability, skill, d20, modifier, total, dc}: a saving
            throw (roll: save, with its ability) or an ability check (roll: check,
            with its skill) outside a fight, by the Pawn's label; ability and skill
            named as the rules write them (Wisdom, Sleight of Hand); total is d20 plus
            modifier, dc null when none was set. MapForge records a Roll and never
            resolves it, and neither does this.
-  fight    {time, end_time, map, log, found, ended, rounds, combatants, notes, rolls}: the
+  fight    {time, end_time, map, log, found, ended, rounds, combatants, entries}: the
            Combat Log the Session Log points at, on the Map in use, folded as MapForge
            folds it (Corrections applied at the Turn they target, a later Turn's number
            winning). rounds: the highest Round a Turn was played in. combatants:
@@ -44,16 +48,19 @@ the order they happened:
            kind, monster (a Creature's Monster, from the Map's fog file as it is now,
            or null), hp, max_hp, temp_hp (null when untyped), conditions, exhaustion,
            concentrating, dropped (a Turn left it at 0 hit points or fewer, its
-           Corrections applied), benched (out of the Order at the end). notes: each
-           noteAdded, {name, text}. rolls: each Roll made in the fight, as above with
-           the round it was made in instead of the time. found is false when the
-           Combat Log is not there; ended is false for a fight not closed.
-Moves are left out.
+           Corrections applied), benched (out of the Order at the end). entries: what
+           was played, in order (a Correction's right after the Turn it targets), each
+           with the round it was played in and the Combatant's name: a note {kind:
+           note, text}, a Roll {kind: roll, …as above}, a move {kind: move, squares} —
+           a Combatant's moves in a row within a Turn are one, its squares as above.
+           found is false when the Combat Log is not there; ended is false for a
+           fight not closed.
 Exit 2: not a Workspace, or a file name that is not a log's. Exit 3: no such log.
 """
 import datetime
 import importlib.util
 import json
+import math
 import os
 import re
 import sys
@@ -200,6 +207,16 @@ def monsters(workspace, map_path):
 ROLLS = {"savingThrow": "save", "abilityCheck": "check"}
 
 
+def squares(distance):
+    """A distance in grid squares, whole, half rounding up."""
+    return math.floor(distance + 0.5)
+
+
+def distance(entry):
+    d = entry.get("distanceSquares")
+    return d if isinstance(d, (int, float)) and not isinstance(d, bool) and d > 0 else 0
+
+
 def rule_name(key):
     """MapForge's key for an ability or skill as the rules write it: sleightOfHand → Sleight of Hand."""
     if not isinstance(key, str):
@@ -237,16 +254,18 @@ def down(c):
 
 
 def fold(log):
-    """{Combatant id: Combatant}, in the order they joined, the fight's notes and Rolls, the
-    highest Round, and whether it ended — as MapForge's CombatLogFold reads the log."""
-    fighters, notes, rolls, rounds, ended = {}, [], [], 0, False
+    """{Combatant id: Combatant}, in the order they joined, the fight's entries (notes, Rolls
+    and moves, in play order), the highest Round, and whether it ended — as MapForge's
+    CombatLogFold reads the log."""
+    fighters, played, rounds, ended = {}, [], 0, False
     corrections = {}
     for entry in log:
         if entry.get("line") == "correction":
             key = (entry.get("targetRound"), entry.get("targetCombatantID"))
             corrections.setdefault(key, []).extend(entry.get("changes") or [])
 
-    def apply(change, round_):
+    def apply(change, round_, last):
+        """Folds one Change; returns the entry it adds (a move may grow `last` instead)."""
         kind, cid = change.get("type"), change.get("combatantID")
         if kind == "combatantJoined":
             # Also how a Benched Pawn returns: its snapshot carries the numbers it has now.
@@ -254,7 +273,7 @@ def fold(log):
             return
         c = fighters.get(cid)
         if c is None:
-            return
+            return None
         if kind in NUMBERS:
             c[NUMBERS[kind]] = change.get("to")
         elif kind in ("conditionAdded", "conditionRemoved"):
@@ -264,9 +283,26 @@ def fold(log):
         elif kind == "combatantRemoved":
             c["benched"] = True
         elif kind == "noteAdded":
-            notes.append({"name": c["name"], "text": change.get("text")})
+            return {"kind": "note", "round": round_, "name": c["name"], "text": change.get("text")}
         elif kind in ROLLS:
-            rolls.append({"round": round_, **roll(change, change.get("name") or c["name"])})
+            entry = roll(change, change.get("name") or c["name"])
+            return {"kind": "roll", "round": round_, "name": entry.pop("name"), **entry}
+        elif kind == "moved":
+            if last and last["kind"] == "move" and last["id"] == cid:
+                last["squares"] += distance(change)
+                return last
+            return {"kind": "move", "round": round_, "name": c["name"], "squares": distance(change), "id": cid}
+        return None
+
+    def play(changes, round_):
+        """Folds a Turn's (or a Correction's) Changes, adding their entries in order."""
+        last = None
+        for change in changes:
+            added = apply(change, round_, last)
+            if added is not None and added is not last:
+                played.append(added)
+            last = added or last
+            yield change
 
     for entry in log:
         kind = entry.get("line")
@@ -278,19 +314,22 @@ def fold(log):
             fixes = corrections.get((entry.get("round"), entry.get("combatantID")), [])
             fixed = {f.get("combatantID") for f in fixes if f.get("type") == "hpChanged"}
             # A drop inside the Turn counts, unless a Correction to the Turn rewrites those hit points.
-            for change in entry.get("changes") or []:
-                apply(change, entry.get("round"))
+            for change in play(entry.get("changes") or [], entry.get("round")):
                 c = fighters.get(change.get("combatantID"))
                 if change.get("type") == "hpChanged" and c and down(c) and change.get("combatantID") not in fixed:
                     c["dropped"] = True
-            for change in fixes:
-                apply(change, entry.get("round"))
+            for change in play(fixes, entry.get("round")):
                 c = fighters.get(change.get("combatantID"))
                 if change.get("type") == "hpChanged" and c and down(c):
                     c["dropped"] = True
         elif kind == "encounterEnded":
             ended = True
-    return fighters, notes, rolls, rounds, ended
+    for e in played:
+        if e["kind"] == "move":
+            e["squares"] = squares(e["squares"])
+            del e["id"]
+    kept = [e for e in played if e["kind"] != "move" or e["squares"]]
+    return fighters, kept, rounds, ended
 
 
 def fight(workspace, start, end, map_path):
@@ -300,12 +339,12 @@ def fight(workspace, start, end, map_path):
     path = os.path.join(workspace, log) if log else None
     event = {"kind": "fight", "time": time, "end_time": end_time, "map": map_path, "log": log,
              "found": bool(path and os.path.isfile(path)), "ended": end is not None, "rounds": 0,
-             "combatants": [], "notes": [], "rolls": []}
+             "combatants": [], "entries": []}
     if not event["found"]:
         return event
-    fighters, notes, rolls, rounds, ended = fold(entries(path))
+    fighters, played, rounds, ended = fold(entries(path))
     named = monsters(workspace, map_path)
-    event.update(ended=ended, rounds=rounds, notes=notes, rolls=rolls, combatants=[
+    event.update(ended=ended, rounds=rounds, entries=played, combatants=[
         {"name": c["name"], "kind": c["kind"], "monster": named.get(cid) if c["kind"] == "creature" else None,
          "hp": c["hp"], "max_hp": c["max_hp"], "temp_hp": c["temp_hp"], "conditions": sorted(c["conditions"]),
          "exhaustion": c["exhaustion"], "concentrating": c["concentrating"],
@@ -320,7 +359,7 @@ def read(workspace, name):
     if not os.path.isfile(os.path.join(sessions_dir(workspace), name)):
         return fail(3, f"no Session Log '{name}' in .mapforge/sessions")
     log, head = evening(workspace, name)
-    events, current = [], None
+    events, current, group = [], None, None
     for i, entry in enumerate(log):
         kind = entry.get("line")
         if kind not in SESSION_LINES:
@@ -328,8 +367,17 @@ def read(workspace, name):
         _, time = local(entry.get("at"))
         m = entry.get("map")
         if isinstance(m, str) and m != current:
-            current = m
+            current, group = m, None
             events.append({"kind": "map", "time": time, "map": m, "name": os.path.splitext(os.path.basename(m))[0]})
+        if kind == "pawnMoved":
+            # Moves in a row, whoever made them, are one group: each Pawn's total.
+            if group is None:
+                group = {"kind": "moves", "time": time, "moves": {}}
+                events.append(group)
+            name = entry.get("label")
+            group["moves"][name] = group["moves"].get(name, 0) + distance(entry)
+            continue
+        group = None
         if kind == "comment":
             events.append({"kind": "comment", "time": time, "text": entry.get("text")})
         elif kind in ROLLS:
@@ -338,7 +386,10 @@ def read(workspace, name):
             end = next((e for e in log[i + 1:] if e.get("line") in ("encounterEnded", "encounterStarted")), None)
             end = end if end and end.get("line") == "encounterEnded" else None
             events.append(fight(workspace, entry, end, current))
-    head["events"] = events
+    for e in events:
+        if e["kind"] == "moves":
+            e["moves"] = [{"name": n, "squares": squares(d)} for n, d in e["moves"].items() if squares(d)]
+    head["events"] = [e for e in events if e["kind"] != "moves" or e["moves"]]
     print(json.dumps(head, ensure_ascii=False))
     return 0
 

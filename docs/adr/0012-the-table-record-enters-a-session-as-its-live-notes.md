@@ -1,5 +1,7 @@
 # The Table Record enters a Session as its Live Notes
 
+*Amended by [ADR 0015](0015-the-table-record-keeps-moves-and-a-fight-in-play-order.md): moves are written, grouped, and a fight's notes, rolls and moves as one list in play order.*
+
 What MapForge records of a played Session — its Table Record — is written into that Session's Live Notes, by a skill of its own that does nothing else, and Consolidation keeps one source: the Live Notes. The Table Record goes after the DM's own words, one subsection per MapForge Session Log, marked with the log's file name so it is never written twice: the DM's comments word for word, each change of Map, each saving throw and ability check with its total and DC, and each fight as it ended — rounds, each Combatant's hit points and conditions, who dropped to 0, the rolls made in it — with Pawns under the labels MapForge gives them. Once written, it is Live Notes like the rest, kept word for word. Bringing the Table Record in and consolidating the Session are separate steps that know nothing of each other: the first only writes Live Notes, the second only reads them.
 
 ## Considered Options
