@@ -24,13 +24,14 @@ description: Imports official D&D entries into Reference (or an Adventure's own 
   <li>Asks, once, about anything that needs you: an Off-Edition player option, a name that matches several entries, a stat block name already taken.</li>
   <li>Renders it with the plugin's helper, never from memory: text, description, images, statistics.</li>
   <li>Translates it, recording each term in the Translation Glossary.</li>
-  <li>Writes the note and its images, then rebuilds the Spell Indexes and names monsters' Portraits.</li>
+  <li>Writes the note and its images, then rebuilds the Spell Indexes and names the Portraits of monsters and items.</li>
 </ol>
 
 <h2>Good to know</h2>
 <ul>
   <li><strong>Specific magic weapons</strong> like "+1 Longsword" import their generic variant ("+1 Weapon"), and Claude says so.</li>
   <li><strong>A 2024 lineage</strong> (Drow) imports its species (Elf).</li>
+  <li><strong>Items</strong> say <code>item: true</code> in their frontmatter, with their picture as their Portrait, so MapForge's Treasury lists them.</li>
   <li><strong>Pasted text</strong> is never written in: the entry is looked up by name instead, or offered as Homebrew.</li>
   <li><strong>Already imported</strong> notes are left as they are.</li>
 </ul>

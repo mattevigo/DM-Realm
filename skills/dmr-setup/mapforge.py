@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""What MapForge's bestiary reads of a DM Realm Workspace (ADR 0011).
+"""What MapForge's bestiary and Treasury read of a DM Realm Workspace (ADR 0011).
 
   mapforge.py report <workspace>
   mapforge.py set-bestiary <workspace> <folder>
@@ -8,10 +8,15 @@ MapForge, the DM's table tool, owns `.mapforge/`. Its bestiary is every note
 with a closed ```statblock fence and a `name` under the one folder that
 `.mapforge/config.json` names in `bestiaryStatBlockPath`, relative to the
 Workspace root, hidden folders included; it does not honour `bestiary: false`,
-and skips a `name` it has already read.
+and skips a `name` it has already read. Its Treasury (MapForge's ADR-0031) is every note
+outside hidden folders whose frontmatter says `item: true`, a YAML boolean, never found by
+folder; an Item is named by its first `# ` heading (else its file name) and a name already
+read is skipped; its Portrait is a frontmatter `image:` wikilink.
 
 report reads and never writes. It prints one JSON object:
   mapforge        false when there is no .mapforge/ (and nothing else)
+  treasury        Items MapForge's Treasury lists (one per name), whatever the config
+  treasury_no_portrait  those of them without a Portrait
   config          ok | missing (no config.json) | invalid (not a JSON object,
                   or the key not a string) | no-key | outside (empty, absolute
                   or leaving the Workspace) | not-found (no such folder)
@@ -59,6 +64,9 @@ BESTIARY_SCOPES = ["reference", "adventures", "homebrew", "campaigns", "characte
 CONFIG_KEY = "bestiaryStatBlockPath"
 NAME = re.compile(r"^name:[ \t]*(.+?)[ \t]*$", re.M)
 KEPT_OUT = re.compile(r"^bestiary:[ \t]*false[ \t]*$", re.M)
+TOP_KEY = re.compile(r"^([A-Za-z_][\w-]*)[ \t]*:(?:[ \t]+(.*)|[ \t]*)$")
+# The words YAML (and so MapForge's Yams) reads as the boolean true, unquoted.
+YAML_TRUE = {"true", "True", "TRUE", "yes", "Yes", "YES", "on", "On", "ON"}
 
 
 def fail(code, message):
@@ -123,6 +131,81 @@ def fences(workspace):
     return sorted(found)
 
 
+def frontmatter(text):
+    """({key: raw value} of the note's top-level frontmatter keys, the lines after it), or None
+    without one: the lines between an opening `---` and the next `---`."""
+    lines = text.replace("\r\n", "\n").split("\n")
+    if lines[0].strip() != "---":
+        return None
+    fields = {}
+    for end, line in enumerate(lines[1:], 1):
+        if line.strip() == "---":
+            return fields, lines[end + 1:]
+        found = TOP_KEY.match(line)
+        if found:
+            fields.setdefault(found.group(1), found.group(2))
+    return None
+
+
+def scalar(raw):
+    """A plain or quoted YAML scalar as (text, quoted), its trailing comment dropped."""
+    raw = raw.strip()
+    if raw[:1] in ("'", '"') and raw.endswith(raw[0]) and len(raw) > 1:
+        return raw[1:-1], True
+    return re.sub(r"(^|\s)#.*$", "", raw).strip(), False
+
+
+def has_portrait(raw):
+    """True when `image:` names a picture as MapForge reads it: a wikilink, quoted or not, with a
+    target before any `|` or `#`."""
+    text, _ = scalar(raw or "")
+    link = text[1:] if text.startswith("!") else text
+    if not (link.startswith("[[") and link.endswith("]]")):
+        return False
+    return bool(re.split(r"[|#]", link[2:-2])[0].strip())
+
+
+def item_name(body, rel):
+    for line in body:
+        line = line.strip()
+        if line.startswith("# ") and line[2:].strip():
+            return line[2:].strip()
+    return os.path.splitext(os.path.basename(rel))[0].replace("_", " ")
+
+
+def treasury(workspace):
+    """(items, without a Portrait) MapForge's Treasury reads (its ADR-0031): every note outside
+    hidden folders whose frontmatter says `item: true`, a YAML boolean, wherever it is, one per
+    name (its first `# ` heading, else its file name), the first by path."""
+    found = []
+    for dirpath, dirnames, filenames in os.walk(workspace):
+        dirnames[:] = [d for d in dirnames if not d.startswith(".")]
+        for filename in filenames:
+            if not filename.lower().endswith(".md"):
+                continue
+            path = os.path.join(dirpath, filename)
+            try:
+                with open(path, encoding="utf-8") as f:
+                    text = f.read()
+            except (UnicodeDecodeError, OSError):
+                continue
+            split = frontmatter(text)
+            if not split or "item" not in split[0]:
+                continue
+            value, quoted = scalar(split[0]["item"] or "")
+            if quoted or value not in YAML_TRUE:
+                continue
+            rel = os.path.relpath(path, workspace).replace(os.sep, "/")
+            found.append((rel, item_name(split[1], rel), split[0].get("image")))
+    names, without = set(), 0
+    for _, name, image in sorted(found):
+        if name in names:
+            continue
+        names.add(name)
+        without += not has_portrait(image)
+    return len(names), without
+
+
 def inside(rel, folder):
     return folder == "." or rel == folder or rel.startswith(folder + "/")
 
@@ -131,6 +214,7 @@ def report(workspace):
     if not os.path.isdir(os.path.join(workspace, ".mapforge")):
         return {"mapforge": False}
     out = {"mapforge": True}
+    out["treasury"], out["treasury_no_portrait"] = treasury(workspace)
     state, config = read_config(workspace)
     out["config"] = state
     if state != "ok":

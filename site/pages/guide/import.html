@@ -28,6 +28,13 @@ description: Spells, monsters, items, classes and rules come into Reference from
   <li><strong>Translates it</strong> into the Workspace Language, term by term, recording every choice in the Translation Glossary so every note says "Palla di Fuoco" the same way.</li>
   <li><strong>Writes one note</strong> in the right folder (<code>Reference/Spells/Level_3/Fireball.md</code>), with its source in the frontmatter, and its images in Reference's Attachments.</li>
 </ol>
+<p>An item note also says it is an item, and names its picture as its <strong>Portrait</strong>, so MapForge's Treasury lists it and a Treasure on the Map can wear its picture. The picture stays in the note's Description too:</p>
+<pre class="tree">---
+source: XPHB p. 225, v2.36.1
+item: true
+image: "[[Reference/Attachments/Bag_of_Holding.webp]]"
+---</pre>
+<p>An item with no picture still says <code>item: true</code>. Your own Homebrew and Campaign items get the same keys when Claude writes them.</p>
 <p>An item that only an Adventure describes goes into that Adventure's Items folder instead of Reference. Monster stat blocks always go to Reference, even when a single Adventure prints them.</p>
 
 <h2>Editions and Off-Edition Material</h2>

@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: import-italian-item-image
+description: "In an Italian Workspace an imported magic item with a picture says it is an item and names its Portrait in its frontmatter (item: true, then image: with the picture's full path, after the source property), and still embeds the picture, placed in Riferimento › Allegati, in its Description (ADR 0014)."
+tags: [import, mapforge]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  env:
+    EVAL_DMR_SOURCE_CACHE: "~/.dm-realm/source-cache"
+    EVAL_DMR_SOURCE_API: http://127.0.0.1:9/latest
+    EVAL_DMR_SOURCE_RAW: http://127.0.0.1:9/raw
+    EVAL_DMR_SOURCE_IMG: http://127.0.0.1:9/img
+  prompt: |
+    Aggiungi l'oggetto magico Ember Satchel dell'Ember Codex (EMBC). In italiano chiamalo Bisaccia di Brace.

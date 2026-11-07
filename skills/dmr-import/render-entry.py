@@ -32,7 +32,10 @@ Workspace root (`Riferimento/Allegati`): the statistics then name the monster's 
 its description's first image, as `image: "[[<folder>/<file>]]"` (none without one, nor
 without --attachments). --meta prints JSON facts about the entry instead: its
 key, source property (`XPHB p. 12, v2.36.1`), Edition by its book's date, reprints,
-and what placing its note needs (spell level, a spell's classes, class, race, option kind…).
+and what placing its note needs (spell level, a spell's classes, class, race, option kind…);
+whether it is an item (`item`: an `item`, `baseitem` or magic variant) and, with
+--attachments, an item's Portrait for its frontmatter (`portrait`: the same `image:` value,
+null without a picture); --meta fetches no image.
 
 Exit 2: bad usage. Exit 3 and 4: passed through from the Source Cache helper
 (the Trusted Source is unreachable; no such file or image). Exit 5: no such entry.
@@ -1628,9 +1631,10 @@ def description_parts(key, entry, path):
 
 
 def render(key, entry, path, edition=None, note=None, stat_blocks=True, attachments=None):
-    """The note's Markdown, and the images it embeds in its order. With attachments (the
-    Attachments folder, from the Workspace root), a monster's statistics name its Portrait,
-    the Description's first image, by its full path (structure.md's "The Portrait")."""
+    """The note's Markdown, the images it embeds in its order, and its Portrait. With
+    attachments (the Attachments folder, from the Workspace root), the Portrait is the
+    Description's first image, as the `image:` value naming it by its full path (structure.md's
+    "The Portrait"), and a monster's statistics name it; None without one, or without attachments."""
     data = load(path)
     add_features(data)
     if key in ("race", "subrace"):
@@ -1646,8 +1650,16 @@ def render(key, entry, path, edition=None, note=None, stat_blocks=True, attachme
     if about:
         blocks += ["## Description"] + about
     stem = note or file_stem(entry["name"])
+    first = next(IMAGE_TOKEN.finditer("\n\n".join(about)), None)
+
+    def portrait(text):  # its file is known once the note's images are numbered
+        if not (first and attachments):
+            return None
+        return f"[[{attachments}/{dict(image_files(text, stem))[int(first.group(1))]}]]"
+
     if key != "monster":
-        return embed_images("\n\n".join(b for b in blocks if b) + "\n", stem)
+        text = "\n\n".join(b for b in blocks if b) + "\n"
+        return embed_images(text, stem) + (portrait(text),)
     # Its statistics come last, once: the fence or Markdown (ADR 0009).
     fields, images = statblock_fields(entry, edition), []
     if stat_blocks:  # an image in its statistics goes under the fence, which cannot show it
@@ -1658,11 +1670,10 @@ def render(key, entry, path, edition=None, note=None, stat_blocks=True, attachme
         return "\n\n".join(b for b in blocks + ["## Stat Block", statistics] + images if b) + "\n"
 
     text = note_text(fields)
-    portrait = next(IMAGE_TOKEN.finditer("\n\n".join(about)), None)
-    if portrait and attachments:  # its file is known once the note's images are numbered
-        file = dict(image_files(text, stem))[int(portrait.group(1))]
-        text = note_text(statblock.with_portrait(fields, f"[[{attachments}/{file}]]"))
-    return embed_images(text, stem)
+    image = portrait(text)
+    if image:
+        text = note_text(statblock.with_portrait(fields, image))
+    return embed_images(text, stem) + (image,)
 
 
 # --- Meta ----------------------------------------------------------------------------
@@ -1684,7 +1695,11 @@ def edition_of(source):
     return "2024" if date >= threshold else "2014"
 
 
-def meta(key, entry):
+# The kinds of an item note, which says it is one in its frontmatter (`item: true`).
+ITEM_KEYS = ("item", "baseitem", "magicvariant")
+
+
+def meta(key, entry, path, note=None, attachments=None):
     release = source_cache("release")
     page = f" p. {entry['page']}" if entry.get("page") else ""
     facts = {
@@ -1696,11 +1711,19 @@ def meta(key, entry):
         "source_property": f"{entry['source']}{page}, {release}",
         "edition": edition_of(entry["source"]),
         "reprinted_as": entry.get("reprintedAs", []),
+        "item": key in ITEM_KEYS,
     }
+    if key in ITEM_KEYS and attachments:  # its Portrait, for its frontmatter's `image:`
+        global FETCH_IMAGES
+        fetching, FETCH_IMAGES = FETCH_IMAGES, False  # naming its picture needs no cached copy
+        try:
+            facts["portrait"] = render(key, entry, path, note=note, attachments=attachments)[2]
+        finally:
+            FETCH_IMAGES = fetching
     if key == "spell":
         facts["level"] = entry.get("level")
         facts["classes"] = spell_classes(entry)
-    if key in ("item", "baseitem", "magicvariant"):
+    if key in ITEM_KEYS:
         facts["magic"] = is_magic(key, entry)
     if key == "magicvariant":
         facts["generic_variant"] = True
@@ -1747,9 +1770,10 @@ def main(argv):
     path, name, source = args
     key, entry = find(path, name, source, opts.get("--key"), opts.get("--class-source"))
     if "--meta" in flags:
-        return json.dumps(meta(key, entry), indent=2, ensure_ascii=False) + "\n"
-    text, images = render(key, entry, path, opts.get("--edition"), opts.get("--note"),
-                          opts.get("--stat-blocks", "true") == "true", opts.get("--attachments"))
+        facts = meta(key, entry, path, opts.get("--note"), opts.get("--attachments"))
+        return json.dumps(facts, indent=2, ensure_ascii=False) + "\n"
+    text, images, _ = render(key, entry, path, opts.get("--edition"), opts.get("--note"),
+                             opts.get("--stat-blocks", "true") == "true", opts.get("--attachments"))
     if "--images" in flags:
         return json.dumps(images, indent=2, ensure_ascii=False) + "\n"
     return text
