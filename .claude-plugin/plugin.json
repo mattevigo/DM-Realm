@@ -2,7 +2,7 @@
   "name": "dm-realm",
   "displayName": "DM Realm",
   "description": "Set up and maintain D&D 5th-edition campaign Workspaces as Markdown notes for Obsidian, in any language.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "author": { "name": "Matteo Vigoni" },
   "license": "MIT",
   "keywords": ["dnd", "obsidian", "dungeon-master", "campaign"]
