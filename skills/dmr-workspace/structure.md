@@ -116,7 +116,7 @@ Notes in Spells, beside the level folders, listing Reference's spell notes by le
 - **Every class of a core book** — a book the Trusted Source puts in its `core` group (the core rulebooks; of those, only the Player's Handbooks have classes) — whose list has the spell, in either Edition.
 - **A class of any other book** only once Reference holds that class: its class note (the note named as its class folder) is that class, by English name, from that book, by its source property. So a Setting book's own classes (*World of Warcraft*'s Mage, Evoker…) stay out of every Workspace that has not imported them, while an imported Artificer is named on its spells.
 
-It follows what Reference holds, so DM Realm keeps it as it keeps the indexes: `dmr-import`'s `spell-classes.py` helper rewrites every spell's line — adding, changing or removing it — after an Import writes a spell or a class note, and whenever the DM asks to bring the Spell Indexes up to date. Never edit it by hand. A class note deleted outside DM Realm leaves its class in the lines until the next refresh.
+It follows what Reference holds, so DM Realm keeps it as it keeps the indexes: `dmr-import`'s `spell-classes.py` helper rewrites every spell's line — adding, changing or removing it — after an Import writes a spell or a class note, at a Setup re-run, and whenever the DM asks to bring the Spell Indexes up to date. Never edit it by hand. A class note deleted outside DM Realm leaves its class in the lines until the next refresh.
 
 The indexes are not imported, so they have no frontmatter, and they list Reference's spells only — never Homebrew's.
 

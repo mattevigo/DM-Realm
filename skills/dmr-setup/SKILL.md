@@ -2,7 +2,7 @@
 name: dmr-setup
 description: Set up the current folder as a DM Realm Workspace.
 disable-model-invocation: true
-allowed-tools: Read, Glob, Write, Edit, Bash(ls:*), Bash(mkdir:*), Bash(cp:*), Bash(python3:*), Skill
+allowed-tools: Read, Glob, Write, Edit, Bash(ls:*), Bash(mkdir:*), Bash(cp:*), Bash(python3:*), Bash(DMR_SOURCE_CACHE=*), Skill
 ---
 
 # Setup
@@ -46,7 +46,7 @@ Done when the folder holds `workspace-config.yml`, the top-level folders, empty 
 
 ## Re-run
 
-A Workspace is set up once. A re-run keeps its Workspace Language and Edition, renames top-level folders when the DM asks, converts the notes' statistics when `stat_blocks` changes, restores the Obsidian settings DM Realm needs, gives stat blocks and item notes their missing Portraits and item notes their `item: true`, and asks before recreating a missing folder or adding a missing Template. Speak the Workspace Language in use.
+A Workspace is set up once. A re-run keeps its Workspace Language and Edition, renames top-level folders when the DM asks, converts the notes' statistics when `stat_blocks` changes, restores the Obsidian settings DM Realm needs, gives stat blocks and item notes their missing Portraits and item notes their `item: true`, brings the spells' Classes lines up to date, and asks before recreating a missing folder or adding a missing Template. Speak the Workspace Language in use.
 
 1. **Find the Workspace Language and Edition in use** from the Workspace itself, as structure.md's "Fixed after Setup" says: the config's `language` and `edition` lines may have been edited since Setup. When the config or the DM's request names another language or Edition than the one in use, say that changing it is not supported and the Workspace keeps the one in use; if the config was edited, offer to put that line back, and change it only on the DM's yes.
 2. **Compare the top-level folders** on disk with the Workspace Config:
@@ -74,10 +74,17 @@ A Workspace is set up once. A re-run keeps its Workspace Language and Edition, r
    3. **Write the value** into the Config once every note is converted.
 6. **Repair Obsidian settings**: run `python3 "<this skill's base directory>/obsidian-settings.py" merge . "<Templates folder name in use>" "<Attachments>"`, Attachments as the Translation Glossary's row gives it (in English, `Attachments`; with no row yet, translated and added as a first Setup does). It restores only DM Realm's keys that drifted and rewrites nothing that is right. Then set up [Fantasy Statblocks](#fantasy-statblocks): run its helper even when the plugin looks configured, with the layout labels the Translation Glossary already holds.
 7. **Portraits and items**: run the helper structure.md's "The Portrait" names, so every item note says `item: true` and every stat block or item note whose note embeds its own picture names it as its Portrait.
-8. **MapForge's bestiary**, only when the DM's request asks for it: preview the folder and the one line of `.mapforge/config.json` it sets, and set it on an explicit go-ahead (one already in the request counts), as [MapForge](#mapforge) says.
-9. **Report** what changed — renamed folders and rewritten notes, converted statistics (and any note left as it was), restored settings, Fantasy Statblocks, recreated folders, added Templates, the Portraits and `item: true` the helper added, note by note (and each note whose Portrait it skipped, with why), MapForge's bestiary folder — or that the Workspace was already in order; and, when the folder has `.mapforge/`, what MapForge's bestiary and Treasury read of the Workspace ([MapForge](#mapforge)).
+8. **Classes lines**, when Reference has spell notes: refresh them with the `dmr-import` skill's helper, as that skill's "Refreshing the Classes lines" says (read that paragraph) — it gives a spell imported before DM Realm wrote the line its line, corrects a line the rule no longer gives (structure.md's "Spell Indexes"), and rebuilds the Spell Indexes:
 
-Done when every change the DM confirmed is made, every Template that was there is as it was, the Obsidian settings (Fantasy Statblocks' included, when installed) are as DM Realm needs them, every item note says `item: true`, every stat block and item note the helper can give a Portrait has one, and nothing else in the Workspace changed.
+   ```sh
+   DMR_SOURCE_CACHE="${CLAUDE_PLUGIN_DATA}/source-cache" python3 "<this skill's base directory>/../dmr-import/spell-classes.py" .
+   ```
+
+   For each class in its `missing_rows`, translate it as structure.md's "Translating a term" says, add the row to the Translation Glossary, and run it again. Exit 2 (no Spells folder) is nothing to do; exit 3 or 4 (the Trusted Source unreachable, or without the class lists) changes nothing: say so in the report and go on.
+9. **MapForge's bestiary**, only when the DM's request asks for it: preview the folder and the one line of `.mapforge/config.json` it sets, and set it on an explicit go-ahead (one already in the request counts), as [MapForge](#mapforge) says.
+10. **Report** what changed — renamed folders and rewritten notes, converted statistics (and any note left as it was), restored settings, Fantasy Statblocks, recreated folders, added Templates, the Portraits and `item: true` the helper added, note by note (and each note whose Portrait it skipped, with why), the Classes lines the refresh added, changed or removed and the Spell Indexes that changed (or why it could not run, and each note it skipped, with why), MapForge's bestiary folder — or that the Workspace was already in order; and, when the folder has `.mapforge/`, what MapForge's bestiary and Treasury read of the Workspace ([MapForge](#mapforge)).
+
+Done when every change the DM confirmed is made, every Template that was there is as it was, the Obsidian settings (Fantasy Statblocks' included, when installed) are as DM Realm needs them, every item note says `item: true`, every stat block and item note the helper can give a Portrait has one, every spell note's Classes line is the one the refresh gives (unless the Trusted Source was unreachable), and nothing else in the Workspace changed.
 
 ## The Templates
 
