@@ -13,8 +13,10 @@ kind when the file holds several (`subclass`, `itemMastery`…); --class-source 
 a subclass under one version of its class (`XPHB`), or a subrace under one race.
 
 Prints the entry's Markdown: `# <name>`, then its text, deterministically, with
-5etools tags as plain text; a spell's ends with the classes whose spell list has it
-(`**Classes:** Sorcerer, Wizard`, from `data/spells/sources.json`), when any has; the entry's description (its 5etools fluff, from the
+5etools tags as plain text; a spell's ends with the classes of a core book (`data/books.json`'s
+`core` group) whose spell list has it (`**Classes:** Sorcerer, Wizard`, from
+`data/spells/sources.json`), when any has; another book's class is added by the Classes-line
+refresh (spell-classes.py) once Reference holds it (ADR 0016); the entry's description (its 5etools fluff, from the
 `fluff-*` file beside its data) is a `## Description` section, before
 a monster's stat lines and at the end of any other entry. Every image the entry shows
 (ADR 0008) is fetched through the Source Cache and embedded where 5etools places it — in
@@ -829,14 +831,33 @@ def durations(ds):
     return ", or ".join(out)
 
 
-def spell_classes(spell):
-    """The classes whose spell list has the spell, by name, from the Trusted Source's lookup."""
+def core_books(required=False):
+    """The books of the Trusted Source's `core` group (the Player's, Dungeon Master's and Monster
+    books; only the Player's Handbooks have classes), case-folded. Not `required`: none when
+    the Trusted Source has no `books.json`."""
+    listed = (load if required else load_optional)("data/books.json")
+    return {str(b.get("id") or b.get("source") or "").casefold() for b in (listed or {}).get("book") or []
+            if isinstance(b, dict) and b.get("group") == "core"}
+
+
+def spell_classes_of(source, name, core, held=frozenset()):
+    """The classes a spell's Classes line names (ADR 0016), from the Trusted Source's class spell
+    lists: each one of a `core` book whose list has the spell, and one of any other book only when
+    `held` (Reference's classes, as case-folded (name, book) pairs) has it."""
     listed = load_optional("data/spells/sources.json")
     books = listed.items() if isinstance(listed, dict) else []
-    book = next((v for k, v in books if same(k, spell.get("source")) and isinstance(v, dict)), {})
-    entry = next((v for k, v in book.items() if same(k, spell.get("name")) and isinstance(v, dict)), {})
-    names = {c["name"] for c in entry.get("class") or [] if isinstance(c, dict) and c.get("name")}
-    return sorted(names)
+    book = next((v for k, v in books if same(k, source) and isinstance(v, dict)), {})
+    entry = next((v for k, v in book.items() if same(k, name) and isinstance(v, dict)), {})
+    pairs = [(c["name"], str(c.get("source") or "").casefold()) for c in entry.get("class") or []
+             if isinstance(c, dict) and c.get("name")]
+    return sorted({n for n, b in pairs if b in core or (n.casefold(), b) in held})
+
+
+def spell_classes(spell):
+    """The classes a spell note names when an Import writes it: a core book's only, as the
+    renderer knows no Workspace; the Classes-line refresh (spell-classes.py) that follows the
+    Import adds the classes Reference holds."""
+    return spell_classes_of(spell.get("source"), spell.get("name"), core_books())
 
 
 def render_spell(key, spell):

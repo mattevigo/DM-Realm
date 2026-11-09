@@ -35,7 +35,8 @@ seed books.json <<'JSON'
 {"book": [
   {"name": "Tome of Old Rules", "id": "TOR", "source": "TOR", "published": "2016-03-01"},
   {"name": "Player's Handbook (2024)", "id": "XPHB", "source": "XPHB", "published": "2024-09-17"},
-  {"name": "Codex of New Rules", "id": "CNR", "source": "CNR", "published": "2025-02-11"}
+  {"name": "Codex of New Rules", "id": "CNR", "source": "CNR", "published": "2025-02-11", "group": "core"},
+  {"name": "Atlas of the Far Reach", "id": "AFR", "source": "AFR", "published": "2025-09-01", "group": "setting"}
 ]}
 JSON
 
@@ -220,10 +221,12 @@ seed spells/spells-cnr.json <<'JSON'
    "entries": ["Silence."]}
 ]}
 JSON
-# The class spell lists: Cinder Bloom is on two (one listed from two books), Quiet Glow on none.
+# The class spell lists: Cinder Bloom is on two of the core book's (one listed from two books) and on a
+# Setting book's own class (ADR 0016: only a core book's classes are named here); Quiet Glow on none of a core book's.
 seed spells/sources.json <<'JSON'
 {"CNR": {"Cinder Bloom": {"class": [{"name": "Warden", "source": "CNR"}, {"name": "Ashcaller", "source": "CNR"},
-                                    {"name": "Warden", "source": "OLD"}],
+                                    {"name": "Warden", "source": "OLD"},
+                                    {"name": "Duskblade", "source": "AFR", "definedInSource": "AFR"}],
                           "classVariant": [{"name": "Scribe", "source": "CNR"}]},
          "Warding Hush": {"class": [{"name": "Warden", "source": "CNR"}]}},
  "OLD": {"Quiet Glow": {"class": [{"name": "Warden", "source": "OLD"}]}}}
@@ -246,6 +249,7 @@ Ash blooms into fire. Each creature makes a DC 14 Dexterity save, taking 6d6 fir
 OUT=$(render data/spells/spells-cnr.json "Cinder Bloom" CNR --meta)
 has "spell meta" "$OUT" '"level": 3'
 has "spell meta classes" "$(printf '%s' "$OUT" | tr -d ' \n')" '"classes":["Ashcaller","Warden"]'
+hasnt "spell meta: a Setting book's own class" "$OUT" "Duskblade"
 OUT=$(render data/spells/spells-cnr.json "Quiet Glow" CNR) || fail "cantrip: exit $?: $(cat "$TMP/err")"
 hasnt "cantrip on no class list" "$OUT" "**Classes:**"
 has cantrip "$OUT" "*Illusion Cantrip*

@@ -63,7 +63,7 @@ A note listing Reference's imported spells by level, each a link: one of every s
 _Avoid_: Spell list (a class's), spellbook, catalogue
 
 **Classes line**:
-The line closing a spell note in Reference that names the classes whose spell list has the spell: the classes of the Edition's core book, and any other class whose note is in Reference. A class another book adds to the spell's list (a Setting book's own classes) is named only once that class is imported. So it follows what Reference holds, and DM Realm keeps it in step; nobody edits it.
+The line closing a spell note in Reference that names the classes whose spell list has the spell: the classes of a core rulebook of either Edition (of those, only the Player's Handbooks have classes), and any other class whose note is in Reference. A class another book adds to the spell's list (a Setting book's own classes) is named only once that class is imported. So it follows what Reference holds, and DM Realm keeps it in step; nobody edits it.
 _Avoid_: Spell list, class tags
 
 ### Scopes

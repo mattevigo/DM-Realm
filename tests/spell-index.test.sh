@@ -154,10 +154,17 @@ CLASSES="$ROOT/skills/dmr-import/spell-classes.py"
 export DMR_SOURCE_CACHE="$TMP/cache" DMR_SOURCE_API="http://127.0.0.1:9/latest" DMR_SOURCE_RAW="http://127.0.0.1:9/raw"
 unset EVAL_DMR_SOURCE_CACHE EVAL_DMR_SOURCE_API EVAL_DMR_SOURCE_RAW
 mkdir -p "$DMR_SOURCE_CACHE/v9.9.9/data/spells"; echo v9.9.9 > "$DMR_SOURCE_CACHE/release"
+# CNR is a core book; AFR a Setting book whose own class, the Duskblade, it puts on CNR's spells too.
+cat > "$DMR_SOURCE_CACHE/v9.9.9/data/books.json" <<'JSON'
+{"book": [{"name": "Codex of New Rules", "id": "CNR", "source": "CNR", "published": "2025-02-11", "group": "core"},
+          {"name": "Atlas of the Far Reach", "id": "AFR", "source": "AFR", "published": "2025-09-01", "group": "setting"}]}
+JSON
 cat > "$DMR_SOURCE_CACHE/v9.9.9/data/spells/sources.json" <<'JSON'
-{"CNR": {"Cinder Bloom": {"class": [{"name": "Warden", "source": "CNR"}, {"name": "Ashcaller", "source": "CNR"}]},
+{"CNR": {"Cinder Bloom": {"class": [{"name": "Warden", "source": "CNR"}, {"name": "Ashcaller", "source": "CNR"},
+                                    {"name": "Duskblade", "source": "AFR", "definedInSource": "AFR"}]},
          "Quiet Glow": {"class": [{"name": "Lamplighter", "source": "CNR"}]},
-         "Warding Hush": {"class": [{"name": "Warden", "source": "CNR"}]}}}
+         "Warding Hush": {"class": [{"name": "Warden", "source": "CNR"}]},
+         "Still Ember": {"class": [{"name": "Warden", "source": "AFR", "definedInSource": "AFR"}]}}}
 JSON
 old_spell() { # $1 = path without .md, $2 = heading, $3 = source key, $4 = text after the heading
   mkdir -p "$(dirname "$1")"
@@ -203,11 +210,70 @@ printf '| Lamplighter | Lampionaio | ripiego | |\n' >> "$W/Strumenti_DM/Glossari
 OUT=$(python3 "$CLASSES" "$W" 2>"$TMP/err") || fail "backfill again: exit $?"
 [ "$(field 'r["added"]')" = "['Riferimento/Incantesimi/Trucchetti/Bagliore_Quieto.md']" ] || fail "backfill again: added: $(field 'r["added"]')"
 [ -f "$S/Incantesimi_Lampionaio.md" ] || fail "backfill again: the new class has no index"
+# A fallback class given its (EN: …) by hand is the same class: the refresh leaves the line as it is.
+sed 's/^\*\*Classi:\*\* Lampionaio$/**Classi:** Lampionaio (EN: Lamplighter)/' "$S/Trucchetti/Bagliore_Quieto.md" > "$TMP/note" && cat "$TMP/note" > "$S/Trucchetti/Bagliore_Quieto.md"
+grep -q '(EN: Lamplighter)' "$S/Trucchetti/Bagliore_Quieto.md" || fail "refresh: the fixture did not take its (EN: …)"
+OUT=$(python3 "$CLASSES" "$W" 2>"$TMP/err") || fail "refresh it: exit $?"
+grep -q '^\*\*Classi:\*\* Lampionaio (EN: Lamplighter)$' "$S/Trucchetti/Bagliore_Quieto.md" || fail "refresh: a fallback's (EN: …) was lost: $(grep Classi "$S/Trucchetti/Bagliore_Quieto.md")"
+[ "$(field 'r["added"] + r["changed"] + r["removed"]')" = "[]" ] || fail "refresh it: nothing should change: $OUT"
 # An English Workspace needs no Glossary; the class lists not cached and unreachable is exit 3.
 W="$TMP/olden"; config "$W" Reference DM_Tools
 old_spell "$W/Reference/Spells/Level_3/Cinder_Bloom" "Cinder Bloom" source "Text."
 OUT=$(python3 "$CLASSES" "$W" 2>"$TMP/err") || fail "backfill en: exit $?"
 [ "$(tail -n 1 "$W/Reference/Spells/Level_3/Cinder_Bloom.md")" = "**Classes:** Ashcaller, Warden" ] || fail "backfill en: $(tail -n 1 "$W/Reference/Spells/Level_3/Cinder_Bloom.md")"
+# A class Reference holds is named too, matched by name and book (ADR 0016): the Setting book's
+# Duskblade once its note is in Reference; never the Setting book's own Warden for the core Warden's note.
+W="$TMP/held"; config "$W" Reference DM_Tools
+old_spell "$W/Reference/Spells/Level_3/Cinder_Bloom" "Cinder Bloom" source "Text."
+old_spell "$W/Reference/Spells/Level_1/Still_Ember" "Still Ember" source "Text."
+mkdir -p "$W/Reference/Classes/Duskblade" "$W/Reference/Classes/Warden"
+printf -- '---\nsource: AFR p. 12, v9.9.9\n---\n\n# Duskblade\n\nA class.\n' > "$W/Reference/Classes/Duskblade/Duskblade.md"
+printf -- '---\nsource: AFR p. 14, v9.9.9\n---\n\n# Blade of Dusk\n\nA subclass of it.\n' > "$W/Reference/Classes/Duskblade/Blade_of_Dusk.md"
+printf -- '---\nsource: CNR p. 40, v9.9.9\n---\n\n# Warden\n\nA class.\n' > "$W/Reference/Classes/Warden/Warden.md"
+OUT=$(python3 "$CLASSES" "$W" 2>"$TMP/err") || fail "held: exit $?: $(cat "$TMP/err")"
+[ "$(tail -n 1 "$W/Reference/Spells/Level_3/Cinder_Bloom.md")" = "**Classes:** Ashcaller, Duskblade, Warden" ] || fail "held: a class Reference holds should be named: $(tail -n 1 "$W/Reference/Spells/Level_3/Cinder_Bloom.md")"
+grep -q 'Classes' "$W/Reference/Spells/Level_1/Still_Ember.md" && fail "held: the core Warden's note named the Setting book's Warden: $(tail -n 1 "$W/Reference/Spells/Level_1/Still_Ember.md")"
+[ -f "$W/Reference/Spells/Spells_Duskblade.md" ] || fail "held: the held class has no index: $(ls "$W/Reference/Spells")"
+# The refresh rewrites what changed: the class note deleted, its class leaves every line and its index goes;
+# a line no class is left for (written before ADR 0016, naming the Setting book's Warden) is removed.
+rm -r "$W/Reference/Classes/Duskblade"
+printf -- '---\nsource: CNR p. 88, v9.9.9\n---\n\n# Still Ember\n\nText.\n\n**Classes:** Warden\n\n## Description\n\nA picture.\n' > "$W/Reference/Spells/Level_1/Still_Ember.md"
+OUT=$(python3 "$CLASSES" "$W" 2>"$TMP/err") || fail "refresh: exit $?: $(cat "$TMP/err")"
+[ "$(tail -n 1 "$W/Reference/Spells/Level_3/Cinder_Bloom.md")" = "**Classes:** Ashcaller, Warden" ] || fail "refresh: a class no longer held should leave the line: $(tail -n 1 "$W/Reference/Spells/Level_3/Cinder_Bloom.md")"
+[ "$(field 'r["changed"]')" = "['Reference/Spells/Level_3/Cinder_Bloom.md']" ] || fail "refresh: changed: $(field 'r.get("changed")')"
+[ "$(field 'r["removed"]')" = "['Reference/Spells/Level_1/Still_Ember.md']" ] || fail "refresh: removed: $(field 'r.get("removed")')"
+printf -- '---\nsource: CNR p. 88, v9.9.9\n---\n\n# Still Ember\n\nText.\n\n## Description\n\nA picture.\n' > "$TMP/expected"
+diff "$TMP/expected" "$W/Reference/Spells/Level_1/Still_Ember.md" >/dev/null || { fail "refresh: the line should go with its blank line"; diff "$TMP/expected" "$W/Reference/Spells/Level_1/Still_Ember.md"; }
+[ ! -e "$W/Reference/Spells/Spells_Duskblade.md" ] || fail "refresh: the class no longer held keeps its index"
+OUT=$(python3 "$CLASSES" "$W" 2>"$TMP/err") || fail "refresh again: exit $?"
+[ "$(field 'r["added"] + r["changed"] + r["removed"]')" = "[]" ] || fail "refresh again: a second run should change nothing: $OUT"
+# An Import writes the line the refresh would give: written as rendered, a refresh changes nothing.
+cat > "$DMR_SOURCE_CACHE/v9.9.9/data/spells/spells-cnr.json" <<'JSON'
+{"spell": [{"name": "Cinder Bloom", "source": "CNR", "page": 88, "level": 3, "school": "V",
+            "time": [{"number": 1, "unit": "action"}], "range": {"type": "point", "distance": {"type": "self"}},
+            "components": {"v": true}, "duration": [{"type": "instant"}], "entries": ["Ash blooms."]}]}
+JSON
+W="$TMP/imported"; config "$W" Reference DM_Tools; mkdir -p "$W/Reference/Spells/Level_3"
+{ printf -- '---\nsource: CNR p. 88, v9.9.9\n---\n\n'; python3 "$ROOT/skills/dmr-import/render-entry.py" data/spells/spells-cnr.json "Cinder Bloom" CNR; } > "$W/Reference/Spells/Level_3/Cinder_Bloom.md" || fail "imported: render failed"
+grep -q '^\*\*Classes:\*\* Ashcaller, Warden$' "$W/Reference/Spells/Level_3/Cinder_Bloom.md" || fail "imported: the rendered line: $(grep Classes "$W/Reference/Spells/Level_3/Cinder_Bloom.md")"
+OUT=$(python3 "$CLASSES" "$W" 2>"$TMP/err") || fail "imported: exit $?: $(cat "$TMP/err")"
+[ "$(field 'r["added"] + r["changed"] + r["removed"]')" = "[]" ] || fail "imported: the refresh should agree with the Import: $OUT"
+# With a class Reference holds, the refresh after the Import adds it, and the Import and refresh then agree.
+mkdir -p "$W/Reference/Classes/Duskblade"
+printf -- '---\nsource: AFR p. 12, v9.9.9\n---\n\n# Duskblade\n\nA class.\n' > "$W/Reference/Classes/Duskblade/Duskblade.md"
+OUT=$(python3 "$CLASSES" "$W" 2>"$TMP/err") || fail "imported held: exit $?: $(cat "$TMP/err")"
+[ "$(field 'r["changed"]')" = "['Reference/Spells/Level_3/Cinder_Bloom.md']" ] || fail "imported held: the refresh should add the held class: $OUT"
+grep -q '^\*\*Classes:\*\* Ashcaller, Duskblade, Warden$' "$W/Reference/Spells/Level_3/Cinder_Bloom.md" || fail "imported held: $(grep Classes "$W/Reference/Spells/Level_3/Cinder_Bloom.md")"
+OUT=$(python3 "$CLASSES" "$W" 2>"$TMP/err"); [ "$(field 'r["added"] + r["changed"] + r["removed"]')" = "[]" ] || fail "imported held: a second refresh should change nothing: $OUT"
+# The core books cannot be read (no books.json in the Trusted Source): the refresh fails and changes nothing,
+# never taking every core class out.
+mv "$DMR_SOURCE_CACHE/v9.9.9/data/books.json" "$TMP/books.json"
+BEFORE=$(cat "$W/Reference/Spells/Level_3/Cinder_Bloom.md")
+mkdir -p "$TMP/mirror/v9.9.9/data"  # a mirror that answers, but has no books.json: the Source Cache's exit 4
+DMR_SOURCE_RAW="file://$TMP/mirror" python3 "$CLASSES" "$W" >/dev/null 2>&1; CODE=$?
+[ $CODE -eq 4 ] || fail "no books: the refresh should fail with the Source Cache's exit 4, not $CODE"
+[ "$BEFORE" = "$(cat "$W/Reference/Spells/Level_3/Cinder_Bloom.md")" ] || fail "no books: a note was changed"
+mv "$TMP/books.json" "$DMR_SOURCE_CACHE/v9.9.9/data/books.json"
 rm "$DMR_SOURCE_CACHE/v9.9.9/data/spells/sources.json"
 python3 "$CLASSES" "$W" >/dev/null 2>&1; [ $? -eq 3 ] || fail "backfill: class lists not cached and unreachable should exit 3"
 
