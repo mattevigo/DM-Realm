@@ -100,7 +100,7 @@ Official material, imported faithfully from the Trusted Source. Its rules materi
 - **Magic items.** A specific item the Trusted Source builds from a generic variant and a base item ("+1 Longsword", "Flame Tongue Greatsword") is not an entry: asking for one imports the generic variant ("+1 Weapon", "Flame Tongue") into Magic_Items, and the agent says so ([ADR 0007](../../docs/adr/0007-an-import-renders-only-what-the-data-contains.md)). Its DMG or XDMG version follows the Edition like any other entry. An item whose source is an Adventure is not Reference: it goes to that Adventure's Items ([Adventures](#adventures--adventures)).
 - **Descriptions and images.** An entry's description — the Trusted Source's text about what it is, its "fluff" — is imported with it, into the same note, and so is every image the entry shows ([Imported notes](#imported-notes)).
 - **One entry at a time.** The one set an Import brings in on request is every Condition, or every Action, of the Edition, one note each; any other bulk request is declined. The monsters and items an Adventure's Part names may also come in with it, on the DM's one yes ([Importing an Adventure](#importing-an-adventure)).
-- **No links between Reference notes.** A note names other entries (a monster's spells, a class's options) in plain text, so it never depends on what else was imported. The only notes that link are the [Spell Indexes](#spell-indexes), which list only what is there.
+- **No links between Reference notes.** A note names other entries (a monster's spells, a class's options) in plain text, so it never depends on what else was imported. The only notes that link are the [Spell Indexes](#spell-indexes), which list only what is there. The one text that depends on what else was imported is a spell's [Classes line](#spell-indexes), which names a class from a book other than a core book only once Reference holds that class; DM Realm keeps it ([ADR 0016](../../docs/adr/0016-a-spells-classes-line-follows-references-classes.md)).
 
 The note's own format is in [Imported notes](#imported-notes).
 
@@ -111,7 +111,12 @@ Notes in Spells, beside the level folders, listing Reference's spell notes by le
 - **One of every spell**, named after the folder: `Spells/Spells.md`, `Incantesimi/Incantesimi.md`.
 - **One per class**, named after the folder and the class: `Spells_Wizard.md`, `Incantesimi_Mago.md`. It lists the spells whose note names that class, so a class has an index once one of its spells is imported, and only the imported ones are in it.
 
-**The Classes line.** A spell note ends its own text — before its Description, when it has one — with the classes whose spell list has the spell, as the Trusted Source gives them: `**Classes:** Sorcerer, Wizard`. The label is the Glossary's term for Classes, the same as the folder's, and each class its Glossary term: `**Classi:** Mago, Stregone`. A spell on no class's list has no such line.
+**The Classes line.** A spell note ends its own text — before its Description, when it has one — with the classes whose spell list has the spell, as the Trusted Source gives them: `**Classes:** Sorcerer, Wizard`. The label is the Glossary's term for Classes, the same as the folder's, and each class its Glossary term: `**Classi:** Mago, Stregone`. A spell on no class's list has no such line. The classes it names ([ADR 0016](../../docs/adr/0016-a-spells-classes-line-follows-references-classes.md)):
+
+- **Every class of a core book** — a book the Trusted Source puts in its `core` group (the core rulebooks; of those, only the Player's Handbooks have classes) — whose list has the spell, in either Edition.
+- **A class of any other book** only once Reference holds that class: its class note (the note named as its class folder) is that class, by English name, from that book, by its source property. So a Setting book's own classes (*World of Warcraft*'s Mage, Evoker…) stay out of every Workspace that has not imported them, while an imported Artificer is named on its spells.
+
+It follows what Reference holds, so DM Realm keeps it as it keeps the indexes: `dmr-import`'s `spell-classes.py` helper rewrites every spell's line — adding, changing or removing it — after an Import writes a spell or a class note, at a Setup re-run, and whenever the DM asks to bring the Spell Indexes up to date. Never edit it by hand. A class note deleted outside DM Realm leaves its class in the lines until the next refresh.
 
 The indexes are not imported, so they have no frontmatter, and they list Reference's spells only — never Homebrew's.
 

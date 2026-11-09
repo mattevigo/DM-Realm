@@ -42,6 +42,7 @@ image: "[[Reference/Attachments/Bag_of_Holding.webp]]"
 
 <h2>Spell Indexes</h2>
 <p>Every time a spell note is written, DM Realm rebuilds the <strong>Spell Indexes</strong> in the Spells folder: one listing every imported spell by level, and one per class (<code>Spells_Wizard</code>, <code>Spells_Cleric</code>…). They are rebuilt automatically, so never edit them by hand.</p>
+<p>Each spell note ends with a <strong>Classes line</strong> naming the classes whose spell list has it. It names the Player's Handbook classes always, and a class from any other book only once you have imported that class: an imported Artificer shows up on its spells, while a Setting book's own classes (<em>World of Warcraft</em>'s Mage, Evoker…) stay out until you import one. Importing a spell or a class brings every spell's line up to date; to do it yourself, ask Claude to bring the Spell Indexes up to date, or run <code>/dm-realm:dmr-setup</code> again.</p>
 
 <h2>Translation Glossary</h2>
 <p>In a non-English Workspace, the Translation Glossary in DM_Tools records, for each game term, the translation chosen and whether it is the publisher's <strong>official translation</strong> or a faithful fallback. Edit a row there and later notes follow it.</p>

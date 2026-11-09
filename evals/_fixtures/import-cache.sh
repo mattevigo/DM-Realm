@@ -6,7 +6,10 @@
 #
 #   2014 books: OLDC Old Codex of Rules (2015), LOTD Lanterns of the Deep (2016),
 #               BOFI Beasts of the Far Isles (2021)
-#   2024 books: EMBC Ember Codex (2025), FAR Far Reaches Bestiary (2025; listed, never cached)
+#   2024 books: EMBC Ember Codex (2025), FAR Far Reaches Bestiary (2025; listed, never cached),
+#               ADC Atlas of the Drowned Coast (2025, a Setting book whose own Tidecaller is on
+#               Cinder Bloom's list: never named, as Reference holds no Tidecaller, ADR 0016)
+#   Core books (the `core` group): OLDC and EMBC
 #   Adventure:  SACR The Salt Crypt (2025), levels 2–5, three Parts; its own item the Brine Lantern
 #   Descriptions (fluff): only the Wisp Hound's, in bestiary/fluff-bestiary-embc.json
 #   Images: only the Wisp Hound's, bestiary/EMBC/Wisps.webp — invented bytes, not an image
@@ -18,12 +21,13 @@ echo v3.0.0 > "$CACHE/release"
 
 cat > "$D/books.json" <<'JSON'
 {"book": [
-  {"name": "Old Codex of Rules", "id": "OLDC", "source": "OLDC", "published": "2015-01-20"},
+  {"name": "Old Codex of Rules", "id": "OLDC", "source": "OLDC", "published": "2015-01-20", "group": "core"},
   {"name": "Lanterns of the Deep", "id": "LOTD", "source": "LOTD", "published": "2016-05-10"},
   {"name": "Beasts of the Far Isles", "id": "BOFI", "source": "BOFI", "published": "2021-06-01"},
   {"name": "Player's Handbook (2024)", "id": "XPHB", "source": "XPHB", "published": "2024-09-17"},
-  {"name": "Ember Codex", "id": "EMBC", "source": "EMBC", "published": "2025-03-04"},
-  {"name": "Far Reaches Bestiary", "id": "FAR", "source": "FAR", "published": "2025-10-01"}
+  {"name": "Ember Codex", "id": "EMBC", "source": "EMBC", "published": "2025-03-04", "group": "core"},
+  {"name": "Far Reaches Bestiary", "id": "FAR", "source": "FAR", "published": "2025-10-01"},
+  {"name": "Atlas of the Drowned Coast", "id": "ADC", "source": "ADC", "published": "2025-11-01", "group": "setting"}
 ]}
 JSON
 cat > "$D/adventures.json" <<'JSON'
@@ -56,7 +60,8 @@ cat > "$D/spells/index.json" <<'JSON'
 JSON
 # The class spell lists (the Trusted Source's spell-to-class lookup).
 cat > "$D/spells/sources.json" <<'JSON'
-{"EMBC": {"Cinder Bloom": {"class": [{"name": "Lamplighter", "source": "EMBC"}]},
+{"EMBC": {"Cinder Bloom": {"class": [{"name": "Lamplighter", "source": "EMBC"},
+                                     {"name": "Tidecaller", "source": "ADC", "definedInSource": "ADC"}]},
           "Whisper Veil": {"class": [{"name": "Lamplighter", "source": "EMBC"}]},
           "Glimmerlance": {"class": [{"name": "Lamplighter", "source": "EMBC"}]}},
  "OLDC": {"Cinder Bloom": {"class": [{"name": "Lamplighter", "source": "OLDC"}]}}}

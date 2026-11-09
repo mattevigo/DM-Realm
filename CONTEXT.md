@@ -59,8 +59,12 @@ Answering the DM's question about official material — a rule, an entry, an Adv
 _Avoid_: Consultation, lookup, Import
 
 **Spell Index**:
-A note listing Reference's imported spells by level, each a link: one of every spell, and one per class of the spells on that class's list. DM Realm writes them again from the spell notes on disk whenever those change; nobody edits them.
+A note listing Reference's imported spells by level, each a link: one of every spell, and one per class of the spells whose Classes line names that class. DM Realm writes them again from the spell notes on disk whenever those change; nobody edits them.
 _Avoid_: Spell list (a class's), spellbook, catalogue
+
+**Classes line**:
+The line closing a spell note in Reference that names the classes whose spell list has the spell: the classes of a core rulebook of either Edition (of those, only the Player's Handbooks have classes), and any other class whose note is in Reference. A class another book adds to the spell's list (a Setting book's own classes) is named only once that class is imported. So it follows what Reference holds, and DM Realm keeps it in step; nobody edits it.
+_Avoid_: Spell list, class tags
 
 ### Scopes
 
