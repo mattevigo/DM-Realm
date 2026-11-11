@@ -1,0 +1,53 @@
+<!--
+title: dmr-import-adventure
+description: Imports an official Adventure into its folder in Adventures, a Part at a time or whole — a note for each place, NPC, encounter and item the book gives a heading, linked, with its maps, translated into the Workspace Language.
+-->
+<div class="term">
+  <div class="term-bar"><i></i><i></i><i></i><span>claude</span></div>
+<pre><span class="line"><span class="prompt">&gt; </span>/dm-realm:dmr-import-adventure &lt;the Adventure or its Parts&gt;</span></pre>
+</div>
+
+<h2>Ask it like this</h2>
+<ul class="prompts">
+  <li>import chapter 2 of Curse of Strahd</li>
+  <li>import the whole Lost Mine of Phandelver</li>
+  <li>bring in the next part of Tomb of Annihilation</li>
+  <li>import appendix B of The Sunken Keep, and bring its monsters too</li>
+</ul>
+
+<h2>What it writes</h2>
+<p>An Adventure comes in one <strong>Part</strong> at a time: a chapter, an appendix, a dungeon level. For each Part:</p>
+<ul>
+  <li><strong>One note per heading</strong> that is a place (an inn, a keyed room), an NPC the book gives a heading of their own, an encounter or event, or an item, in the Adventure's Places, NPCs, Encounters and Items. Each note holds that heading and everything under it, as the book has it.</li>
+  <li><strong>The Part note</strong>, in Parts: the rest of the Part (its opening, its advice, the text no other note holds), with a link where each of those notes' headings stood.</li>
+  <li><strong>The maps and pictures</strong> it shows, in the Adventure's Attachments folder.</li>
+  <li><strong>The README</strong>, listing every Part of the Adventure, each imported one linked.</li>
+</ul>
+<pre class="tree">Adventures/The_Sunken_Keep/
+├── README.md
+├── Parts/Chapter_1_The_Flooded_Gate.md
+├── Places/K1._Gatehouse.md
+├── NPCs/Captain_Ilse.md
+├── Encounters/The_Tide_Turns.md
+├── Items/The_Drowned_Crown.md
+└── Attachments/K1._Gatehouse.webp</pre>
+
+<h2>How</h2>
+<ol class="steps">
+  <li>Finds the Adventure and the Parts you named: by name, by number ("chapter 2"), "the whole Adventure" or "the next part". A Part already imported is skipped, and Claude says so.</li>
+  <li>Tells you how long the Parts are and how many images they show, and how many of the monsters and items they name your Workspace does not have yet, and asks once whether to bring those too. When you asked for one Part and already said yes or no, it goes straight on.</li>
+  <li>Chooses which headings get a note, and checks that the whole Part renders before writing anything.</li>
+  <li>Translates it, note by note, with every name recorded in the Translation Glossary, so a name reads the same in every note.</li>
+  <li>Writes the images, the notes, the Part note last, then the README. On your yes, it imports the missing monsters and items with <a href="{{root}}skills/dmr-import/">dmr-import</a>.</li>
+</ol>
+
+<h2>Good to know</h2>
+<ul>
+  <li><strong>Links work ahead of time.</strong> A monster, an item or a room of another Part is linked even before it is in your Workspace; the link starts working the day you import it. Clicking one early makes an empty note, which the import later fills.</li>
+  <li><strong>Monsters</strong> link to Reference, in your Edition's version: a 2014 Adventure in a 2024 Workspace links its goblins to the 2024 Goblin.</li>
+  <li><strong>Your Campaigns</strong> that name the Adventure in their README get a link to it the first time it is imported, keeping your words.</li>
+  <li><strong>Stopped midway?</strong> Ask again: the notes already written are kept, and the rest is written.</li>
+  <li><strong>Not every Part can be imported yet.</strong> One that uses something DM Realm cannot render writes nothing, and Claude names the section.</li>
+  <li><strong>Maps are not prepared for MapForge.</strong> They are placed as images; MapForge opens them as they are.</li>
+</ul>
+<p>Guide: <a href="{{root}}guide/import/">Bring in official material</a>.</p>

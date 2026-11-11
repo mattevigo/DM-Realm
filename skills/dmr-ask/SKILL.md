@@ -36,7 +36,7 @@ What a note says, what happened at the table, where things stand. The reader is 
 
 ## Official material
 
-What structure.md calls Research. Invoke `dmr-trusted-source` and answer as structure.md's Research says: nothing here adds to it or replaces it. A Reference entry the Workspace has not imported is offered as an Import (`dmr-import`); an Adventure's text cannot be imported yet, as workflows.md says.
+What structure.md calls Research. Invoke `dmr-trusted-source` and answer as structure.md's Research says: nothing here adds to it or replaces it. A Reference entry the Workspace has not imported is offered as an Import (`dmr-import`); an Adventure the Workspace has not imported is offered as an Import of the Part the answer comes from (`dmr-import-adventure`).
 
 ## Running the game
 
