@@ -59,8 +59,12 @@ def load(path):
     return notes[1:] + notes[:1]          # the Part note last
 
 
+def path_of(note):
+    return note["note"] + ".md"
+
+
 def done(note):
-    path = note["note"] + ".md"
+    path = path_of(note)
     return os.path.isfile(path) and os.path.getsize(path) > 0
 
 
@@ -95,7 +99,7 @@ def main(argv):
             english = os.path.join(args[2], f"{number:02d}.md")
             with open(english, "w", encoding="utf-8") as handle:
                 handle.write(note["text"])
-            out.append({"note": note["note"], "path": note["note"] + ".md", "english": english,
+            out.append({"note": note["note"], "path": path_of(note), "english": english,
                         "frontmatter": frontmatter(note, key), "images": note.get("images", []),
                         "done": done(note)})
         print(json.dumps(out, indent=2, ensure_ascii=False))
@@ -113,7 +117,7 @@ def main(argv):
     else:
         written, skipped = [], []
         for note in notes:
-            path = note["note"] + ".md"
+            path = path_of(note)
             if done(note):
                 skipped.append(path)
                 continue
