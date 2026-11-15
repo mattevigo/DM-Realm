@@ -7,7 +7,8 @@
                       [--edition 2014|2024] [--attachments <folder>] [--check]
 
 <adventure id> is the Adventure's id in `data/adventures.json` (`SLC`); its text is
-`data/adventure/adventure-<id lowercased>.json`, fetched through the Source Cache helper
+`data/adventure/adventure-<id lowercased>.json` (its Parts under `data`, or from 5etools
+v2.40 under the `data` of its `adventureData` record with that id), fetched through the Source Cache helper
 like every file render-entry.py reads, so DMR_SOURCE_CACHE applies as it does there.
 --edition is the Workspace's Edition (2024 by default).
 
@@ -74,10 +75,22 @@ def adventure(adventure_id):
             break
     else:
         raise Failure(5, f"no Adventure with the id '{adventure_id}' in data/adventures.json.")
-    parts = entry.load(f"data/adventure/adventure-{record['id'].lower()}.json").get("data")
+    parts = text_parts(entry.load(f"data/adventure/adventure-{record['id'].lower()}.json"),
+                       record["id"])
     if not isinstance(parts, list):
         raise Failure(7, f"the Adventure '{record['id']}' has no Parts.")
     return record, parts
+
+
+def text_parts(text, adventure_id):
+    """The Parts in an Adventure's text file: its top-level `data` up to 5etools v2.36,
+    and from v2.40 the `data` of the `adventureData` record with the Adventure's id."""
+    if "data" in text:
+        return text["data"]
+    for record in text.get("adventureData") or []:
+        if isinstance(record, dict) and entry.same(record.get("id"), adventure_id):
+            return record.get("data")
+    return None
 
 
 def ordinal(content):
