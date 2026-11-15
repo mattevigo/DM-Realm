@@ -46,8 +46,8 @@ DMR_SOURCE_CACHE="${CLAUDE_PLUGIN_DATA}/source-cache" sh "<this skill's base dir
 | Class options (Maneuvers, Eldritch Invocations, Metamagic, 2014 Fighting Styles…) | `optionalfeatures.json` | `optionalfeature` |
 | Books, Adventures and their publication dates | `books.json`, `adventures.json` | `book`, `adventure` |
 | An entry's description ("fluff": what a monster, species, background, class or item is like) | `fluff-<its data file>` beside it (`bestiary/fluff-bestiary-xmm.json`, `fluff-races.json`); a base item's is in `fluff-items.json` | `<key>Fluff` (`monsterFluff`, `raceFluff`…) |
-| An Adventure's text: its chapters, places, NPCs and events | `adventure/adventure-<id>.json`, the id lowercased (`adventure-lmop.json`); `adventures.json` lists the Adventures, their ids and chapters | `data`: sections by `name`, with `page` |
-| A book's own text: character creation and advancement (ability score methods, point costs, hit points, proficiency bonus) and other rules no entry holds; a Setting book's lore | `book/book-<book>.json`, the code lowercased (`book-xphb.json`, `book-scag.json`); `books.json` lists the books | `data`: sections by `name` |
+| An Adventure's text: its chapters, places, NPCs and events | `adventure/adventure-<id>.json`, the id lowercased (`adventure-lmop.json`); `adventures.json` lists the Adventures, their ids and chapters | `data`: sections by `name`, with `page` (from v2.40, `adventureData`: the record with the Adventure's `id`, then its `data`) |
+| A book's own text: character creation and advancement (ability score methods, point costs, hit points, proficiency bonus) and other rules no entry holds; a Setting book's lore | `book/book-<book>.json`, the code lowercased (`book-xphb.json`, `book-scag.json`); `books.json` lists the books | `data`: sections by `name` (from v2.40, `bookData`: the record with the book's `id`, then its `data`) |
 
 ## Finding the entry for the Edition
 

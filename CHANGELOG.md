@@ -2,6 +2,12 @@
 
 What changed in each release of DM Realm. Claude Code updates an installed copy when a new version is published. The guide at [mattevigo.github.io/DM-Realm](https://mattevigo.github.io/DM-Realm/) always describes the latest release.
 
+## 0.4.1 — 2026-11-15
+
+### Fixed
+
+- Importing an Adventure works again with the current official data. Since 5etools v2.40 changed the layout of an Adventure's file, `dmr-import-adventure` stopped at every Adventure, saying it "has no Parts". It now reads both the old and the new layout.
+
 ## 0.4.0 — 2026-11-15
 
 ### Added
