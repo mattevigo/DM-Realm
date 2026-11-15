@@ -13,7 +13,7 @@ Bring a Character into this Workspace from outside it: a free-form Markdown note
    - **Play state** — current hit points, spent slots, checkboxes, conditions, uses left. It is dropped, and listed.
    - **Copied official text** — rules text, stats or descriptions copied from a book (a feature's or spell's text). It is dropped, and listed; the option links to its Reference note instead.
    What is dropped stays in the source; this Transfer writes it nowhere.
-4. **Map the current Build's options** to this Workspace's Edition, one by one, finding each version as `dmr-import`'s step 4 does: the Edition's own, its reprint, or Off-Edition Material, whose player options need the DM's consent. A refused option is left out and listed, and the DM picks its replacement as a creation choice ([create.md](create.md), step 2). A multiclass Build keeps its classes as they are.
+4. **Map the current Build's options** to this Workspace's Edition, one by one, finding each version as `dmr-import`'s step 5 does: the Edition's own, its reprint, or Off-Edition Material, whose player options need the DM's consent. A refused option is left out and listed, and the DM picks its replacement as a creation choice ([create.md](create.md), step 2). A multiclass Build keeps its classes as they are.
 5. **Translate** everything into the Workspace Language, as structure.md's "Language and names" says: game terms through the Translation Glossary, headings, labels, frontmatter keys and values, and the identity's text. Names stay the DM's: the Character's, and those structure.md's Translation Glossary section lists.
 6. **Preview**, in one message, and end your turn:
    - the path of the new Character note, and each past Build's;

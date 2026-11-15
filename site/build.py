@@ -52,6 +52,7 @@ NAV = [
         ("skills/dmr-setup", "dmr-setup"),
         ("skills/dmr-ask", "dmr-ask"),
         ("skills/dmr-import", "dmr-import"),
+        ("skills/dmr-import-adventure", "dmr-import-adventure"),
         ("skills/dmr-campaign", "dmr-campaign"),
         ("skills/dmr-character", "dmr-character"),
         ("skills/dmr-session-prepare", "dmr-session-prepare"),
@@ -156,7 +157,7 @@ def header(root, active, version):
 
 FOOTER = """<footer class="footer">
   <div class="footer-inner">
-    <p><strong>DM Realm</strong> is open source under the MIT licence. <a href="{github}">Source on GitHub</a> · <a href="{github}/issues">Report a problem</a></p>
+    <p><strong>DM Realm</strong> is open source under the MIT licence. <a href="{github}">Source on GitHub</a> · <a href="{github}/blob/master/CHANGELOG.md">Changelog</a> · <a href="{github}/issues">Report a problem</a></p>
     <p class="legal">DM Realm is unofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.</p>
   </div>
 </footer>""".format(github=GITHUB)
