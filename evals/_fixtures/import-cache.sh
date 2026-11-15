@@ -10,9 +10,16 @@
 #               ADC Atlas of the Drowned Coast (2025, a Setting book whose own Tidecaller is on
 #               Cinder Bloom's list: never named, as Reference holds no Tidecaller, ADR 0016)
 #   Core books (the `core` group): OLDC and EMBC
-#   Adventure:  SACR The Salt Crypt (2025), levels 2–5, three Parts; its own item the Brine Lantern
+#   Adventure:  SACR The Salt Crypt (2025), levels 2–5, three Parts; its own item the Brine Lantern.
+#               Its text, adventure/adventure-sacr.json: Part 0 Into the Brine (one sub-heading);
+#               Part 1 Chapter 1: The Drowned Stair — areas D1 Tide Gate (with its map), D2
+#               Keeper's Cell (holding the NPC Old Maren and the item The Keeper's Key), D3 The
+#               Weeping Steps, and the event The Rising Tide; it names the Mire Goblin (reprinted
+#               as the Bog Goblin), the Salt Goblin Boss, the Salt Wight, the Brine Lantern and the
+#               Lamp of Echoes, and links into Part 2; Part 2 Chapter 2: The Wight's Hall
 #   Descriptions (fluff): only the Wisp Hound's, in bestiary/fluff-bestiary-embc.json
-#   Images: only the Wisp Hound's, bestiary/EMBC/Wisps.webp — invented bytes, not an image
+#   Images: the Wisp Hound's, bestiary/EMBC/Wisps.webp, and The Drowned Stair's map,
+#               adventure/SACR/stair.webp — invented bytes, not images
 #               (no real 5etools image in the repository, ADR 0003)
 CACHE="$HOME/.dm-realm/source-cache"
 D="$CACHE/v3.0.0/data"
@@ -37,6 +44,36 @@ cat > "$D/adventures.json" <<'JSON'
                {"name": "The Drowned Stair", "ordinal": {"type": "chapter", "identifier": 1}},
                {"name": "The Wight's Hall", "ordinal": {"type": "chapter", "identifier": 2}}]}]}
 JSON
+mkdir -p "$D/adventure" "$CACHE/v3.0.0/img/adventure/SACR"
+cat > "$D/adventure/adventure-sacr.json" <<'JSON'
+{"data": [
+ {"type": "section", "name": "Into the Brine", "page": 4, "id": "a00", "entries": [
+   "Long ago the town of Saltmere sealed its dead beneath the harbour, and the salt kept them.",
+   {"type": "entries", "name": "Running the Adventure", "id": "a01", "entries": [
+     "The heroes should be 2nd level. The crypt's only way in is {@area the Drowned Stair|b00|x}."]}]},
+ {"type": "section", "name": "Chapter 1: The Drowned Stair", "page": 10, "id": "b00", "entries": [
+   "Sixty steps wind down from the harbour wall into the dark. {@creature Mire Goblin|OLDC|Mire goblins} have made the upper steps their den.",
+   {"type": "entries", "name": "Areas of the Stair", "id": "b01", "entries": [
+     {"type": "entries", "name": "D1. Tide Gate", "id": "b02", "page": 11, "entries": [
+       "Barnacled bars close the stair at high water. Two {@creature Mire Goblin|OLDC|mire goblins} watch the gate, throwing shells at anything that moves.",
+       {"type": "image", "href": {"type": "internal", "path": "adventure/SACR/stair.webp"}, "title": "Map 1.1: The Drowned Stair"}]},
+     {"type": "entries", "name": "D2. Keeper's Cell", "id": "b03", "page": 12, "entries": [
+       "A dry cell cut into the rock, its walls white with salt.",
+       {"type": "entries", "name": "Old Maren", "id": "b04", "entries": [
+         "Old Maren, the stair's keeper, is a {@creature Salt Goblin Boss|SACR} who sleeps with the {@item Brine Lantern|SACR} in her lap. She trades safe passage for fresh water."]},
+       {"type": "entries", "name": "The Keeper's Key", "id": "b05", "entries": [
+         "A key of grey coral, cold to the touch. It opens the door of {@area the Wight's Hall|c00|x}."]}]},
+     {"type": "entries", "name": "D3. The Weeping Steps", "id": "b06", "page": 13, "entries": [
+       "Salt water runs down these steps without end. A {@item Lamp of Echoes|EMBC} hangs from a rusted hook."]}]},
+   {"type": "entries", "name": "Events on the Stair", "id": "b07", "entries": [
+     {"type": "entries", "name": "The Rising Tide", "id": "b08", "page": 14, "entries": [
+       "At dusk the sea climbs the stair. A {@creature Salt Wight|SACR} rides the water up from below and stops at {@area the Tide Gate|b02|x}."]}]}]},
+ {"type": "section", "name": "Chapter 2: The Wight's Hall", "page": 16, "id": "c00", "entries": [
+   "The hall holds the salted dead of Saltmere, and the {@creature Salt Wight|SACR} that rules them.",
+   {"type": "entries", "name": "The Coral Door", "id": "c01", "entries": ["Only the keeper's key opens it."]}]}
+]}
+JSON
+printf 'INVENTED IMAGE: adventure/SACR/stair.webp' > "$CACHE/v3.0.0/img/adventure/SACR/stair.webp"
 
 cat > "$D/conditionsdiseases.json" <<'JSON'
 {"condition": [

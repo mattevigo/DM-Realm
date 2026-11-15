@@ -52,6 +52,7 @@ NAV = [
         ("skills/dmr-setup", "dmr-setup"),
         ("skills/dmr-ask", "dmr-ask"),
         ("skills/dmr-import", "dmr-import"),
+        ("skills/dmr-import-adventure", "dmr-import-adventure"),
         ("skills/dmr-campaign", "dmr-campaign"),
         ("skills/dmr-character", "dmr-character"),
         ("skills/dmr-session-prepare", "dmr-session-prepare"),

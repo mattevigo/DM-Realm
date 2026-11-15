@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: import-adventure-cannot-render
+description: "A Part with an entry type DM Realm cannot render yet writes nothing — no note, no README — and the report names the section that fails."
+tags: [import, adventure]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 60
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Agent, Write, Edit, Bash]
+  env:
+    EVAL_DMR_SOURCE_CACHE: "~/.dm-realm/source-cache"
+    EVAL_DMR_SOURCE_API: http://127.0.0.1:9/latest
+    EVAL_DMR_SOURCE_RAW: http://127.0.0.1:9/raw
+    EVAL_DMR_SOURCE_IMG: http://127.0.0.1:9/img
+  prompt: |
+    Import chapter 2 of The Salt Crypt, without its monsters and items.

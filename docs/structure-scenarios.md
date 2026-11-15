@@ -2,7 +2,7 @@
 
 Placement, linking and official-data questions that the Workspace rules must answer in exactly one correct way.
 
-**Most scenarios are now plugin evals** (`evals/`, tag `scenario` and the Setup/research cases): run `claude plugin eval` as CLAUDE.md says after every change to `skills/dmr-workspace/`, `CONTEXT.md` or `docs/adr/`. The table maps each scenario to its eval. The scenarios listed in full below have no eval yet, or only a partial one — most wait for the `dmr-import-adventure` skill (#44) and the update-check spec, or have no observable behaviour — and are still checked by hand with a fresh agent.
+**Most scenarios are now plugin evals** (`evals/`, tag `scenario` and the Setup/research cases): run `claude plugin eval` as CLAUDE.md says after every change to `skills/dmr-workspace/`, `CONTEXT.md` or `docs/adr/`. The table maps each scenario to its eval. The scenarios listed in full below have no eval yet, or only a partial one — most wait for the update-check spec, or have no observable behaviour — and are still checked by hand with a fresh agent.
 
 | Scenario | Eval case |
 | --- | --- |
@@ -15,7 +15,7 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S07 | s07-homebrew-to-dm-tools |
 | S08 | s08-table-events-in-campaign |
 | S09 | s09-no-scope-property |
-| S10 | s10-adventure-monster (partial: the Reference half; the Adventure's notes linking to it wait for the `dmr-import-adventure` skill) |
+| S10 | s10-adventure-monster (the stat block in Reference Monsters), import-adventure-part (an NPC with a heading of its own links to its Adventure's own monster, as a path link, before that monster is imported) |
 | S11 | s11-campaign-homebrew-spell |
 | S12 | workspace-plain-request |
 | S13 | s13b-invented-world, s13c-campaign-changes-setting (part a, official Setting lore, waits for the Setting lore spec) |
@@ -26,7 +26,7 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S18 | s18-campaign-start |
 | S19 | s19-session-file-name |
 | S20 | s20-house-rule |
-| S21 | import-adventure-item (partial: an item the Adventure introduces, imported alone, goes to its Items with a README of the Adventure's title, book, levels and Parts; the Adventure's own notes wait for the `dmr-import-adventure` skill) |
+| S21 | import-adventure-item (an item the Adventure introduces, imported alone, goes to its Items with a README of the Adventure's title, book, levels and Parts), import-adventure-part (a Part: its Part note, a note per Place, NPC, Encounter and Item heading, the README's Parts linked, a core magic item linked in Reference Magic_Items) |
 | S22 | s24-italian-glossary-reuse (its first Homebrew monster creates the translated folder and its Glossary row; no import needed) |
 | S23 | import-italian-fallback (an invented term surely has no Official Translation) |
 | S24 | s24-italian-glossary-reuse |
@@ -36,8 +36,8 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S28 | setup-fresh-italian (config-italian-names: no neutral key is used as a folder name) |
 | S29 | s29-italian-session-name |
 | S30 | s30-import-spell |
-| S31 | s31-import-reprint (partial: the Encounter's link waits for the `dmr-import-adventure` skill) |
-| S32 | s32-off-edition-monster (partial: the Encounter's link waits for the `dmr-import-adventure` skill) |
+| S31 | s31-import-reprint (the 2024 reprint is imported, not the 2014 entry), import-adventure-part (the Adventure's notes link a 2014 monster to its 2024 reprint in Reference Monsters, before it is imported) |
+| S32 | s32-off-edition-monster (partial: an Encounter linking to an unreprinted 2014 monster has no eval yet) |
 | S33 | s33-off-edition-option-asks |
 | S34 | s32-off-edition-monster |
 | S35 | s35-italian-2014-races |
@@ -109,24 +109,15 @@ Placement, linking and official-data questions that the Workspace rules must ans
 
 ## Scenarios without an eval yet
 
-**S10.** An Adventure introduces an official monster that appears in no other book. Where does its stat block go?
-Expected: Reference Monsters. The Adventure's notes (e.g. its NPCs or Encounters, an NPC with a heading of its own) link to it, as a path link written even before the monster is imported.
-
 **S13.** Where do these go: (a) the official lore of the Forgotten Realms; (b) a world the DM invented; (c) the fact that, in one Campaign, the PCs' actions made a Realms city fall?
 Expected: (a) Reference Setting; (b) World, in a folder named after the world; (c) that Campaign (e.g. its Places), linking to the Reference note.
-
-**S21.** The DM starts running a published Adventure, *The Sunken Keep*. Where does the Adventure's content go, and where does an item unique to that Adventure go?
-Expected: Adventures › The_Sunken_Keep, imported a Part at a time: a README (title, book, levels, Parts), a Part note per imported Part in Parts, and one note per book heading the agent picks in Places, NPCs, Items and Encounters. The unique item goes in its Items, even imported alone, with the README (an official magic item from the DMG stays in Reference Magic_Items).
 
 **S88.** Glasstaff, an NPC, appears in two published Adventures, *The Sunken Keep* and *The Salt Crypt*, and the DM runs both. Where do his notes go?
 Expected: One note in each Adventure's NPCs, each as its own book describes him. Neither links to the other, and there is no shared note.
 
 ## Official data
 
-**S31.** A 2024 Workspace runs a 2014 Adventure. One of its encounters uses the 2014 *Goblin*, which the 2024 Monster Manual reprints. What does the Encounter note link to?
-Expected: The 2024 Goblin in Reference Monsters, as a path link written even before that note is imported. The 2014 Goblin is not imported: the Edition has a version, so there is no gap.
-
-**S32.** Same Workspace and Adventure. Another encounter uses a 2014 monster that no 2024 book reprints. What does the agent do?
+**S32.** A 2024 Workspace runs a 2014 Adventure. One of its encounters uses a 2014 monster that no 2024 book reprints. What does the agent do?
 Expected: Import it into Reference Monsters as Off-Edition Material, with a callout at the top naming its Edition (2014) — on its own when the DM asks for it, or with the Part's other missing monsters on the DM's one yes to their count when the Part is imported; no consent of its own, since it is not a player option. The Encounter links to it either way.
 
 **S44.** The DM once added a line of their own to the Reference note *Fireball*. An update check finds an erratum to *Fireball*. What does the agent do?
