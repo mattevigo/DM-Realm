@@ -58,7 +58,11 @@ seed adventures.json <<'JSON'
                 {"name": "Saltmere", "ordinal": {"type": "chapter", "identifier": 1}},
                 {"name": "The Crypt", "ordinal": {"type": "chapter", "identifier": 2}}]},
   {"name": "The Odd Box", "id": "ODB", "source": "ODB", "published": "2016-06-01",
-   "contents": [{"name": "The Box"}]}
+   "contents": [{"name": "The Box"}]},
+  {"name": "The Wrapped Tower", "id": "WRT", "source": "WRT", "published": "2025-03-01",
+   "contents": [{"name": "Foreword"}, {"name": "The Stair", "ordinal": {"type": "chapter", "identifier": 1}}]},
+  {"name": "The Misfiled Map", "id": "MFM", "source": "MFM", "published": "2025-04-01",
+   "contents": [{"name": "The Map"}]}
 ]}
 JSON
 seed adventure/adventure-slc.json <<'JSON'
@@ -103,6 +107,19 @@ seed adventure/adventure-odb.json <<'JSON'
    {"type": "entries", "name": "The Lid", "id": "101", "entries": [{"type": "puzzlebox", "id": "102"}]}]}
 ]}
 JSON
+# The v2.40 shape: the Parts under the `data` of the `adventureData` record with the id.
+seed adventure/adventure-wrt.json <<'JSON'
+{"adventureData": [{"id": "WRT", "source": "WRT", "data": [
+ {"type": "section", "name": "Foreword", "page": 1, "id": "000", "entries": ["Ivy hides the door."]},
+ {"type": "section", "name": "Chapter 1: The Stair", "page": 3, "id": "010", "entries": [
+   "Every step creaks.",
+   {"type": "entries", "name": "W1. The Landing", "id": "011", "page": 4, "entries": ["A cold draft."]}]}
+]}]}
+JSON
+seed adventure/adventure-mfm.json <<'JSON'
+{"adventureData": [{"id": "OTHER", "source": "OTHER", "data": [
+ {"type": "section", "name": "Not Here", "page": 1, "id": "000", "entries": ["Wrong book."]}]}]}
+JSON
 seed bestiary/index.json <<'JSON'
 {"MM": "bestiary-mm.json", "XMM": "bestiary-xmm.json", "SLC": "bestiary-slc.json"}
 JSON
@@ -137,6 +154,22 @@ has parts "$OUT" '"index": 1'
 has parts "$OUT" '"id": "010"'
 has parts "$OUT" '"ordinal": "chapter 1"'
 has parts "$OUT" '"title": "The Salt Crypt"'
+
+# --- From 5etools v2.40 the Parts sit in the Adventure's `adventureData` record ---------
+OUT=$(run WRT) || fail "wrapped parts: exit $?: $(cat "$TMP/err")"
+has "wrapped parts" "$OUT" '"name": "Chapter 1: The Stair"'
+has "wrapped parts" "$OUT" '"ordinal": "chapter 1"'
+OUT=$(run WRT --part 1 --list) || fail "wrapped list: exit $?: $(cat "$TMP/err")"
+has "wrapped list" "$OUT" '"name": "W1. The Landing"'
+printf '{"part_note": "Adventures/WRT/The_Stair", "sections": []}' > "$TMP/plan-wrt.json"
+printf '{}' > "$TMP/links-wrt.json"
+OUT=$(run WRT --part 1 --plan "$TMP/plan-wrt.json" --links "$TMP/links-wrt.json") \
+  || fail "wrapped render: exit $?: $(cat "$TMP/err")"
+has "wrapped render" "$OUT" 'Every step creaks.'
+OUT=$(run MFM); CODE=$?
+[ "$CODE" -eq 7 ] || fail "wrapped, no record with the id: expected exit 7, got $CODE"
+[ -z "$OUT" ] || fail "wrapped, no record with the id: printed on stdout"
+has "wrapped, no record with the id" "$(cat "$TMP/err")" "'MFM' has no Parts"
 
 # --- One Part: its headings, words and images, fetching nothing ------------------------
 BEFORE=$(find "$DMR_SOURCE_CACHE" | sort)
