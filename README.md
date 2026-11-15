@@ -4,10 +4,10 @@ A [Claude Code](https://claude.com/claude-code) plugin for D&D 5th-edition Dunge
 
 - **2014 or 2024 rules.** You choose the Edition at Setup.
 - **Any language.** Every folder, file name and generated note is written in the language you choose, using the publisher's official translation of game terms where one exists.
-- **Official material imported, not invented.** Spells, monsters, items, classes and the rest come from one machine-readable data source and are cited by book and page, never written from the model's memory.
+- **Official material imported, not invented.** Spells, monsters, items, classes and the rest, and whole published Adventures a chapter at a time, come from one machine-readable data source and are cited by book and page, never written from the model's memory.
 - **The whole Session loop.** Prepare a Session, take live notes at the table, consolidate it into a recap and Character updates, then tell it as a Chapter for your players.
 
-**New here? Read the guide: [mattevigo.github.io/DM-Realm](https://mattevigo.github.io/DM-Realm/)**, from installing the plugin to your first narrated Chapter.
+**New here? Read the guide: [mattevigo.github.io/DM-Realm](https://mattevigo.github.io/DM-Realm/)**, from installing the plugin to your first narrated Chapter. What changed in each release is in the [changelog](CHANGELOG.md).
 
 ## Requirements
 
@@ -31,7 +31,7 @@ In Claude Code:
 1. Make an empty folder for your Workspace and start Claude Code in it.
 2. Run `/dm-realm:dmr-setup`. It asks for the Workspace Language and the Edition, then creates the folders and the Obsidian settings.
 3. Open the folder in Obsidian as a vault.
-4. Ask in plain words: "start a new campaign called Heroes of the Border", "add the Goblin", "a new character for Baldu", "prepare the next session".
+4. Ask in plain words: "start a new campaign called Heroes of the Border", "add the Goblin", "import chapter 1 of Lost Mine of Phandelver", "a new character for Baldu", "prepare the next session".
 
 If you are not sure what to do next, ask: `/dm-realm:dmr-ask what should I do now?`
 
@@ -43,7 +43,8 @@ You can run any skill with its command, `/dm-realm:<skill>`, or just describe wh
 | --- | --- |
 | `dmr-setup` | Turns the current folder into a Workspace. Run it again to rename top-level folders or reinstall the Obsidian settings and stat block layouts. |
 | `dmr-ask` | Answers questions about DM Realm, your campaigns and the rules, without changing anything. |
-| `dmr-import` | Imports official entries (spells, monsters, items, feats, classes, species, backgrounds, conditions, rules) into Reference, translated. |
+| `dmr-import` | Imports official entries (spells, monsters, items, feats, classes, species, backgrounds, conditions, rules) into Reference, translated; an Adventure's own item goes into that Adventure. |
+| `dmr-import-adventure` | Imports an official Adventure a chapter at a time, or whole: a note for each place, NPC, encounter and item, with its maps, linked and translated. |
 | `dmr-campaign` | Starts a Campaign: its folder and a README with the pitch, world, party, tone and table limits. |
 | `dmr-character` | Creates, levels up or changes a Character, or transfers one from an old vault. |
 | `dmr-session-prepare` | Creates the next Session's note and fills in its prep from the loose threads and your idea. |
