@@ -1,7 +1,7 @@
 #!/bin/sh
 # Tests the basic Template set Setup writes (skills/dmr-setup/templates/): one file per
 # row of structure.md's Templates table, no links and no heading in any, the Session's
-# properties, Present line and sections, and the
+# properties, Present line and sections, the designed Adventure Part's sections, and the
 # Homebrew monster's empty statistics converting to Markdown and back unchanged.
 # Usage: sh tests/setup-templates.test.sh   (exit 0 = all pass)
 set -u
@@ -39,6 +39,11 @@ grep -qxF '**Present:** —' "$S" || fail "session: no empty Present line"
 # Present, then Prep, Live notes, Recap and Loose threads, in that order.
 ORDER=$(grep -nE '^(\*\*Present:\*\*|## (Prep|Live notes|Recap|Loose threads)$)' "$S" | sed 's/^[0-9]*://; s/^\*\*Present:.*/Present/; s/^## //' | tr '\n' ',')
 [ "$ORDER" = "Present,Prep,Live notes,Recap,Loose threads," ] || fail "session: sections are '$ORDER'"
+
+# A designed Adventure's Part: Summary, Structure, Clues and Ways out, in that order.
+P="$SET/Adventure_Part.md"
+ORDER=$(grep -E '^## ' "$P" | sed 's/^## //' | tr '\n' ',')
+[ "$ORDER" = "Summary,Structure,Clues,Ways out," ] || fail "adventure part: sections are '$ORDER'"
 
 # The monster's statistics stay out of the bestiary and survive a change of form.
 M="$SET/Homebrew_Monster.md"
