@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: player-wiki-refuse-adventure
+description: "Asked to put an Adventure in the Player Wiki, the skill refuses it, says why, leaves player_wiki without it, and updates the wiki with the rest."
+tags: [player-wiki]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Put The Sunken Keep adventure in the player wiki too, then update it.

@@ -17,10 +17,11 @@ Turn the current folder into a DM Realm Workspace, in any Workspace Language, le
 3. **Workspace Language.** Use the language the DM's request names, in any language ("italiano", "Deutsch"…). When it names none, ask which language the Workspace will be written in — every folder, file and note, fixed for good after Setup — and end your turn. Ask in the language the DM's request is written in (English when there is no text). Take the language only from the DM's explicit words; the language the request happens to be written in is not a choice. **From here on, write to the DM in the Workspace Language.**
 4. **Edition.** Use the Edition the DM's request names ("2024 rules", "5.5e" and "One D&D" mean 2024; "5e 2014" means 2014). When it names none, ask it as structure.md's "Edition" section says, in one message, and end your turn. In that question, 2024 means the 2024 Player's Handbook, Dungeon Master's Guide and Monster Manual; 2014 means the 2014 core books and the books that followed them. Take the Edition only from the DM's explicit answer.
 5. **Stat blocks.** Use the choice the DM's request makes ("with stat blocks", "Markdown only"). When it makes none, ask the [stat blocks question](#the-stat-blocks-question) in a message of its own and end your turn. Take `stat_blocks` only from the DM's explicit answer.
+   1. **The Player Wiki site.** Then the same for `quartz`: use the choice the request makes ("with a website for the players", "no website"); when it makes none, ask the [Quartz question](#the-quartz-question) in a message of its own and end your turn. Take `quartz` only from the DM's explicit answer. On a yes, [check Node](#the-quartz-question) before the preview.
 6. **Folder names.** For each top-level folder:
    - **Named by the DM** (in the request or an answer): use that name exactly, after checking it as structure.md's "Workspace Config" requires — a single folder name, not empty after the name rules, not a duplicate. An invalid name: say why, ask for another, and end your turn; the folder stays as it is.
    - **Otherwise**: its default English name, translated into the Workspace Language as structure.md's "Translating a term" says (Official Translation, else a faithful fallback), with the name rules applied. In English, the default name itself.
-7. **Preview.** Show exactly what Setup will create: `workspace-config.yml` with its content — Workspace Language, Edition, `stat_blocks` with one line on what it means (monsters and NPCs as the plugin's stat blocks, or as Markdown that needs no plugin but that MapForge cannot read; Characters keep their stat block either way) and every folder name; every top-level folder, empty but for Templates; the [Templates](#the-templates) it writes, each by its file name; in a non-English Workspace, the Translation Glossary with its rows; the Obsidian settings Setup merges (below), the attachment location with its Attachments name included; when Fantasy Statblocks is installed, what [Fantasy Statblocks](#fantasy-statblocks) sets; and, only when the DM's request asks for it, the folder Setup will name for MapForge's bestiary ([MapForge](#mapforge)). Unless the request already settled the names ("default names", or names given), invite the DM to rename any folder.
+7. **Preview.** Show exactly what Setup will create: `workspace-config.yml` with its content — Workspace Language, Edition, `stat_blocks` with one line on what it means (monsters and NPCs as the plugin's stat blocks, or as Markdown that needs no plugin but that MapForge cannot read; Characters keep their stat block either way), `quartz` with one line on what it means (the Player Wiki also built as a website, or the Markdown wiki only) and every folder name; every top-level folder, empty but for Templates; the [Templates](#the-templates) it writes, each by its file name; in a non-English Workspace, the Translation Glossary with its rows; the Obsidian settings Setup merges (below), the attachment location with its Attachments name included; when Fantasy Statblocks is installed, what [Fantasy Statblocks](#fantasy-statblocks) sets; and, only when the DM's request asks for it, the folder Setup will name for MapForge's bestiary ([MapForge](#mapforge)). Unless the request already settled the names ("default names", or names given), invite the DM to rename any folder.
 8. **Confirmation.** Continue on an explicit go-ahead from the DM: one already in the request ("go ahead", "proceed", "procedi", "create it") counts. Otherwise ask for it and end your turn; the folder stays as it is until then.
 9. **Create.**
    1. Write `workspace-config.yml` at the folder root in the example's format, every value filled in (each folder name written out).
@@ -40,7 +41,7 @@ Turn the current folder into a DM Realm Workspace, in any Workspace Language, le
 
    These are the whole new Workspace; an English Workspace has no Translation Glossary.
 10. **Check Obsidian** with `python3 "<this skill's base directory>/obsidian-settings.py" version`: it prints the version found, the version found and that it is older than the one DM Realm was built for, or that none was found. This never stops Setup.
-11. **Report**, in the Workspace Language: what was created, the Templates by name; with `stat_blocks: false`, that MapForge cannot place creatures without stat blocks; the Obsidian version found (with a warning to update when it is older), or that Obsidian was not found and can be installed later; Fantasy Statblocks, as its section says; when the folder has `.mapforge/`, what MapForge's bestiary and Treasury read of the Workspace ([MapForge](#mapforge)); and the one step left to the DM — open this folder in Obsidian with **Open folder as vault**.
+11. **Report**, in the Workspace Language: what was created, the Templates by name; with `stat_blocks: false`, that MapForge cannot place creatures without stat blocks; with `quartz: true`, the Node found or how to install it, as [the Quartz question](#the-quartz-question) says, and that `dmr-player-wiki` builds the site when the DM asks for the Player Wiki; the Obsidian version found (with a warning to update when it is older), or that Obsidian was not found and can be installed later; Fantasy Statblocks, as its section says; when the folder has `.mapforge/`, what MapForge's bestiary and Treasury read of the Workspace ([MapForge](#mapforge)); and the one step left to the DM — open this folder in Obsidian with **Open folder as vault**.
 
 Done when the folder holds `workspace-config.yml`, the top-level folders, empty but for every Template of the set, and, in a non-English Workspace, the Translation Glossary, and Fantasy Statblocks, when installed, has DM Realm's layouts — and nothing else of Setup's.
 
@@ -72,6 +73,7 @@ A Workspace is set up once. A re-run keeps its Workspace Language and Edition, r
 
       It rewrites the note in place with the same values and translations, and moves the `statblock` frontmatter flag. Exit 6 or 7 leaves that note as it was: name it in the report and go on. Exit 8 means it is a Character's: it stays as it is, and needs no mention.
    3. **Write the value** into the Config once every note is converted.
+   - **The Player Wiki site.** A Config without `quartz` (a Workspace set up before it existed) counts as `false`. Unless the request makes the choice, ask the [Quartz question](#the-quartz-question) in a message of its own, after the stat blocks question when both are missing, and end your turn; write the DM's answer into the Config. With `quartz: true`, [check Node](#the-quartz-question) on every re-run: a re-run is how the DM checks again after installing it.
 6. **Repair Obsidian settings**: run `python3 "<this skill's base directory>/obsidian-settings.py" merge . "<Templates folder name in use>" "<Attachments>"`, Attachments as the Translation Glossary's row gives it (in English, `Attachments`; with no row yet, translated and added as a first Setup does). It restores only DM Realm's keys that drifted and rewrites nothing that is right. Then set up [Fantasy Statblocks](#fantasy-statblocks): run its helper even when the plugin looks configured, with the layout labels the Translation Glossary already holds.
 7. **Portraits and items**: run the helper structure.md's "The Portrait" names, so every item note says `item: true` and every stat block or item note whose note embeds its own picture names it as its Portrait.
 8. **Classes lines**, when Reference has spell notes: refresh them with the `dmr-import` skill's helper, as that skill's "Refreshing the Classes lines" says (read that paragraph) — it gives a spell imported before DM Realm wrote the line its line, corrects a line the rule no longer gives (structure.md's "Spell Indexes"), and rebuilds the Spell Indexes:
@@ -82,7 +84,7 @@ A Workspace is set up once. A re-run keeps its Workspace Language and Edition, r
 
    For each class in its `missing_rows`, translate it as structure.md's "Translating a term" says, add the row to the Translation Glossary, and run it again. Exit 2 (no Spells folder) is nothing to do; exit 3 or 4 (the Trusted Source unreachable, or without the class lists) changes nothing: say so in the report and go on.
 9. **MapForge's bestiary**, only when the DM's request asks for it: preview the folder and the one line of `.mapforge/config.json` it sets, and set it on an explicit go-ahead (one already in the request counts), as [MapForge](#mapforge) says.
-10. **Report** what changed — renamed folders and rewritten notes, converted statistics (and any note left as it was), restored settings, Fantasy Statblocks, recreated folders, added Templates, the Portraits and `item: true` the helper added, note by note (and each note whose Portrait it skipped, with why), the Classes lines the refresh added, changed or removed and the Spell Indexes that changed (or why it could not run, and each note it skipped, with why), MapForge's bestiary folder — or that the Workspace was already in order; and, when the folder has `.mapforge/`, what MapForge's bestiary and Treasury read of the Workspace ([MapForge](#mapforge)).
+10. **Report** what changed — renamed folders and rewritten notes, converted statistics (and any note left as it was), the `quartz` choice written and, with `quartz: true`, the Node found or how to install it, restored settings, Fantasy Statblocks, recreated folders, added Templates, the Portraits and `item: true` the helper added, note by note (and each note whose Portrait it skipped, with why), the Classes lines the refresh added, changed or removed and the Spell Indexes that changed (or why it could not run, and each note it skipped, with why), MapForge's bestiary folder — or that the Workspace was already in order; and, when the folder has `.mapforge/`, what MapForge's bestiary and Treasury read of the Workspace ([MapForge](#mapforge)).
 
 Done when every change the DM confirmed is made, every Template that was there is as it was, the Obsidian settings (Fantasy Statblocks' included, when installed) are as DM Realm needs them, every item note says `item: true`, every stat block and item note the helper can give a Portrait has one, every spell note's Classes line is the one the refresh gives (unless the Trusted Source was unreachable), and nothing else in the Workspace changed.
 
@@ -108,6 +110,28 @@ How the Workspace writes monsters' and NPCs' statistics, asked in the Workspace 
 - **Markdown** (`stat_blocks: false`): readable with no plugin, but MapForge cannot place those creatures.
 
 Recommend stat blocks when Fantasy Statblocks is installed (`.obsidian/plugins/obsidian-5e-statblocks/` exists) and Markdown when it is not, and say that Characters keep their stat block either way.
+
+## The Quartz question
+
+Whether the Player Wiki will also be built as a website (structure.md's "The Player Wiki site"), asked in the Workspace Language:
+
+- **A website** (`quartz: true`): every time the DM updates the Player Wiki, `dmr-player-wiki` also builds it with Quartz into a folder of HTML pages. The DM uploads that folder wherever they choose, and publishing it is the DM's responsibility. It needs Node 22 or later, and the first build downloads Quartz.
+- **Markdown only** (`quartz: false`): the Player Wiki stays a folder of notes, readable in Obsidian.
+
+Recommend nothing: it is the DM's plan for their players. Say that it can be changed at any later re-run.
+
+**Check Node** on a yes, and on every re-run with `quartz: true`. Run the helper next to the `dmr-workspace` skill's structure.md; it writes nothing:
+
+```sh
+python3 "<dmr-workspace base directory>/player-wiki-site.py" node
+```
+
+It prints one JSON object. With `"ok": true`, tell the DM the Node version found and that the site can be built. Otherwise, tell the DM what was found (no Node, or `node` older than 22). Then give the install steps for the DM's system, and that re-running Setup checks again:
+- macOS: `brew install node`, or the installer from nodejs.org;
+- Linux: the package manager, or nodejs.org;
+- Windows: the installer from nodejs.org.
+
+Never install anything yourself. Keep `quartz: true` all the same, because it is the DM's choice: until Node is there, the Player Wiki is written as Markdown only.
 
 ## Fantasy Statblocks
 

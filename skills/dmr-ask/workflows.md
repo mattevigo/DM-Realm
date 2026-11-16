@@ -19,6 +19,11 @@ How DM Realm's skills fit together: the order a DM uses them in, and what has no
 
 Between Sessions, a Character's level-ups and other changes go through `dmr-character`.
 
+## Sharing with the players
+
+- `dmr-player-wiki` writes the Player Wiki, a copy for the players of what the DM chooses (Reference, Homebrew, World, Characters, the Chronicles), outside the Workspace. It is written again whenever the DM asks, typically after a new Chapter. When the DM said yes to the website at Setup (`dmr-setup`, which also checks for Node), it is also built with Quartz into a folder of HTML pages.
+- **Publishing the site** is the DM's: they upload the folder wherever they choose, on their own responsibility. No skill hosts it or controls who reads it.
+
 ## Any time
 
 - `dmr-ask` for a question.
@@ -27,4 +32,5 @@ Between Sessions, a Character's level-ups and other changes go through `dmr-char
 
 ## Not built yet
 
+- **Putting a Campaign's NPCs, Places or other notes in the Player Wiki**: no skill does it yet.
 - **Migrate**: no skill does it. Its parts that have one, in a Workspace Setup already created: `dmr-import` for the official material, a Transfer through `dmr-character` for each Character. The DM's own notes have no skill to carry them over.

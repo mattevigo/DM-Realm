@@ -99,6 +99,9 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S95 | s95-spent-resources-party-state (a Character's spent hit points and spell slots go in the Campaign's Party State; the Character note is unchanged) |
 | S96 | setup-fresh-english, tests/setup-templates.test.sh (the Session Template has the `number` and `date` properties, the Present line and a Live notes section between Prep and Recap) |
 | S97 | session-narrate-apply, session-narrate-italian (a consolidated Session's Chapter goes in its Campaign's Chronicle, named after the Session note and linking to it, and the Session note does not link back) |
+| S98 | tests/player-wiki.test.sh, player-wiki-update (the Player Wiki holds only the parts chosen, never an Adventure, a Session, another Campaign note, the Voice or a Past Build; a link to a note left out is plain text; World and Homebrew lose their DM-only sections; the Workspace is unchanged) |
+| S100 | setup-asks-quartz, setup-quartz-old-node, player-wiki-site-old-node, tests/player-wiki-site.test.sh (Setup asks whether the Player Wiki is also a website and checks Node, installing nothing; without Node 22 the Markdown wiki is written and the site is not; the site is built with the pinned Quartz, its configuration DM Realm's, and a failed build leaves the previous site) |
+| S99 | player-wiki-refuse-adventure, player-wiki-inside-workspace, tests/player-wiki.test.sh (an Adventure asked for the Player Wiki is refused, saying why; a folder inside the Workspace, or one DM Realm did not write, is refused and nothing is deleted) |
 
 ## How to run the manual scenarios
 

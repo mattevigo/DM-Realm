@@ -1,0 +1,40 @@
+<!--
+title: dmr-player-wiki
+description: Writes the Player Wiki, a copy for your players of the parts of the Workspace you choose, outside the Workspace, with your secrets, Sessions and Adventures left out, and builds it as a website when you chose one.
+-->
+<div class="term">
+  <div class="term-bar"><i></i><i></i><i></i><span>claude</span></div>
+<pre><span class="line"><span class="prompt">&gt; </span>/dm-realm:dmr-player-wiki &lt;what to do&gt;</span></pre>
+</div>
+
+<h2>Ask it like this</h2>
+<ul class="prompts">
+  <li>make a wiki for my players</li>
+  <li>update the Player Wiki</li>
+  <li>put the World in the wiki too</li>
+  <li>"Balance notes" is a DM heading too</li>
+</ul>
+
+<h2>How</h2>
+<ol class="steps">
+  <li>The first time, proposes what goes in. That is Reference, Homebrew, World, Characters and each Campaign's Chronicle, the headings that mark your secrets, and a folder outside the Workspace. It saves your answer in the Workspace Config.</li>
+  <li>Runs a script that copies those notes into the folder, rewritten from scratch.
+    <ul>
+      <li>A link to a note left out becomes plain text.</li>
+      <li>A monster's stat block becomes readable Markdown.</li>
+      <li>World and Homebrew notes lose their <em>Secrets</em> and <em>DM Notes</em> sections and their <code>%% comments %%</code>.</li>
+    </ul>
+  </li>
+  <li>With the website chosen at Setup, builds the wiki with Quartz into a folder of HTML pages, and gives you the command to preview it.</li>
+  <li>Reports what went in, and every section it removed, note by note.</li>
+</ol>
+
+<h2>Never</h2>
+<ul>
+  <li>Puts in an Adventure, a Session, a Campaign's NPCs, Places or other notes, the Voice, a Past Build, DM Tools or the Templates.</li>
+  <li>Changes a note of your Workspace, or writes the wiki inside it.</li>
+  <li>Empties a folder it did not create.</li>
+  <li>Publishes the site: where it goes is yours to choose, and yours to answer for.</li>
+  <li>Rewrites a word of your notes: the copying is a script, not Claude.</li>
+</ul>
+<p>Guide: <a href="{{root}}guide/share/">Share with your players</a>.</p>

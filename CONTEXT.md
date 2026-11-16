@@ -185,3 +185,7 @@ _Avoid_: Tale, story
 **Voice**:
 A Campaign's narration instructions for its Chronicle, in the DM's words, kept only when the DM asks; every Chapter is told in it.
 _Avoid_: Style, tone, settings
+
+**Player Wiki**:
+A copy of the parts of a Workspace the DM chose — Reference, Homebrew, World, Characters, Campaigns' Chronicles — written outside it for a wiki generator to publish to the players; it holds nothing the players must not see. DM Realm writes it again from scratch when the DM asks, and never changes the Workspace doing so. When the DM chose it at Setup, it is also built as a website with Quartz, which the DM publishes wherever they choose, on their own responsibility.
+_Avoid_: Export (which is Promotion's _Avoid_), wiki site, handout

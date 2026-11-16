@@ -1,0 +1,37 @@
+<!--
+title: Share with your players
+description: Give your players a wiki of the rules, your world, their Characters and the Chronicle, with your secrets left out, written again whenever you ask.
+-->
+<p>The <strong>Player Wiki</strong> is a copy of the parts of your Workspace your players may read, written into a folder outside the Workspace. <code>dmr-player-wiki</code> writes it, and writes it again whenever you ask, typically after a new Chapter.</p>
+<ul class="prompts">
+  <li>make a wiki for my players</li>
+  <li>update the Player Wiki</li>
+  <li>leave the Characters out of the wiki</li>
+</ul>
+
+<h2>What goes in</h2>
+<p>You choose whole parts. The first time, Claude proposes all of them and asks where the folder should go.</p>
+<ul>
+  <li><strong>Reference</strong>, <strong>Characters</strong> and each Campaign's <strong>Chronicle</strong>, as they are.</li>
+  <li><strong>Homebrew</strong> and <strong>World</strong>, minus their <em>Secrets</em> and <em>DM Notes</em> sections and their <code>%% comments %%</code>. Keep secrets under another heading? Tell Claude it is a DM heading too.</li>
+</ul>
+<p>Never Adventures, Sessions, a Campaign's other notes, the Voice, Past Builds, DM Tools or the Templates. A link to a note left out becomes plain text, so the wiki has no broken links.</p>
+
+<h2>A copy, written by a script</h2>
+<p>The copying is a script, not Claude, so nothing is reworded, and your Workspace is never changed. The folder is rewritten from scratch at every update: a note you delete leaves the wiki too, and an edit made in the wiki is lost. After each update you get a report of what went in and of every section removed, note by note. Look it over before you share.</p>
+
+<h2>As a website</h2>
+<p>Say yes to the website when <a href="{{root}}guide/setup/">Setup</a> asks, or run Setup again later. Then every update also builds the wiki with <a href="https://quartz.jzhao.xyz/">Quartz</a> into a folder of HTML pages. It is in your Workspace's language, with search, backlinks and a graph.</p>
+<ul>
+  <li><strong>Node 22 or later</strong> is needed. Setup checks for it and tells you how to install it. Without it, the Markdown wiki is still written.</li>
+  <li>The first build downloads Quartz, once for every Workspace. DM Realm keeps the version it was tested with.</li>
+  <li>Nothing on the site comes from another server: no analytics, no fonts or scripts from a CDN.</li>
+  <li>A build that fails leaves your previous site as it was.</li>
+</ul>
+<p>Look at it before you share it. The report gives you the command, <code>python3 -m http.server --directory "&lt;site folder&gt;" 8080</code>, then you open <code>http://localhost:8080</code>.</p>
+
+<div class="callout warn"><span class="callout-title">Publishing is yours</span>
+<p>Upload the site folder to any static host you like. DM Realm does not publish it and does not control who reads it. Reference holds official text, so where you put the site and who can open it is your responsibility. A site only your players can log in to is the safe choice.</p></div>
+
+<h2>Without a website</h2>
+<p>The Markdown folder is plain Obsidian Markdown: your players can open it as a vault in Obsidian.</p>

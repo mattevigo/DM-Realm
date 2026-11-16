@@ -45,6 +45,7 @@ NAV = [
         ("guide/play", "At the table"),
         ("guide/consolidate", "Close the Session"),
         ("guide/narrate", "Tell the story"),
+        ("guide/share", "Share with your players"),
         ("guide/ask", "When you are stuck"),
     ]),
     ("Skills", [
@@ -59,6 +60,7 @@ NAV = [
         ("skills/dmr-mapforge-import", "dmr-mapforge-import"),
         ("skills/dmr-session-consolidate", "dmr-session-consolidate"),
         ("skills/dmr-session-narrate", "dmr-session-narrate"),
+        ("skills/dmr-player-wiki", "dmr-player-wiki"),
     ]),
     ("Reference", [
         ("concepts", "Concepts"),

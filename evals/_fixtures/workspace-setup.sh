@@ -11,9 +11,12 @@
 #                simulate a hand-edited Config
 #   WS_STAT_BLOCKS  the Config's stat_blocks: true (default) or false, or none to leave
 #                it out, as in a Workspace set up before ADR 0009
+#   WS_QUARTZ    the Config's quartz: false (default) or true, or none to leave it out,
+#                as in a Workspace set up before ADR 0018
 WS_LANG=${WS_LANG:-en}
 WS_EDITION=${WS_EDITION:-2024}
 WS_STAT_BLOCKS=${WS_STAT_BLOCKS:-true}
+WS_QUARTZ=${WS_QUARTZ:-false}
 if [ "$WS_LANG" = it ]; then
   WS_LANGUAGE=${WS_LANGUAGE:-Italiano}
   WS_FOLDERS="Riferimento Avventure Homebrew Mondo Personaggi Campagne Strumenti_DM Modelli"
@@ -37,6 +40,7 @@ cat > workspace-config.yml <<YML
 language: $WS_LANGUAGE
 edition: $WS_EDITION
 $([ "$WS_STAT_BLOCKS" = none ] || echo "stat_blocks: $WS_STAT_BLOCKS")
+$([ "$WS_QUARTZ" = none ] || echo "quartz: $WS_QUARTZ")
 folders:
   reference: $(ws_folder 1)
   adventures: $(ws_folder 2)

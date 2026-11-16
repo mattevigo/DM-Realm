@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: player-wiki-inside-workspace
+description: "Asked for the Player Wiki in a folder inside the Workspace, the skill refuses that folder, says it must be outside the Workspace, and writes no wiki there."
+tags: [player-wiki]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Make a wiki for my players with everything you can put in it, in a folder called Player_Wiki right here inside this workspace. Go ahead without asking.
