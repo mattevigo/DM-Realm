@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: player-wiki-update
+description: "The player_wiki key is set: asked to update the wiki, the skill runs the helper and reports each World and Homebrew note's removed section, naming them."
+tags: [player-wiki]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Update the player wiki.
