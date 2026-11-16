@@ -581,6 +581,49 @@ DM Realm guarantees the plugin's standard keys, `initiative`, `size` and the [Po
 
 MapForge's Session Logs (`.mapforge/sessions/`) and the Combat Logs they point at are a Session's Table Record. It reaches the Workspace only by being written into that Session's Live Notes, when the DM asks.
 
+## Player Wiki
+
+A copy of the parts of the Workspace the DM chose, for the players to read: written outside the Workspace, as plain Obsidian Markdown a wiki generator (Quartz, MkDocs…) can build into a site ([ADR 0017](../../docs/adr/0017-the-player-wiki-is-a-copy-written-outside-the-workspace.md)). One per Workspace. The `player-wiki.py` helper next to this file writes it, every rule below included; the agent never writes into it by hand.
+
+- **What can go in**, chosen as whole parts in the [Workspace Config](#workspace-config)'s `player_wiki`:
+  - Reference, Homebrew, World and Characters;
+  - the Chronicle of each Campaign named.
+- **What never goes in:**
+  - Adventures;
+  - a Campaign's other notes: its Sessions, NPCs, Places, Quests, Factions, homebrew, README, Diary and Party State;
+  - the Chronicle's Voice;
+  - a Character's Past Builds;
+  - DM Tools, the Translation Glossary included;
+  - Templates.
+
+  When the DM asks for one of these, the agent refuses and says why.
+- **Copied as they are:** Reference, Characters and Chronicles. Knowledge follows links, so none of them holds a table's secrets: a Character note holds only identity and Build, and a Chronicle is written for the players.
+- **World and Homebrew lose what is the DM's only:**
+  - every section headed by one of the Config's `dm_only_headings`, matched whole and ignoring case, up to the next heading of the same or a higher level;
+  - every `%% … %%` comment.
+
+  The default headings are the Templates' Secrets heading and DM Notes, in the Workspace Language: `Segreti` and `Note del DM` in Italian. A DM who keeps secrets under another heading adds it to the list. The filter is by heading only, so a secret written anywhere else goes out.
+- **Every note keeps its path and name.** It also gets these mechanical changes, and no other:
+  - **Links:**
+    - a link to a note not in the wiki becomes plain text: its alias, else its name with `_` shown as spaces;
+    - an embed of such a note is dropped;
+    - a file a note links to or embeds is copied at its own path, and no other file is.
+  - **Stat blocks:**
+    - a monster's or an NPC's fence becomes DM Realm's [Markdown](#stat-blocks), with the Translation Glossary's labels;
+    - a Character's fence is dropped, because its Build is already Markdown.
+  - **The title:** the `#` heading becomes the frontmatter `title:`.
+- **`index.md` at the root is its home page.** It is headed with the Workspace folder's name, and links the front doors of each part:
+  - Reference's Spell Indexes;
+  - Homebrew's House Rules (else every Homebrew note);
+  - each world's overview notes (else every note of that world);
+  - each Character;
+  - under the Campaigns folder's name, each Campaign's Chapters.
+- **The folder:**
+  - It is outside the Workspace and does not hold it.
+  - It is rewritten from scratch at every update, keeping only its dot-entries (a `.git`, the generator's settings).
+  - It is marked by a `.dm-realm-player-wiki` file. A folder that holds files but no marker is never emptied.
+- **It is written only when the DM asks**, never by a hook. The Workspace is never changed by it, except for the `player_wiki` key the agent records.
+
 ## Language and names
 
 The Workspace Language is chosen at Setup and recorded in the [Workspace Config](#workspace-config). The documentation and the official sources are in English; the agent writes every folder name, file name and note in the Workspace Language, translating from them. DM Realm ships no per-language name tables: any language works.
@@ -645,5 +688,6 @@ Because the Workspace Config can be edited, the values in use are read from the 
 | `edition`            | The Edition: `2014` or `2024`. Fixed once rules material is imported.                         |
 | `stat_blocks`        | `true`: monsters' and NPCs' statistics are Fantasy Statblocks fences; `false`: Markdown ([Stat blocks](#stat-blocks)). Characters keep their fence either way. Setup asks, recommending `true` when the plugin is installed. A Config without it counts as `true` until a Setup re-run asks. |
 | `folders.<key>`      | The name of the top-level folder with that key (`reference`, `adventures`, `homebrew`, `world`, `characters`, `campaigns`, `dm_tools`, `templates`). Empty means the agent's translation of the default English name. |
+| `player_wiki`        | Optional: the [Player Wiki](#player-wiki). `output`, the absolute path of its folder, outside the Workspace; `include`, a list of `reference`, `homebrew`, `world`, `characters`; `chronicles`, a list of the Campaign folders whose Chronicle goes in; `dm_only_headings`, the headings that mark a World or Homebrew section as the DM's only, in the Workspace Language. Written by the agent when the DM first asks for the Player Wiki, and changed when the DM changes what goes in. |
 
 - **A top-level folder name is a single folder name directly under the Workspace root** — never a path (`Games/Active`, `../Games`), never empty after the [name rules](#name-rules) are applied, never the same as another top-level folder. On an invalid name the agent writes nothing and asks the DM for a valid one.

@@ -31,3 +31,12 @@ folders:
   campaigns:   # default: Campaigns
   dm_tools:    # default: DM_Tools
   templates:   # default: Templates
+
+# Optional: the Player Wiki, a copy for the players of the parts listed, written by
+# the dmr-player-wiki skill into `output` (an absolute path outside the Workspace).
+# The agent writes this key when the DM first asks for the wiki.
+# player_wiki:
+#   output: /Users/me/Player_Wiki
+#   include: [reference, homebrew, world, characters]
+#   chronicles: [Heroes_of_the_Border]      # Campaign folders whose Chronicle goes in
+#   dm_only_headings: [Secrets, DM Notes]  # World and Homebrew sections removed
