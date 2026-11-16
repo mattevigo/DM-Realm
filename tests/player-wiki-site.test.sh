@@ -29,7 +29,26 @@ player_wiki:
   include: [reference, characters]
 YML
 printf '# Accecato\n\nNon vedi. Vedi [[Durga]].\n' > "$W/Riferimento/Regole/Accecato.md"
-printf '# Durga\n\n## Identità\n\nCieca, a volte: [[Accecato]].\n' > "$W/Personaggi/Durga/Durga.md"
+cat > "$W/Personaggi/Durga/Durga.md" <<'MD'
+---
+statblock: inline
+---
+
+# Durga
+
+```statblock
+layout: DM Realm Character
+name: Durga
+image: "[[Personaggi/Durga/Allegati/Ritratto.webp]]"
+level: 2
+ac: 16
+```
+
+## Identità
+
+Cieca, a volte: [[Accecato]].
+MD
+mkdir -p "$W/Personaggi/Durga/Allegati"; printf 'webp' > "$W/Personaggi/Durga/Allegati/Ritratto.webp"
 python3 "$WIKI" write "$W" >/dev/null || fail "the Markdown wiki: exit $?"
 
 # Node missing or too old: exit 7, with how to install it, and no site.
@@ -84,12 +103,31 @@ plugins:
     layout:
       position: footer
 YML
+  # As Quartz 5 does: paths lowercased, a note named as its folder is that folder's index.html, a
+  # Markdown link becomes an extensionless href, and the file it links is copied without its .html.
   cat > "$Q/quartz/bootstrap-cli.mjs" <<'JS'
 import fs from "node:fs"; import path from "node:path"
 const a = process.argv.slice(2)
 if (process.env.FAKE_QUARTZ_FAIL) { console.error("broken build"); process.exit(1) }
 const out = a[a.indexOf("-o") + 1], dir = a[a.indexOf("-d") + 1]
 fs.mkdirSync(out, { recursive: true })
+const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+  e.name.startsWith(".") ? [] : e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)])
+for (const file of walk(dir).filter((f) => f.endsWith(".md"))) {
+  const rel = path.relative(dir, file).toLowerCase().slice(0, -3)
+  const parts = rel.split("/"), page = parts.length > 1 && parts.at(-1) === parts.at(-2)
+    ? parts.slice(0, -1).concat("index").join("/") : rel
+  const here = path.dirname(page)
+  const body = fs.readFileSync(file, "utf8").replace(/\[([^\]]*)\]\(([^)]+\.html)\)/g, (m, text, href) => {
+    const target = path.join(path.dirname(path.relative(dir, file)), href)
+    const slug = target.toLowerCase().slice(0, -5)
+    fs.mkdirSync(path.join(out, path.dirname(slug)), { recursive: true })
+    fs.copyFileSync(path.join(dir, target), path.join(out, slug))
+    return `<a href="${path.relative(here, slug)}" class="internal">${text}</a>`
+  })
+  fs.mkdirSync(path.join(out, here), { recursive: true })
+  fs.writeFileSync(path.join(out, page + ".html"), `<html><body><article>${body}</article></body></html>`)
+}
 fs.writeFileSync(path.join(out, "index.html"), `<html>${fs.readdirSync(dir).join(",")}</html>`)
 JS
   OUT=$(DMR_QUARTZ="$TMP/quartz" python3 "$SITE" build "$W" --locale it-IT) || fail "fake build: exit $?"
@@ -106,6 +144,18 @@ JS
   [ -f "$TMP/Wiki_Site/.dm-realm-player-wiki-site" ] || fail "the site has no marker"
   grep -q "Riferimento" "$TMP/Wiki_Site/index.html" || fail "the site was not built from the Markdown wiki"
   case "$OUT" in *"Preview: python3 -m http.server --directory \"$TMP/Wiki_Site\" 8080"*) ;; *) fail "report: $OUT";; esac
+
+  # The Character Sheet goes where Quartz links it, as a page: the path Quartz copied it to, plus
+  # .html; its stylesheet and Portrait at the paths it names; its link back to the Character's page.
+  case "$OUT" in *"and 1 Character Sheets."*) ;; *) fail "report sheets: $OUT";; esac
+  SS="$TMP/Wiki_Site/personaggi/durga/durga_character_sheet"
+  [ -f "$SS.html" ] || fail "the sheet is not where Quartz links it: $(find "$TMP/Wiki_Site" -iname '*sheet*')"
+  [ -e "$SS" ] && fail "Quartz's copy of the sheet without .html was left"
+  [ -f "$TMP/Wiki_Site/personaggi/Character_Sheet.css" ] || fail "the stylesheet is not where the sheet names it"
+  [ -f "$TMP/Wiki_Site/personaggi/durga/Allegati/Ritratto.webp" ] || fail "the Portrait is not where the sheet names it"
+  grep -qF '<a href="./">← Durga</a>' "$SS.html" || fail "the sheet's link back: $(grep -o '<a href="[^"]*">←' "$SS.html")"
+  grep -qF 'href="durga_character_sheet" class="internal" data-router-ignore data-no-popover="true"' "$TMP/Wiki_Site/personaggi/durga/index.html" \
+    || fail "the link to the sheet does not opt out of Quartz's navigation: $(cat "$TMP/Wiki_Site/personaggi/durga/index.html")"
 
   # A second build keeps the site folder's dot-entries; a failed one leaves the site as it was.
   mkdir -p "$TMP/Wiki_Site/.git"; printf 'x' > "$TMP/Wiki_Site/.git/HEAD"
@@ -153,6 +203,10 @@ JS
     [ -e "$S/CNAME" ] && fail "real: a CNAME was written"
     [ -n "$(find "$S" -name '*-og-image.*' | head -1)" ] && fail "real: social images were generated"
     grep -q 'fonts.googleapis\|cdn.jsdelivr' "$S/index.html" && fail "real: a page loads fonts or scripts from a CDN"
+    SHEET=$(find "$S" -name 'durga_character_sheet.html' | head -1)
+    [ -n "$SHEET" ] && grep -q 'content="DM Realm"' "$SHEET" || fail "real: the Character Sheet is not a page of the site"
+    [ -n "$(find "$S" -name 'durga_character_sheet' -type f)" ] && fail "real: Quartz's copy of the sheet without .html was left"
+    grep -q 'character_sheet"[^>]*data-router-ignore' "$(dirname "$SHEET")/index.html" || fail "real: the link to the sheet does not opt out of Quartz's navigation"
     python3 -I - "$S" <<'PY' || fail "real: a link in the site does not resolve"
 import html, os, re, sys, urllib.parse
 root, bad = sys.argv[1], []

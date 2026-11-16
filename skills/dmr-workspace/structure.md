@@ -612,6 +612,13 @@ A copy of the parts of the Workspace the DM chose, for the players to read: writ
     - a monster's or an NPC's fence becomes DM Realm's [Markdown](#stat-blocks), with the Translation Glossary's labels;
     - a Character's fence is dropped, because its Build is already Markdown.
   - **The title:** the `#` heading becomes the frontmatter `title:`.
+- **Each Character gets a Character Sheet** ([ADR 0019](../../docs/adr/0019-a-character-sheet-is-a-page-the-player-wiki-writes-from-the-stat-block.md)): a static HTML page beside the Character's note, `<Character>_<Character Sheet>.html` (`Durga_Scheda_del_Personaggio.html`), for every Character note (`<Character>/<Character>.md`) the wiki copies, whatever its status.
+  - It is rendered from the Character's stat block alone, in DM Realm's own design in the D&D character sheet's conventions, arranged by the Edition: in 2024 each ability shows its saving throw, in 2014 the saving throws are a list. It shows only maximums, never what is spent in play.
+  - Its labels are the Translation Glossary's (the Character layout's, plus "Character Sheet" and "Proficiency Bonus"); a label the Glossary lacks is written in English, and the report lists it.
+  - It loads nothing from another server and runs no script; light or dark follows the reader's system, and it fits a phone. All the sheets share one stylesheet, `<Character Sheet>.css` at the root of the Characters folder. It shows the Portrait the stat block names, copied like any embedded file, and links back to the Character's note.
+  - The Character's note gains one link to it, as the first line of its body, and no other change.
+  - A Character note whose stat block is missing or cannot be read gets no sheet and no link; the report names it.
+  - Nothing of it is kept in the Workspace: it is written again at every update.
 - **`index.md` at the root is its home page.** It is headed with the Workspace folder's name, and links the front doors of each part:
   - Reference's Spell Indexes;
   - Homebrew's House Rules (else every Homebrew note);
@@ -630,6 +637,7 @@ When the Workspace Config says `quartz: true` (Setup asks), every update of the 
 
 - **Quartz** is the release DM Realm pins, kept once per machine in the plugin's data (`${CLAUDE_PLUGIN_DATA}/quartz/<version>`) beside the Source Cache, and downloaded with its npm dependencies and plugins at the first build. It needs **Node 22 or later**. Without it the Markdown wiki is still written and the site is not.
 - **Its configuration is DM Realm's**, written at every build: the Workspace Language's locale, the Workspace folder's name as title, no analytics, only the files the notes use, fonts served by the site itself, no social images, no CNAME, no formula rendering, no footer links. Nothing the site shows comes from another server.
+- **The Character Sheets** are put in the site by the helper after Quartz, at the path Quartz links each one, plus `.html` as Quartz's own pages; Quartz's copy of the sheet without `.html` is removed. Its stylesheet and Portrait go at the paths the sheet names, its link back leads to the Character's page, and every link to a sheet opts out of Quartz's in-page navigation and previews.
 - **The site folder** follows the Markdown folder's rules: outside the Workspace, holding neither the Workspace nor the Markdown folder and inside neither, marked by a `.dm-realm-player-wiki-site` file, its dot-entries kept. It is built in a temporary folder beside it and replaces the previous site only when the build succeeds.
 
 ## Language and names

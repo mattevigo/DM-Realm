@@ -21,7 +21,7 @@ Between Sessions, a Character's level-ups and other changes go through `dmr-char
 
 ## Sharing with the players
 
-- `dmr-player-wiki` writes the Player Wiki, a copy for the players of what the DM chooses (Reference, Homebrew, World, Characters, the Chronicles), outside the Workspace. It is written again whenever the DM asks, typically after a new Chapter. When the DM said yes to the website at Setup (`dmr-setup`, which also checks for Node), it is also built with Quartz into a folder of HTML pages.
+- `dmr-player-wiki` writes the Player Wiki, a copy for the players of what the DM chooses (Reference, Homebrew, World, Characters, the Chronicles), outside the Workspace, with a Character Sheet page for each Character, rendered from its stat block. It is written again whenever the DM asks, typically after a new Chapter. When the DM said yes to the website at Setup (`dmr-setup`, which also checks for Node), it is also built with Quartz into a folder of HTML pages.
 - **Publishing the site** is the DM's: they upload the folder wherever they choose, on their own responsibility. No skill hosts it or controls who reads it.
 
 ## Any time
