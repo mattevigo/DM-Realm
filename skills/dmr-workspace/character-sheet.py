@@ -22,12 +22,20 @@ import re
 DOT = "●"
 MINUS = "−"
 
-# The English labels a sheet uses: the Character layout's, and two of its own.
+# The English labels a sheet uses: the Character layout's, and two of its own (and SKILLS).
 LABELS = ("Character Sheet", "Level", "Player", "Armor Class", "Hit Point Maximum", "Hit Dice",
           "Initiative", "Speed", "Proficiency Bonus", "STR", "DEX", "CON", "INT", "WIS", "CHA",
           "SAVE", "Saving Throws", "Skills", "Senses", "Languages", "Attacks", "Spellcasting",
           "Features and Traits")
 ABBREVIATIONS = ("STR", "DEX", "CON", "INT", "WIS", "CHA")
+# Every skill with the ability it uses: the same eighteen in both Editions. Their names are
+# labels too, translated by the Glossary.
+SKILLS = (("Acrobatics", "DEX"), ("Animal Handling", "WIS"), ("Arcana", "INT"),
+          ("Athletics", "STR"), ("Deception", "CHA"), ("History", "INT"), ("Insight", "WIS"),
+          ("Intimidation", "CHA"), ("Investigation", "INT"), ("Medicine", "WIS"),
+          ("Nature", "INT"), ("Perception", "WIS"), ("Performance", "CHA"),
+          ("Persuasion", "CHA"), ("Religion", "INT"), ("Sleight of Hand", "DEX"),
+          ("Stealth", "DEX"), ("Survival", "WIS"))
 
 
 class Labels:
@@ -118,13 +126,38 @@ def entries(items):
 
 
 def bonus_list(rows):
-    """Saves or skills: a dot when proficient, the name, the bonus."""
+    """Saves or skills: a dot when proficient, the name (a skill's with its ability), the
+    bonus."""
     out = []
-    for name, proficient, bonus in rows:
+    for name, proficient, bonus, *ability in rows:
         mark = f'<span class="dot{" on" if proficient else ""}" aria-hidden="true"></span>'
-        out.append(f'<li>{mark}<span class="row-name">{esc(name)}</span>'
-                   f'<span class="row-value">{esc(signed(bonus))}</span></li>')
+        tag = f' <span class="row-ability">({esc(ability[0])})</span>' if ability and ability[0] else ""
+        value = signed(bonus) if bonus is not None else ""
+        out.append(f'<li>{mark}<span class="row-name">{esc(name)}{tag}</span>'
+                   f'<span class="row-value">{esc(value)}</span></li>')
     return f'<ul class="rows">{"".join(out)}</ul>'
+
+
+def all_skills(skillsaves, stats, label):
+    """[(name, proficient, bonus, ability)] for all eighteen skills, by name. The fence lists
+    only the proficient ones with their totals; any other skill's bonus is its ability's
+    modifier. A fence skill that matches none of the eighteen is kept, after them."""
+    proficient = {}
+    for item in skillsaves or []:
+        for k, b in item.items():
+            proficient.setdefault(str(k).strip().casefold(), (str(k).strip(), b))
+    rows = []
+    for english, abbr in SKILLS:
+        name = label(english)
+        found = proficient.pop(name.casefold(), None) or proficient.pop(english.casefold(), None)
+        if found:
+            rows.append((name, True, found[1], label(abbr)))
+            continue
+        i = ABBREVIATIONS.index(abbr)
+        mod = modifier(stats[i]) if i < len(stats) else None
+        rows.append((name, False, mod, label(abbr)))
+    rows.sort(key=lambda r: r[0].casefold())
+    return rows + [(name, True, b, None) for name, b in proficient.values()]
 
 
 def render(fields, edition, label, back, portrait=None, stylesheet="", title_word=""):
@@ -187,8 +220,8 @@ def render(fields, edition, label, back, portrait=None, stylesheet="", title_wor
     left = [abilities_html]
     if saves and edition != "2024":
         left.append(card(label("Saving Throws"), bonus_list(saves)))
-    skills = [(str(k), True, b) for item in v.get("skillsaves") or [] for k, b in item.items()]
-    if skills:
+    if stats or v.get("skillsaves"):
+        skills = all_skills(v.get("skillsaves"), stats, label)
         left.append(card(label("Skills"), bonus_list(skills)))
     facts = []
     for key, word in (("senses", "Senses"), ("languages", "Languages")):
@@ -333,6 +366,7 @@ h1 { font-size: clamp(1.6rem, 6vw, 2.4rem); line-height: 1.1; }
 }
 .rows li:last-child { border-bottom: 0; }
 .row-name { flex: 1; min-width: 0; }
+.row-ability { color: var(--muted); font-size: 0.8rem; }
 .row-value { font-weight: 700; font-variant-numeric: tabular-nums; }
 .dot {
   width: 10px; height: 10px; flex: none; border-radius: 50%; border: 1.5px solid var(--muted);
