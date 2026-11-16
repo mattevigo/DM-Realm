@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: s103-campaign-plot-stays
-description: "Structure scenario S103: a plot the DM writes for one table, in place of an Adventure'"s"
+description: "Structure scenario S103: a plot the DM writes for one table, in place of a chapter of an Adventure, belongs to the Campaign and is not an Adventure."
 tags: [scenario]
 context:
   scaffold_script: scaffold.sh
@@ -9,4 +9,4 @@ execution:
   timeout_seconds: 600
   allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
   prompt: |
-    chapter,
+    For the Heroes campaign I'm replacing chapter 3 of the Sunken Keep with my own dungeon, the Sunless Vault, a sealed treasury under the keep. Make a note for it.
