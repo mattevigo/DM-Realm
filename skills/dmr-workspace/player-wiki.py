@@ -9,11 +9,17 @@
           one dropped, and every file a note links to or embeds copied, at its own path;
         - a monster's or an NPC's stat block fence written as DM Realm's Markdown, its labels
           the Translation Glossary's, and a Character's fence dropped (its Build is Markdown);
+        - for each Character note (`<characters>/<Character>/<Character>.md`), its Character
+          Sheet rendered from that fence (character-sheet.py) beside it, as
+          `<Character>_<Character Sheet>.html`, with one link to it as the first line of the
+          note's body, and the one stylesheet the sheets share at the Characters folder's
+          root (`<Character Sheet>.css`), its words the Glossary's;
         - in World and Homebrew notes, each section headed by one of `dm_only_headings` and
           every `%% … %%` comment removed;
         - its `#` heading moved into a frontmatter `title:`;
       and an `index.md` home page linking each part. The Workspace is never changed. Prints
-      a report: what was written, the links made plain text, the sections removed by note.
+      a report: what was written, the links made plain text, the sections removed by note,
+      each Character left without a sheet and the sheet labels the Glossary lacks.
 
 The Config's key, read by this script alone (keys never translated):
 
@@ -25,7 +31,9 @@ The Config's key, read by this script alone (keys never translated):
     dm_only_headings: [<heading>, …]                    # in the Workspace Language
 
 Folder names come from the Workspace Config and the Translation Glossary (rows "Chronicle",
-"Voice", "Past_Builds", "House_Rules", "Spells"; in an English Workspace, those words).
+"Voice", "Past_Builds", "House_Rules", "Spells"; in an English Workspace, those words); the
+Character Sheets' name and labels from its rows "Character Sheet", "Proficiency Bonus" and the
+Character layout's labels.
 
 Exit 2: bad usage, not a Workspace, no or bad `player_wiki` key. Exit 3: `output` is not an
 absolute path outside the Workspace (nor one holding it). Exit 5: `output` holds files and
@@ -38,7 +46,7 @@ import re
 import shutil
 import sys
 import unicodedata
-from urllib.parse import unquote
+from urllib.parse import quote, unquote
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 _spec = importlib.util.spec_from_file_location("statblock", os.path.join(HERE, "statblock.py"))
@@ -47,6 +55,9 @@ _spec.loader.exec_module(statblock)
 _spec = importlib.util.spec_from_file_location("spell_index", os.path.join(HERE, "spell-index.py"))
 spell_index = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(spell_index)
+_spec = importlib.util.spec_from_file_location("character_sheet", os.path.join(HERE, "character-sheet.py"))
+character_sheet = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(character_sheet)
 
 CONFIG = "workspace-config.yml"
 MARKER = ".dm-realm-player-wiki"
@@ -385,6 +396,92 @@ def note_for_wiki(text, path, part, config, labels, links, report):
     return (f"---\n{front}---\n\n" if front else "") + body
 
 
+# --- Character Sheets ------------------------------------------------------------------
+
+def config_value(workspace, key):
+    with open(os.path.join(workspace, CONFIG), encoding="utf-8") as f:
+        m = re.search(rf"(?m)^{key}:[ \t]*(.*)$", f.read())
+    return scalar(m.group(1)) if m else ""
+
+
+def edition(workspace):
+    m = re.match(r"\d{4}", config_value(workspace, "edition"))
+    return m.group(0) if m else "2024"
+
+
+def english(workspace):
+    """An English Workspace writes the English labels as they are: none is missing."""
+    return config_value(workspace, "language").casefold() in ("english", "en")
+
+
+def is_character_note(path, characters):
+    """`<characters>/<Character>/<Character>.md`: the Character's own note."""
+    parts = path.split("/")
+    return len(parts) == 3 and parts[0] == characters and parts[2] == parts[1] + ".md"
+
+
+def character_fence(text):
+    """(the Character fence's fields, None) or (None, why there is none)."""
+    for m in statblock.FENCE.finditer(text):
+        try:
+            fields = statblock.parse_fence(m.group(1))
+        except statblock.Failure as e:
+            if "DM Realm Character" in m.group(1):
+                return None, f"its stat block cannot be read ({e})"
+            continue
+        if dict(fields).get("layout") == statblock.CHARACTER_LAYOUT:
+            return fields, None
+    return None, "it has no stat block"
+
+
+class Sheets:
+    """The Character Sheets of one write: their pages, and what the report says of them."""
+
+    def __init__(self, workspace, terms, files, links):
+        self.characters = spell_index.folder(workspace, "characters")
+        self.edition = edition(workspace)
+        self.labels = character_sheet.Labels(terms)
+        self.english = english(workspace)
+        self.title = self.labels("Character Sheet")
+        self.word, self.css = character_sheet.names(self.title)
+        self.files, self.links = files, links
+        self.pages, self.without = {}, []
+
+    def add(self, path, raw, note):
+        """The note as the wiki writes it: with the link to its sheet when it has one."""
+        if not self.characters or not is_character_note(path, self.characters):
+            return note
+        fields, why = character_fence(raw)
+        if fields is None:
+            self.without.append(f"{path}: {why}")
+            return note
+        folder = path.rsplit("/", 1)[0]
+        name = character_sheet.file_name(path, self.word)
+        portrait = None
+        m = statblock.LINK.search(str(dict(fields).get(statblock.PORTRAIT) or ""))
+        if m:
+            found, _ = self.files.resolve(m.group(1))
+            if found and not found.endswith(".md"):
+                self.links.copy.add(found)
+                portrait = quote(os.path.relpath(found, folder).replace(os.sep, "/"))
+        stylesheet = quote(os.path.relpath(f"{self.characters}/{self.css}", folder).replace(os.sep, "/"))
+        self.pages[f"{folder}/{name}"] = character_sheet.render(
+            fields, self.edition, self.labels, back=quote(path.rsplit("/", 1)[1]),
+            portrait=portrait, stylesheet=stylesheet, title_word=self.title)
+        line = f"[{self.title}]({quote(name)})\n\n"
+        front = FRONTMATTER.match(note)
+        at = front.end() + (1 if note[front.end():front.end() + 1] == "\n" else 0) if front else 0
+        return note[:at] + line + note[at:]
+
+    def write(self, out):
+        for path, page in self.pages.items():
+            with open(os.path.join(out, path), "w", encoding="utf-8") as f:
+                f.write(page)
+        if self.pages:
+            with open(os.path.join(out, self.characters, self.css), "w", encoding="utf-8") as f:
+                f.write(character_sheet.CSS)
+
+
 # --- The home page ---------------------------------------------------------------------
 
 def sort_key(text):
@@ -472,10 +569,14 @@ def write(workspace):
     files = Files(workspace)
     report = {"plain": 0, "plain_notes": set(), "ambiguous": set(), "removed": [], "kept_fences": []}
     links = Links(files, notes, report)
+    sheets = Sheets(workspace, terms, files, links)
     written = {}
     for path, part in notes.items():
         with open(os.path.join(workspace, path), encoding="utf-8") as f:
-            written[path] = note_for_wiki(f.read(), path, part, config, labels, links, report)
+            raw = f.read()
+        written[path] = note_for_wiki(raw, path, part, config, labels, links, report)
+        if part == "characters":
+            written[path] = sheets.add(path, raw, written[path])
     os.makedirs(out, exist_ok=True)
     clear(out)
     with open(os.path.join(out, MARKER), "w", encoding="utf-8") as f:
@@ -491,12 +592,13 @@ def write(workspace):
         target = os.path.join(out, path)
         os.makedirs(os.path.dirname(target), exist_ok=True)
         shutil.copy2(os.path.join(workspace, path), target)
+    sheets.write(out)
     with open(os.path.join(out, "index.md"), "w", encoding="utf-8") as f:
         f.write(home_page(workspace, config, notes, files, terms))
-    return summary(out, config, notes, links.copy, report, warnings)
+    return summary(out, config, notes, links.copy, report, warnings, sheets)
 
 
-def summary(out, config, notes, copied, report, warnings):
+def summary(out, config, notes, copied, report, warnings, sheets):
     parts = config["include"] + [f"the Chronicle of {c}" for c in config["chronicles"]]
     lines = [f"Player Wiki written to {out}: {len(notes)} notes and {len(copied)} files, "
              f"from {', '.join(parts) or 'nothing'}, and index.md."]
@@ -514,6 +616,14 @@ def summary(out, config, notes, copied, report, warnings):
     if report["kept_fences"]:
         lines.append("Stat blocks left as code (they could not be read):")
         lines.extend(f"- {k}" for k in report["kept_fences"])
+    if sheets.pages:
+        lines.append(f"Character Sheets written: {len(sheets.pages)}, with {sheets.css} beside the Characters.")
+    if sheets.without:
+        lines.append("Characters without a Character Sheet:")
+        lines.extend(f"- {w}" for w in sheets.without)
+    if sheets.labels.lacking and not sheets.english:
+        lines.append("Character Sheet labels not in the Translation Glossary, written in English: "
+                     + ", ".join(sheets.labels.lacking) + ".")
     lines.extend(f"Note: {w}" for w in warnings)
     return "\n".join(lines) + "\n"
 

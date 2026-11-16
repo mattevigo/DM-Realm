@@ -50,6 +50,14 @@ note "$W/Strumenti_del_DM/Glossario_delle_Traduzioni.md" <<'MD'
 | Hit Points | Punti Ferita | Traduzione Ufficiale | |
 | STR | FOR | Traduzione Ufficiale | |
 | Actions | Azioni | Traduzione Ufficiale | |
+| Character Sheet | Scheda del Personaggio | ripiego | |
+| Level | Livello | Traduzione Ufficiale | |
+| Player | Giocatore | ripiego | |
+| Hit Point Maximum | Punti Ferita Massimi | Traduzione Ufficiale | |
+| SAVE | TS | ripiego | |
+| Skills | Abilità | Traduzione Ufficiale | |
+| Spellcasting | Incantesimi | Traduzione Ufficiale | |
+| Features and Traits | Privilegi e Tratti | ripiego | |
 MD
 note "$W/Riferimento/Incantesimi/Livello_3/Palla_di_Fuoco.md" <<'MD'
 ---
@@ -171,7 +179,39 @@ statblock: inline
 ```statblock
 layout: DM Realm Character
 name: Durga
+image: "[[Personaggi/Durga/Allegati/Durga_Ritratto.webp]]"
+size: Media
+species: Umana
+class: Chierica (Dominio dell'Inganno)
+level: 6
+player: Baldu
 ac: 16
+hp: 57
+hit_dice: 6d8
+initiative: -1
+speed: 9 metri
+stats: [11, 8, 18, 12, 17, 12]
+saves:
+  - Forza: 0
+  - Destrezza: -1
+  - Costituzione: 4
+  - Intelligenza: 1
+  - Saggezza ●: 6
+  - Carisma ●: 4
+skillsaves:
+  - Intuizione: 6
+senses: Percezione Passiva 13
+languages: Comune, Nanico
+actions:
+  - name: Mazza
+    desc: "+3 al tiro per colpire, 1d6 danni <Contundenti> & altro"
+spells:
+  - "Saggezza, CD del tiro salvezza degli incantesimi 14, +6 al tiro per colpire con incantesimi"
+  - 1° livello: 4 slot
+  - 3° livello: 3 slot
+traits:
+  - name: Benedizione dell'Ingannatore
+    desc: Dà vantaggio a Furtività a un alleato.
 ```
 
 ## Identità
@@ -183,7 +223,66 @@ Viene da [[Porto_Grigio]] e combatte come [[Goblin_Pallido|un goblin]].
 Lancia [[Palla_di_Fuoco]].
 MD
 note "$W/Personaggi/Durga/Build_Passate/Durga_01.md" <<'MD'
+---
+statblock: inline
+---
+
 # Durga (livello 1)
+
+```statblock
+layout: DM Realm Character
+name: Durga (livello 1)
+level: 1
+```
+MD
+mkdir -p "$W/Personaggi/Durga/Allegati"; printf 'webp' > "$W/Personaggi/Durga/Allegati/Durga_Ritratto.webp"
+note "$W/Personaggi/Brom/Brom.md" <<'MD'
+---
+giocatore: Ayla
+stato: ritirato
+statblock: inline
+---
+
+# Brom
+
+```statblock
+layout: DM Realm Character
+name: Brom
+class: Guerriero
+level: 3
+ac: 18
+hp: 31
+stats: [16, 12, 14, 8, 10, 10]
+saves:
+  - Forza ●: 5
+  - Destrezza: 1
+  - Costituzione ●: 4
+  - Intelligenza: -1
+  - Saggezza: 0
+  - Carisma: 0
+```
+
+## Identità
+
+Un guerriero.
+MD
+note "$W/Personaggi/Brom/Diario_di_Brom.md" <<'MD'
+# Diario di Brom
+
+Non è la nota del Personaggio.
+MD
+note "$W/Personaggi/Senza/Senza.md" <<'MD'
+# Senza
+
+Nessun blocco statistiche.
+MD
+note "$W/Personaggi/Rotto/Rotto.md" <<'MD'
+# Rotto
+
+```statblock
+layout: DM Realm Character
+name: "Rotto
+```
 MD
 note "$W/Campagne/Eroi/Cronaca/Capitolo_01_La_Rocca.md" <<'MD'
 ---
@@ -294,6 +393,53 @@ lacks "$D" '```statblock' "Character fence"; lacks "$D" 'statblock: inline' "Cha
 has "$D" 'giocatore: Baldu' "Character frontmatter"; has "$D" '## Identità' "Character body"
 has "$D" 'Viene da [[Porto_Grigio]] e combatte come [[Goblin_Pallido|un goblin]].' "Character links"
 
+# A Character Sheet beside each Character note, rendered from its fence, and one link to it as the
+# first line of the note's body; the rest of the note as it was.
+SH="$OUT/Personaggi/Durga/Durga_Scheda_del_Personaggio.html"
+[ -f "$SH" ] || fail "Durga's Character Sheet was not written"
+[ -f "$OUT/Personaggi/Scheda_del_Personaggio.css" ] || fail "the sheets' stylesheet was not written"
+awk 'BEGIN{n=0} /^---$/{n++; next} n>=2' "$D" > "$TMP/durga_body"
+[ "$(sed -n 2p "$TMP/durga_body")" = "[Scheda del Personaggio](Durga_Scheda_del_Personaggio.html)" ] \
+  || fail "the link to the sheet is not the body's first line: $(head -3 "$TMP/durga_body")"
+sed '1,3d' "$TMP/durga_body" > "$TMP/durga_rest"
+printf '## Identità\n\nViene da [[Porto_Grigio]] e combatte come [[Goblin_Pallido|un goblin]].\n\n## Build\n\nLancia [[Palla_di_Fuoco]].\n' > "$TMP/durga_expected"
+cmp -s "$TMP/durga_rest" "$TMP/durga_expected" || fail "the rest of Durga's note changed: $(cat "$TMP/durga_rest")"
+grep -c 'Scheda_del_Personaggio' "$D" | grep -qx 1 || fail "the sheet is linked more than once"
+for s in '<title>Durga — Scheda del Personaggio</title>' '<h1>Durga</h1>' 'Media, Umana, Chierica (Dominio dell&#x27;Inganno)' \
+         '<span class="chip-label">Livello</span> 6' '<span class="chip-label">Giocatore</span> Baldu' \
+         '<span class="stat-label">Classe Armatura</span><span class="stat-value">16</span>' \
+         '<span class="stat-label">Punti Ferita Massimi</span><span class="stat-value">57</span>' \
+         '<span class="stat-value">6d8</span>' '<span class="stat-value">−1</span>' '<span class="stat-value">9 metri</span>' \
+         '<span class="stat-label">Proficiency Bonus</span><span class="stat-value">+3</span>' \
+         '<span class="ability-abbr">FOR</span><span class="ability-name">Forza</span><span class="ability-mod">+0</span><span class="ability-score">11</span>' \
+         '<span class="ability-mod">+4</span><span class="ability-score">18</span>' \
+         '<span class="dot on" aria-hidden="true"></span>TS <strong>+6</strong>' '<span class="dot" aria-hidden="true"></span>TS <strong>−1</strong>' \
+         '<span class="row-name">Intuizione</span><span class="row-value">+6</span>' 'Percezione Passiva 13' 'Comune, Nanico' \
+         '+3 al tiro per colpire, 1d6 danni &lt;Contundenti&gt; &amp; altro' \
+         '<p class="spell-line">Saggezza, CD del tiro salvezza degli incantesimi 14, +6 al tiro per colpire con incantesimi</p>' \
+         '<li>1° livello: 4 slot</li>' '<li>3° livello: 3 slot</li>' '<h2>Privilegi e Tratti</h2>' 'Benedizione dell&#x27;Ingannatore' \
+         '<img class="portrait" src="Allegati/Durga_Ritratto.webp"' '<a href="Durga.md">← Durga</a>' \
+         '<link rel="stylesheet" href="../Scheda_del_Personaggio.css">' '<meta name="viewport" content="width=device-width'; do
+  has "$SH" "$s" "Durga's sheet"
+done
+lacks "$SH" 'Tiri Salvezza' "a 2024 sheet's saves are in its abilities, not a list"
+[ -f "$OUT/Personaggi/Durga/Allegati/Durga_Ritratto.webp" ] || fail "the Portrait on the sheet was not copied"
+for f in "$OUT"/Personaggi/*/*.html "$OUT/Personaggi/Scheda_del_Personaggio.css"; do
+  grep -qi '<script' "$f" && fail "a sheet has a script: $f"
+  grep -qiE '(src|href)="(https?:)?//|url\((https?:)?//|@import' "$f" && fail "a sheet loads something from outside: $f"
+done
+B="$OUT/Personaggi/Brom/Brom_Scheda_del_Personaggio.html"
+[ -f "$B" ] || fail "a retired Character gets a sheet too"
+lacks "$B" '<h2>Incantesimi</h2>' "a non-caster's sheet has no spellcasting"
+lacks "$B" '<img' "a Character with no Portrait"
+[ -e "$OUT/Personaggi/Brom/Diario_di_Brom_Scheda_del_Personaggio.html" ] && fail "a note that is not the Character's got a sheet"
+lacks "$OUT/Personaggi/Brom/Diario_di_Brom.md" 'Scheda' "a note that is not the Character's"
+ls "$OUT/Personaggi/Durga/Build_Passate" >/dev/null 2>&1 && fail "a Past Build went in"
+for c in Senza Rotto; do
+  [ -e "$OUT/Personaggi/$c/${c}_Scheda_del_Personaggio.html" ] && fail "$c has no readable stat block, yet got a sheet"
+  lacks "$OUT/Personaggi/$c/$c.md" 'Scheda_del_Personaggio' "$c's note"
+done
+
 # The home page links each part's front doors.
 I="$OUT/index.md"
 has "$I" 'title: "Il Mio Workspace"' "home title"
@@ -316,6 +462,11 @@ case "$OUT_TEXT" in *"Player Wiki written to $OUT"*) ;; *) fail "report: $OUT_TE
 case "$OUT_TEXT" in *"Homebrew/Regole_della_Casa/Pozioni_Bonus.md: Note del DM"*) ;; *) fail "report removed: $OUT_TEXT";; esac
 case "$OUT_TEXT" in *"Mondo/Aerth/Luoghi/Porto_Grigio.md: Segreti"*) ;; *) fail "report World: $OUT_TEXT";; esac
 case "$OUT_TEXT" in *"Mondo/Aerth/Aerth.md: 1 %% comment"*) ;; *) fail "report comment: $OUT_TEXT";; esac
+case "$OUT_TEXT" in *"Character Sheets written: 2, with Scheda_del_Personaggio.css"*) ;; *) fail "report sheets: $OUT_TEXT";; esac
+case "$OUT_TEXT" in *"Personaggi/Senza/Senza.md: it has no stat block"*) ;; *) fail "report no fence: $OUT_TEXT";; esac
+case "$OUT_TEXT" in *"Personaggi/Rotto/Rotto.md: its stat block cannot be read"*) ;; *) fail "report bad fence: $OUT_TEXT";; esac
+case "$OUT_TEXT" in *"not in the Translation Glossary, written in English: "*"Proficiency Bonus"*) ;; *) fail "report labels: $OUT_TEXT";; esac
+case "$OUT_TEXT" in *"English: "*"Classe Armatura"*|*"English: "*"Character Sheet"*) fail "report lists a label the Glossary has: $OUT_TEXT";; esac
 
 # Rewritten from scratch: a note gone from the Workspace leaves the wiki; dot-entries stay.
 mkdir -p "$OUT/.git"; printf 'x' > "$OUT/.git/HEAD"
@@ -362,6 +513,7 @@ YML
 note "$E/Campaigns/Heroes/Chronicle/Chapter_01.md" <<'MD'
 # Chapter 1
 MD
+mkdir -p "$E/Characters/Wren"; printf -- '---\nstatblock: inline\n---\n\n# Wren\n\n```statblock\nlayout: DM Realm Character\nname: Wren\n```\n' > "$E/Characters/Wren/Wren.md"
 note "$E/Campaigns/Heroes/Chronicle/Voice.md" <<'MD'
 Tell it plainly.
 MD
@@ -370,6 +522,36 @@ OUT_TEXT=$(python3 "$HELPER" write "$E") || fail "en: exit $?"
 [ -e "$EOUT/Campaigns/Heroes/Chronicle/Voice.md" ] && fail "en: the Voice went out"
 case "$OUT_TEXT" in *"Missing has no Chronicle folder"*) ;; *) fail "en: a missing Campaign should be noted: $OUT_TEXT";; esac
 case "$OUT_TEXT" in *"no Reference folder"*) ;; *) fail "en: a missing part should be noted: $OUT_TEXT";; esac
+find "$EOUT" -name '*.html' -o -name '*.css' | grep -q . && fail "en: sheets written without characters in include"
+
+# A 2014 Workspace in English: the saving throws are a list of their own, the names English.
+F="$TMP/f14"; FOUT="$TMP/f14_wiki"; mkdir -p "$F/Characters/Wren"
+printf 'language: English\nedition: 2014\nfolders:\n  characters: Characters\nplayer_wiki:\n  output: %s\n  include: [characters]\n' "$FOUT" > "$F/workspace-config.yml"
+note "$F/Characters/Wren/Wren.md" <<'MD'
+# Wren
+
+```statblock
+layout: DM Realm Character
+name: Wren
+level: 1
+stats: [10, 16, 12, 10, 14, 8]
+saves:
+  - Strength: 0
+  - Dexterity ●: 5
+  - Constitution: 1
+  - Intelligence ●: 2
+  - Wisdom: 2
+  - Charisma: -1
+```
+MD
+OUT_TEXT=$(python3 "$HELPER" write "$F") || fail "2014: exit $?"
+S14="$FOUT/Characters/Wren/Wren_Character_Sheet.html"
+[ -f "$S14" ] && [ -f "$FOUT/Characters/Character_Sheet.css" ] || fail "2014: no sheet or stylesheet"
+has "$S14" '<h2>Saving Throws</h2>' "2014 saves list"; lacks "$S14" 'ability-save' "2014 abilities"
+has "$S14" '<span class="row-name">Dexterity</span><span class="row-value">+5</span>' "2014 save row"
+has "$S14" 'class="edition-2014"' "2014 edition"; has "$S14" '<span class="stat-value">+2</span>' "level 1 proficiency bonus"
+has "$FOUT/Characters/Wren/Wren.md" '[Character Sheet](Wren_Character_Sheet.html)' "English link"
+case "$OUT_TEXT" in *"written in English"*) fail "2014: an English Workspace reports no missing label: $OUT_TEXT";; esac
 
 # No player_wiki key, no Workspace.
 printf 'language: English\n' > "$TMP/bare.yml"; mkdir -p "$TMP/bare"; mv "$TMP/bare.yml" "$TMP/bare/workspace-config.yml"

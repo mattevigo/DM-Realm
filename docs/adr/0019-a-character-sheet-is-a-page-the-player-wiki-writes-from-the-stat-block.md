@@ -27,4 +27,5 @@ At every update, `player-wiki.py` writes a Character Sheet for every Character i
 - **A Character whose fence is missing or unreadable gets no sheet and no link line.** The report names it.
 - **Labels come from the Translation Glossary**, in English where one is missing, and the report lists them. The script never writes the Glossary.
 - **The sheet loads nothing from outside the site:** no scripts, no CDN, system fonts (ADR 0018's "no reader is tracked").
-- **The sheets are not in Quartz's search or navigation.** They are reached from the link on the Character's page.
+- **The sheets are not in Quartz's search or navigation.** They are reached from the link on the Character's page, which opts out of Quartz's in-page navigation and previews, since those would load the sheet inside the wiki's own page.
+- **A sheet's file is named by the name rules**, `<Character>_<Character Sheet>.html`, and its place in the site is where Quartz links it, plus `.html`, as Quartz's own pages are.
