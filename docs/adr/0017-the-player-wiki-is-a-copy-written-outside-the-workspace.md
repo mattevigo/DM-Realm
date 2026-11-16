@@ -7,6 +7,8 @@ A Player Wiki is written by a script, `player-wiki.py`, never by the agent. It g
 
 The Workspace is read, never changed. The Config stays the only DM Realm file in a Workspace, now with one more key.
 
+*Amended by [ADR 0019](0019-a-character-sheet-is-a-page-the-player-wiki-writes-from-the-stat-block.md): a Character's fence is also rendered as its Character Sheet, an HTML page beside its note, linked from it.*
+
 ## Why
 
 - **It is a copy that leaks nothing.** Leaking is the one failure that matters.
