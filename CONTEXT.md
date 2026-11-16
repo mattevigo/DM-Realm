@@ -106,6 +106,10 @@ _Avoid_: PC, player character, hero, sheet
 A Character's game statistics at one moment — species, class and level, abilities, features, spells, equipment. A Character has one current Build; before a level-up or rebuild the current one is kept as a past Build.
 _Avoid_: Sheet, version, snapshot
 
+**Character Sheet**:
+A Character's Stat block laid out as a page of its own for its player to read in the Player Wiki, in the D&D character sheet's conventions but in DM Realm's own design and the Workspace Language. It shows only what the Build allows, never what is spent in play. It is never kept in the Workspace: the Player Wiki writes one for every Character it copies, again at every update.
+_Avoid_: PDF export, printout, Build (which is the statistics, not their layout)
+
 **Transfer**:
 Bringing an existing Character into the Workspace from outside it — another Workspace or an old vault's note — keeping its identity and Build but none of its table's story, and none of its official text, which comes from Reference instead.
 _Avoid_: Import (which is only from the Trusted Source), copy, migrate
