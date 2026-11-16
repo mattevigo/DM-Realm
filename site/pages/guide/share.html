@@ -20,8 +20,18 @@ description: Give your players a wiki of the rules, your world, their Characters
 <h2>A copy, written by a script</h2>
 <p>The copying is a script, not Claude, so nothing is reworded, and your Workspace is never changed. The folder is rewritten from scratch at every update: a note you delete leaves the wiki too, and an edit made in the wiki is lost. After each update you get a report of what went in and of every section removed, note by note. Look it over before you share.</p>
 
-<div class="callout warn"><span class="callout-title">Keep it private</span>
-<p>Reference holds official text. Share the wiki with your players only, never as a public site.</p></div>
+<h2>As a website</h2>
+<p>Say yes to the website when <a href="{{root}}guide/setup/">Setup</a> asks, or run Setup again later. Then every update also builds the wiki with <a href="https://quartz.jzhao.xyz/">Quartz</a> into a folder of HTML pages. It is in your Workspace's language, with search, backlinks and a graph.</p>
+<ul>
+  <li><strong>Node 22 or later</strong> is needed. Setup checks for it and tells you how to install it. Without it, the Markdown wiki is still written.</li>
+  <li>The first build downloads Quartz, once for every Workspace. DM Realm keeps the version it was tested with.</li>
+  <li>Nothing on the site comes from another server: no analytics, no fonts or scripts from a CDN.</li>
+  <li>A build that fails leaves your previous site as it was.</li>
+</ul>
+<p>Look at it before you share it. The report gives you the command, <code>python3 -m http.server --directory "&lt;site folder&gt;" 8080</code>, then you open <code>http://localhost:8080</code>.</p>
 
-<h2>Reading it</h2>
-<p>The folder is plain Obsidian Markdown. Your players can open it as a vault in Obsidian. You can also build it into a website with a wiki generator such as <a href="https://quartz.jzhao.xyz/">Quartz</a> and host it where only your players can log in. DM Realm does not publish it for you yet.</p>
+<div class="callout warn"><span class="callout-title">Publishing is yours</span>
+<p>Upload the site folder to any static host you like. DM Realm does not publish it and does not control who reads it. Reference holds official text, so where you put the site and who can open it is your responsibility. A site only your players can log in to is the safe choice.</p></div>
+
+<h2>Without a website</h2>
+<p>The Markdown folder is plain Obsidian Markdown: your players can open it as a vault in Obsidian.</p>

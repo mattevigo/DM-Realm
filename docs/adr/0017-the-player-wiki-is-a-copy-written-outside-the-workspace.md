@@ -48,4 +48,4 @@ The Workspace is read, never changed. The Config stays the only DM Realm file in
   - a Character's fence is dropped, because its Build is already Markdown.
 - **Titles:** the `#` heading moves into a `title:` frontmatter key, so a generator does not show the title twice.
 - **The filter is by heading only.** A secret under any other heading goes out. The script's report lists every section it removed, so the DM can see what the filter did and add a heading to `dm_only_headings`.
-- **Publishing the folder is not DM Realm's yet.**
+- **Publishing the folder is the DM's.** [ADR 0018](0018-the-player-wiki-site-is-built-with-a-pinned-quartz.md) builds it as a website when the DM asks for one; where it goes is the DM's.

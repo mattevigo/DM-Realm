@@ -5,7 +5,13 @@
 # sourcing:
 #   PW_KEY  yes: the Workspace Config already has its player_wiki key, writing to
 #           $HOME/Player_Wiki (outside the Workspace); no (default): none yet
+#   PW_SITE yes: with PW_KEY, the key also names the site folder $HOME/Player_Wiki_Site,
+#           and the Config says quartz: true
+#   PW_OLD_NODE yes: a stand-in `node` that reports v18, at ~/.dm-realm/old-node (the case
+#           passes EVAL_DMR_NODE: "~/.dm-realm/old-node")
 PW_KEY=${PW_KEY:-no}
+PW_SITE=${PW_SITE:-no}
+[ "$PW_SITE" = yes ] && WS_QUARTZ=true
 . "$(dirname "$0")/../_fixtures/workspace-en.sh"
 
 for t in NPC Place; do
@@ -48,8 +54,15 @@ if [ "$PW_KEY" = yes ]; then
 
 player_wiki:
   output: $HOME/Player_Wiki
+$([ "$PW_SITE" = yes ] && echo "  site: $HOME/Player_Wiki_Site")
   include: [reference, homebrew, world, characters]
   chronicles: [Heroes]
   dm_only_headings: [Secrets, DM Notes]
 YML
+fi
+
+if [ "${PW_OLD_NODE:-no}" = yes ]; then
+  mkdir -p "$HOME/.dm-realm"
+  printf '#!/bin/sh\necho v18.19.0\n' > "$HOME/.dm-realm/old-node"
+  chmod +x "$HOME/.dm-realm/old-node"
 fi

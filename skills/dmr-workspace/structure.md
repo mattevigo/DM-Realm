@@ -624,6 +624,14 @@ A copy of the parts of the Workspace the DM chose, for the players to read: writ
   - It is marked by a `.dm-realm-player-wiki` file. A folder that holds files but no marker is never emptied.
 - **It is written only when the DM asks**, never by a hook. The Workspace is never changed by it, except for the `player_wiki` key the agent records.
 
+### The Player Wiki site
+
+When the Workspace Config says `quartz: true` (Setup asks), every update of the Player Wiki also builds it as a website with [Quartz](https://quartz.jzhao.xyz/): a folder of static HTML, `player_wiki.site`, that the DM uploads wherever they choose ([ADR 0018](../../docs/adr/0018-the-player-wiki-site-is-built-with-a-pinned-quartz.md)). Publishing it is the DM's choice and responsibility; DM Realm hosts, guards and deploys nothing. The `player-wiki-site.py` helper next to this file builds it.
+
+- **Quartz** is the release DM Realm pins, kept once per machine in the plugin's data (`${CLAUDE_PLUGIN_DATA}/quartz/<version>`) beside the Source Cache, and downloaded with its npm dependencies and plugins at the first build. It needs **Node 22 or later**. Without it the Markdown wiki is still written and the site is not.
+- **Its configuration is DM Realm's**, written at every build: the Workspace Language's locale, the Workspace folder's name as title, no analytics, only the files the notes use, fonts served by the site itself, no social images, no CNAME, no formula rendering, no footer links. Nothing the site shows comes from another server.
+- **The site folder** follows the Markdown folder's rules: outside the Workspace, holding neither the Workspace nor the Markdown folder and inside neither, marked by a `.dm-realm-player-wiki-site` file, its dot-entries kept. It is built in a temporary folder beside it and replaces the previous site only when the build succeeds.
+
 ## Language and names
 
 The Workspace Language is chosen at Setup and recorded in the [Workspace Config](#workspace-config). The documentation and the official sources are in English; the agent writes every folder name, file name and note in the Workspace Language, translating from them. DM Realm ships no per-language name tables: any language works.
@@ -688,6 +696,7 @@ Because the Workspace Config can be edited, the values in use are read from the 
 | `edition`            | The Edition: `2014` or `2024`. Fixed once rules material is imported.                         |
 | `stat_blocks`        | `true`: monsters' and NPCs' statistics are Fantasy Statblocks fences; `false`: Markdown ([Stat blocks](#stat-blocks)). Characters keep their fence either way. Setup asks, recommending `true` when the plugin is installed. A Config without it counts as `true` until a Setup re-run asks. |
 | `folders.<key>`      | The name of the top-level folder with that key (`reference`, `adventures`, `homebrew`, `world`, `characters`, `campaigns`, `dm_tools`, `templates`). Empty means the agent's translation of the default English name. |
-| `player_wiki`        | Optional: the [Player Wiki](#player-wiki). `output`, the absolute path of its folder, outside the Workspace; `include`, a list of `reference`, `homebrew`, `world`, `characters`; `chronicles`, a list of the Campaign folders whose Chronicle goes in; `dm_only_headings`, the headings that mark a World or Homebrew section as the DM's only, in the Workspace Language. Written by the agent when the DM first asks for the Player Wiki, and changed when the DM changes what goes in. |
+| `quartz`             | `true`: every update of the Player Wiki also builds it as a website with Quartz ([The Player Wiki site](#the-player-wiki-site)); `false`: the Markdown wiki only. Setup asks. A Config without it counts as `false` until a Setup re-run asks. |
+| `player_wiki`        | Optional: the [Player Wiki](#player-wiki). `output`, the absolute path of its folder, outside the Workspace; `site`, with `quartz: true`, the absolute path of the site's folder; `include`, a list of `reference`, `homebrew`, `world`, `characters`; `chronicles`, a list of the Campaign folders whose Chronicle goes in; `dm_only_headings`, the headings that mark a World or Homebrew section as the DM's only, in the Workspace Language. Written by the agent when the DM first asks for the Player Wiki, and changed when the DM changes what goes in. |
 
 - **A top-level folder name is a single folder name directly under the Workspace root** — never a path (`Games/Active`, `../Games`), never empty after the [name rules](#name-rules) are applied, never the same as another top-level folder. On an invalid name the agent writes nothing and asks the DM for a valid one.

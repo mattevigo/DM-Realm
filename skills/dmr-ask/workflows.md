@@ -21,8 +21,8 @@ Between Sessions, a Character's level-ups and other changes go through `dmr-char
 
 ## Sharing with the players
 
-- `dmr-player-wiki` writes the Player Wiki, a copy for the players of what the DM chooses (Reference, Homebrew, World, Characters, the Chronicles), outside the Workspace. It is written again whenever the DM asks, typically after a new Chapter.
-- **Publishing it** as a website is not built yet: the DM builds the folder with a wiki generator (such as Quartz) and hosts it privately.
+- `dmr-player-wiki` writes the Player Wiki, a copy for the players of what the DM chooses (Reference, Homebrew, World, Characters, the Chronicles), outside the Workspace. It is written again whenever the DM asks, typically after a new Chapter. When the DM said yes to the website at Setup (`dmr-setup`, which also checks for Node), it is also built with Quartz into a folder of HTML pages.
+- **Publishing the site** is the DM's: they upload the folder wherever they choose, on their own responsibility. No skill hosts it or controls who reads it.
 
 ## Any time
 
@@ -32,5 +32,5 @@ Between Sessions, a Character's level-ups and other changes go through `dmr-char
 
 ## Not built yet
 
-- **Publishing the Player Wiki**, and putting a Campaign's NPCs, Places or other notes in it: no skill does either yet.
+- **Putting a Campaign's NPCs, Places or other notes in the Player Wiki**: no skill does it yet.
 - **Migrate**: no skill does it. Its parts that have one, in a Workspace Setup already created: `dmr-import` for the official material, a Transfer through `dmr-character` for each Character. The DM's own notes have no skill to carry them over.

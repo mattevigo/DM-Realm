@@ -19,7 +19,7 @@ description: Turns the current folder into a DM Realm Workspace. Run again insid
 <h2>A first Setup</h2>
 <ol class="steps">
   <li>Checks the folder is empty (dot-folders aside). A folder with notes in it is refused, untouched.</li>
-  <li>Asks the <strong>Workspace Language</strong>, the <strong>Edition</strong> (2014 or 2024) and whether monsters and NPCs get <strong>stat blocks</strong> or Markdown, each once, unless your request already says.</li>
+  <li>Asks the <strong>Workspace Language</strong>, the <strong>Edition</strong> (2014 or 2024) and whether monsters and NPCs get <strong>stat blocks</strong> or Markdown, and whether the Player Wiki is also built as a <strong>website</strong> (checking for Node), each once, unless your request already says.</li>
   <li>Shows a <strong>preview</strong>: the Config, folder names, Templates, Obsidian settings, the Translation Glossary. You may rename any folder.</li>
   <li>On your go-ahead, writes <code>workspace-config.yml</code>, the eight folders, the Templates, the Glossary, the Obsidian settings and, if installed, the Fantasy Statblocks layouts.</li>
   <li>Reports, and leaves you one step: open the folder in Obsidian as a vault.</li>
@@ -31,6 +31,7 @@ description: Turns the current folder into a DM Realm Workspace. Run again insid
   <li>Converts every monster and NPC note between stat blocks and Markdown, after a preview.</li>
   <li>Recreates missing folders and Templates, on your yes. Templates you changed stay byte for byte.</li>
   <li>Restores DM Realm's Obsidian settings and Fantasy Statblocks layouts.</li>
+  <li>With the website chosen, checks Node again.</li>
   <li>Names the Portrait of stat blocks that embed their own picture, and of item notes from the first picture of their Description, and gives every item note <code>item: true</code>.</li>
   <li>Brings every spell's Classes line up to date, so spells imported before DM Realm wrote it get theirs, and rebuilds the Spell Indexes.</li>
   <li>When MapForge has adopted the folder, says what its bestiary reads and how many items its Treasury lists.</li>

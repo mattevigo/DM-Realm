@@ -19,6 +19,7 @@ The Config's key, read by this script alone (keys never translated):
 
   player_wiki:
     output: /absolute/path/outside/the/Workspace
+    site: /another/absolute/path                        # with quartz: true; player-wiki-site.py's
     include: [reference, homebrew, world, characters]   # any of these four
     chronicles: [<Campaign folder>, …]                  # each Campaign whose Chronicle goes in
     dm_only_headings: [<heading>, …]                    # in the Workspace Language
@@ -104,7 +105,7 @@ def player_wiki(workspace):
     output = found.get("output")
     if not isinstance(output, str) or not output:
         raise Failure(2, "player_wiki has no output folder.")
-    config = {"output": output}
+    config = {"output": output, "site": found.get("site") if isinstance(found.get("site"), str) else None}
     for name in ("include", "chronicles", "dm_only_headings"):
         value = found.get(name, [])
         config[name] = [value] if isinstance(value, str) else [v for v in value if v]
@@ -115,7 +116,8 @@ def player_wiki(workspace):
     return config
 
 
-def check_output(workspace, output):
+def check_output(workspace, output, marker=None):
+    marker = marker or MARKER
     if not os.path.isabs(os.path.expanduser(output)):
         raise Failure(3, f"the Player Wiki's output must be an absolute path: {output}")
     out = os.path.realpath(os.path.expanduser(output))
@@ -129,8 +131,8 @@ def check_output(workspace, output):
         raise Failure(3, f"the Player Wiki's output {out} is a file, not a folder.")
     if os.path.isdir(out):
         visible = [n for n in os.listdir(out) if not n.startswith(".")]
-        if visible and not os.path.isfile(os.path.join(out, MARKER)):
-            raise Failure(5, f"{out} holds files and is not a Player Wiki DM Realm wrote (no {MARKER}); "
+        if visible and not os.path.isfile(os.path.join(out, marker)):
+            raise Failure(5, f"{out} holds files and is not a Player Wiki DM Realm wrote (no {marker}); "
                              "nothing was deleted. Choose an empty or new folder.")
     return out
 
