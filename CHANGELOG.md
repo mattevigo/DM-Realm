@@ -2,6 +2,44 @@
 
 What changed in each release of DM Realm. Claude Code updates an installed copy when a new version is published. The guide at [mattevigo.github.io/DM-Realm](https://mattevigo.github.io/DM-Realm/) always describes the latest release.
 
+## 0.4.3 — 2026-11-16
+
+### Added
+
+- **A Character Sheet for each Character in the Player Wiki.** Every time you update the Player Wiki, each Character gets a page of its own in the style of a D&D character sheet, for its player. The Character's page in the wiki links to it from its first line.
+  - It is made from the Character's stat block: abilities and modifiers, saving throws and skills with their proficiency marks, Armor Class, Hit Point maximum, Hit Dice, Initiative, Speed, Proficiency Bonus, attacks, spellcasting with its slots, and features with a one-line summary each. It shows the Character's Portrait when it has one.
+  - It follows your Edition: on a 2024 sheet each ability shows its saving throw, on a 2014 sheet the saving throws are a list of their own.
+  - It reads well on a phone, a tablet or a laptop, in light or dark following the reader's settings. It loads nothing from other servers and runs no scripts.
+  - It shows maximums only (hit points, spell slots), never what was spent at the table, and it is written again at every update, so it always matches the Character.
+  - Its labels come from your Translation Glossary. A label the Glossary lacks stays in English, and the report lists it. A Character without a readable stat block gets no sheet, and the report names it.
+  - With the website, each sheet becomes a page of the site, reached from its Character's page.
+
+### Changed
+
+- The guide's "Share with your players" lesson, the `dmr-player-wiki` page and the glossary describe Character Sheets.
+
+## 0.4.2 — 2026-11-16
+
+### Added
+
+- **A wiki for your players: `dmr-player-wiki`.** Ask for it ("make a wiki for my players", "update the Player Wiki") and DM Realm writes a copy of the parts of your Workspace you choose into a folder outside it. The parts are Reference, Homebrew, World, Characters and each Campaign's Chronicle.
+  - The copy is made by a script, not by Claude, so nothing is reworded, and your Workspace is never changed. The folder is rewritten from scratch at every update, so a note you delete leaves the wiki too.
+  - Some things never go in: Adventures, Sessions, a Campaign's other notes, the Voice, Past Builds, DM Tools and the Templates. A link to a note left out becomes plain text, so the wiki has no broken links.
+  - World and Homebrew notes lose their *Secrets* and *DM Notes* sections and their `%% comments %%`. You can add your own DM-only headings, and after each update the report lists every section removed, note by note.
+  - Monsters' stat blocks become readable Markdown with your Glossary's labels. Characters keep their Build and lose the stat block fence. A home page links each part.
+  - The first time, Claude proposes what goes in and where the folder goes, and saves your answer in the Workspace Config's new `player_wiki` key.
+- **The Player Wiki as a website.** Setup now asks whether you want the Player Wiki built as a website. If you say yes, every update also builds it with Quartz into a folder of HTML pages, with search, backlinks and a graph, in your Workspace's language.
+  - It needs Node 22 or later. Setup checks for it and tells you how to install it, and installs nothing itself. Without Node, the Markdown wiki is still written.
+  - The first build downloads Quartz once for every Workspace, at the version DM Realm was tested with.
+  - The site loads nothing from other servers: no analytics, no fonts or scripts from a CDN.
+  - A failed build leaves your previous site as it was. The report gives you the command to preview the site locally.
+  - Publishing it is yours: upload the folder wherever you like. Reference holds official text, so where the site goes and who can read it is your responsibility.
+
+### Changed
+
+- Setup's Workspace Config has a new `quartz` field. Running Setup again in an existing Workspace asks the website question once.
+- The guide has a new lesson, "Share with your players", a page for `dmr-player-wiki`, and the website question on the Setup pages.
+
 ## 0.4.1 — 2026-11-15
 
 ### Fixed
