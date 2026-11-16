@@ -51,6 +51,7 @@ You can run any skill with its command, `/dm-realm:<skill>`, or just describe wh
 | `dmr-mapforge-import` | Brings MapForge's record of a played Session into its live notes. |
 | `dmr-session-consolidate` | Closes a played Session: recap, loose threads, party state, diary and Character changes. |
 | `dmr-session-narrate` | Tells a consolidated Session as prose for the players, in the voice you set. |
+| `dmr-player-wiki` | Writes a wiki for your players of the parts you choose, with a Character Sheet for each Character and your secrets left out, and builds it as a website if you want one. |
 
 ## Official data
 

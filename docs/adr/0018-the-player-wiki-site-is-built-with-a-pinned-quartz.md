@@ -2,6 +2,8 @@
 
 When the DM chooses it at Setup (`quartz: true`), DM Realm builds the Player Wiki as a static website with Quartz. The release DM Realm uses is pinned, kept once per machine in the plugin's data like the Source Cache, and downloaded at the first build. DM Realm writes Quartz's configuration at every build. It stops at the folder of HTML: where the site goes, who can read it and how is the DM's choice and responsibility.
 
+*Amended by [ADR 0019](0019-a-character-sheet-is-a-page-the-player-wiki-writes-from-the-stat-block.md): after Quartz, DM Realm copies the Character Sheets and their stylesheet into the site itself.*
+
 ## Why
 
 - **The DM gets something they can upload.** Without a built site, a DM who has never heard of Quartz cannot use the Markdown wiki: they would have to install and configure Quartz themselves.

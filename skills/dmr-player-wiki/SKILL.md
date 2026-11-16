@@ -1,6 +1,6 @@
 ---
 name: dmr-player-wiki
-description: The Player Wiki of a DM Realm Workspace — write or update a copy of the parts the DM chooses (Reference, Homebrew, World, Characters, a Campaign's Chronicle) as a wiki for the players, outside the Workspace, and, when Setup chose it, build it as a website with Quartz ("update the Player Wiki", "make a wiki for my players", "put the World in the wiki too", "rebuild the players' site"), with the DM's secrets, Sessions and Adventures left out.
+description: The Player Wiki of a DM Realm Workspace — write or update a copy of the parts the DM chooses (Reference, Homebrew, World, Characters, a Campaign's Chronicle) as a wiki for the players, outside the Workspace, with a Character Sheet page for each Character, and, when Setup chose it, build it as a website with Quartz ("update the Player Wiki", "make a wiki for my players", "put the World in the wiki too", "rebuild the players' site", "give my players their character sheets"), with the DM's secrets, Sessions and Adventures left out.
 argument-hint: <what to do, e.g. update the Player Wiki, or add the World to it>
 allowed-tools: Read, Glob, Grep, Edit, Skill, Bash(ls:*), Bash(python3:*), Bash(DMR_QUARTZ=*)
 ---
@@ -11,6 +11,7 @@ Write the Workspace's Player Wiki. The rules are the `dmr-workspace` skill's str
 - what can go in and what never does;
 - what is removed from World and Homebrew;
 - how links, stat blocks and titles change;
+- the Character Sheets;
 - the folder.
 
 A helper next to that skill does every bit of the copying:
@@ -54,10 +55,11 @@ With `quartz: true` in the Workspace Config, a second helper then builds it as a
    - the folder, and how many notes and files went in, from which parts;
    - how many links became plain text because their note is not in the wiki;
    - each World or Homebrew note and the sections removed from it. Invite the DM to name any other heading that hides a secret, or that should not have been removed, and to look over the wiki before sharing it.
+   - the Character Sheets written; each Character the helper left without one, and why (a missing or unreadable stat block: `dmr-character` writes it again); and the sheet labels the Translation Glossary lacks, which stay in English until it has them;
    - each note the helper gives;
    - that the wiki is a copy rewritten at every update, so edits made in it are lost, and that it is written again only when the DM asks.
    - with `quartz: true`:
-     - the site folder and its pages;
+     - the site folder and its pages, the Character Sheets among them;
      - the preview command the helper prints, and that it works with `python3` alone;
      - that the folder can be uploaded to any static host;
      - in one line, that the Reference holds official text, so publishing the site, and to whom, is the DM's responsibility;

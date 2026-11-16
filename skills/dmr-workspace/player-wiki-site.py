@@ -16,6 +16,10 @@
           locale given (an `xx-YY` code Quartz has, else en-US), the Workspace folder's name
           as the title, no analytics, only the files the notes use, self-hosted fonts, no
           social images, no CNAME;
+        - each Character Sheet the Markdown wiki holds is put where Quartz links it: Quartz
+          publishes the sheet, which a note links to, as a file without its .html; the sheet
+          takes that path plus .html, as Quartz's own pages do, with its stylesheet and
+          Portrait at the paths it names and its link back to the Character's page;
         - the site is built into a temporary folder beside the site folder, and replaces it
           only when the build succeeds; the site folder's dot-entries are kept, and it is
           marked by a .dm-realm-player-wiki-site file.
@@ -33,8 +37,10 @@ expects. Exit 7: no Node 22 or later. Exit 8: Quartz could not be downloaded or 
 Exit 9: the build failed; the previous site is as it was. Nothing is deleted on any error.
 """
 import importlib.util
+import hashlib
 import json
 import os
+import posixpath
 import re
 import shutil
 import subprocess
@@ -197,6 +203,123 @@ def config_text(home, title, locale):
     return text
 
 
+# --- The Character Sheets --------------------------------------------------------------
+
+SHEET_MARK = b'<meta name="generator" content="DM Realm">'
+REF = re.compile(r'(href|src)="([^"]*)"')
+
+
+def digest(path):
+    with open(path, "rb") as f:
+        return hashlib.sha256(f.read()).hexdigest()
+
+
+def site_files(root):
+    for top, dirs, files in os.walk(root):
+        for name in files:
+            yield os.path.relpath(os.path.join(top, name), root).replace(os.sep, "/")
+
+
+def local(ref):
+    return ref and not re.match(r"[a-z][a-z0-9+.-]*:|//|#", ref, re.I)
+
+
+def place_sheets(wiki, built):
+    """Put each Character Sheet of the Markdown wiki where the site links it.
+    (sheets placed, notes for the report)."""
+    sheets = []
+    for rel in site_files(wiki):
+        if rel.endswith(".html") and not rel.split("/")[-1].startswith("."):
+            with open(os.path.join(wiki, rel), "rb") as f:
+                if SHEET_MARK in f.read(2048):
+                    sheets.append(rel)
+    if not sheets:
+        return 0, []
+    by_digest = {}
+    pages = []
+    for rel in site_files(built):
+        by_digest.setdefault(digest(os.path.join(built, rel)), []).append(rel)
+        if rel.endswith(".html"):
+            pages.append(rel)
+    notes, placed = [], 0
+    for rel in sorted(sheets):
+        source = os.path.join(wiki, rel)
+        published = [p for p in by_digest.get(digest(source), []) if not p.endswith(".html")]
+        if not published:
+            notes.append(f"Quartz did not publish {rel}; the site has no page for it.")
+            continue
+        at = published[0]
+        for p in published:
+            os.remove(os.path.join(built, p))
+        target = at + ".html"
+        here = posixpath.dirname(target)
+        with open(source, encoding="utf-8") as f:
+            text = f.read()
+        back = character_page(built, pages, at)
+
+        def rewrite(m):
+            attr, ref = m.group(1), m.group(2)
+            if not local(ref):
+                return m.group(0)
+            plain = player_wiki.unquote(ref)
+            if plain.endswith(".md"):
+                return f'{attr}="{back}"' if back else m.group(0)
+            wanted = posixpath.normpath(posixpath.join(here, plain))
+            src = os.path.normpath(os.path.join(os.path.dirname(source), plain))
+            if not wanted.startswith("..") and os.path.isfile(src):
+                dest = os.path.join(built, wanted)
+                os.makedirs(os.path.dirname(dest), exist_ok=True)
+                shutil.copy2(src, dest)
+            return m.group(0)
+        text = REF.sub(rewrite, text)
+        if not back:
+            notes.append(f"{rel}: no page of the site links it, so its link back leads nowhere.")
+        os.makedirs(os.path.join(built, here), exist_ok=True)
+        with open(os.path.join(built, target), "w", encoding="utf-8") as f:
+            f.write(text)
+        placed += 1
+    return placed, notes
+
+
+ANCHOR = re.compile(r"<a\b[^>]*>")
+OPT_OUT = ' data-router-ignore data-no-popover="true"'
+
+
+def character_page(built, pages, sheet):
+    """The href, from the sheet's folder, of the first site page that links to the sheet.
+    Every link to it opts out of Quartz's in-page navigation and preview, which would load
+    the sheet inside the wiki's own page."""
+    here, back = posixpath.dirname(sheet), None
+    for page in pages:
+        path = os.path.join(built, page)
+        with open(path, encoding="utf-8", errors="replace") as f:
+            text = f.read()
+        base = posixpath.dirname(page)
+
+        def links_sheet(tag):
+            m = re.search(r'\bhref="([^"]*)"', tag)
+            ref = player_wiki.unquote(m.group(1).split("#")[0].split("?")[0]) if m else ""
+            return local(ref) and posixpath.normpath(posixpath.join(base, ref)) == sheet
+
+        def opt_out(m):
+            tag = m.group(0)
+            if not links_sheet(tag) or "data-router-ignore" in tag:
+                return tag
+            return tag[:-1] + OPT_OUT + ">"
+        patched = ANCHOR.sub(opt_out, text)
+        if patched == text:
+            continue
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(patched)
+        if back is None:
+            if posixpath.basename(page) == "index.html":
+                rel = posixpath.relpath(base or ".", here or ".")
+                back = "./" if rel == "." else rel + "/"
+            else:
+                back = player_wiki.quote(posixpath.relpath(page[:-len(".html")], here or "."))
+    return back
+
+
 # --- The site --------------------------------------------------------------------------
 
 def swap(built, site):
@@ -250,12 +373,14 @@ def build(workspace, locale):
     built = tempfile.mkdtemp(prefix=os.path.basename(site) + ".dmr-building.", dir=os.path.dirname(site))
     try:
         run([node, CLI, "build", "-d", wiki, "-o", built], home, "Building the site with Quartz", code=9)
-        pages = sum(1 for _, _, files in os.walk(built) for n in files if n.endswith(".html"))
+        sheets, sheet_notes = place_sheets(wiki, built)
+        notes.extend(sheet_notes)
+        pages = sum(1 for _, _, files in os.walk(built) for n in files if n.endswith(".html")) - sheets
         swap(built, site)
     finally:
         shutil.rmtree(built, ignore_errors=True)
     lines = [f"Player Wiki site built in {site}: {pages} pages, with Quartz {QUARTZ} "
-             f"(locale {chosen['locale']})."]
+             f"(locale {chosen['locale']})" + (f", and {sheets} Character Sheets." if sheets else ".")]
     if installed:
         lines.append(f"Quartz {QUARTZ} was downloaded and installed in {home}, once for every Workspace.")
     lines.append(f'Preview: python3 -m http.server --directory "{site}" 8080, then open http://localhost:8080')
