@@ -19,6 +19,10 @@ edition:   # 2014 or 2024 — Setup asks, recommending 2024; no default
 # which converts the notes.
 stat_blocks: true
 
+# Whether every update of the Player Wiki also builds it as a website with Quartz (needs
+# Node 22 or later). Setup asks; a Config without it counts as false.
+quartz: false
+
 # Names of the eight top-level folders, by neutral key. Leave a name empty to use
 # the agent's translation of the default English name into the Workspace Language.
 # Each name is a single folder name directly under the Workspace root, never a path.
@@ -37,6 +41,7 @@ folders:
 # The agent writes this key when the DM first asks for the wiki.
 # player_wiki:
 #   output: /Users/me/Player_Wiki
+#   site: /Users/me/Player_Wiki_Site       # with quartz: true, the website built from it
 #   include: [reference, homebrew, world, characters]
 #   chronicles: [Heroes_of_the_Border]      # Campaign folders whose Chronicle goes in
 #   dm_only_headings: [Secrets, DM Notes]  # World and Homebrew sections removed
