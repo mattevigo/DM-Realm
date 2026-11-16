@@ -56,6 +56,10 @@ note "$W/Strumenti_del_DM/Glossario_delle_Traduzioni.md" <<'MD'
 | Hit Point Maximum | Punti Ferita Massimi | Traduzione Ufficiale | |
 | SAVE | TS | ripiego | |
 | Skills | Abilità | Traduzione Ufficiale | |
+| Insight | Intuizione | Traduzione Ufficiale | |
+| Stealth | Furtività | Traduzione Ufficiale | |
+| WIS | SAG | Traduzione Ufficiale | |
+| DEX | DES | Traduzione Ufficiale | |
 | Spellcasting | Incantesimi | Traduzione Ufficiale | |
 | Features and Traits | Privilegi e Tratti | ripiego | |
 MD
@@ -414,7 +418,10 @@ for s in '<title>Durga — Scheda del Personaggio</title>' '<h1>Durga</h1>' 'Med
          '<span class="ability-abbr">FOR</span><span class="ability-name">Forza</span><span class="ability-mod">+0</span><span class="ability-score">11</span>' \
          '<span class="ability-mod">+4</span><span class="ability-score">18</span>' \
          '<span class="dot on" aria-hidden="true"></span>TS <strong>+6</strong>' '<span class="dot" aria-hidden="true"></span>TS <strong>−1</strong>' \
-         '<span class="row-name">Intuizione</span><span class="row-value">+6</span>' 'Percezione Passiva 13' 'Comune, Nanico' \
+         '<span class="dot on" aria-hidden="true"></span><span class="row-name">Intuizione <span class="row-ability">(SAG)</span></span><span class="row-value">+6</span>' \
+         '<span class="dot" aria-hidden="true"></span><span class="row-name">Furtività <span class="row-ability">(DES)</span></span><span class="row-value">−1</span>' \
+         '<span class="row-name">Athletics <span class="row-ability">(FOR)</span></span><span class="row-value">+0</span>' \
+         'Percezione Passiva 13' 'Comune, Nanico' \
          '+3 al tiro per colpire, 1d6 danni &lt;Contundenti&gt; &amp; altro' \
          '<p class="spell-line">Saggezza, CD del tiro salvezza degli incantesimi 14, +6 al tiro per colpire con incantesimi</p>' \
          '<li>1° livello: 4 slot</li>' '<li>3° livello: 3 slot</li>' '<h2>Privilegi e Tratti</h2>' 'Benedizione dell&#x27;Ingannatore' \
@@ -423,6 +430,10 @@ for s in '<title>Durga — Scheda del Personaggio</title>' '<h1>Durga</h1>' 'Med
   has "$SH" "$s" "Durga's sheet"
 done
 lacks "$SH" 'Tiri Salvezza' "a 2024 sheet's saves are in its abilities, not a list"
+# Every skill is on the sheet with its ability, not only the fence's proficient ones; one row each.
+[ "$(grep -o 'class="row-ability"' "$SH" | wc -l | tr -d ' ')" = 18 ] || fail "Durga's sheet does not list the 18 skills"
+[ "$(grep -o '>Intuizione <' "$SH" | wc -l | tr -d ' ')" = 1 ] || fail "a proficient skill is listed twice"
+lacks "$SH" '>Insight <' "a skill the fence names in the Glossary's words"
 [ -f "$OUT/Personaggi/Durga/Allegati/Durga_Ritratto.webp" ] || fail "the Portrait on the sheet was not copied"
 for f in "$OUT"/Personaggi/*/*.html "$OUT/Personaggi/Scheda_del_Personaggio.css"; do
   grep -qi '<script' "$f" && fail "a sheet has a script: $f"
@@ -432,6 +443,8 @@ B="$OUT/Personaggi/Brom/Brom_Scheda_del_Personaggio.html"
 [ -f "$B" ] || fail "a retired Character gets a sheet too"
 lacks "$B" '<h2>Incantesimi</h2>' "a non-caster's sheet has no spellcasting"
 lacks "$B" '<img' "a Character with no Portrait"
+has "$B" '<h2>Abilità</h2>' "a Character with no proficient skill still lists them"
+has "$B" '<span class="row-name">Athletics <span class="row-ability">(FOR)</span></span><span class="row-value">+3</span>' "Brom's skills"
 [ -e "$OUT/Personaggi/Brom/Diario_di_Brom_Scheda_del_Personaggio.html" ] && fail "a note that is not the Character's got a sheet"
 lacks "$OUT/Personaggi/Brom/Diario_di_Brom.md" 'Scheda' "a note that is not the Character's"
 ls "$OUT/Personaggi/Durga/Build_Passate" >/dev/null 2>&1 && fail "a Past Build went in"
@@ -542,6 +555,9 @@ saves:
   - Intelligence ●: 2
   - Wisdom: 2
   - Charisma: -1
+skillsaves:
+  - stealth: 5
+  - Thieves' Cant: 2
 ```
 MD
 OUT_TEXT=$(python3 "$HELPER" write "$F") || fail "2014: exit $?"
@@ -549,6 +565,9 @@ S14="$FOUT/Characters/Wren/Wren_Character_Sheet.html"
 [ -f "$S14" ] && [ -f "$FOUT/Characters/Character_Sheet.css" ] || fail "2014: no sheet or stylesheet"
 has "$S14" '<h2>Saving Throws</h2>' "2014 saves list"; lacks "$S14" 'ability-save' "2014 abilities"
 has "$S14" '<span class="row-name">Dexterity</span><span class="row-value">+5</span>' "2014 save row"
+has "$S14" '<span class="dot on" aria-hidden="true"></span><span class="row-name">Stealth <span class="row-ability">(DEX)</span></span><span class="row-value">+5</span>' "2014 proficient skill, matched whatever its case"
+has "$S14" '<span class="dot" aria-hidden="true"></span><span class="row-name">Sleight of Hand <span class="row-ability">(DEX)</span></span><span class="row-value">+3</span>' "2014 skill from its ability"
+has "$S14" '<span class="dot on" aria-hidden="true"></span><span class="row-name">Thieves&#x27; Cant</span><span class="row-value">+2</span></li></ul>' "a fence skill that is none of the 18 stays, last"
 has "$S14" 'class="edition-2014"' "2014 edition"; has "$S14" '<span class="stat-value">+2</span>' "level 1 proficiency bonus"
 has "$FOUT/Characters/Wren/Wren.md" '[Character Sheet](Wren_Character_Sheet.html)' "English link"
 case "$OUT_TEXT" in *"written in English"*) fail "2014: an English Workspace reports no missing label: $OUT_TEXT";; esac

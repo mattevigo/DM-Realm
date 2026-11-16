@@ -2,6 +2,12 @@
 
 What changed in each release of DM Realm. Claude Code updates an installed copy when a new version is published. The guide at [mattevigo.github.io/DM-Realm](https://mattevigo.github.io/DM-Realm/) always describes the latest release.
 
+## 0.4.4 — 2026-11-16
+
+### Fixed
+
+- **A Character Sheet lists every skill.** It used to show only the skills the Character is proficient in. Now it lists all eighteen, each with the ability it uses (Stealth (DEX)): a proficient skill is marked and shows the total from the stat block, any other shows its ability's modifier. Skill names come from your Translation Glossary like the other labels; one the Glossary lacks stays in English, and the report lists it.
+
 ## 0.4.3 — 2026-11-16
 
 ### Added
