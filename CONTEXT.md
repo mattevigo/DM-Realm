@@ -43,7 +43,7 @@ The single Workspace note recording, for each game term, the translation chosen 
 ### Official data
 
 **Trusted Source**:
-The 5etools data and its images, as published in its public source and image mirrors at one release: the only source from which official material is imported, translated and researched. Official material it does not contain cannot be Reference or Adventure content.
+The 5etools data and its images, as published in its public source and image mirrors at one release: the only source from which official material is imported, translated and researched. Official material it does not contain cannot be Reference or an official Adventure's content.
 _Avoid_: The books, compendium, SRD, 5e.tools website
 
 **Source Cache**:
@@ -81,11 +81,11 @@ DM-authored game material with mechanics — rules, classes, species, background
 _Avoid_: Custom, house content
 
 **Adventure**:
-An official published adventure — its places, NPCs and items as the book describes them — kept apart from any Campaign that runs it. Only official: a plot the DM writes is never an Adventure, but that Campaign's own content.
+A self-contained story for the table — its places, NPCs, encounters and items — kept apart from any Campaign that runs it, so any Campaign may run it. Either an official published one, as its book describes it, or one the DM designs: both are Adventures. What a Campaign changes or adds while running one is that Campaign's own content, never the Adventure's.
 _Avoid_: Module, scenario, homebrew adventure
 
 **Part**:
-One top-level division of an Adventure's book: a chapter, an appendix, a dungeon level. It is what an Import of an Adventure brings in, one or more at a time; the whole Adventure is every Part.
+One top-level division of an Adventure: a chapter, an appendix, a dungeon level — as the book divides an official one, or the DM one they design. It is what an Import of an official Adventure brings in, one or more at a time; the whole Adventure is every Part.
 _Avoid_: Chapter (which is the Chronicle's), section
 
 **Setting**:
@@ -122,7 +122,7 @@ _Avoid_: Import, Transfer (which is one Character), convert
 One ongoing game with its own party of Characters, Sessions and story; what actually happened at the table, including what happened to its Characters. Set in one world (an official Setting, the DM's World, or both), it may run any number of Adventures — whole or in part, one after another — and may draw on every other Scope. Its party may be empty when it starts.
 
 **Promotion**:
-Moving a note made for one Campaign into Homebrew (material with mechanics) or World (story elements) once something outside that Campaign needs it, after the DM confirms, with every mention of the Campaign removed. The Campaign-only homebrew it depends on moves with it.
+Moving a note made for one Campaign into Homebrew (material with mechanics), World (story elements) or a new Adventure (a plot another table could run) once something outside that Campaign needs it, after the DM confirms, with every mention of the Campaign removed. The Campaign-only homebrew it depends on moves with it.
 _Avoid_: Export, share, move
 
 **Template**:
@@ -175,7 +175,7 @@ A Campaign's one note listing its Sessions in play order, each with a sentence o
 _Avoid_: Journal, log, chronicle (which is the Campaign's told story)
 
 **Idea**:
-Story content the agent invents at the DM's request for a Campaign — a twist, an NPC's next move, an encounter — for the DM to use or drop. It contradicts no rule the table plays by and nothing the Campaign has made true, and marks what it invents; it is never a fact of the Campaign until it is played.
+Story content the agent invents at the DM's request for a Campaign, or for an Adventure the DM designs — a twist, an NPC's next move, an encounter, a room — for the DM to use or drop. It contradicts no rule the table plays by and nothing the Campaign, or the Adventure and its world, has made true, and marks what it invents; it is never a fact of the Campaign until it is played, nor part of the Adventure until the DM keeps it.
 _Avoid_: Suggestion, hook, plot idea, advice (which is about running the game)
 
 **Chronicle**:
