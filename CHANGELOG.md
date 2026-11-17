@@ -2,6 +2,25 @@
 
 What changed in each release of DM Realm. Claude Code updates an installed copy when a new version is published. The guide at [mattevigo.github.io/DM-Realm](https://mattevigo.github.io/DM-Realm/) always describes the latest release.
 
+## 0.5.0 — 2026-11-17
+
+### Added
+
+- **Design an Adventure of your own: `dmr-adventure`.** An adventure you write for any table to run is now an Adventure. It lives in Adventures, beside the official ones, and a Campaign runs it the same way, whole or in part, listed in its README's Adventures Run. What happens at the table stays the Campaign's, as it does for a published Adventure. You design it in four stages, in any order, as often as you like:
+  - **Premise**: its README, with the pitch, level range, length, world, tone and hook. Only the sections you give are written.
+  - **Structure**: its Parts. Each is a note with a summary, its scenes or nodes, the clues the party must find to go on, and the ways out to the next Parts.
+  - **Content**: a Part's places, NPCs, encounters and items, each a note of its own. An encounter's difficulty is worked out from your Edition's *Dungeon Master's Guide*, with the page. A monster you invent goes into Homebrew › Monsters, so any Campaign can use it; an item you invent stays in the Adventure's Items.
+  - **Review**: a report in the chat of what the Adventure lacks. It lists a conclusion with fewer than three clues, a Part with no way out, an encounter too hard or too easy for its levels, a name with no note, and a link the rules forbid, each with the practice or rule behind it. Review changes nothing.
+  - Ask for ideas and Claude offers two or three, checked against your Adventure, its world and the rules. Ask for a draft and it shows you every note, with its path, before writing. Either way, only what you keep is written.
+- **An `Adventure_Part` Template**, so you can also write a Part by hand. A new Workspace gets it at Setup. Run `/dm-realm:dmr-setup` again in an existing Workspace and it offers to add it.
+
+### Changed
+
+- **A Campaign's plot can become an Adventure.** Ask to turn a Campaign's place, NPC, quest or faction into an Adventure of its own, so another table can run it. Claude shows what moves and what is stripped of the Campaign, then creates the Adventure. A plot you write for one table, such as your own dungeon in place of an official chapter, stays the Campaign's until you ask.
+- **A Campaign's NPC wanted by your Adventure** cannot be linked from it, since an Adventure knows no table. Claude offers to promote the NPC to your World first, as it does for a Character's backstory.
+- `dmr-import-adventure` and `dmr-import` never write into a folder that holds an Adventure of your own. When an official Adventure's title matches yours, they stop and ask you to rename one of the two.
+- The guide has a page for the new skill, and its glossary and its lessons on the Workspace, Setup and starting a Campaign now cover Adventures of your own.
+
 ## 0.4.4 — 2026-11-16
 
 ### Fixed
