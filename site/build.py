@@ -55,6 +55,7 @@ NAV = [
         ("skills/dmr-import", "dmr-import"),
         ("skills/dmr-import-adventure", "dmr-import-adventure"),
         ("skills/dmr-campaign", "dmr-campaign"),
+        ("skills/dmr-adventure", "dmr-adventure"),
         ("skills/dmr-character", "dmr-character"),
         ("skills/dmr-session-prepare", "dmr-session-prepare"),
         ("skills/dmr-mapforge-import", "dmr-mapforge-import"),

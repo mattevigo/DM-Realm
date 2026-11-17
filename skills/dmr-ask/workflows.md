@@ -7,6 +7,8 @@ How DM Realm's skills fit together: the order a DM uses them in, and what has no
 1. `dmr-setup`, run only by its command, in the folder that is to become the Workspace. Run again in a Workspace, it is how top-level folders are renamed or added back, how DM Realm's Obsidian settings and stat block layouts are installed again, and how stat blocks and item notes written before DM Realm named their Portrait get one, item notes their `item: true`, and spell notes their Classes line, up to date.
 2. `dmr-import` for the official entries the Campaign needs, as they are needed — an item an Adventure introduces goes into that Adventure — and `dmr-import-adventure` for the Adventure it runs, a Part at a time or whole.
 3. `dmr-campaign` to start a Campaign.
+
+`dmr-adventure` designs an Adventure of the DM's own, at any time and in any order: its premise, its Parts, their places, NPCs, encounters and items, and a review against adventure-design practice. A Campaign runs it as it runs an official one, listed in its README's Adventures Run; `dmr-session-prepare` reads its notes the same way.
 4. `dmr-character` for each player's Character: created, or brought in by a Transfer.
 
 ## The Session loop
@@ -27,7 +29,7 @@ Between Sessions, a Character's level-ups and other changes go through `dmr-char
 ## Any time
 
 - `dmr-ask` for a question.
-- **Notes no skill writes** — a Campaign's NPCs, Places, Quests and Factions, Homebrew, World, House Rules, DM Tools — and **Promotion**: asked for in plain words; the agent writes them by the Workspace rules.
+- **Notes no skill writes** — a Campaign's NPCs, Places, Quests and Factions, Homebrew, World, House Rules, DM Tools — and **Promotion**, a Campaign's plot into a new Adventure included: asked for in plain words; the agent writes them by the Workspace rules. A designed Adventure's own notes are `dmr-adventure`'s.
 - **Refreshing the Source Cache**: asked for in plain words.
 
 ## Not built yet

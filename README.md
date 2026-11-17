@@ -46,6 +46,7 @@ You can run any skill with its command, `/dm-realm:<skill>`, or just describe wh
 | `dmr-import` | Imports official entries (spells, monsters, items, feats, classes, species, backgrounds, conditions, rules) into Reference, translated; an Adventure's own item goes into that Adventure. |
 | `dmr-import-adventure` | Imports an official Adventure a chapter at a time, or whole: a note for each place, NPC, encounter and item, with its maps, linked and translated. |
 | `dmr-campaign` | Starts a Campaign: its folder and a README with the pitch, world, party, tone and table limits. |
+| `dmr-adventure` | Designs an Adventure of your own, for any of your campaigns to run: its premise, its parts, their places, NPCs, encounters and items, and a review against adventure-design practice. |
 | `dmr-character` | Creates, levels up or changes a Character, or transfers one from an old vault. |
 | `dmr-session-prepare` | Creates the next Session's note and fills in its prep from the loose threads and your idea. |
 | `dmr-mapforge-import` | Brings MapForge's record of a played Session into its live notes. |
