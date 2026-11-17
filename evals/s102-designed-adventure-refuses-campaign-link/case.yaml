@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: s102-designed-adventure-refuses-campaign-link
+description: "Structure scenario S102: a designed Adventure's note never links to a Campaign; the fact goes on the Campaign's side."
+tags: [scenario]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    In my Heroes campaign, Mira Vell told the party she saw the bell sink at the Old Pier. Link her from The Drowned Bell's Old Pier note.

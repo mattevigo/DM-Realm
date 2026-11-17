@@ -102,6 +102,11 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S98 | tests/player-wiki.test.sh, player-wiki-update (the Player Wiki holds only the parts chosen, never an Adventure, a Session, another Campaign note, the Voice or a Past Build; a link to a note left out is plain text; World and Homebrew lose their DM-only sections; the Workspace is unchanged) |
 | S100 | setup-asks-quartz, setup-quartz-old-node, player-wiki-site-old-node, tests/player-wiki-site.test.sh (Setup asks whether the Player Wiki is also a website and checks Node, installing nothing; without Node 22 the Markdown wiki is written and the site is not; the site is built with the pinned Quartz, its configuration DM Realm's, and a failed build leaves the previous site) |
 | S99 | player-wiki-refuse-adventure, player-wiki-inside-workspace, tests/player-wiki.test.sh (an Adventure asked for the Player Wiki is refused, saying why; a folder inside the Workspace, or one DM Realm did not write, is refused and nothing is deleted) |
+| S101 | s101-designed-adventure-links-world (a designed Adventure's note links to the DM's World; the World note does not name it) |
+| S102 | s102-designed-adventure-refuses-campaign-link (a designed Adventure's note never links to a Campaign; a fact of the table goes in the Campaign's note, which links to it), adventure-refuses-campaign-npc (a Campaign NPC the Adventure wants in its story is offered Promotion to World first) |
+| S103 | s103-campaign-plot-stays (the DM's own dungeon in place of an Adventure's chapter is the Campaign's, and nothing is written in Adventures) |
+| S105 | s105-designed-adventure-monster (a monster a designed Adventure introduces is a Homebrew monster that never names it; its encounter is the Adventure's) |
+| S106 | s106-promotion-to-adventure (a Campaign place promoted to a new designed Adventure: a README with no source property, the note in its Places, stripped of the Campaign) |
 
 ## How to run the manual scenarios
 
@@ -117,6 +122,15 @@ Expected: (a) Reference Setting; (b) World, in a folder named after the world; (
 
 **S88.** Glasstaff, an NPC, appears in two published Adventures, *The Sunken Keep* and *The Salt Crypt*, and the DM runs both. Where do his notes go?
 Expected: One note in each Adventure's NPCs, each as its own book describes him. Neither links to the other, and there is no shared note.
+
+**S104.** A Workspace holds the official *Sunken Keep*, imported, and *The Drowned Bell*, an Adventure the DM designs. The DM asks for an update check. What does it compare?
+Expected: Only the notes with a source property — the official Adventure's, and Reference's. *The Drowned Bell*'s notes have none, so the check never lists, compares or re-imports them, and it does not warn that they were edited.
+
+**S107.** The DM designed an Adventure and named it *The Sunken Keep*, then asks to import chapter 1 of the official *Sunken Keep*. What happens?
+Expected: The Import writes nothing: the folder its title gives holds a designed Adventure (its README has no source property). It says so and asks the DM to rename one of the two; a rename moves the folder and rewrites the links into it, and the Import can then go on.
+
+**S108.** The Heroes Campaign ran *The Drowned Bell*, and in its Session 6 the NPC Old Marrow died. The DM asks for an Idea for the Adventure's next Part. What limits it?
+Expected: The official rules and Homebrew's House Rules, *The Drowned Bell*'s own notes, their secrets included, and the lore of the world its README names (Orsenna's World notes): Old Marrow may appear alive, since no Campaign's notes are a limit or a source. Its README's Pitch, Level Range and Tone are soft limits, which the Idea may depart from, saying where and how.
 
 ## Official data
 

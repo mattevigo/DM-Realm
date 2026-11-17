@@ -22,14 +22,14 @@ if [ "$WS_LANG" = it ]; then
   WS_FOLDERS="Riferimento Avventure Homebrew Mondo Personaggi Campagne Strumenti_DM Modelli"
   WS_ATTACHMENTS=Allegati
   # Setup's Template set, in structure.md's order, and the Homebrew monster's among them.
-  WS_TEMPLATES="Sessione PNG Luogo Fazione Missione Regola_della_Casa Incantesimo_Homebrew Oggetto_Homebrew Mostro_Homebrew"
+  WS_TEMPLATES="Sessione PNG Luogo Fazione Missione Regola_della_Casa Incantesimo_Homebrew Oggetto_Homebrew Mostro_Homebrew Parte_di_Avventura"
   WS_MONSTER_TEMPLATE=Mostro_Homebrew
   WS_LABELS="Classe Armatura|Punti Ferita"
 else
   WS_LANGUAGE=${WS_LANGUAGE:-English}
   WS_FOLDERS="Reference Adventures Homebrew World Characters Campaigns DM_Tools Templates"
   WS_ATTACHMENTS=Attachments
-  WS_TEMPLATES="Session NPC Place Faction Quest House_Rule Homebrew_Spell Homebrew_Item Homebrew_Monster"
+  WS_TEMPLATES="Session NPC Place Faction Quest House_Rule Homebrew_Spell Homebrew_Item Homebrew_Monster Adventure_Part"
   WS_MONSTER_TEMPLATE=Homebrew_Monster
   WS_LABELS="Armor Class|Hit Points"
 fi
@@ -153,6 +153,7 @@ if [ "$WS_LANG" = it ]; then
 | Homebrew_Spell | Incantesimo_Homebrew | fallback | |
 | Homebrew_Item | Oggetto_Homebrew | fallback | |
 | Homebrew_Monster | Mostro_Homebrew | fallback | |
+| Adventure_Part | Parte_di_Avventura | fallback | |
 | Attachments | Allegati | fallback | |
 | number | numero | fallback | |
 | date | data | fallback | |

@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: adventure-draft-preview
+description: "A draft of a whole Part is shown as a preview, each note by its path, and nothing is written before the DM's yes."
+tags: [adventure-design]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Draft the second Part of The Drowned Bell, the Sunken Temple: its rooms and who guards them.

@@ -1,7 +1,7 @@
 ---
 type: regex
 target: files
-match: count:9
+match: count:10
 flags: m
 ---
 ^(\./)?Templates/.+

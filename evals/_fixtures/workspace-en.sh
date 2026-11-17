@@ -5,16 +5,18 @@ mkdir -p Campaigns/Heroes/NPCs Campaigns/Heroes/Sessions Campaigns/Heroes/Places
 printf '# Heroes\n\nA campaign on the northern border of Orsenna, the DM'"'"'s own world.\n' > Campaigns/Heroes/README.md
 
 # Stub notes the scenario cases act on. Official ones are INVENTED placeholders with a
-# source property, standing in for imported material (ADR 0003: no real data here).
+# source property, standing in for imported material (ADR 0003: no real data here);
+# the two Adventures are official, so their notes carry one too (ADR 0020).
 mkdir -p Reference/Spells/Level_3 Reference/Feats Reference/Setting/Forgotten_Realms
 printf -- '---\nsource: XPHB p. 241, v3.0.0\n---\n\n# Fireball\n\n(Placeholder for the imported official text.)\n' > Reference/Spells/Level_3/Fireball.md
 printf -- '---\nsource: XPHB p. 200, v3.0.0\n---\n\n# Alert\n\n(Placeholder for the imported official text.)\n' > Reference/Feats/Alert.md
 printf '# Neverwinter\n\nThe Jewel of the North, as the official lore describes it.\n' > Reference/Setting/Forgotten_Realms/Neverwinter.md
 mkdir -p Adventures/The_Sunken_Keep/Places Adventures/The_Sunken_Keep/NPCs Adventures/The_Lost_Road/NPCs
-printf '# The Sunken Keep\n\nA published adventure (test stub).\n' > Adventures/The_Sunken_Keep/README.md
-printf '# Stonehill Inn\n\nA busy inn run by a retired soldier.\n' > Adventures/The_Sunken_Keep/Places/Stonehill_Inn.md
-printf '# Glasstaff\n\nA wizard hiding in the keep.\n' > Adventures/The_Sunken_Keep/NPCs/Glasstaff.md
-printf '# Sildar\n\nA knight of the Lords'"'"' Alliance.\n' > Adventures/The_Lost_Road/NPCs/Sildar.md
+printf -- '---\nsource: SKP, v3.0.0\n---\n\n# The Sunken Keep\n\nA published adventure (test stub).\n' > Adventures/The_Sunken_Keep/README.md
+printf -- '---\nsource: SKP p. 12, v3.0.0, #a1\n---\n\n# Stonehill Inn\n\nA busy inn run by a retired soldier.\n' > Adventures/The_Sunken_Keep/Places/Stonehill_Inn.md
+printf -- '---\nsource: SKP p. 20, v3.0.0, #b2\n---\n\n# Glasstaff\n\nA wizard hiding in the keep.\n' > Adventures/The_Sunken_Keep/NPCs/Glasstaff.md
+printf -- '---\nsource: LRD p. 5, v3.0.0, #c3\n---\n\n# Sildar\n\nA knight of the Lords'"'"' Alliance.\n' > Adventures/The_Lost_Road/NPCs/Sildar.md
+printf -- '---\nsource: LRD, v3.0.0\n---\n\n# The Lost Road\n\nA published adventure (test stub).\n' > Adventures/The_Lost_Road/README.md
 mkdir -p Homebrew/Monsters DM_Tools/Checklists
 printf '# Ash Wraith\n\nA spirit of cinders, reusable in any campaign.\n' > Homebrew/Monsters/Ash_Wraith.md
 printf '# Session Prep\n\n- [ ] Review last session\n' > DM_Tools/Checklists/Session_Prep.md

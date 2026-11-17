@@ -1,7 +1,7 @@
 ---
 type: regex
 target: files
-match: count:9
+match: count:10
 flags: m
 ---
-^(\./)?Templates/(Session|NPC|Place|Faction|Quest|House_Rule|Homebrew_Spell|Homebrew_Item|Homebrew_Monster)\.md$
+^(\./)?Templates/(Session|NPC|Place|Faction|Quest|House_Rule|Homebrew_Spell|Homebrew_Item|Homebrew_Monster|Adventure_Part)\.md$
