@@ -434,7 +434,7 @@ An Idea is story content the agent invents at the DM's request for a Campaign, o
 
 A note with game statistics — a monster, an NPC's mechanics — writes them once, last in the note, in the form the Workspace chose at Setup: the Workspace Config's `stat_blocks` ([ADR 0009](../../docs/adr/0009-a-workspace-writes-statistics-once-as-a-stat-block-or-as-markdown.md)). A Character is outside that choice ([Characters' stat blocks](#characters-stat-blocks)).
 
-- **`true` — a stat block** for Fantasy Statblocks (`obsidian-5e-statblocks`), the Obsidian plugin that renders it and keeps a bestiary, which MapForge (the DM's initiative tracker) reads too. The format is the plugin's inline mode: the frontmatter flag `statblock: inline` and one ```` ```statblock ```` fence of YAML as the note's statistics section.
+- **`true` — a stat block** for Fantasy Statblocks (`obsidian-5e-statblocks`), the Obsidian plugin that renders it and keeps a bestiary; MapForge (the DM's table tool) reads the same fences. The format is the plugin's inline mode: the frontmatter flag `statblock: inline` and one ```` ```statblock ```` fence of YAML as the note's statistics section.
 - **`false` — Markdown**: the same statistics as DM Realm's Markdown, with no fence and no flag.
 
 A monster's statistics section is headed Stat Block (translated). As a stat block:
@@ -615,9 +615,23 @@ The Portrait is the one picture MapForge cuts a Pawn's Face from, named with the
 
 ### MapForge
 
-MapForge, the DM's table tool, is independent of DM Realm ([ADR 0011](../../docs/adr/0011-dm-realm-reads-mapforges-files-and-writes-them-only-when-the-dm-asks.md)). It owns `.mapforge/` at the Workspace root (its Manifest `workspace.json`, `config.json`, `parties.json`, `preferences.json`, its Session Logs) and the files beside a Map (`<map>.fog.json`, `<map>.combat/`). The agent reads them and, on its own initiative, never creates, edits or deletes any of them, nor offers to: it writes one only when the DM's own request names that change ("point MapForge's bestiary at the Monsters folder"). Nor does it move or arrange the Workspace's folders to suit MapForge.
+MapForge, the DM's table tool, is independent of DM Realm ([ADR 0011](../../docs/adr/0011-dm-realm-reads-mapforges-files-and-writes-them-only-when-the-dm-asks.md)). It owns `.mapforge/` at the Workspace root (its Manifest `workspace.json`, `config.json`, `parties.json`, `preferences.json`, its Session Logs) and the files beside a Map (`<map>.fog.json`, `<map>.combat/`). The agent reads them and, on its own initiative, never creates, edits or deletes any of them, nor offers to: it writes one only when the DM's own request names that change ("remove the old bestiary folder from MapForge's config.json"). Nor does it move or arrange the Workspace's folders to suit MapForge.
 
-DM Realm guarantees the plugin's standard keys, `initiative`, `size` and the [Portrait](#the-portrait)'s `image` included, and an [item note](#item-notes)'s `item` and `image`, and nothing else of MapForge. Two known limits are MapForge's to lift: it reads one bestiary folder (`bestiaryStatBlockPath` in `.mapforge/config.json`, relative to the Workspace root) while a Workspace's stat blocks span several Scopes, and it takes the party from its own `parties.json`, not from the Character notes. MapForge reads every fence under that folder, `bestiary: false` ones included, so a folder holding Characters lists them, and their past Builds, as Monsters. Setup tells the DM what that folder reads of the Workspace, and how many items MapForge's Treasury reads and how many of them have no Portrait.
+MapForge 2.0 and later reads the whole Workspace, once when it opens: every `.md` outside hidden folders, with no folder to configure (a `bestiaryStatBlockPath` left in `.mapforge/config.json` is ignored). A note's first ```` ```statblock ```` fence is:
+
+- **a Character's** when it has any of `species`, `class`, `level` or `player`, unless it is marked `bestiary: false`. MapForge reads its `name`, `ac`, `hp` (the maximum), `initiative` and `size`. The DM links each Party Character to its note in MapForge, which keeps the fence's `name` as the Character's `noteName` in `parties.json`, a link DM Realm never writes; a Character whose note is gone or renamed stamps its Pawns with no numbers. The Party itself is chosen in MapForge: a Campaign README's party and a Character's `status` do not decide it.
+- **out of its Bestiary** when it is marked `bestiary: false`, though a Monster may still extend it unless it is a Character's (a past Build).
+- **otherwise a Monster**, `extends` resolved by the base's exact `name`: each key the NPC writes replaces the base's whole, lists included, a chain is followed, and a list of bases (`extends: [A, B]`) is laid in order, the later winning. A Character's fence is never a base.
+
+The first `name` by path wins, and MapForge skips and lists a later fence with that name, as it does a fence that is not valid YAML, one with no `name`, and a Monster whose `extends` names no fence or comes back to itself. `ac`, `hp` and `initiative` count only as an integer, alone or followed by a bracket (`67 (9d8 + 27)`); a text value (see [Keys and values](#keys-and-values)) leaves that number empty, and the Monster is still listed.
+
+DM Realm guarantees the plugin's standard keys, `initiative`, `size` and the [Portrait](#the-portrait)'s `image` included, an [item note](#item-notes)'s `item` and `image`, and these three, which MapForge relies on to tell its notes apart:
+
+- a Character's fence always has `species`, `class` and `level`, whether or not it has a `player`;
+- a Character's past Builds and the Homebrew monster Template's fence are marked `bestiary: false`;
+- an NPC whose statistics change a monster's is written as `extends:` that monster's exact `name`, plus the changed values.
+
+It guarantees nothing else of MapForge. Setup tells the DM what MapForge reads of the Workspace: its Monsters and Characters, the fences it skips and why, the Party Characters whose Pawns get no numbers, and how many items its Treasury reads and how many of them have no Portrait.
 
 MapForge's Session Logs (`.mapforge/sessions/`) and the Combat Logs they point at are a Session's Table Record. It reaches the Workspace only by being written into that Session's Live Notes, when the DM asks.
 

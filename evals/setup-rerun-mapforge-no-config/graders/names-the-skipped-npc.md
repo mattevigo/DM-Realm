@@ -2,6 +2,5 @@
 type: regex
 target: last_message
 match: contains
-flags: i
 ---
-\b(Ayla|Characters?)\b[^\n]{0,200}\bMonsters?\b
+Vinx[\s\S]{0,300}\bScout\b|\bScout\b[\s\S]{0,300}Vinx

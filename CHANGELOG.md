@@ -2,6 +2,22 @@
 
 What changed in each release of DM Realm. Claude Code updates an installed copy when a new version is published. The guide at [mattevigo.github.io/DM-Realm](https://mattevigo.github.io/DM-Realm/) always describes the latest release.
 
+## Unreleased
+
+### Changed
+
+- **Setup describes MapForge 2.0 and later.** MapForge now reads every note in your Workspace, takes each Character's AC, HP and initiative from its note, and leaves past Builds and Templates out of its Bestiary. When MapForge has adopted the folder, Setup's report now says:
+  - how many monsters and Characters MapForge finds;
+  - each stat block it skips, and why: a name another note already has, an `extends` naming a monster no note defines or looping back on itself, no `name`, or YAML MapForge cannot read (an unquoted `: ` in a value, say);
+  - each Party Character with no note linked in MapForge, or linked to a note that is gone, since its Pawns get no numbers;
+  - how many items its Treasury lists, as before.
+
+  It no longer reports which folders MapForge misses. This needs MapForge 2.0 or later.
+
+### Removed
+
+- **Pointing MapForge's bestiary at a folder.** MapForge has no bestiary folder any more. Ask Setup for one and it explains why, and changes nothing in MapForge's files. A `bestiaryStatBlockPath` left in `.mapforge/config.json` does no harm, and Setup leaves it there.
+
 ## 0.5.0 — 2026-11-17
 
 ### Added

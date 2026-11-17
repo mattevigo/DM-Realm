@@ -1,6 +1,6 @@
 #!/bin/sh
-# Tests the MapForge helper: what MapForge's Bestiary and Treasury read of a Workspace, and
-# setting its folder when the DM asks (ADR 0011).
+# Tests the MapForge helper: what MapForge 2.x reads of a Workspace — its Bestiary, its Characters'
+# notes, how its Party is linked, its Treasury — read, never written (ADR 0011).
 # Usage: sh tests/mapforge.test.sh   (exit 0 = all pass)
 set -u
 HELPER="$(cd "$(dirname "$0")/.." && pwd)/skills/dmr-setup/mapforge.py"
@@ -13,7 +13,7 @@ field() { printf '%s' "$1" | python3 -c "import json,sys; d=json.load(sys.stdin)
 
 fence() { # fence <file> <name> [extra yaml line]
   mkdir -p "$(dirname "$1")"
-  printf -- '---\nstatblock: inline\n---\n# %s\n\n```statblock\nname: %s\n%s\nac: 12\n```\n' "$2" "$2" "${3:-}" > "$1"
+  printf -- '---\nstatblock: inline\n---\n# %s\n\n```statblock\nname: %s\n%b\nac: 12\n```\n' "$2" "$2" "${3:-}" > "$1"
 }
 
 new_ws() {
@@ -38,8 +38,9 @@ YML
   fence "$W/Homebrew/Monsters/Bog_Goblin.md" "Bog Goblin"
   fence "$W/Campaigns/Heroes/NPCs/Sildar.md" Sildar
   fence "$W/Campaigns/Villains/NPCs/Vex.md" Vex
-  fence "$W/Characters/Ayla/Ayla.md" Ayla
-  fence "$W/Characters/Ayla/Builds/Ayla_Level_1.md" Ayla "bestiary: false"
+  fence "$W/Characters/Ayla/Ayla.md" Ayla "layout: DM Realm Character\nspecies: Elf\nclass: Ranger\nlevel: 3\nplayer: Baldu"
+  fence "$W/Characters/Zharyn/Zharyn.md" Zharyn "layout: DM Realm Character\nspecies: Tiefling\nclass: Warlock\nlevel: 3"
+  fence "$W/Characters/Ayla/Past_Builds/Ayla_01.md" Ayla "layout: DM Realm Character\nspecies: Elf\nclass: Ranger\nlevel: 1\nbestiary: false"
   fence "$W/Templates/Homebrew_Monster.md" "—" "bestiary: false"
   printf '# Port Thief\n\nNo statistics.\n' > "$W/World/Port_Thief.md"
 }
@@ -57,66 +58,104 @@ OUT=$(python3 "$HELPER" report "$W") || fail "none: exit $?"
 [ "$(field "$OUT" "d['mapforge']")" = "False" ] || fail "none: should say no MapForge: $OUT"
 [ ! -e "$W/.mapforge" ] || fail "none: created .mapforge"
 
-# The Reference monsters folder: reads its two, misses Homebrew and the Campaign, no Characters.
-new_ws 2; mapforge '{"bestiaryStatBlockPath": "Reference/Monsters", "other": 1}'
-BEFORE=$(snapshot)
-OUT=$(python3 "$HELPER" report "$W") || fail "subfolder: exit $?"
-[ "$(field "$OUT" "d['config']")" = "ok" ] || fail "subfolder: config: $OUT"
-[ "$(field "$OUT" "d['path']")" = "Reference/Monsters" ] || fail "subfolder: path: $OUT"
-[ "$(field "$OUT" "d['read']")" = "2" ] || fail "subfolder: should read 2: $OUT"
-[ "$(field "$OUT" "d['scopes']['reference']['reads']")" = "part" ] || fail "subfolder: reference should be part: $OUT"
-[ "$(field "$OUT" "d['scopes']['homebrew']['reads']")" = "none" ] || fail "subfolder: homebrew should be none: $OUT"
-[ "$(field "$OUT" "d['scopes']['homebrew']['missed']")" = "1" ] || fail "subfolder: homebrew missed 1: $OUT"
-[ "$(field "$OUT" "d['scopes']['campaigns']['missed']")" = "2" ] || fail "subfolder: campaigns missed 2: $OUT"
-[ "$(field "$OUT" "d['scopes']['campaigns']['missed_in']")" = "{'Heroes': 1, 'Villains': 1}" ] || fail "subfolder: missed per Campaign: $OUT"
-[ "$(field "$OUT" "d['scopes']['adventures']['folder']")" = "Adventures" ] || fail "subfolder: adventures folder name: $OUT"
-[ "$(field "$OUT" "d['characters_read']")" = "0" ] || fail "subfolder: no Character read: $OUT"
-[ "$(field "$OUT" "d['kept_out_read']")" = "0" ] || fail "subfolder: nothing kept out read: $OUT"
-[ "$(field "$OUT" "'characters' in d['scopes']")" = "True" ] || fail "subfolder: characters scope listed: $OUT"
-[ "$(snapshot)" = "$BEFORE" ] || fail "subfolder: .mapforge changed"
-
-# One Campaign: part of Campaigns, the other Campaign named as missed; an unclosed fence is no Monster.
-new_ws 12; mapforge '{"bestiaryStatBlockPath": "Campaigns/Heroes"}'
-printf '# Draft\n\n```statblock\nname: Draft\n' > "$W/Campaigns/Heroes/NPCs/Draft.md"
-OUT=$(python3 "$HELPER" report "$W") || fail "campaign: exit $?"
-[ "$(field "$OUT" "d['scopes']['campaigns']['reads']")" = "part" ] || fail "campaign: part: $OUT"
-[ "$(field "$OUT" "d['scopes']['campaigns']['missed_in']")" = "{'Villains': 1}" ] || fail "campaign: Villains missed: $OUT"
-[ "$(field "$OUT" "d['read']")" = "1" ] || fail "campaign: reads Sildar only, not the unclosed fence: $OUT"
-
-# The Workspace root: reads everything, Characters as Monsters, and the notes kept out of the bestiary.
-new_ws 3; mapforge '{"bestiaryStatBlockPath": "."}'
-OUT=$(python3 "$HELPER" report "$W") || fail "root: exit $?"
-[ "$(field "$OUT" "d['scopes']['characters']['reads']")" = "all" ] || fail "root: characters all: $OUT"
-[ "$(field "$OUT" "d['characters_read']")" = "1" ] || fail "root: one Character read: $OUT"
-[ "$(field "$OUT" "d['kept_out_read']")" = "2" ] || fail "root: past Build and Template read: $OUT"
-[ "$(field "$OUT" "sum(s['missed'] for s in d['scopes'].values())")" = "0" ] || fail "root: nothing missed: $OUT"
-# MapForge reads hidden folders too: a note in .trash is listed at the root.
-fence "$W/.trash/Old_Goblin.md" "Old Goblin"
-OUT=$(python3 "$HELPER" report "$W") || fail "root trash: exit $?"
-[ "$(field "$OUT" "d['read']")" = "8" ] || fail "root: 7 names plus the one in .trash: $OUT"
-
-# A top-level folder by its name, with a trailing slash: all of that Scope.
-new_ws 4; mapforge '{"bestiaryStatBlockPath": "Characters/"}'
-OUT=$(python3 "$HELPER" report "$W") || fail "characters: exit $?"
-[ "$(field "$OUT" "d['path']")" = "Characters" ] || fail "characters: path normalised: $OUT"
-[ "$(field "$OUT" "d['scopes']['characters']['reads']")" = "all" ] || fail "characters: all: $OUT"
-[ "$(field "$OUT" "d['characters_read']")" = "1" ] || fail "characters: one read: $OUT"
-
-# No config.json, no key, invalid JSON, a folder not there, a path outside: reported, nothing written.
-new_ws 5; mapforge ''
+# The whole Workspace, whatever config.json says: every Monster, never a Character (any of its
+# keys, `player` or not), a fence kept out with `bestiary: false`, or a note in a hidden folder.
+for config in '' '{"bestiaryStatBlockPath": "Reference/Monsters", "other": 1}' '{"bestiaryStatBlockPath": "."}' '{"bestiaryStatBlockPath": "x",}' '["Reference"]' '{"bestiaryStatBlockPath": "../Elsewhere"}'; do
+  new_ws 2; mapforge "$config"; BEFORE=$(snapshot)
+  fence "$W/.trash/Old_Goblin.md" "Old Goblin"
+  fence "$W/.obsidian/Plugin_Goblin.md" "Plugin Goblin"
+  OUT=$(python3 "$HELPER" report "$W") || fail "workspace ($config): exit $?"
+  [ "$(field "$OUT" "d['monsters']")" = "5" ] || fail "workspace ($config): 5 Monsters: $OUT"
+  [ "$(field "$OUT" "'config' in d or 'scopes' in d or 'path' in d")" = "False" ] || fail "workspace ($config): no folder fields: $OUT"
+  [ "$(snapshot)" = "$BEFORE" ] || fail "workspace ($config): .mapforge changed"
+done
+new_ws 3; mapforge ''
 OUT=$(python3 "$HELPER" report "$W") || fail "no config: exit $?"
-[ "$(field "$OUT" "d['config']")" = "missing" ] || fail "no config: $OUT"
 [ ! -e "$W/.mapforge/config.json" ] || fail "no config: created config.json"
-for case in 'no-key|{"somethingElse": true}' 'invalid|{"bestiaryStatBlockPath": "x",}' 'invalid|["Reference"]' 'invalid|{"bestiaryStatBlockPath": 5}' 'no-key|{"bestiaryStatBlockPath": null}' 'not-found|{"bestiaryStatBlockPath": "Bestiary"}' 'outside|{"bestiaryStatBlockPath": "../Elsewhere"}' 'outside|{"bestiaryStatBlockPath": "Reference/../../x"}' 'outside|{"bestiaryStatBlockPath": "/Users/dm/Bestiary"}' 'outside|{"bestiaryStatBlockPath": ""}'; do
-  want=${case%%|*}; json=${case#*|}
-  new_ws 6; mapforge "$json"; BEFORE=$(snapshot)
-  OUT=$(python3 "$HELPER" report "$W") || fail "$want: exit $?"
-  [ "$(field "$OUT" "d['config']")" = "$want" ] || fail "$want: got $OUT for $json"
-  [ "$(snapshot)" = "$BEFORE" ] || fail "$want: .mapforge changed"
+# An unclosed fence is a note being typed: no Monster, and not skipped.
+printf '# Draft\n\n```statblock\nname: Draft\n' > "$W/Campaigns/Heroes/NPCs/Draft.md"
+OUT=$(python3 "$HELPER" report "$W") || fail "unclosed: exit $?"
+[ "$(field "$OUT" "d['monsters']")" = "5" ] || fail "unclosed: no Monster: $OUT"
+
+# `extends`: a Monster is its base with changes, a chain is followed, a list (block or flow) lays its
+# bases in order, a base kept out with `bestiary: false` is still a base, a Character is never one.
+# What cannot be read is skipped, by note and name, with its reason; the first `name` by path wins.
+new_ws 20; mapforge ''
+fence "$W/Reference/Monsters/Scout.md" Scout
+fence "$W/Homebrew/Monsters/Hidden_Base.md" "Hidden Base" "bestiary: false"
+fence "$W/Campaigns/Heroes/NPCs/Vinx.md" Vinx "extends: Scout"
+fence "$W/Campaigns/Heroes/NPCs/Deep.md" Deep "extends: Vinx"
+fence "$W/Campaigns/Heroes/NPCs/Ugof.md" Ugof "extends:\n  - Scout\n  - Hidden Base"
+fence "$W/Campaigns/Heroes/NPCs/Kit.md" Kit "extends: [Scout, \"Hidden Base\"]"
+fence "$W/Campaigns/Heroes/NPCs/Lost.md" Lost "extends: Nobody"
+fence "$W/Campaigns/Heroes/NPCs/Fan.md" Fan "extends: Ayla"
+fence "$W/Campaigns/Heroes/NPCs/Ping.md" Ping "extends: Pong"
+fence "$W/Campaigns/Heroes/NPCs/Pong.md" Pong "extends: Ping"
+fence "$W/Campaigns/Villains/NPCs/Goblin.md" Goblin
+printf '# Nameless\n\n```statblock\nac: 12\n```\n' > "$W/Homebrew/Monsters/Nameless.md"
+OUT=$(python3 "$HELPER" report "$W") || fail "extends: exit $?"
+[ "$(field "$OUT" "d['monsters']")" = "10" ] || fail "extends: the 5, Scout, Vinx, Deep, Ugof and Kit: $OUT"
+[ "$(field "$OUT" "sorted((s['file'], s['name'], s['reason'], s.get('base')) for s in d['skipped'])")" = "[('Campaigns/Heroes/NPCs/Fan.md', 'Fan', 'extends-missing', 'Ayla'), ('Campaigns/Heroes/NPCs/Lost.md', 'Lost', 'extends-missing', 'Nobody'), ('Campaigns/Heroes/NPCs/Ping.md', 'Ping', 'extends-loop', None), ('Campaigns/Heroes/NPCs/Pong.md', 'Pong', 'extends-loop', None), ('Homebrew/Monsters/Nameless.md', None, 'no-name', None), ('Reference/Monsters/Goblin.md', 'Goblin', 'duplicate', None)]" ] || fail "extends: skipped: $OUT"
+
+# What MapForge's YAML reader refuses is skipped as unreadable, never counted: an unquoted `: ` in a
+# value (top-level or in a list item), a tab in the indentation, a note that is not UTF-8. A `name`
+# YAML reads as null or a boolean is no name. A quoted name in a flow list may hold a comma.
+new_ws 23; mapforge ''
+raw() { mkdir -p "$(dirname "$1")"; printf -- "$2" > "$1"; }
+raw "$W/Homebrew/Monsters/Colon.md" '```statblock\nname: Bad: colon\nac: 12\n```\n'
+raw "$W/Homebrew/Monsters/Desc.md" '```statblock\nname: Desc\nactions:\n  - name: Bite\n    desc: Melee Attack Roll: +5\n```\n'
+raw "$W/Homebrew/Monsters/Tab.md" '```statblock\nname: Tab\nactions:\n\t- name: Bite\n```\n'
+raw "$W/Homebrew/Monsters/Null.md" '```statblock\nname: null\nac: 12\n```\n'
+raw "$W/Homebrew/Monsters/Bool.md" '```statblock\nname: true\nac: 12\n```\n'
+raw "$W/Homebrew/Monsters/Quoted.md" '```statblock\nname: "Ok: quoted"\nactions:\n  - name: Bite\n    desc: "*Melee Attack Roll:* +5"\n```\n'
+raw "$W/Homebrew/Monsters/Latin1.md" '```statblock\nname: Caf\351\n```\n'
+raw "$W/Homebrew/Monsters/Comma.md" '```statblock\nname: "Comma, Lord"\n```\n'
+raw "$W/Homebrew/Monsters/Heir.md" '```statblock\nname: Heir\nextends: ["Comma, Lord"]\n```\n'
+OUT=$(python3 "$HELPER" report "$W") || fail "yaml: exit $?"
+[ "$(field "$OUT" "d['monsters']")" = "8" ] || fail "yaml: the 5, Ok: quoted, Comma, Lord and Heir: $OUT"
+[ "$(field "$OUT" "[(s['file'].split('/')[-1], s['reason']) for s in d['skipped']]")" = "[('Bool.md', 'no-name'), ('Colon.md', 'unreadable'), ('Desc.md', 'unreadable'), ('Latin1.md', 'unreadable'), ('Null.md', 'no-name'), ('Tab.md', 'unreadable')]" ] || fail "yaml: skipped: $OUT"
+
+# Characters' notes: a fence with any Character key, `player` or not, that is not a past Build. A
+# second note with a Character's `name` is skipped, the first by path winning, as for a Monster.
+new_ws 21; mapforge ''
+OUT=$(python3 "$HELPER" report "$W") || fail "characters: exit $?"
+[ "$(field "$OUT" "d['characters']")" = "2" ] || fail "characters: Ayla and Zharyn, not the past Build: $OUT"
+fence "$W/Characters/Ayla_Old/Ayla.md" Ayla "species: Elf\nclass: Ranger\nlevel: 2"
+fence "$W/Characters/Brom/Brom.md" Brom "level: 4"
+OUT=$(python3 "$HELPER" report "$W") || fail "characters dup: exit $?"
+[ "$(field "$OUT" "d['characters']")" = "3" ] || fail "characters: level alone makes Brom one: $OUT"
+[ "$(field "$OUT" "[(s['file'], s['reason']) for s in d['skipped']]")" = "[('Characters/Ayla_Old/Ayla.md', 'duplicate')]" ] || fail "characters: duplicate skipped: $OUT"
+[ "$(field "$OUT" "d['monsters']")" = "5" ] || fail "characters: never Monsters: $OUT"
+
+# The Party, as parties.json links it: a Character with no `noteName` is unlinked, and one whose
+# `noteName` no Character's note has (a renamed note, a Monster's name) stamps no numbers either.
+new_ws 22; mapforge ''
+OUT=$(python3 "$HELPER" report "$W") || fail "party none: exit $?"
+[ "$(field "$OUT" "(d['parties'], d['unlinked'], d['note_missing'])")" = "('missing', [], [])" ] || fail "party: no parties.json: $OUT"
+cat > "$W/.mapforge/parties.json" <<'JSON'
+{ "version": 1, "parties": [
+  { "id": "p1", "name": "Lost Boys", "characters": [
+    { "id": "c1", "name": "Ayla", "colorHex": "#D0342C", "sightSquares": 6, "noteName": "Ayla" },
+    { "id": "c2", "name": "Durga", "colorHex": "#2C6BD0", "sightSquares": 6 },
+    { "id": "c3", "name": "Brom", "colorHex": "#2CD06B", "sightSquares": 6, "noteName": "Brom Ironfist" } ] },
+  { "id": "p2", "name": "Villains", "characters": [
+    { "id": "c4", "name": "Gob", "colorHex": "#000000", "sightSquares": 6, "noteName": "Goblin" },
+    { "id": "c5", "name": "Zed", "colorHex": "#000000", "sightSquares": 6, "noteName": "Zharyn" } ] } ] }
+JSON
+BEFORE=$(snapshot)
+OUT=$(python3 "$HELPER" report "$W") || fail "party: exit $?"
+[ "$(field "$OUT" "d['parties']")" = "ok" ] || fail "party: ok: $OUT"
+[ "$(field "$OUT" "d['unlinked']")" = "[{'party': 'Lost Boys', 'character': 'Durga'}]" ] || fail "party: Durga unlinked: $OUT"
+[ "$(field "$OUT" "d['note_missing']")" = "[{'party': 'Lost Boys', 'character': 'Brom', 'note': 'Brom Ironfist'}, {'party': 'Villains', 'character': 'Gob', 'note': 'Goblin'}]" ] || fail "party: Brom and Gob linked to no Character's note: $OUT"
+[ "$(snapshot)" = "$BEFORE" ] || fail "party: .mapforge changed"
+for bad in '{"version": 1, "parties": [' '["Lost Boys"]' '{"version": 1, "parties": 5}'; do
+  printf '%s\n' "$bad" > "$W/.mapforge/parties.json"
+  OUT=$(python3 "$HELPER" report "$W") || fail "party invalid: exit $?"
+  [ "$(field "$OUT" "(d['parties'], d['unlinked'], d['note_missing'])")" = "('invalid', [], [])" ] || fail "party: invalid for $bad: $OUT"
 done
 
 # The Treasury: every note outside hidden folders whose frontmatter says `item: true`, wherever it
-# is, read whatever the bestiary folder; a Portrait is its frontmatter `image:` (MapForge's ADR-0031).
+# is; a Portrait is its frontmatter `image:` (MapForge's ADR-0031).
 item() { # item <file> <frontmatter lines>
   mkdir -p "$(dirname "$1")"
   printf -- '---\nsource: XPHB p. 225\n%b\n---\n\n# %s\n\nA thing.\n' "$2" "$(basename "$1" .md | tr _ ' ')" > "$1"
@@ -151,7 +190,7 @@ item "$W/Homebrew/Magic_Items/Plain_Ring.md" 'item: true # an item\nimage: [[Hom
 OUT=$(python3 "$HELPER" report "$W") || fail "treasury names: exit $?"
 [ "$(field "$OUT" "d['treasury']")" = "7" ] || fail "treasury: one Pouch read, and the three Rings: $OUT"
 [ "$(field "$OUT" "d['treasury_no_portrait']")" = "3" ] || fail "treasury: Crown, Bare Ring and Web Ring have no Portrait: $OUT"
-# Read with a bestiary folder set too; an empty Treasury is 0.
+# A leftover bestiaryStatBlockPath changes nothing; an empty Treasury is 0.
 mapforge '{"bestiaryStatBlockPath": "Reference/Monsters"}'
 OUT=$(python3 "$HELPER" report "$W") || fail "treasury configured: exit $?"
 [ "$(field "$OUT" "d['treasury']")" = "7" ] || fail "treasury: read with a bestiary folder: $OUT"
@@ -162,31 +201,12 @@ OUT=$(python3 "$HELPER" report "$W") || fail "treasury empty: exit $?"
 # Not a Workspace: exit 2.
 python3 "$HELPER" report "$TMP/nowhere" >/dev/null 2>&1; [ $? -eq 2 ] || fail "no workspace: expected exit 2"
 
-# set-bestiary merges the one key, keeps every other, leaves the Manifest alone.
-new_ws 7; mapforge '{"bestiaryStatBlockPath": "Old", "theme": "dark"}'
-MANIFEST=$(cksum < "$W/.mapforge/workspace.json")
-OUT=$(python3 "$HELPER" set-bestiary "$W" "Reference/Monsters/") || fail "set: exit $? ($OUT)"
-C="$W/.mapforge/config.json"
-[ "$(python3 -c "import json; print(json.load(open('$C')))")" = "{'bestiaryStatBlockPath': 'Reference/Monsters', 'theme': 'dark'}" ] || fail "set: config is $(cat "$C")"
-[ "$(cksum < "$W/.mapforge/workspace.json")" = "$MANIFEST" ] || fail "set: Manifest changed"
-
-# set-bestiary with no config.json creates it, and never a Manifest.
+# There is no bestiary folder to set: set-bestiary is gone, and asking for it writes nothing.
+new_ws 7; mapforge '{"theme": "dark"}'; BEFORE=$(snapshot)
+python3 "$HELPER" set-bestiary "$W" Homebrew >/dev/null 2>&1; [ $? -eq 2 ] || fail "set-bestiary: expected the usage, exit 2"
+[ "$(snapshot)" = "$BEFORE" ] || fail "set-bestiary: .mapforge changed"
 new_ws 8
-python3 "$HELPER" set-bestiary "$W" Homebrew >/dev/null || fail "set new: exit $?"
-[ "$(python3 -c "import json; print(json.load(open('$W/.mapforge/config.json')))")" = "{'bestiaryStatBlockPath': 'Homebrew'}" ] || fail "set new: $(cat "$W/.mapforge/config.json")"
-[ ! -e "$W/.mapforge/workspace.json" ] || fail "set new: wrote a Manifest"
-
-# set-bestiary refuses, changing nothing: invalid config, a path outside, a folder not there.
-new_ws 9; mapforge '{"bestiaryStatBlockPath": "x",}'; BEFORE=$(snapshot)
-python3 "$HELPER" set-bestiary "$W" Homebrew >/dev/null 2>&1; [ $? -eq 2 ] || fail "set invalid: expected exit 2"
-[ "$(snapshot)" = "$BEFORE" ] || fail "set invalid: changed"
-for bad in "../x" "/abs" "" "Reference/../.."; do
-  new_ws 10; mapforge '{"theme": "dark"}'; BEFORE=$(snapshot)
-  python3 "$HELPER" set-bestiary "$W" "$bad" >/dev/null 2>&1; [ $? -eq 2 ] || fail "set '$bad': expected exit 2"
-  [ "$(snapshot)" = "$BEFORE" ] || fail "set '$bad': changed"
-done
-new_ws 11; mapforge '{"theme": "dark"}'; BEFORE=$(snapshot)
-python3 "$HELPER" set-bestiary "$W" Bestiary >/dev/null 2>&1; [ $? -eq 3 ] || fail "set missing folder: expected exit 3"
-[ "$(snapshot)" = "$BEFORE" ] || fail "set missing folder: changed"
+python3 "$HELPER" set-bestiary "$W" Homebrew >/dev/null 2>&1
+[ ! -e "$W/.mapforge" ] || fail "set-bestiary: created .mapforge"
 
 [ "$FAILS" -eq 0 ] && echo "mapforge: all pass" || { echo "mapforge: $FAILS failed"; exit 1; }

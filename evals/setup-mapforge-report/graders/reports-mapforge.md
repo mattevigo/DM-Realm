@@ -4,4 +4,4 @@ target: last_message
 match: contains
 flags: i
 ---
-MapForge[\s\S]*\bReference\b
+MapForge[\s\S]*\b(Treasury|Monsters?|Bestiary)\b

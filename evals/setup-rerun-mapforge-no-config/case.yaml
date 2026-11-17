@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: setup-rerun-mapforge-no-config
-description: "Re-running Setup where MapForge has no config.json says its bestiary reads nothing until bestiaryStatBlockPath is set, and creates no config.json."
+description: "Re-running Setup where MapForge has no config.json reports what MapForge reads of the whole Workspace, names the NPC it skips for an extends that names no monster, and creates no config.json."
 tags: [setup, mapforge]
 context:
   scaffold_script: scaffold.sh

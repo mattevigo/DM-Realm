@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: setup-rerun-mapforge-set
-description: "When the DM's request asks for it, Setup sets bestiaryStatBlockPath in .mapforge/config.json, keeping the DM's other keys and the Manifest."
+description: "Asked to point MapForge's bestiary at a folder, Setup says MapForge already reads every note in the Workspace, and writes nothing in .mapforge/."
 tags: [setup, mapforge]
 context:
   scaffold_script: scaffold.sh

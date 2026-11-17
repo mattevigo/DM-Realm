@@ -61,7 +61,7 @@ Exactly four keys, nothing else:
 
 ### Stat block
 
-The compact view of the Character for the table, as structure.md's "Stat blocks" defines it: one ```` ```statblock ```` fence right under the `#` heading, in the `DM Realm Character` layout, written from the Build and Statistics — the same numbers, never others — and written again whenever they change. Keys and values follow structure.md's "Keys and values". In this order, leaving out a key the Character has nothing for:
+The compact view of the Character for the table, as structure.md's "Stat blocks" defines it: one ```` ```statblock ```` fence right under the `#` heading, in the `DM Realm Character` layout, written from the Build and Statistics — the same numbers, never others — and written again whenever they change. Keys and values follow structure.md's "Keys and values". In this order, leaving out a key the Character has nothing for, but never `species`, `class` or `level` (structure.md's "MapForge"):
 
 | Key | Value |
 | --- | --- |
