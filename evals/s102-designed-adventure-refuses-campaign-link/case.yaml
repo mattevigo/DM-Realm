@@ -9,4 +9,4 @@ execution:
   timeout_seconds: 600
   allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
   prompt: |
-    In The Drowned Bell's Old Pier note, link Mira Vell from my Heroes campaign: she saw the bell sink there.
+    In my Heroes campaign, Mira Vell told the party she saw the bell sink at the Old Pier. Link her from The Drowned Bell's Old Pier note.

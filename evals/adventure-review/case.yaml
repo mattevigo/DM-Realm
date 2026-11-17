@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: adventure-review
+description: "Review writes nothing and reports the seeded flaws: a conclusion with one clue, a Part with no way out, an encounter far above the level range, citing the DMG's encounter rules from the Source Cache."
+tags: [adventure-design]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 50
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  env:
+    EVAL_DMR_SOURCE_CACHE: "~/.dm-realm/source-cache"
+  prompt: |
+    Review my adventure The Drowned Bell.
