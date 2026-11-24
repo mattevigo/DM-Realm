@@ -170,6 +170,10 @@ _Avoid_: Closing, wrap-up, import
 A Campaign's one note of where its party stands now: each Character's spent resources (hit points, spell slots, class uses, conditions) and the treasure the party holds in common. It keeps no history, and a Character's own items and coins are its Build's, not Party State.
 _Avoid_: Tracker, ledger, finances
 
+**Current State**:
+Where a Campaign's story stands now, a section of its README: the situation the party is in and what it is heading towards, in a few sentences. Before the first Session it is the opening. Each new version replaces the last; it keeps no history, names no Session and holds no numbers, which are the Recaps', the Diary's and Party State's.
+_Avoid_: Party State (which is the party's spent resources), summary, status
+
 **Diary**:
 A Campaign's one note listing its Sessions in play order, each with a sentence or two and a link to the Session, whose recap holds the detail.
 _Avoid_: Journal, log, chronicle (which is the Campaign's told story)
