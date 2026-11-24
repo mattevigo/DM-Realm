@@ -18,12 +18,12 @@ description: A Campaign is one ongoing game with its own party, Sessions and sto
   <tbody>
     <tr><td>Pitch</td><td>The premise, in one to three sentences.</td></tr>
     <tr><td>World</td><td>An official Setting, your own World, or both, linked to their folders when they exist.</td></tr>
-    <tr><td>Adventures Run</td><td>Each official Adventure this Campaign runs, which part, and whether it is planned, running or finished.</td></tr>
+    <tr><td>Adventures Run</td><td>Each Adventure this Campaign runs, official or your own, how much of it you mean to run, and whether it is planned, running or finished.</td></tr>
     <tr><td>Party</td><td>A link to each Character. Empty until one joins.</td></tr>
     <tr><td>Starting Level</td><td>The level the Characters start at.</td></tr>
     <tr><td>Tone and Table Limits</td><td>Themes and tone; the lines (never at this table) and the veils (only off-screen).</td></tr>
     <tr><td>Truths</td><td>Up to six short statements that make this world its own: "The gods are silent."</td></tr>
-    <tr><td>Current State</td><td>Where the story stands. At first, the opening scene and the hook.</td></tr>
+    <tr><td>Current State</td><td>Where the story stands now, in a few sentences. At first, the opening scene and the hook; after each Session, the new situation. It keeps no history.</td></tr>
   </tbody>
 </table>
 <p>Every value is in your words. A section you never answer is simply left out.</p>
@@ -44,8 +44,18 @@ description: A Campaign is one ongoing game with its own party, Sessions and sto
 <div class="callout"><span class="callout-title">Ideas are offered, never written for you</span>
 <p>When you ask for ideas (a pitch, truths, an opening) Claude offers two or three in chat. Only the one you pick or edit goes into the README.</p></div>
 
+<h2>Keep it current</h2>
+<p>The README follows the Campaign as it goes on. Tell <code>dmr-campaign</code> what changed and it writes it, in your words, then shows you each section before and after:</p>
+<ul class="prompts">
+  <li>the tone of Ashfall gets darker: no more comic relief</li>
+  <li>add a truth to Ashfall: the moon is hollow</li>
+  <li>we'll run Tomb of Annihilation next</li>
+  <li>Brom leaves the party</li>
+</ul>
+<p>After each Session, <a href="{{root}}guide/consolidate/">Consolidation</a> proposes what the Live Notes show: a new Current State, an Adventure going from planned to running or from running to finished, a Character joining or leaving the party. Those are lines of its preview you can drop like any other.</p>
+
 <h2>The party</h2>
-<p>Name a party member who is not a Character yet ("Baldu will play a dwarf") and Claude offers to create the Character with <a href="{{root}}skills/dmr-character/">dmr-character</a>, at the Campaign's starting level, then links it in the Party section. That is the next lesson.</p>
+<p>Name a party member who is not a Character yet ("Baldu will play a dwarf") and Claude offers to create the Character with <a href="{{root}}skills/dmr-character/">dmr-character</a>, at the Campaign's starting level, then links it in the Party section. That is the next lesson. A Character created on its own "for Ashfall", or one that retires, gets the same offer from dmr-character: the Party changes only on your yes.</p>
 
 <h2>Your own plot</h2>
 <p>A plot you write for this table belongs to the Campaign: your quests, villains and dungeons live in its own Quests, NPCs, Places and Factions folders, and so does your own dungeon in place of an official Adventure's chapter. An adventure you design for any table to run is an Adventure of your own instead, in Adventures beside the official ones, with no table in it: <a href="{{root}}skills/dmr-adventure/">dmr-adventure</a> designs it with you, and a Campaign runs it as it runs an official one. A Campaign's plot can later become one, by Promotion. The Templates folder has a blank note for each; ask Claude to create one ("a note for the smuggler Vessa") or create it in Obsidian from the Template.</p>

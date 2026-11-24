@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: session-consolidate-readme
+description: "Consolidating the latest Session with the go-ahead writes the README lines its Live Notes show: a new Current State naming no Session, the planned Adventure the party entered now running, and the Character who left removed from the Party with its status untouched; Pitch and Starting Level stay as they were."
+tags: [session]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 60
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Consolidate session 3 of the Ashfall campaign. Apply everything you find without asking me first, and title it "The Inn".
