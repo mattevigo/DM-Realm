@@ -108,6 +108,15 @@ A backstory may name places, NPCs and factions:
 - **One with a World note** is linked.
 - **One that exists only in a Campaign** is not named until it is in World (structure.md's "Promotion to World"). Ask the DM to choose, as a [choice](#choices): promote it to World and link the World note, or keep the backstory generic ("a harbour town") and list the dropped name in your report. It never becomes Homebrew.
 
+## A Campaign's party
+
+A Campaign's README links its party, and that README is the `dmr-campaign` skill's (structure.md's "The README is kept current"). This skill never edits it; its report offers the change instead:
+
+- **A Character created or transferred for a Campaign** the request names ("a new character for Baldu in Heroes"): offer to link it in that Campaign's Party.
+- **A Character marked `retired` or `dead`**: offer to remove it from the Party of each Campaign README that links it. Marked `active` again, with a Campaign named: offer to link it there.
+
+On the DM's yes, invoke `dmr-campaign` and change that Party line through it. When `dmr-campaign` itself invoked this skill for a new party member, the Party is its own: offer nothing.
+
 ## Choices
 
 What the DM decides — an option, a method, a roll, a consent — is a choice:

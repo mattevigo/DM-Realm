@@ -107,6 +107,8 @@ Placement, linking and official-data questions that the Workspace rules must ans
 | S103 | s103-campaign-plot-stays (the DM's own dungeon in place of an Adventure's chapter is the Campaign's, and nothing is written in Adventures) |
 | S105 | s105-designed-adventure-monster (a monster a designed Adventure introduces is a Homebrew monster that never names it; its encounter is the Adventure's) |
 | S106 | s106-promotion-to-adventure (a Campaign place promoted to a new designed Adventure: a README with no source property, the note in its Places, stripped of the Campaign) |
+| S107 | session-consolidate-readme (the latest Session's Consolidation replaces Current State, naming no Session, sets the Adventure the party entered to running and removes the Character who left from the Party), session-consolidate-side-session (one consolidated after a later Session leaves the README as it is) |
+| S108 | campaign-change-truth, campaign-change-party-leave (a change the DM states goes to its own README section, every other one byte for byte), campaign-change-unclear (one that could go to two sections asks first), character-retire-offers-party (another skill offers a Party change and leaves the README to `dmr-campaign`) |
 
 ## How to run the manual scenarios
 
