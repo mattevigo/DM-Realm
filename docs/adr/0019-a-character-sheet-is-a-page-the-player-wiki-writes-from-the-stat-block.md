@@ -4,6 +4,8 @@ At every update, `player-wiki.py` writes a Character Sheet for every Character i
 
 *Amends [ADR 0017](0017-the-player-wiki-is-a-copy-written-outside-the-workspace.md): a Character's fence is still dropped from its page, and it is now also rendered as the Character Sheet. Amends [ADR 0018](0018-the-player-wiki-site-is-built-with-a-pinned-quartz.md): the sheets reach the site by DM Realm's copy, not through Quartz.*
 
+*Amended by [ADR 0022](0022-a-character-sheet-shows-where-the-character-stands-in-each-campaign.md): beside the maximums, the sheet now shows where the Character stands in each Campaign's Party State, read-only.*
+
 ## Why
 
 - **It is for the players, so it belongs where the players read.** The DM already has the Character note and its stat block in Obsidian.
