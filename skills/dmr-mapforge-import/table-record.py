@@ -40,6 +40,15 @@ the order they happened:
            named as the rules write them (Wisdom, Sleight of Hand); total is d20 plus
            modifier, dc null when none was set. MapForge records a Roll and never
            resolves it, and neither does this.
+  character {time, name, hp, temp_hp, exhaustion}: a Character's numbers changed
+           outside a fight, by the Character's name (not the Pawn's label); each of
+           hp (current hit points), temp_hp and exhaustion is {from, to} when it moved
+           and absent when it did not. Hit points never set (a null from or to) are
+           left out, and a change with nothing left is no event (nor splits a group of moves).
+  long_rest {time, characters}: a Long Rest; characters: each Character it changed,
+           {name, …the same numbers}, in MapForge's (Party) order, one with nothing
+           left out; a Long Rest that changed no one keeps an empty list. It names no
+           Map.
   fight    {time, end_time, map, log, found, ended, rounds, combatants, entries}: the
            Combat Log the Session Log points at, on the Map in use, folded as MapForge
            folds it (Corrections applied at the Turn they target, a later Turn's number
@@ -70,7 +79,8 @@ DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 LOG_NAME = re.compile(r"^[^./\\][^/\\]*\.jsonl$")
 MARKER = re.compile(r"%% mapforge (\S+\.jsonl) %%")
 STAMP = re.compile(r"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(?:\.\d+)?Z$")
-SESSION_LINES = ("comment", "pawnMoved", "savingThrow", "abilityCheck", "encounterStarted", "encounterEnded")
+SESSION_LINES = ("comment", "pawnMoved", "savingThrow", "abilityCheck", "characterChanged", "longRest",
+                 "encounterStarted", "encounterEnded")
 
 
 def module(name, path):
@@ -236,6 +246,25 @@ def roll(entry, name):
             "d20": d20, "modifier": modifier, "total": total, "dc": entry.get("difficultyClass")}
 
 
+# A Character's number in a Session Log line → its name in a character or long_rest event.
+CHARACTER_NUMBERS = (("currentHP", "hp"), ("temporaryHP", "temp_hp"), ("exhaustion", "exhaustion"))
+
+
+def moved(entry):
+    """{hp, temp_hp, exhaustion: {from, to}} for each number a Session Log line says moved;
+    hit points never set (a null from or to) are left out."""
+    out = {}
+    for key, name in CHARACTER_NUMBERS:
+        change = entry.get(key)
+        if not isinstance(change, dict):
+            continue
+        before, after = change.get("from"), change.get("to")
+        if before is None or after is None:
+            continue
+        out[name] = {"from": before, "to": after}
+    return out
+
+
 # A Change's type → the Stat Block number it sets to its `to` (absent `to`: untyped).
 NUMBERS = {"hpChanged": "hp", "maxHPChanged": "max_hp", "tempHPChanged": "temp_hp", "exhaustionChanged": "exhaustion"}
 
@@ -377,11 +406,20 @@ def read(workspace, name):
             name = entry.get("label")
             group["moves"][name] = group["moves"].get(name, 0) + distance(entry)
             continue
+        numbers = moved(entry) if kind == "characterChanged" else None
+        if numbers == {}:
+            # Nothing that moved is no event: it neither writes a line nor splits the moves.
+            continue
         group = None
         if kind == "comment":
             events.append({"kind": "comment", "time": time, "text": entry.get("text")})
         elif kind in ROLLS:
             events.append({"kind": "roll", "time": time, **roll(entry, entry.get("label"))})
+        elif kind == "characterChanged":
+            events.append({"kind": "character", "time": time, "name": entry.get("name"), **numbers})
+        elif kind == "longRest":
+            changed = [{"name": c.get("name"), **moved(c)} for c in entry.get("characters") or [] if isinstance(c, dict)]
+            events.append({"kind": "long_rest", "time": time, "characters": [c for c in changed if len(c) > 1]})
         elif kind == "encounterStarted":
             end = next((e for e in log[i + 1:] if e.get("line") in ("encounterEnded", "encounterStarted")), None)
             end = end if end and end.get("line") == "encounterEnded" else None

@@ -159,7 +159,7 @@ What the DM writes down while a Session is played, by hand or through MapForge's
 _Avoid_: Development, log, transcript
 
 **Table Record**:
-What MapForge, the DM's table tool, records while a Session is played: the moves and comments of the evening, and each fight turn by turn, with the hit points and conditions it left. It reaches the Session by being written into its Live Notes, after the DM's own words; from then on it is Live Notes like the rest. A Session played without MapForge has none.
+What MapForge, the DM's table tool, records while a Session is played: the moves and comments of the evening, a Character's hit points changed outside a fight, each Long Rest, and each fight turn by turn, with the hit points and conditions it left. It reaches the Session by being written into its Live Notes, after the DM's own words; from then on it is Live Notes like the rest. A Session played without MapForge has none.
 _Avoid_: Session Log, Combat Log (MapForge's names for its parts), Live Notes, transcript
 
 **Consolidation**:
