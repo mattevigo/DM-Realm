@@ -18,5 +18,5 @@ A Character's section of Party State is made of **known lines**: one per kind of
 ## Consequences
 
 - **A known line the script cannot read is left off the sheet** and named in the report. Its note in parentheses never reaches the sheet.
-- **An older Party State is rewritten once into this format**, after a preview and on the DM's yes: offered by the first skill about to write it, or asked for directly through `dmr-campaign`. Every value is kept; what is the Build's (item counts, attunement, what is worn, damage) is listed against the Build for the DM to settle; a value with no known line is listed too; the DM's own words stay.
+- **An older Party State is rewritten once into this format**, after a preview and on the DM's yes: offered by the first skill about to write it, or asked for directly through `dmr-campaign`. Every value is kept; what is the Build's (item counts, attunement, what is worn, damage) stays where it was, as the DM's own words, and is listed against the Build for the DM to settle; a value with no known line is listed too; the DM's own words stay.
 - **A value nobody recorded is written as not given** (in the Workspace Language), never guessed.

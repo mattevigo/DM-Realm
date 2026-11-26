@@ -1,6 +1,6 @@
 ---
 name: dmr-player-wiki
-description: The Player Wiki of a DM Realm Workspace — write or update a copy of the parts the DM chooses (Reference, Homebrew, World, Characters, a Campaign's Chronicle) as a wiki for the players, outside the Workspace, with a Character Sheet page for each Character, and, when Setup chose it, build it as a website with Quartz ("update the Player Wiki", "make a wiki for my players", "put the World in the wiki too", "rebuild the players' site", "give my players their character sheets"), with the DM's secrets, Sessions and Adventures left out.
+description: The Player Wiki of a DM Realm Workspace — write or update a copy of the parts the DM chooses (Reference, Homebrew, World, Characters, a Campaign's Chronicle) as a wiki for the players, outside the Workspace, with a Character Sheet page for each Character showing where it stands in each Campaign, and, when Setup chose it, build it as a website with Quartz ("update the Player Wiki", "make a wiki for my players", "put the World in the wiki too", "rebuild the players' site", "give my players their character sheets"), with the DM's secrets, Sessions and Adventures left out.
 argument-hint: <what to do, e.g. update the Player Wiki, or add the World to it>
 allowed-tools: Read, Glob, Grep, Edit, Skill, Bash(ls:*), Bash(python3:*), Bash(DMR_QUARTZ=*)
 ---
@@ -56,6 +56,7 @@ With `quartz: true` in the Workspace Config, a second helper then builds it as a
    - how many links became plain text because their note is not in the wiki;
    - each World or Homebrew note and the sections removed from it. Invite the DM to name any other heading that hides a secret, or that should not have been removed, and to look over the wiki before sharing it.
    - the Character Sheets written; each Character the helper left without one, and why (a missing or unreadable stat block: `dmr-character` writes it again); and the sheet labels the Translation Glossary lacks, which stay in English until it has them;
+   - which Campaigns' Party State each sheet shows, as recent as that Party State's updated-at line; each Party State line the helper left off a sheet, and why. A Campaign whose Party State has no updated-at line is in the older format, its old labels unread: offer its rewrite with the `dmr-campaign` skill;
    - each note the helper gives;
    - that the wiki is a copy rewritten at every update, so edits made in it are lost, and that it is written again only when the DM asks.
    - with `quartz: true`:

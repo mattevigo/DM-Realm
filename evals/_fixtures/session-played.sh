@@ -53,7 +53,9 @@ else
 - [[Wren]]/' $SC/README.md > $SC/README.tmp && mv $SC/README.tmp $SC/README.md
     sed 's/^## Party treasure$/## Wren\
 \
-[[Wren]]: 24 of 24 hit points; no spell slots spent.\
+[[Wren]]\
+\
+- **Hit Points:** 24 of 24\
 \
 &/' $SC/Party_State.md > $SC/Party_State.tmp && mv $SC/Party_State.tmp $SC/Party_State.md
   fi

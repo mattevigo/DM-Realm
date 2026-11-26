@@ -13,13 +13,17 @@
           Sheet rendered from that fence (character-sheet.py) beside it, as
           `<Character>_<Character Sheet>.html`, with one link to it as the first line of the
           note's body, and the one stylesheet the sheets share at the Characters folder's
-          root (`<Character Sheet>.css`), its words the Glossary's;
+          root (`<Character Sheet>.css`), its words the Glossary's; on the sheet, beside the
+          maximums, a block for each Campaign whose Party State has a section linking to the
+          Character (party-state.py), named by that Campaign README's title: its known lines,
+          after the DM-only filter below, as Party State last recorded them (ADR 0022);
         - in World and Homebrew notes, each section headed by one of `dm_only_headings` and
           every `%% … %%` comment removed;
         - its `#` heading moved into a frontmatter `title:`;
       and an `index.md` home page linking each part. The Workspace is never changed. Prints
       a report: what was written, the links made plain text, the sections removed by note,
-      each Character left without a sheet and the sheet labels the Glossary lacks.
+      each Character left without a sheet, which Campaigns' Party State each sheet shows, the
+      known lines that could not be read and the sheet labels the Glossary lacks.
 
 The Config's key, read by this script alone (keys never translated):
 
@@ -31,9 +35,10 @@ The Config's key, read by this script alone (keys never translated):
     dm_only_headings: [<heading>, …]                    # in the Workspace Language
 
 Folder names come from the Workspace Config and the Translation Glossary (rows "Chronicle",
-"Voice", "Past_Builds", "House_Rules", "Spells"; in an English Workspace, those words); the
-Character Sheets' name and labels from its rows "Character Sheet", "Proficiency Bonus" and the
-Character layout's labels.
+"Voice", "Past_Builds", "House_Rules", "Spells", "Party_State", "README"; in an English
+Workspace, those words); the Character Sheets' name and labels from its rows "Character
+Sheet", "Proficiency Bonus", "Party State", the Character layout's labels and Party State's
+known lines.
 
 Exit 2: bad usage, not a Workspace, no or bad `player_wiki` key. Exit 3: `output` is not an
 absolute path outside the Workspace (nor one holding it). Exit 5: `output` holds files and
@@ -58,6 +63,9 @@ _spec.loader.exec_module(spell_index)
 _spec = importlib.util.spec_from_file_location("character_sheet", os.path.join(HERE, "character-sheet.py"))
 character_sheet = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(character_sheet)
+_spec = importlib.util.spec_from_file_location("party_state", os.path.join(HERE, "party-state.py"))
+party_state = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(party_state)
 
 CONFIG = "workspace-config.yml"
 MARKER = ".dm-realm-player-wiki"
@@ -434,11 +442,74 @@ def character_fence(text):
     return None, "it has no stat block"
 
 
+def party_state_path(workspace, campaign, terms):
+    """`<campaigns>/<Campaign>/<Party_State>.md`, or None when the Campaign has none."""
+    campaigns = spell_index.folder(workspace, "campaigns")
+    path = f"{campaigns}/{campaign}/{terms.get('Party_State', 'Party_State')}.md"
+    return path if campaigns and os.path.isfile(os.path.join(workspace, path)) else None
+
+
+def character_resolver(files, characters):
+    """A link target -> the Character note it resolves to, or None."""
+    def character_of(target):
+        found, _ = files.resolve(target)
+        return found if found and characters and is_character_note(found, characters) else None
+    return character_of
+
+
+def campaign_title(workspace, campaign, terms):
+    """The Campaign README's `#` heading, else the folder's name."""
+    path = os.path.join(workspace, spell_index.folder(workspace, "campaigns") or "", campaign,
+                        terms.get("README", "README") + ".md")
+    try:
+        with open(path, encoding="utf-8") as f:
+            _, body = split_frontmatter(f.read())
+    except OSError:
+        return words(campaign)
+    for line in body.splitlines():
+        h = HEADING.match(line)
+        if h and len(h.group(1)) == 1:
+            return h.group(2).strip()
+    return words(campaign)
+
+
+def party_states(workspace, terms, files, dm_only, report):
+    """{Character note: [(Campaign title, updated-at, known lines)]}, from the Party State of
+    every Campaign folder, after the DM-only filter (ADR 0022)."""
+    campaigns = spell_index.folder(workspace, "campaigns")
+    characters = spell_index.folder(workspace, "characters")
+    base = os.path.join(workspace, campaigns or "")
+    states = {}
+    if not campaigns or not os.path.isdir(base):
+        return states
+    character_of = character_resolver(files, characters)
+    for campaign in sorted(os.listdir(base)):
+        path = party_state_path(workspace, campaign, terms) if not campaign.startswith(".") else None
+        if not path:
+            continue
+        with open(os.path.join(workspace, path), encoding="utf-8") as f:
+            _, body = split_frontmatter(f.read())
+        body, _ = strip_dm_only(body, dm_only)
+        read = party_state.read(body, terms, character_of)
+        title = campaign_title(workspace, campaign, terms)
+        report["party_state_unreadable"].extend(f"{path}: {u}" for u in read["unreadable"])
+        for note, found in read["characters"].items():
+            name = words(note)
+            report["party_state_unreadable"].extend(f"{path}: {name}: {u}" for u in found["unreadable"])
+            lines = party_state.on_sheet(found["lines"])
+            if lines:
+                states.setdefault(note, []).append((title, read["as_of"], lines))
+    for note in states:
+        states[note].sort(key=lambda s: sort_key(s[0]))
+    return states
+
+
 class Sheets:
     """The Character Sheets of one write: their pages, and what the report says of them."""
 
-    def __init__(self, workspace, terms, files, links):
+    def __init__(self, workspace, terms, files, links, states=None):
         self.characters = spell_index.folder(workspace, "characters")
+        self.states, self.shown = states or {}, {}
         self.edition = edition(workspace)
         self.labels = character_sheet.Labels(terms)
         self.english = english(workspace)
@@ -465,9 +536,12 @@ class Sheets:
                 self.links.copy.add(found)
                 portrait = quote(os.path.relpath(found, folder).replace(os.sep, "/"))
         stylesheet = quote(os.path.relpath(f"{self.characters}/{self.css}", folder).replace(os.sep, "/"))
+        states = self.states.get(path, [])
+        if states:
+            self.shown[path] = [title for title, _, _ in states]
         self.pages[f"{folder}/{name}"] = character_sheet.render(
             fields, self.edition, self.labels, back=quote(path.rsplit("/", 1)[1]),
-            portrait=portrait, stylesheet=stylesheet, title_word=self.title)
+            portrait=portrait, stylesheet=stylesheet, title_word=self.title, states=states)
         line = f"[{self.title}]({quote(name)})\n\n"
         front = FRONTMATTER.match(note)
         at = front.end() + (1 if note[front.end():front.end() + 1] == "\n" else 0) if front else 0
@@ -567,9 +641,12 @@ def write(workspace):
     labels = {l: terms[l] for l in english if l in terms}
     notes, warnings = selection(workspace, config, terms)
     files = Files(workspace)
-    report = {"plain": 0, "plain_notes": set(), "ambiguous": set(), "removed": [], "kept_fences": []}
+    report = {"plain": 0, "plain_notes": set(), "ambiguous": set(), "removed": [], "kept_fences": [],
+              "party_state_unreadable": []}
     links = Links(files, notes, report)
-    sheets = Sheets(workspace, terms, files, links)
+    states = party_states(workspace, terms, files, config["dm_only_headings"], report) \
+        if "characters" in config["include"] else {}
+    sheets = Sheets(workspace, terms, files, links, states)
     written = {}
     for path, part in notes.items():
         with open(os.path.join(workspace, path), encoding="utf-8") as f:
@@ -618,6 +695,12 @@ def summary(out, config, notes, copied, report, warnings, sheets):
         lines.extend(f"- {k}" for k in report["kept_fences"])
     if sheets.pages:
         lines.append(f"Character Sheets written: {len(sheets.pages)}, with {sheets.css} beside the Characters.")
+    if sheets.shown:
+        lines.append("Party State on the Character Sheets:")
+        lines.extend(f"- {words(path)}: {', '.join(titles)}" for path, titles in sorted(sheets.shown.items()))
+    if report["party_state_unreadable"]:
+        lines.append("Party State lines left off the sheets (they could not be read):")
+        lines.extend(f"- {u}" for u in report["party_state_unreadable"])
     if sheets.without:
         lines.append("Characters without a Character Sheet:")
         lines.extend(f"- {w}" for w in sheets.without)
