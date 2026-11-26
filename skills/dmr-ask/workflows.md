@@ -19,11 +19,11 @@ How DM Realm's skills fit together: the order a DM uses them in, and what has no
 4. `dmr-session-consolidate` once the Session is played. Besides the Session itself, Party State and the Diary, it proposes the README lines the Live Notes show: a new Current State, an Adventure going from planned to running or to finished, a Character joining or leaving the party.
 5. `dmr-session-narrate`, when the DM keeps a Chronicle, once the Session is consolidated.
 
-Between Sessions, a Character's level-ups and other changes go through `dmr-character`; one created for a Campaign, retired or dead comes with the offer to change that Campaign's party, which `dmr-campaign` writes on a yes.
+Between Sessions, a Character's level-ups and other changes go through `dmr-character`; one created for a Campaign, retired or dead comes with the offer to change that Campaign's party, which `dmr-campaign` writes on a yes. Where a Character stands in a Campaign — hit points, slots, uses, charges, conditions — changed outside a Session goes through `dmr-campaign` too, into Party State; so does the one-time rewrite of a Party State written before its current format, which Consolidation also offers.
 
 ## Sharing with the players
 
-- `dmr-player-wiki` writes the Player Wiki, a copy for the players of what the DM chooses (Reference, Homebrew, World, Characters, the Chronicles), outside the Workspace, with a Character Sheet page for each Character, rendered from its stat block. It is written again whenever the DM asks, typically after a new Chapter. When the DM said yes to the website at Setup (`dmr-setup`, which also checks for Node), it is also built with Quartz into a folder of HTML pages.
+- `dmr-player-wiki` writes the Player Wiki, a copy for the players of what the DM chooses (Reference, Homebrew, World, Characters, the Chronicles), outside the Workspace, with a Character Sheet page for each Character, rendered from its stat block, showing where it stands in each Campaign's Party State. It is written again whenever the DM asks, typically after a new Chapter. When the DM said yes to the website at Setup (`dmr-setup`, which also checks for Node), it is also built with Quartz into a folder of HTML pages.
 - **Publishing the site** is the DM's: they upload the folder wherever they choose, on their own responsibility. No skill hosts it or controls who reads it.
 
 ## Any time

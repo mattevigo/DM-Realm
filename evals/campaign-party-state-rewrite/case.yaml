@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: campaign-party-state-rewrite
+description: "An older Party State (free lines, with potions and an attunement in it) is rewritten into known lines on the DM's go-ahead: every value kept under its label, an updated-at line naming the last consolidated Session, the DM's own words and sections kept, what is the Build's left in place and listed against the Build, and no Character note changed (ADR 0021)."
+tags: [campaign]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Rewrite the Party State of Ashfall into the new format. Go ahead without asking me first.

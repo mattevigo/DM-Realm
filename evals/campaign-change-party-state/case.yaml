@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: campaign-change-party-state
+description: "A change the DM states between Sessions (Brom is at 20 hit points) goes into Party State through dmr-campaign: only Brom's Hit Points line changes, the updated-at line keeps its Session and says the DM changed it, and every other line, the DM's own words included, stays byte for byte; no Session note changes."
+tags: [campaign]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    In Ashfall, Brom drank a potion on the way back to town: he's at 20 hit points now.

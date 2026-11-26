@@ -107,7 +107,7 @@ A Character's game statistics at one moment — species, class and level, abilit
 _Avoid_: Sheet, version, snapshot
 
 **Character Sheet**:
-A Character's Stat block laid out as a page of its own for its player to read in the Player Wiki, in the D&D character sheet's conventions but in DM Realm's own design and the Workspace Language. It shows only what the Build allows, never what is spent in play. It is never kept in the Workspace: the Player Wiki writes one for every Character it copies, again at every update.
+A Character's Stat block laid out as a page of its own for its player to read in the Player Wiki, in the D&D character sheet's conventions but in DM Realm's own design and the Workspace Language. It shows what the Build allows and, beside it, where the Character stands in each Campaign whose Party State has it, as Party State last recorded it; it never shows the DM's own words in Party State, nor anything the players must not see. It is read-only: nothing is tracked on it. It is never kept in the Workspace: the Player Wiki writes one for every Character it copies, again at every update.
 _Avoid_: PDF export, printout, Build (which is the statistics, not their layout)
 
 **Transfer**:
@@ -167,7 +167,7 @@ Closing a played Session from its Live Notes: its recap and title, its Diary ent
 _Avoid_: Closing, wrap-up, import
 
 **Party State**:
-A Campaign's one note of where its party stands now: each Character's spent resources (hit points, spell slots, class uses, conditions) and the treasure the party holds in common. It keeps no history, and a Character's own items and coins are its Build's, not Party State.
+A Campaign's one note of where its party stands now: each Character's spent resources — everything spent or suffered that a Session can end with still in effect: hit points and temporary hit points, spell slots, Hit Dice, uses of limited features (a class's, a feat's, a species'), the charges spent from its magic items, conditions and exhaustion, Inspiration, active effects (concentration included) that outlast the Session, and death saving throws while at 0 hit points — and the treasure the party holds in common. Around them it may hold the DM's own words, which DM Realm keeps as they are. It keeps no history; it changes at a Session's Consolidation or when the DM asks. A Character's own items — how many, attuned, worn, damaged — and coins are its Build's, not Party State.
 _Avoid_: Tracker, ledger, finances
 
 **Current State**:

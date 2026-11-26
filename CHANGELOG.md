@@ -4,7 +4,30 @@ What changed in each release of DM Realm. Claude Code updates an installed copy 
 
 ## Unreleased
 
+### Added
+
+- **Party State in full, on the Character Sheets.** Each Character's section of a Campaign's Party State now keeps everything a Session can end with still in effect:
+  - hit points and temporary hit points;
+  - spell slots, Hit Dice and the uses of limited features, a feat's or a species' included, and the spells cast once without a slot;
+  - the charges spent from its magic items;
+  - conditions and exhaustion;
+  - Heroic Inspiration;
+  - an effect still running when the Session ends, a concentration included;
+  - death saving throws while at 0 hit points;
+  - the Campaign homebrew it carries.
+
+  Each is a line opened by its label (*Hit Points: 53 of 57*), with an "As of" line naming the Session it dates from. Anything else you write in Party State, such as a paragraph or a section of open questions, is yours, and every skill keeps it as you wrote it.
+- **Where a Character stands, on its Character Sheet.** Beside the maximums, the Player Wiki's sheet now shows one block per Campaign whose Party State has the Character: its lines, without the notes you put in parentheses, as of the Session the Party State was last updated for. It never shows your own words, the shared treasure, the Campaign homebrew a Character carries, or anything under a DM-only heading. It is read-only.
+- **Change Party State between Sessions** with `dmr-campaign` ("Brom drank a potion on the way home, he's at 30"). It changes only the lines you name.
+
 ### Changed
+
+- **Rewriting an older Party State.** A Party State written before this release has no "As of" line. Consolidation offers to rewrite it into the new lines once, and so does `dmr-campaign` when you ask. The rewrite:
+  - keeps every value;
+  - keeps every other word where it was;
+  - lists what belongs in a Character's Build instead (a potion count, an attunement) next to what the Build says, for you to settle with `dmr-character`.
+
+  Until it is rewritten, the sheets show none of that Campaign's Party State.
 
 - **Setup describes MapForge 2.0 and later.** MapForge now reads every note in your Workspace, takes each Character's AC, HP and initiative from its note, and leaves past Builds and Templates out of its Bestiary. When MapForge has adopted the folder, Setup's report now says:
   - how many monsters and Characters MapForge finds;

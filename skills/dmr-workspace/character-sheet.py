@@ -4,9 +4,10 @@ to read in the Player Wiki (ADR 0019, structure.md's "Player Wiki"). player-wiki
 this module and writes, for every Character it copies, the page and the one stylesheet all
 the pages share.
 
-The page is rendered from the Character's ```statblock fence alone (layout
-`DM Realm Character`), never from the Build's Markdown: the same numbers, nothing spent in
-play. It is static HTML in DM Realm's own design, in the D&D character sheet's conventions:
+The page is rendered from the Character's ```statblock fence (layout `DM Realm Character`),
+never from the Build's Markdown: the same numbers. Beside them, one block per Campaign whose
+Party State has the Character shows where it stands there, read-only, from that section's
+known lines (party-state.py, ADR 0022). It is static HTML in DM Realm's own design, in the D&D character sheet's conventions:
 no script, nothing loaded from another server, system fonts, light and dark following the
 reader's system, one column on a phone and two from a tablet up. The Workspace's Edition
 arranges it: in 2024 each ability shows its saving throw, as that sheet does; in 2014 the
@@ -160,9 +161,26 @@ def all_skills(skillsaves, stats, label):
     return rows + [(name, True, b, None) for name, b in proficient.values()]
 
 
-def render(fields, edition, label, back, portrait=None, stylesheet="", title_word=""):
+def state_blocks(states, label):
+    """One card per Campaign: [(Campaign title, updated-at value or None, known lines)]."""
+    out = []
+    for title, as_of, lines in states or []:
+        rows = []
+        for line in lines:
+            items = ("<ul>" + "".join(f"<li>{esc(i)}</li>" for i in line["items"]) + "</ul>"
+                     if line["items"] else "")
+            value = f"<p>{esc(line['value'])}</p>" if line["value"] else ""
+            rows.append(f'<div class="state-line"><dt>{esc(label(line["key"]))}</dt><dd>{value}{items}</dd></div>')
+        when = (f'<p class="state-as-of">{esc(label("As of"))}: {esc(as_of)}</p>' if as_of else "")
+        out.append(f'<section class="card state"><p class="eyebrow">{esc(label("Party State"))}</p>'
+                   f'<h2>{esc(title)}</h2>{when}<dl class="state-lines">{"".join(rows)}</dl></section>')
+    return f'<div class="states">{"".join(out)}</div>' if out else ""
+
+
+def render(fields, edition, label, back, portrait=None, stylesheet="", title_word="", states=None):
     """The sheet's HTML. fields: the fence's (key, value) pairs; back: the href of the
-    Character's own page; portrait: the href of its Portrait, or None."""
+    Character's own page; portrait: the href of its Portrait, or None; states: where the
+    Character stands in each Campaign, as state_blocks() takes them."""
     v = dict(fields)
     name = v.get("name", "")
     level = v.get("level")
@@ -259,6 +277,7 @@ def render(fields, edition, label, back, portrait=None, stylesheet="", title_wor
 <nav class="back"><a href="{esc(back)}">← {esc(name)}</a></nav>
 {head}
 {combat_html}
+{state_blocks(states, label)}
 <div class="columns">
 <div class="column">{"".join(left)}</div>
 <div class="column">{"".join(right)}</div>
@@ -385,6 +404,21 @@ h1 { font-size: clamp(1.6rem, 6vw, 2.4rem); line-height: 1.1; }
 .slots li {
   padding: 4px 10px; border-radius: 8px; background: var(--accent-soft); font-size: 0.9rem;
 }
+.states { display: grid; gap: 12px; margin-bottom: 12px; }
+.state { border-left: 4px solid var(--accent); }
+.state .eyebrow { margin-bottom: 2px; }
+.state h2 { font-size: 1.05rem; letter-spacing: 0; text-transform: none; color: var(--ink); }
+.state-as-of { margin: 0 0 8px; color: var(--muted); font-size: 0.85rem; }
+.state-lines { margin: 0; }
+.state-line {
+  display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 8px;
+  padding: 6px 0; border-bottom: 1px dotted var(--line);
+}
+.state-line:last-child { border-bottom: 0; }
+.state-line dt { color: var(--muted); font-size: 0.85rem; }
+.state-line dd { margin: 0; font-weight: 600; }
+.state-line dd p { margin: 0; }
+.state-line dd ul { margin: 2px 0 0; padding-left: 1.1em; font-weight: 400; }
 @media (min-width: 560px) {
   .combat { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .portrait { width: 104px; height: 104px; }

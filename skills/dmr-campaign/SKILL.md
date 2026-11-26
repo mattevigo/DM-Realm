@@ -1,6 +1,6 @@
 ---
 name: dmr-campaign
-description: Campaigns in a DM Realm Workspace — start a new one ("start a new campaign called Heroes of the Border", "a campaign in my world Orsenna, based on The Sunken Keep"): its folder, its core subfolders and a README with its pitch, world, Adventures run, party, starting level, tone and table limits, truths and opening; and change that README as the Campaign goes on ("the tone of Heroes gets darker", "add a truth: the moon is hollow", "we'll run Tomb of Annihilation next", "Ayla joins Heroes", "Brom leaves the party").
+description: Campaigns in a DM Realm Workspace — start a new one ("start a new campaign called Heroes of the Border", "a campaign in my world Orsenna, based on The Sunken Keep"): its folder, its core subfolders and a README with its pitch, world, Adventures run, party, starting level, tone and table limits, truths and opening; change that README as the Campaign goes on ("the tone of Heroes gets darker", "add a truth: the moon is hollow", "we'll run Tomb of Annihilation next", "Ayla joins Heroes", "Brom leaves the party"); and change where its party stands between Sessions, in its Party State ("Brom drank a potion on the way home, he's at 30", "Ayla used her last wand charge"), or rewrite an older Party State into the current format ("update the Party State to the new format").
 argument-hint: <the Campaign to start or change, e.g. Heroes of the Border>
 allowed-tools: Read, Glob, Grep, Write, Edit, Skill, Bash(mkdir:*), Bash(ls:*)
 ---
@@ -9,7 +9,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Skill, Bash(mkdir:*), Bash(ls:*)
 
 Start a Campaign — its folder, its core and its README — and change its README afterwards. The rules — where a Campaign lives, what it may link to, how its README is kept current, folder creation, translation and names — are the `dmr-workspace` skill's structure.md; this skill holds the procedures and the README's format. Speak to the DM in the Workspace Language.
 
-A request that names a Campaign already in the Workspace and says what to change in it is a [change](#change-the-readme); any other is a start.
+A request that names a Campaign already in the Workspace and says what to change in it is a [change](#change-the-readme) — of [Party State](#change-party-state) when it is where a Character stands (its hit points, slots, uses, charges, conditions, an effect on it) or the Party treasure, or a rewrite of Party State into its current format; any other is a start.
 
 ## Start a Campaign
 
@@ -44,6 +44,21 @@ A change the DM states to a Campaign that has started: any section, as structure
 7. **Report** each section changed, with its text before and after; each Adventure named without a link and each world named without a folder, as a start reports them; and each Character offered.
 
 Done when the README holds the change in the DM's words and every other section is as it was, or the DM has the one question that stopped it and nothing was written.
+
+## Change Party State
+
+A change the DM states to where the party stands, outside a Session's Consolidation, or a rewrite of an older Party State. The rules are structure.md's "Party State's lines".
+
+1. **Load the rules**, as for a start.
+2. **The Campaign** is found as for a README change. One with no Party State yet gets one, at its root, holding only the updated-at line and the sections the change needs.
+3. **Read its Party State**, and the Character notes it links to.
+4. **An older Party State**, one with no updated-at line, is rewritten first, as structure.md's "Party State's lines" says: each value moved to its known line, every other word kept where it was as the DM's own, and the updated-at line naming the last consolidated Session. Show the rewrite in one message, and end your turn with nothing written: the whole note as it will read, then the list of what is the Build's (each item count, attunement, what is worn or wielded, damage) next to what each Character's Build says, and the list of each value it could not place. A request that already gives the go-ahead is the yes. On a yes, write it, and add a Glossary row for each label new to it; the Builds stay as they are, and the report hands each difference to `dmr-character`. A request that asks only for the rewrite stops here. On a no, write nothing in Party State.
+5. **The change.** Which Character, which line, and the value: in the request ("Brom is at 30" is Brom's Hit Points: `30 of 44`, the maximum from his Build). A change that is a Build's — an item gained or lost, coins, attunement — is not Party State's: say so and offer the `dmr-character` skill, and write nothing. When the request leaves the Character, the line or the value unclear, ask, and write nothing.
+6. **Preview, then a yes**: each line before and after, in one message, and end your turn with nothing written. A request that gives the exact value ("Brom is at 30", "Ayla has no Inspiration left") is the go-ahead.
+7. **Write it**: only those known lines of that Character's section, and the updated-at line, which keeps its Session and gains "then changed by the DM" (in the Workspace Language) once. Every other line, the DM's own words and every other section stay byte for byte. Party State keeps no history: the old value is not kept, and nothing in a Session note changes.
+8. **Report** each line changed, with its value before and after, and what was handed to `dmr-character`.
+
+Done when Party State holds the change and every other line is as it was, or the DM has the one question that stopped it and nothing was written.
 
 ## The README
 

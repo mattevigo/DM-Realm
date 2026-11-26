@@ -12,9 +12,13 @@ sed 's/^- \[\[Durga\]\]$/&\
 - [[Kell]]/' $SC/README.md > $SC/README.tmp && mv $SC/README.tmp $SC/README.md
 sed 's/^## Party treasure$/## Kell\
 \
-[[Kell]]: 19 of 22 hit points; every spell slot spent (four 1st-level, three 2nd-level).\
+[[Kell]]\
+\
+- **Hit Points:** 19 of 22\
+- **Spell Slots Spent:** level 1: 4 of 4; level 2: 3 of 3\
 \
 &/' $SC/Party_State.md > $SC/Party_State.tmp && mv $SC/Party_State.tmp $SC/Party_State.md
+sed 's/^- \*\*As of:\*\* .*/- **As of:** [[Session_04_The_Flooded_Vault|Session 04]]/' $SC/Party_State.md > $SC/Party_State.tmp && mv $SC/Party_State.tmp $SC/Party_State.md
 
 session Session_04_The_Flooded_Vault 4 2026-09-26 "Session 4: The Flooded Vault" '[[Ayla]], [[Brom]], [[Durga]], [[Kell]]' \
   "- down into the flooded vault under the gatehouse; Vex, the cinder cult's high priestess, waiting with six acolytes
