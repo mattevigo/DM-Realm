@@ -2,7 +2,7 @@
 
 What changed in each release of DM Realm. Claude Code updates an installed copy when a new version is published. The guide at [mattevigo.github.io/DM-Realm](https://mattevigo.github.io/DM-Realm/) always describes the latest release.
 
-## Unreleased
+## 1.0.0 — 2026-11-26
 
 ### Added
 
@@ -19,6 +19,13 @@ What changed in each release of DM Realm. Claude Code updates an installed copy 
   Each is a line opened by its label (*Hit Points: 53 of 57*), with an "As of" line naming the Session it dates from. Anything else you write in Party State, such as a paragraph or a section of open questions, is yours, and every skill keeps it as you wrote it.
 - **Where a Character stands, on its Character Sheet.** Beside the maximums, the Player Wiki's sheet now shows one block per Campaign whose Party State has the Character: its lines, without the notes you put in parentheses, as of the Session the Party State was last updated for. It never shows your own words, the shared treasure, the Campaign homebrew a Character carries, or anything under a DM-only heading. It is read-only.
 - **Change Party State between Sessions** with `dmr-campaign` ("Brom drank a potion on the way home, he's at 30"). It changes only the lines you name.
+- **A Campaign's README kept current.** Consolidation now proposes the README lines a Session's Live Notes show:
+  - a new Current State;
+  - an Adventure going from planned to running, or from running to finished;
+  - a Character joining or leaving the party.
+
+  It proposes them only when no later Session is consolidated. Between Sessions, `dmr-campaign` changes any section of the README in your words ("the tone of Heroes gets darker", "add a truth: the moon is hollow", "Ayla joins Heroes"). `dmr-character` offers to take a Character marked retired or dead out of the party, and to link a new Character into the Campaign it was made for. When no Adventure is running, `dmr-session-prepare` prepares from the first planned one.
+- **MapForge: hit points outside a fight, and Long Rests.** `dmr-mapforge-import` now brings into the Live Notes each change to a Character's hit points, temporary hit points or exhaustion made outside a fight, and each Long Rest with what it restored. Consolidation reads them into Party State like the rest of the Live Notes.
 
 ### Changed
 
