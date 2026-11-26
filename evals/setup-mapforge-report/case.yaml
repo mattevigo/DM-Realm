@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: setup-mapforge-report
-description: "Setup in a folder MapForge already adopted classifies it as Fresh, leaves .mapforge/ byte for byte as it was, and reports the Scopes MapForge's bestiary misses."
+description: "Setup in a folder MapForge already adopted classifies it as Fresh, leaves .mapforge/ byte for byte as it was, and reports what MapForge reads of the Workspace without a word about the leftover bestiary folder."
 tags: [setup, mapforge]
 context:
   scaffold_script: scaffold.sh

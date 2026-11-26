@@ -3,4 +3,4 @@ type: regex
 target: last_message
 match: contains
 ---
-bestiaryStatBlockPath
+\bDurga\b

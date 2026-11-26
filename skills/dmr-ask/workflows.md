@@ -6,7 +6,7 @@ How DM Realm's skills fit together: the order a DM uses them in, and what has no
 
 1. `dmr-setup`, run only by its command, in the folder that is to become the Workspace. Run again in a Workspace, it is how top-level folders are renamed or added back, how DM Realm's Obsidian settings and stat block layouts are installed again, and how stat blocks and item notes written before DM Realm named their Portrait get one, item notes their `item: true`, and spell notes their Classes line, up to date.
 2. `dmr-import` for the official entries the Campaign needs, as they are needed — an item an Adventure introduces goes into that Adventure — and `dmr-import-adventure` for the Adventure it runs, a Part at a time or whole.
-3. `dmr-campaign` to start a Campaign.
+3. `dmr-campaign` to start a Campaign. It also changes the Campaign's README afterwards, whenever the DM revises it: its tone and limits, its truths, the Adventures it runs, its party.
 
 `dmr-adventure` designs an Adventure of the DM's own, at any time and in any order: its premise, its Parts, their places, NPCs, encounters and items, and a review against adventure-design practice. A Campaign runs it as it runs an official one, listed in its README's Adventures Run; `dmr-session-prepare` reads its notes the same way.
 4. `dmr-character` for each player's Character: created, or brought in by a Transfer.
@@ -16,14 +16,14 @@ How DM Realm's skills fit together: the order a DM uses them in, and what has no
 1. `dmr-session-prepare` before a Session — or a Side Session — is played, once the previous one is consolidated. The Adventure's next Part, when the party reaches it, comes in through `dmr-import-adventure`.
 2. **Play**: the DM writes the Live Notes in the Session note, in Obsidian.
 3. `dmr-mapforge-import`, when MapForge was used at the table.
-4. `dmr-session-consolidate` once the Session is played.
+4. `dmr-session-consolidate` once the Session is played. Besides the Session itself, Party State and the Diary, it proposes the README lines the Live Notes show: a new Current State, an Adventure going from planned to running or to finished, a Character joining or leaving the party.
 5. `dmr-session-narrate`, when the DM keeps a Chronicle, once the Session is consolidated.
 
-Between Sessions, a Character's level-ups and other changes go through `dmr-character`.
+Between Sessions, a Character's level-ups and other changes go through `dmr-character`; one created for a Campaign, retired or dead comes with the offer to change that Campaign's party, which `dmr-campaign` writes on a yes. Where a Character stands in a Campaign — hit points, slots, uses, charges, conditions — changed outside a Session goes through `dmr-campaign` too, into Party State; so does the one-time rewrite of a Party State written before its current format, which Consolidation also offers.
 
 ## Sharing with the players
 
-- `dmr-player-wiki` writes the Player Wiki, a copy for the players of what the DM chooses (Reference, Homebrew, World, Characters, the Chronicles), outside the Workspace, with a Character Sheet page for each Character, rendered from its stat block. It is written again whenever the DM asks, typically after a new Chapter. When the DM said yes to the website at Setup (`dmr-setup`, which also checks for Node), it is also built with Quartz into a folder of HTML pages.
+- `dmr-player-wiki` writes the Player Wiki, a copy for the players of what the DM chooses (Reference, Homebrew, World, Characters, the Chronicles), outside the Workspace, with a Character Sheet page for each Character, rendered from its stat block, showing where it stands in each Campaign's Party State. It is written again whenever the DM asks, typically after a new Chapter. When the DM said yes to the website at Setup (`dmr-setup`, which also checks for Node), it is also built with Quartz into a folder of HTML pages.
 - **Publishing the site** is the DM's: they upload the folder wherever they choose, on their own responsibility. No skill hosts it or controls who reads it.
 
 ## Any time

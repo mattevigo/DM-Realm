@@ -1,6 +1,6 @@
 ---
 name: dmr-mapforge-import
-description: Bring MapForge's Table Record of a played Session into its Live Notes in a DM Realm Workspace ("import the MapForge log into session 21", "bring MapForge's record into the last session") — the DM's comments, the Maps, the rolls and each fight as it ended.
+description: Bring MapForge's Table Record of a played Session into its Live Notes in a DM Realm Workspace ("import the MapForge log into session 21", "bring MapForge's record into the last session") — the DM's comments, the Maps, the rolls, hit points changed outside a fight, Long Rests and each fight as it ended.
 argument-hint: <the Session, e.g. the last session of Heroes>
 allowed-tools: Read, Glob, Grep, Edit, Skill, Bash(python3:*), Bash(ls:*)
 ---
@@ -29,9 +29,9 @@ Write what MapForge recorded of one played Session — its Table Record — into
    python3 "<this skill's base directory>/table-record.py" read . "<its file>"
    ```
 
-   It prints the evening's events in order: each Map, each comment, each roll, each group of moves, each fight as MapForge folds it.
+   It prints the evening's events in order: each Map, each comment, each roll, each group of moves, each change to a Character's hit points outside a fight, each Long Rest, each fight as MapForge folds it.
 7. **Write each** into the Session note's Live Notes, where and under the marker structure.md's Live Notes rule gives it, in [this shape](#the-shape), after any written there before. The rest of the note stays byte for byte — the DM's own Live Notes above all — and no other file is written. MapForge's files are only read (structure.md's MapForge rule).
-8. **Report**: for each log written, its time, how many comments, rolls, moves and fights it brought in; and each log left out, and why.
+8. **Report**: for each log written, its time, how many comments, rolls, moves, hit point changes, Long Rests and fights it brought in; and each log left out, and why.
 
 Done when every log of the Session that can be written is in its Live Notes, or the DM has the one question that stopped it and nothing was written.
 
@@ -42,6 +42,8 @@ One subsection per log, its heading `### MapForge, <date> <time>` (the log's loc
 - **A Map**: `- **<Map>: <name>**`, the word Map in the Workspace Language and the Map's `name` as it is.
 - **A comment**: `- <text>`, the DM's words exactly as MapForge has them, never translated, corrected or summarised.
 - **A roll**: `- <label>: <roll>, <d20> <±modifier> = <total>`, then `, DC <dc>` when it has one — the roll being `<ability> saving throw` or `<skill> check`, in the game's terms in the Workspace Language (`Ayla: Wisdom saving throw, 14 +1 = 15, DC 13`). Whether it succeeded is not written: MapForge does not record it.
+- **A Character's change** (`character`): `- <name>: hit points <from> → <to>, temporary hit points <from> → <to>, exhaustion <from> → <to>`, under the Character's `name` as the helper gives it, listing only what it has, in that order (`Durga: hit points 12 → 19, temporary hit points 0 → 5, exhaustion 2 → 1`). Each is its own item, even several in a row.
+- **A Long Rest** (`long_rest`): `- **Long Rest**: <name> <changes>; <name> <changes>…`, each Character's changes written as a Character's change above, in the order the helper gives, with no Party name (`**Long Rest**: Durga hit points 19 → 48; Ayla exhaustion 2 → 1`). One that changed no one is just `- **Long Rest**`.
 - **A group of moves**: `- Moves: <label> <distance>, <label> <distance>…`, one line for the group, each Pawn's total in the order the helper gives (`Moves: Ayla 25 ft, Jonny 10 ft`). A distance is its squares in the unit the official books in the Workspace Language use: 5 feet a square in English, 1.5 metres a square in a language whose books use metres, written with that language's decimal mark (`Movimenti: Ayla 7,5 m`).
 - **A fight**: `- **Fight** <time>–<end time>, <rounds> rounds` (in the Workspace Language), then one sub-item per Combatant, under its MapForge label as it is, a Creature's `monster` in brackets after it (`GG1 (Gnoll Warrior)`):
   - its hit points at the end as `<hp>/<max_hp>` and the word for hit points, its temporary hit points, its conditions, its exhaustion level and concentration — each only when there is one, and the hit points only when typed;

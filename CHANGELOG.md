@@ -2,6 +2,52 @@
 
 What changed in each release of DM Realm. Claude Code updates an installed copy when a new version is published. The guide at [mattevigo.github.io/DM-Realm](https://mattevigo.github.io/DM-Realm/) always describes the latest release.
 
+## 1.0.0 — 2026-11-26
+
+### Added
+
+- **Party State in full, on the Character Sheets.** Each Character's section of a Campaign's Party State now keeps everything a Session can end with still in effect:
+  - hit points and temporary hit points;
+  - spell slots, Hit Dice and the uses of limited features, a feat's or a species' included, and the spells cast once without a slot;
+  - the charges spent from its magic items;
+  - conditions and exhaustion;
+  - Heroic Inspiration;
+  - an effect still running when the Session ends, a concentration included;
+  - death saving throws while at 0 hit points;
+  - the Campaign homebrew it carries.
+
+  Each is a line opened by its label (*Hit Points: 53 of 57*), with an "As of" line naming the Session it dates from. Anything else you write in Party State, such as a paragraph or a section of open questions, is yours, and every skill keeps it as you wrote it.
+- **Where a Character stands, on its Character Sheet.** Beside the maximums, the Player Wiki's sheet now shows one block per Campaign whose Party State has the Character: its lines, without the notes you put in parentheses, as of the Session the Party State was last updated for. It never shows your own words, the shared treasure, the Campaign homebrew a Character carries, or anything under a DM-only heading. It is read-only.
+- **Change Party State between Sessions** with `dmr-campaign` ("Brom drank a potion on the way home, he's at 30"). It changes only the lines you name.
+- **A Campaign's README kept current.** Consolidation now proposes the README lines a Session's Live Notes show:
+  - a new Current State;
+  - an Adventure going from planned to running, or from running to finished;
+  - a Character joining or leaving the party.
+
+  It proposes them only when no later Session is consolidated. Between Sessions, `dmr-campaign` changes any section of the README in your words ("the tone of Heroes gets darker", "add a truth: the moon is hollow", "Ayla joins Heroes"). `dmr-character` offers to take a Character marked retired or dead out of the party, and to link a new Character into the Campaign it was made for. When no Adventure is running, `dmr-session-prepare` prepares from the first planned one.
+- **MapForge: hit points outside a fight, and Long Rests.** `dmr-mapforge-import` now brings into the Live Notes each change to a Character's hit points, temporary hit points or exhaustion made outside a fight, and each Long Rest with what it restored. Consolidation reads them into Party State like the rest of the Live Notes.
+
+### Changed
+
+- **Rewriting an older Party State.** A Party State written before this release has no "As of" line. Consolidation offers to rewrite it into the new lines once, and so does `dmr-campaign` when you ask. The rewrite:
+  - keeps every value;
+  - keeps every other word where it was;
+  - lists what belongs in a Character's Build instead (a potion count, an attunement) next to what the Build says, for you to settle with `dmr-character`.
+
+  Until it is rewritten, the sheets show none of that Campaign's Party State.
+
+- **Setup describes MapForge 2.0 and later.** MapForge now reads every note in your Workspace, takes each Character's AC, HP and initiative from its note, and leaves past Builds and Templates out of its Bestiary. When MapForge has adopted the folder, Setup's report now says:
+  - how many monsters and Characters MapForge finds;
+  - each stat block it skips, and why: a name another note already has, an `extends` naming a monster no note defines or looping back on itself, no `name`, or YAML MapForge cannot read (an unquoted `: ` in a value, say);
+  - each Party Character with no note linked in MapForge, or linked to a note that is gone, since its Pawns get no numbers;
+  - how many items its Treasury lists, as before.
+
+  It no longer reports which folders MapForge misses. This needs MapForge 2.0 or later.
+
+### Removed
+
+- **Pointing MapForge's bestiary at a folder.** MapForge has no bestiary folder any more. Ask Setup for one and it explains why, and changes nothing in MapForge's files. A `bestiaryStatBlockPath` left in `.mapforge/config.json` does no harm, and Setup leaves it there.
+
 ## 0.5.0 — 2026-11-17
 
 ### Added

@@ -21,7 +21,7 @@ Turn the current folder into a DM Realm Workspace, in any Workspace Language, le
 6. **Folder names.** For each top-level folder:
    - **Named by the DM** (in the request or an answer): use that name exactly, after checking it as structure.md's "Workspace Config" requires — a single folder name, not empty after the name rules, not a duplicate. An invalid name: say why, ask for another, and end your turn; the folder stays as it is.
    - **Otherwise**: its default English name, translated into the Workspace Language as structure.md's "Translating a term" says (Official Translation, else a faithful fallback), with the name rules applied. In English, the default name itself.
-7. **Preview.** Show exactly what Setup will create: `workspace-config.yml` with its content — Workspace Language, Edition, `stat_blocks` with one line on what it means (monsters and NPCs as the plugin's stat blocks, or as Markdown that needs no plugin but that MapForge cannot read; Characters keep their stat block either way), `quartz` with one line on what it means (the Player Wiki also built as a website, or the Markdown wiki only) and every folder name; every top-level folder, empty but for Templates; the [Templates](#the-templates) it writes, each by its file name; in a non-English Workspace, the Translation Glossary with its rows; the Obsidian settings Setup merges (below), the attachment location with its Attachments name included; when Fantasy Statblocks is installed, what [Fantasy Statblocks](#fantasy-statblocks) sets; and, only when the DM's request asks for it, the folder Setup will name for MapForge's bestiary ([MapForge](#mapforge)). Unless the request already settled the names ("default names", or names given), invite the DM to rename any folder.
+7. **Preview.** Show exactly what Setup will create: `workspace-config.yml` with its content — Workspace Language, Edition, `stat_blocks` with one line on what it means (monsters and NPCs as the plugin's stat blocks, or as Markdown that needs no plugin but that MapForge cannot read; Characters keep their stat block either way), `quartz` with one line on what it means (the Player Wiki also built as a website, or the Markdown wiki only) and every folder name; every top-level folder, empty but for Templates; the [Templates](#the-templates) it writes, each by its file name; in a non-English Workspace, the Translation Glossary with its rows; the Obsidian settings Setup merges (below), the attachment location with its Attachments name included; when Fantasy Statblocks is installed, what [Fantasy Statblocks](#fantasy-statblocks) sets. Unless the request already settled the names ("default names", or names given), invite the DM to rename any folder.
 8. **Confirmation.** Continue on an explicit go-ahead from the DM: one already in the request ("go ahead", "proceed", "procedi", "create it") counts. Otherwise ask for it and end your turn; the folder stays as it is until then.
 9. **Create.**
    1. Write `workspace-config.yml` at the folder root in the example's format, every value filled in (each folder name written out).
@@ -37,11 +37,10 @@ Turn the current folder into a DM Realm Workspace, in any Workspace Language, le
       It sets wikilinks with shortest-path links, puts the files the DM pastes into a note in an Attachments subfolder beside it, turns the Templates core plugin on and points it at the Templates folder, and leaves every other Obsidian setting as the DM had it. On exit 2 (a settings file that is not valid JSON) it changed nothing: name the file for the DM and go on. Without `python3`, make the same changes by hand with Read and Write — `app.json`: `useMarkdownLinks: false`, `newLinkFormat: "shortest"`, `attachmentFolderPath: "./<Attachments>"`; `core-plugins.json`, always a JSON object: `templates: true`; `templates.json`: `folder` — keeping every other key.
 
    6. Set up [Fantasy Statblocks](#fantasy-statblocks).
-   7. Only when the DM's request asks for it, set MapForge's bestiary folder ([MapForge](#mapforge)).
 
    These are the whole new Workspace; an English Workspace has no Translation Glossary.
 10. **Check Obsidian** with `python3 "<this skill's base directory>/obsidian-settings.py" version`: it prints the version found, the version found and that it is older than the one DM Realm was built for, or that none was found. This never stops Setup.
-11. **Report**, in the Workspace Language: what was created, the Templates by name; with `stat_blocks: false`, that MapForge cannot place creatures without stat blocks; with `quartz: true`, the Node found or how to install it, as [the Quartz question](#the-quartz-question) says, and that `dmr-player-wiki` builds the site when the DM asks for the Player Wiki; the Obsidian version found (with a warning to update when it is older), or that Obsidian was not found and can be installed later; Fantasy Statblocks, as its section says; when the folder has `.mapforge/`, what MapForge's bestiary and Treasury read of the Workspace ([MapForge](#mapforge)); and the one step left to the DM — open this folder in Obsidian with **Open folder as vault**.
+11. **Report**, in the Workspace Language: what was created, the Templates by name; with `stat_blocks: false`, that MapForge cannot place creatures without stat blocks; with `quartz: true`, the Node found or how to install it, as [the Quartz question](#the-quartz-question) says, and that `dmr-player-wiki` builds the site when the DM asks for the Player Wiki; the Obsidian version found (with a warning to update when it is older), or that Obsidian was not found and can be installed later; Fantasy Statblocks, as its section says; when the folder has `.mapforge/`, what MapForge reads of the Workspace ([MapForge](#mapforge)); and the one step left to the DM — open this folder in Obsidian with **Open folder as vault**.
 
 Done when the folder holds `workspace-config.yml`, the top-level folders, empty but for every Template of the set, and, in a non-English Workspace, the Translation Glossary, and Fantasy Statblocks, when installed, has DM Realm's layouts — and nothing else of Setup's.
 
@@ -83,8 +82,7 @@ A Workspace is set up once. A re-run keeps its Workspace Language and Edition, r
    ```
 
    For each class in its `missing_rows`, translate it as structure.md's "Translating a term" says, add the row to the Translation Glossary, and run it again. Exit 2 (no Spells folder) is nothing to do; exit 3 or 4 (the Trusted Source unreachable, or without the class lists) changes nothing: say so in the report and go on.
-9. **MapForge's bestiary**, only when the DM's request asks for it: preview the folder and the one line of `.mapforge/config.json` it sets, and set it on an explicit go-ahead (one already in the request counts), as [MapForge](#mapforge) says.
-10. **Report** what changed — renamed folders and rewritten notes, converted statistics (and any note left as it was), the `quartz` choice written and, with `quartz: true`, the Node found or how to install it, restored settings, Fantasy Statblocks, recreated folders, added Templates, the Portraits and `item: true` the helper added, note by note (and each note whose Portrait it skipped, with why), the Classes lines the refresh added, changed or removed and the Spell Indexes that changed (or why it could not run, and each note it skipped, with why), MapForge's bestiary folder — or that the Workspace was already in order; and, when the folder has `.mapforge/`, what MapForge's bestiary and Treasury read of the Workspace ([MapForge](#mapforge)).
+9. **Report** what changed — renamed folders and rewritten notes, converted statistics (and any note left as it was), the `quartz` choice written and, with `quartz: true`, the Node found or how to install it, restored settings, Fantasy Statblocks, recreated folders, added Templates, the Portraits and `item: true` the helper added, note by note (and each note whose Portrait it skipped, with why), the Classes lines the refresh added, changed or removed and the Spell Indexes that changed (or why it could not run, and each note it skipped, with why) — or that the Workspace was already in order; and, when the folder has `.mapforge/`, what MapForge reads of the Workspace ([MapForge](#mapforge)).
 
 Done when every change the DM confirmed is made, every Template that was there is as it was, the Obsidian settings (Fantasy Statblocks' included, when installed) are as DM Realm needs them, every item note says `item: true`, every stat block and item note the helper can give a Portrait has one, every spell note's Classes line is the one the refresh gives (unless the Trusted Source was unreachable), and nothing else in the Workspace changed.
 
@@ -106,7 +104,7 @@ The basic set structure.md's "Templates" lists, in the form it gives a Template:
 
 How the Workspace writes monsters' and NPCs' statistics, asked in the Workspace Language:
 
-- **Stat blocks** (`stat_blocks: true`): Fantasy Statblocks renders them, and MapForge reads them from its bestiary.
+- **Stat blocks** (`stat_blocks: true`): Fantasy Statblocks renders them, and MapForge reads them wherever they are.
 - **Markdown** (`stat_blocks: false`): readable with no plugin, but MapForge cannot place those creatures.
 
 Recommend stat blocks when Fantasy Statblocks is installed (`.obsidian/plugins/obsidian-5e-statblocks/` exists) and Markdown when it is not, and say that Characters keep their stat block either way.
@@ -137,7 +135,7 @@ Never install anything yourself. Keep `quartz: true` all the same, because it is
 
 The Obsidian plugin that renders the Workspace's stat blocks (structure.md's "Stat blocks"). Setup configures it only where the DM installed it.
 
-- **Not installed** — no `.obsidian/plugins/obsidian-5e-statblocks/` folder: write nothing for it. With `stat_blocks: true`, the fences show as YAML code blocks until it is installed. In the report, say what it adds — monsters, NPCs and Characters rendered as stat blocks, a bestiary MapForge also reads — and how to get it: in Obsidian, Settings › Community plugins › Browse, "Fantasy Statblocks"; then re-run Setup to configure it.
+- **Not installed** — no `.obsidian/plugins/obsidian-5e-statblocks/` folder: write nothing for it. With `stat_blocks: true`, the fences show as YAML code blocks until it is installed. In the report, say what it adds — monsters, NPCs and Characters rendered as stat blocks, stat blocks MapForge also reads — and how to get it: in Obsidian, Settings › Community plugins › Browse, "Fantasy Statblocks"; then re-run Setup to configure it.
 - **Installed** — merge DM Realm's layouts and settings with the helper next to this file, passing the Edition in use. Always run it, on a first Setup and on every re-run: it alone knows whether the layouts are current, since a layout with the right name and translated labels can still be an older version of DM Realm's (`statblocks-settings.py check .` tells, writing nothing). Never conclude from reading `data.json` that there is nothing to do.
 
   ```sh
@@ -156,7 +154,7 @@ The Obsidian plugin that renders the Workspace's stat blocks (structure.md's "St
 
 ## MapForge
 
-Setup follows structure.md's "MapForge" rule: it reads `.mapforge/`, and sets the bestiary folder only when the DM's request asks for it (below). With no `.mapforge/`, Setup says nothing of MapForge beyond the stat blocks question.
+Setup follows structure.md's "MapForge" rule: it reads `.mapforge/` and never writes it. With no `.mapforge/`, Setup says nothing of MapForge beyond the stat blocks question.
 
 - **Report.** When the folder has `.mapforge/`, run the helper next to this file once everything else is done; it reads and never writes:
 
@@ -164,20 +162,11 @@ Setup follows structure.md's "MapForge" rule: it reads `.mapforge/`, and sets th
   python3 "<this skill's base directory>/mapforge.py" report .
   ```
 
-  It prints one JSON object. Tell the DM, in the Workspace Language, by its `config`:
-  - `ok` — MapForge's bestiary reads `path`: each Scope in `scopes` it reads all of, part of (`part`: only that subfolder) or none of, with the monster and NPC stat blocks it misses there (`missed`), naming the subfolders they are in (`missed_in`: which Adventures, which Campaigns), so the DM knows which creatures MapForge will not find; `read`, the Monsters it lists today. When `characters_read` is above 0, or the Characters Scope is read at all, say that MapForge will list those Characters as Monsters; when `kept_out_read` is above 0, that it also lists the stat blocks DM Realm keeps out of the bestiary (a Character's past Builds, the Homebrew monster Template).
-  - `missing` or `no-key` — MapForge's bestiary reads nothing of this Workspace until a folder is named in `bestiaryStatBlockPath`, in `.mapforge/config.json`.
-  - `invalid` — `.mapforge/config.json` could not be read (not a JSON object), so MapForge's bestiary is off.
-  - `not-found` — the folder `path` it names is not in the Workspace.
-  - `outside` — the folder it names is not inside the Workspace, so MapForge refuses it.
+  It prints one JSON object: what MapForge reads of the whole Workspace, as structure.md's "MapForge" says. Tell the DM, in the Workspace Language:
+  - `monsters`, the Monsters MapForge's Bestiary lists, and `characters`, the Characters' notes it reads, wherever they are.
+  - Each fence in `skipped`, by its note (`file`) and `name`, with why MapForge leaves it out, so the DM can fix the note: `duplicate`, an earlier note (by path) already has that name; `extends-missing`, it extends `base`, which no note defines; `extends-loop`, its `extends` chain comes back to itself; `no-name`, its stat block has no `name`; `unreadable`, the note is not UTF-8 or its stat block is not YAML MapForge can read (most often an unquoted value holding `: `). With none skipped, say nothing of it.
+  - By `parties`: `ok`, each Party Character in `unlinked` (its `character`, of its `party`) has no note linked in MapForge, and each in `note_missing` is linked to a `note` no Character's note has (one renamed since, or a Monster's name), so MapForge stamps their Pawns with no AC, HP or initiative; with both empty, that every Party Character takes its numbers from its note. `missing`: MapForge has no Party yet; say nothing of it. `invalid`: MapForge's `parties.json` could not be read.
+  - How many items MapForge's Treasury lists (`treasury`: the notes that say `item: true` in their frontmatter, wherever they are) and how many of them have no Portrait (`treasury_no_portrait`), so the DM knows which Treasures will keep their colour instead of wearing the item's picture; with `treasury` at 0, that MapForge has no item to give a Treasure yet.
 
-  Whatever the `config`, also say how many items MapForge's Treasury lists (`treasury`: the notes that say `item: true` in their frontmatter, wherever they are) and how many of them have no Portrait (`treasury_no_portrait`), so the DM knows which Treasures will keep their colour instead of wearing the item's picture; with `treasury` at 0, that MapForge has no item to give a Treasure yet.
-
-  These are facts for the DM, and the report states them and stops there: no offer to change them, no suggested folder, no "I can set it" or "just ask". What the DM does with MapForge is theirs to decide.
-- **Setting the bestiary folder**, only when the DM's own request asks for it ("point MapForge's bestiary at the Monsters folder"). Resolve the folder the DM names to a path relative to the Workspace root (the Reference Monsters folder is `<reference>/<Monsters in use>`), then:
-
-  ```sh
-  python3 "<this skill's base directory>/mapforge.py" set-bestiary . "<folder>"
-  ```
-
-  It merges only `bestiaryStatBlockPath` into `.mapforge/config.json`, creating the file when absent and keeping every other key; it never writes the Manifest (MapForge writes it when it adopts the folder, and keeps this config). Exit 2 changed nothing: the folder is not inside the Workspace, or `config.json` is not a JSON object (name it for the DM). Exit 3: no such folder; say so. Then report as above.
+  These are facts for the DM, and the report states them and stops there: no offer to change them, no "I can fix it" or "just ask". What the DM does with MapForge is theirs to decide. A `bestiaryStatBlockPath` that `.mapforge/config.json` may still hold goes unmentioned: MapForge ignores it.
+- **No bestiary folder to set.** MapForge reads every note in the Workspace, so it has no bestiary folder. When the DM asks to point it at one ("point MapForge's bestiary at the Monsters folder"), say that MapForge already reads that folder with the rest of the Workspace, write nothing, and report as above.

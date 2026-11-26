@@ -22,6 +22,9 @@ if [ "$WS_LANG" = it ]; then
   cat >> Strumenti_DM/Glossario_Traduzioni.md <<'MD'
 | Diary | Diario | fallback | |
 | Party_State | Stato_del_Gruppo | fallback | |
+| As of | Aggiornato a | fallback | |
+| Hit Points | Punti Ferita | Official Translation | |
+| Uses Spent | Usi Spesi | fallback | |
 MD
   SC=Campagne/Cenere
   SC_DIR=$SC/Sessioni
@@ -126,17 +129,26 @@ MD
   cat > $SC/Stato_del_Gruppo.md <<'MD'
 # Stato del Gruppo
 
+- **Aggiornato a:** [[Sessione_03_Il_Corpo_di_Guardia|Sessione 03]]
+
 ## Ayla
 
-[[Ayla]]: 24 punti ferita su 24; nessuno slot speso.
+[[Ayla]]
+
+- **Punti Ferita:** 24 su 24
 
 ## Brom
 
-[[Brom]]: 9 punti ferita su 31.
+[[Brom]]
+
+- **Punti Ferita:** 9 su 31
 
 ## Durga
 
-[[Durga]]: 40 punti ferita su 45; 2 usi di Ira spesi.
+[[Durga]]
+
+- **Punti Ferita:** 40 su 45
+- **Usi Spesi:** Ira 2 su 3
 
 ## Tesoro del gruppo
 
@@ -173,20 +185,34 @@ cat > $SC/Diary.md <<MD
 - **Interlude The Long Night** — 2026-09-16 — [[Interlude_The_Long_Night]]. Ayla saw lights in the marsh.
 ${SC_DIARY_03}
 MD
-cat > $SC/Party_State.md <<'MD'
+if [ "$SC_CONSOLIDATED" = no ]; then
+  SC_AS_OF='[[Interlude_The_Long_Night|Interlude The Long Night]]'
+else
+  SC_AS_OF='[[Session_03_The_Gatehouse|Session 03]]'
+fi
+cat > $SC/Party_State.md <<MD
 # Party State
+
+- **As of:** ${SC_AS_OF}
 
 ## Ayla
 
-[[Ayla]]: 24 of 24 hit points; no spell slots spent.
+[[Ayla]]
+
+- **Hit Points:** 24 of 24
 
 ## Brom
 
-[[Brom]]: 9 of 31 hit points.
+[[Brom]]
+
+- **Hit Points:** 9 of 31
 
 ## Durga
 
-[[Durga]]: 40 of 45 hit points; 2 Rage uses spent.
+[[Durga]]
+
+- **Hit Points:** 40 of 45
+- **Uses Spent:** Rage 2 of 3
 
 ## Party treasure
 

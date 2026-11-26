@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: session-consolidate-party-state
+description: "Consolidation writes Party State's known lines for what a Session can end with still in effect — a wand charge, Hit Dice, Heroic Inspiration, a concentration still running — moves its updated-at line to this Session, and keeps the DM's own paragraph and section byte for byte (ADR 0021)."
+tags: [session]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  max_turns: 60
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+  prompt: |
+    Consolidate session 3 of the Ashfall campaign. Apply everything you find without asking me first, and title it "The Gatehouse".

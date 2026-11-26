@@ -1,6 +1,8 @@
 # DM Realm reads MapForge's files and writes them only when the DM asks
 
-MapForge, the DM's table tool, is supported by DM Realm and stays independent of it. MapForge owns `.mapforge/` (its Manifest `workspace.json`, `config.json`, `parties.json`, `preferences.json`, its Session Logs) and the files beside a Map (`<map>.fog.json`, `<map>.combat/`). DM Realm reads them — to tell the DM what MapForge will see of the Workspace, and to write a Session's Table Record into its Live Notes — and on its own initiative never creates, edits or deletes any of them: not at Setup, not after an Import, not when a Character changes. It writes one only when the DM's own request names that change ("point MapForge's bestiary at the Bestiary folder"). A question DM Realm raises itself, even an opt-in line in a preview, is not such a request. Nor does DM Realm shape the Workspace to fit MapForge: what MapForge cannot read of a Workspace is MapForge's to lift, in MapForge.
+MapForge, the DM's table tool, is supported by DM Realm and stays independent of it. MapForge owns `.mapforge/` (its Manifest `workspace.json`, `config.json`, `parties.json`, `preferences.json`, its Session Logs) and the files beside a Map (`<map>.fog.json`, `<map>.combat/`). DM Realm reads them — to tell the DM what MapForge will see of the Workspace, and to write a Session's Table Record into its Live Notes — and on its own initiative never creates, edits or deletes any of them: not at Setup, not after an Import, not when a Character changes. It writes one only when the DM's own request names that change ("remove the old bestiary folder from MapForge's config.json"). A question DM Realm raises itself, even an opt-in line in a preview, is not such a request. Nor does DM Realm shape the Workspace to fit MapForge: what MapForge cannot read of a Workspace is MapForge's to lift, in MapForge.
+
+*Changed 2026-11-17: MapForge 2.0 lifted the limits this decision left to it (MapForge's ADR-0023 and ADR-0024). It reads every note in the Workspace, with no bestiary folder to set, and takes a Character's numbers from its note. The decision stands; the example request and the first two consequences are updated, and DM Realm's helper no longer sets `bestiaryStatBlockPath`.*
 
 ## Considered Options
 
@@ -11,8 +13,8 @@ MapForge, the DM's table tool, is supported by DM Realm and stays independent of
 
 ## Consequences
 
-- MapForge's bestiary holds what its `bestiaryStatBlockPath` names. Until MapForge reads more than one folder, the stat blocks in other Scopes are missing from it; DM Realm reports this, and does not fix it.
-- A Party reaches MapForge by being typed in MapForge, by MapForge reading the Character notes, or by DM Realm writing `parties.json` at the DM's request.
+- MapForge reads every note in the Workspace, wherever its Scope puts it, so the Workspace needs no arranging for it. DM Realm reports what MapForge reads and what it skips, and fixes nothing in `.mapforge/`.
+- A Party is chosen in MapForge, and each Character takes its numbers from its note once the DM links the two there. DM Realm reports a Party Character with no note linked, or linked to a note no longer there; the link is MapForge's to keep.
 - A Session's Table Record is read into its Live Notes ([ADR 0012](0012-the-table-record-enters-a-session-as-its-live-notes.md)) and left as it is.
 - An eval whose prompt does not ask for MapForge must leave `.mapforge/` unchanged.
 - This is the same line as `.out-of-scope/mapforge-adventure-maps.md`, where DM Realm declined to author `<map>.fog.json`.

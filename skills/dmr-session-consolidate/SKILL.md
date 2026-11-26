@@ -1,17 +1,17 @@
 ---
 name: dmr-session-consolidate
-description: Consolidate a played Session of a Campaign in a DM Realm Workspace — close it from its Live Notes ("consolidate session 13", "close the last session"): its Recap, Loose threads and title, the Campaign's Party State and Diary, and the lasting changes to its Characters' Builds.
+description: Consolidate a played Session of a Campaign in a DM Realm Workspace — close it from its Live Notes ("consolidate session 13", "close the last session"): its Recap, Loose threads and title, the Campaign's Party State and Diary, its README's Current State, Adventures and party, and the lasting changes to its Characters' Builds.
 argument-hint: <the Session to consolidate, e.g. the last session of Heroes>
 allowed-tools: Read, Glob, Grep, Write, Edit, Skill, Bash(ls:*), Bash(mv:*)
 ---
 
 # Consolidate a Session
 
-Consolidate one played Session from its Live Notes. The rules — what a Session is, Live Notes, its name, the Diary, Party State, what of a Character a Campaign keeps, Promotion, Templates, links, translation and names — are the `dmr-workspace` skill's structure.md; the Session note's format is the Workspace's Session Template; the Character note and how it changes are the `dmr-character` skill's. This skill is the procedure that applies them. Speak to the DM in the Workspace Language.
+Consolidate one played Session from its Live Notes. The rules — what a Session is, Live Notes, its name, the Diary, Party State, Current State and how the README is kept current, what of a Character a Campaign keeps, Promotion, Templates, links, translation and names — are the `dmr-workspace` skill's structure.md; the Session note's format is the Workspace's Session Template; the Character note and how it changes are the `dmr-character` skill's. This skill is the procedure that applies them. Speak to the DM in the Workspace Language.
 
 1. **Load the rules.** Invoke `dmr-workspace` (read its structure.md in full), and find the Workspace Language in use as its "Fixed after Setup" reads it.
 2. **The Campaign** is the one the request names, or the Workspace's only one. With several and none named: ask which, and write nothing.
-3. **Read the Campaign**: its README, every note in its Sessions folder, its Diary and its Party State, when they exist.
+3. **Read the Campaign**: its README, every note in its Sessions folder, its Diary and its Party State, when they exist. A Party State with no updated-at line is in the older format: the preview offers its rewrite, as structure.md's "Party State's lines" does it, as a line of its own.
 4. **Which Session**: the one the request names, or the latest Session with Live Notes and no Diary entry (with none, the latest with no Diary entry). When that leaves several or none: say which Sessions exist, ask, and write nothing.
    - **One already consolidated**, as structure.md's Diary rule tells it: say so, ask what the DM wants changed, and write nothing.
 5. **Its Live Notes are the source**, as structure.md's Live Notes rule keeps them.
@@ -24,27 +24,32 @@ Consolidate one played Session from its Live Notes. The rules — what a Session
    3. **Promotions**, as structure.md's "Promotion" does them.
    4. **Builds.** Invoke `dmr-character` and run its update job for each Character, asking for the change itself ("Wren gains a Ward Lantern, attuned, and 35 gp"): the note's numbers and stat block follow, with no past Build.
    5. **Quests** the Live Notes show as finished: their notes say so.
-   6. **Party State**, as structure.md's Party State rule keeps it: the section of each Character present, and the Party treasure. Every other section stays byte for byte.
-   7. **The Session note**: the Present line as the Live Notes show who played; the [Recap](#the-recap) and the Loose threads — what the Live Notes leave open, one line each; the title, added to its heading after the number. Its Prep stays byte for byte, like its Live Notes. Then its name, as structure.md's Session name rule gives it.
-   8. **The Diary, last**: this Session's entry, as structure.md's Diary rule and the entries already there shape it.
-9. **Report** what was written: the Session's new name; each Character's changes, with every number that changed; Party State; each note created, imported or promoted; each line the DM dropped; each level gained, with where to ask for the level-up; and the offer to tell the Session as a Chapter of the Campaign's Chronicle, with the `dmr-session-narrate` skill.
+   6. **Party State**, as structure.md's "Party State's lines" writes it: first its rewrite, when the DM kept that line; then the known lines of each Character present, the Party treasure, and the updated-at line, linking this Session. The DM's own words, and every other section, stay byte for byte. When the DM dropped the rewrite of an older Party State, it is left as it is, and the report says so.
+   7. **The README**: the lines of [its rows](#what-a-session-changes) the DM kept — Current State replaced whole, an Adventure's status, a Party link added or removed. Every other section, and every other line, stays byte for byte.
+   8. **The Session note**: the Present line as the Live Notes show who played; the [Recap](#the-recap) and the Loose threads — what the Live Notes leave open, one line each; the title, added to its heading after the number. Its Prep stays byte for byte, like its Live Notes. Then its name, as structure.md's Session name rule gives it.
+   9. **The Diary, last**: this Session's entry, as structure.md's Diary rule and the entries already there shape it.
+9. **Report** what was written: the Session's new name; each Character's changes, with every number that changed; Party State; each README section changed, and the README lines left out because a later Session is consolidated; each note created, imported or promoted; each line the DM dropped; each level gained, with where to ask for the level-up; each Character who left the party, with `dmr-character` as where to change its status when the DM wants it changed; and the offer to tell the Session as a Chapter of the Campaign's Chronicle, with the `dmr-session-narrate` skill.
 
 Done when the Diary has the Session's entry and every change the DM kept is written, or the DM has the one question that stopped it and nothing was written.
 
 ## What a Session changes
 
-Every row is read from the Live Notes: what they do not say did not happen. A row with nothing to show is left out of the preview.
+Every row is read from the Live Notes: what they do not say did not happen. A row with nothing to show is left out of the preview. The README's rows follow structure.md's "The README is kept current": a Session consolidated after a later one proposes none of them, and the report says what was left out. A Side Session proposes them like any other.
 
 | The Live Notes show | Change |
 | --- | --- |
-| Who played | The Present line. A Character who was absent is in no other row |
+| Who played | The Present line. A Character who was absent is in no other row but the Party's, when the Live Notes say it joined or left |
 | A Character present gained, lost, spent or attuned something of its own — an item, coins, attunement | Its Build, one line per Character with each change and the numbers that follow |
 | Coins or items taken with no owner named | The Party treasure in Party State, added to what it holds; no Character note |
-| Where each Character present stands when the Session ends, every rest in the Live Notes applied | Its section in Party State — when no later Session is consolidated. Party State is the party now: a Session consolidated after a later one leaves it as it is, and the report says what was left out |
+| Where each Character present stands when the Session ends, every rest in the Live Notes applied | Its known lines in Party State — when no later Session is consolidated. Each line the Live Notes change: hit points and temporary hit points, slots, Hit Dice, uses, casts without a slot, a magic item's charges, conditions, exhaustion, Inspiration, an effect still running at the end (a concentration included), death saving throws. A line they leave alone stays as it was; a value they leave uncertain is written as they give it, or as not given. The preview shows each changed line before and after. Party State is the party now: a Session consolidated after a later one leaves it as it is, and the report says what was left out |
 | An NPC, Place, Faction or Quest named, with no note in the Workspace | A new Campaign note of that kind |
 | An official monster, item or spell named, with no Reference note | An Import |
 | A Character now holding Campaign homebrew | The Promotion question of structure.md's "A Character gaining Campaign homebrew" |
 | A Quest finished | That Quest's note |
+| Where the story stands when the Session ends | The README's Current State: a new version, as structure.md's Current State rule keeps it, shown in the preview next to the current text in full |
+| The party in an Adventure the README lists as `planned` — the Live Notes name its places, NPCs or encounters, or the DM says it began | Its status in Adventures Run: `running` |
+| The end of what a `running` Adventure's Parts run cover | Its status: `finished`. Only when the Live Notes show that end; when they leave it unclear, no line |
+| A Character joining the party, or leaving it — dying at the table is leaving | The README's Party: its link added, or its line removed. Its `status` stays as it is: the report says where to change it. One not a Character yet has no line: the report offers to create it with the `dmr-character` skill |
 | A level, a milestone or experience gained | The Recap records it. The Character's level stays: the level-up is the `dmr-character` skill's job, on a request of its own, and the report tells the DM so |
 | A note with no title | Two to four titles to pick from |
 

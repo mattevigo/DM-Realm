@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: setup-rerun-mapforge-root
-description: "Re-running Setup where MapForge's bestiary reads the Workspace root warns that Characters will be listed as Monsters, and leaves .mapforge/ as it was."
+description: "Re-running Setup where MapForge's Party has a Character with no note linked names it and leaves .mapforge/ (a leftover bestiary folder included) as it was."
 tags: [setup, mapforge]
 context:
   scaffold_script: scaffold.sh

@@ -1,10 +1,10 @@
 <!--
 title: dmr-campaign
-description: Starts a Campaign: its folder, its core subfolders and a README with its pitch, world, Adventures run, party, starting level, tone and table limits, truths and opening.
+description: Starts a Campaign: its folder, its core subfolders and a README with its pitch, world, Adventures run, party, starting level, tone and table limits, truths and opening; then changes that README as the Campaign goes on, and where its party stands between Sessions.
 -->
 <div class="term">
   <div class="term-bar"><i></i><i></i><i></i><span>claude</span></div>
-<pre><span class="line"><span class="prompt">&gt; </span>/dm-realm:dmr-campaign &lt;the Campaign to start&gt;</span></pre>
+<pre><span class="line"><span class="prompt">&gt; </span>/dm-realm:dmr-campaign &lt;the Campaign to start or change&gt;</span></pre>
 </div>
 
 <h2>Ask it like this</h2>
@@ -12,6 +12,10 @@ description: Starts a Campaign: its folder, its core subfolders and a README wit
   <li>start a new campaign called Heroes of the Border</li>
   <li>a campaign in my world Orsenna, based on The Sunken Keep</li>
   <li>start Ashfall, and suggest three pitches</li>
+  <li>add a truth to Ashfall: the moon is hollow</li>
+  <li>Ayla joins Heroes</li>
+  <li>Brom drank a potion on the way home, he's at 30</li>
+  <li>update the Party State of Heroes to the new format</li>
 </ul>
 
 <h2>How</h2>
@@ -21,11 +25,15 @@ description: Starts a Campaign: its folder, its core subfolders and a README wit
   <li>Asks once about every README section you left open, all optional.</li>
   <li>Fills in each answer, and offers to create any party member who is not a Character yet.</li>
 </ol>
+<p>To change a Campaign that has started, it writes what you state into the section it belongs to, leaving every other section as it was, and reports each changed section before and after. If it cannot tell which section you mean, or whether you are adding or replacing, it asks first.</p>
+<p>Between Sessions it also changes <strong>Party State</strong>: only the lines you name, for the Character you name, with the rest of the note, your own words included, left as it was. Give the exact value and it writes it; otherwise it shows each line before and after first. A Party State written before its current format is rewritten once, on your yes: every value kept under its label, your own notes where they were, and a list of what belongs in the Characters' Builds instead (potions, attunement) for you to settle with <code>dmr-character</code>.</p>
 
 <h2>Never</h2>
 <ul>
   <li>Replaces or merges into an existing Campaign of the same name.</li>
-  <li>Writes Session, Place or NPC notes, or anything outside the Campaign folder.</li>
-  <li>Fills a section on its own: Ideas are offered in chat and only the one you pick is written.</li>
+  <li>Writes Session, Place or NPC notes, or anything outside the Campaign folder but the Translation Glossary's new labels.</li>
+  <li>Fills or changes a section on its own: Ideas are offered in chat and only the one you pick is written.</li>
+  <li>Removes Current State, which every README keeps.</li>
+  <li>Renames a Campaign.</li>
 </ul>
 <p>Guide: <a href="{{root}}guide/campaign/">Start a Campaign</a>.</p>

@@ -1,6 +1,6 @@
 <!--
 title: Close the Session
-description: Consolidation turns your Live Notes into a Recap, loose threads and a title, updates Party State and the Diary, and applies the lasting changes to the Characters, after showing you every one.
+description: Consolidation turns your Live Notes into a Recap, loose threads and a title, updates Party State, the Diary and the Campaign README, and applies the lasting changes to the Characters, after showing you every one.
 -->
 <p>After the Session, close it. <code>dmr-session-consolidate</code> reads the Live Notes, works out everything the Session changed, shows you the full list, and writes only what you keep.</p>
 <ul class="prompts">
@@ -20,6 +20,7 @@ description: Consolidation turns your Live Notes into a Recap, loose threads and
       <li><strong>Brom's Build</strong>: + silver holy symbol</li>
       <li><strong>Party treasure</strong>: + 40 gp (now 115 gp)</li>
       <li><strong>Party State</strong>: Ayla 9/31 hp, two 2nd-level slots spent; Brom 14/27 hp</li>
+      <li><strong>Current State</strong>: now "The party holds the sealed stair; Korr has fled to warn Vessa." (was "The party is in the flooded crypt.")</li>
       <li><strong>New NPC</strong>: Korr, Vessa's lieutenant</li>
       <li><strong>Import</strong>: Skeleton (not in Reference yet)</li>
       <li><strong>Title</strong>: pick one: <em>The Sealed Stair</em> · <em>Bones in the Water</em> · <em>Korr's Flight</em></li>
@@ -37,7 +38,8 @@ description: Consolidation turns your Live Notes into a Recap, loose threads and
   <li><strong>Promotions</strong>, when a Character now holds homebrew made for this Campaign.</li>
   <li><strong>Character Builds</strong>: items, coins and attunement gained or lost.</li>
   <li><strong>Quests</strong> that ended.</li>
-  <li><strong>Party State</strong>: each Character's hit points, spent slots and uses, conditions, and the party's shared treasure, as they stand now.</li>
+  <li><strong>Party State</strong>: each Character's hit points, spent slots, Hit Dice and uses, item charges, conditions and exhaustion, Inspiration, effects still running, and the party's shared treasure, as they stand now.</li>
+  <li><strong>The Campaign README</strong>: its Current State, an Adventure that started or ended, a Character who joined or left the party. Nothing else in it changes.</li>
   <li><strong>The Session note</strong>: the Present line, the Recap, the Loose threads and the title. Its Prep and Live Notes are left exactly as they were.</li>
   <li><strong>The Diary</strong>, last: the Session's entry. A Session is consolidated once the Diary has it.</li>
 </ol>
@@ -50,7 +52,8 @@ description: Consolidation turns your Live Notes into a Recap, loose threads and
 
 <h2>Party State and the Diary</h2>
 <ul>
-  <li><strong>Party State</strong> is one note per Campaign showing the party <em>now</em>: no history, just the current hit points, spent resources, conditions and shared treasure. The history is in the Session notes.</li>
+  <li><strong>Party State</strong> is one note per Campaign showing the party <em>now</em>: no history, just the current hit points, spent resources, conditions and shared treasure. The history is in the Session notes. Each of those is a line opened by its label (<em>Hit Points: 9 of 31</em>), which is how the Character Sheets read it; anything else you write there, a paragraph or a section of open questions, is yours, and is kept as you wrote it. A Party State written before this format is rewritten once into it, after a preview, keeping every value.</li>
   <li><strong>The Diary</strong> lists every Session in play order with a sentence or two and a link. The detail stays in each Recap.</li>
+  <li><strong>The README's Current State</strong> is where the story stands now, replaced after each Session like Party State. Consolidating an older Session after a later one leaves both as they are, and the report says so.</li>
 </ul>
 <p>When it is done, Claude offers to tell the Session as a Chapter of the Campaign's Chronicle. That is the next lesson.</p>

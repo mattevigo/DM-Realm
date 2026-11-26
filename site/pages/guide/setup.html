@@ -64,8 +64,7 @@ description: Turn an empty folder into a Workspace. Choose its language, its Edi
   <li><strong>Restore</strong> missing folders, missing Templates (yours are never overwritten) and the Obsidian settings DM Realm needs.</li>
   <li><strong>Configure Fantasy Statblocks</strong> after you install it, or update its layouts.</li>
   <li><strong>Bring older notes up to date for MapForge.</strong> A stat block's own picture, and the first picture of an item note's Description, get named as their Portrait, and item notes get <code>item: true</code>. Setup lists what it added, and each picture it could not find.</li>
-  <li><strong>Point MapForge's bestiary</strong> at a folder, if you ask it to.</li>
 </ul>
-<p>When MapForge has adopted the folder, Setup also tells you what MapForge reads of the Workspace: the creatures its bestiary misses, and how many items its Treasury lists, with how many have no Portrait.</p>
+<p>When MapForge has adopted the folder, Setup also tells you what MapForge reads of the Workspace. MapForge 2.0 and later reads every note, wherever it is, so there is no folder to point it at. Setup tells you how many monsters and Characters it finds, and names each stat block it skips, with why: a name another note already has, an <code>extends</code> that names a monster no note defines or loops back on itself, no <code>name</code>, or YAML MapForge cannot read. It names each Party Character with no note linked in MapForge, or linked to a note that is gone, since its Pawns get no numbers. And it says how many items the Treasury lists, with how many have no Portrait.</p>
 <div class="callout warn"><span class="callout-title">Language and Edition are fixed</span>
 <p>A re-run never changes the Workspace Language. The Edition is fixed once the first rules material is imported. For another language or Edition, set up a second Workspace.</p></div>

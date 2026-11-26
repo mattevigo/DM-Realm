@@ -216,6 +216,38 @@ F="d['events'][2]"
 [ "$(field "$OUT" "[(c['name'], c['hp'], c['dropped']) for c in $F['combatants']]")" = "[('Ayla', 5, True), ('Kip', 0, False), ('GG3', 3, False)]" ] || fail "drops and a join: $OUT"
 [ "$(snapshot)" = "$BEFORE" ] || fail "MapForge's files changed"
 
+# A Character's numbers changed outside a fight, and Long Rests: under the Character's name, only
+# what moved, one event per line; hit points never set left out; a Long Rest names no Map.
+cat > "$S/2026-10-10T180000Z.jsonl" <<JSONL
+{"line":"sessionStarted","startedAt":"2026-10-10T18:00:00Z"}
+{"at":"2026-10-10T18:01:00Z","distanceSquares":2,"label":"Ayla","line":"pawnMoved","map":"$GATE","pawnID":"A"}
+{"at":"2026-10-10T18:02:00Z","characterID":"c1","currentHP":{"from":12,"to":19},"label":"Ayla (Pawn)","line":"characterChanged","map":"$GATE","name":"Ayla","pawnID":"A","temporaryHP":{"from":0,"to":5}}
+{"at":"2026-10-10T18:03:00Z","distanceSquares":1,"label":"Ayla","line":"pawnMoved","map":"$GATE","pawnID":"A"}
+{"at":"2026-10-10T18:04:00Z","characterID":"c1","currentHP":{"from":19,"to":15},"label":"Ayla (Pawn)","line":"characterChanged","map":"$GATE","name":"Ayla","pawnID":"A"}
+{"at":"2026-10-10T18:05:00Z","characterID":"c1","currentHP":{"from":15,"to":11},"label":"Ayla (Pawn)","line":"characterChanged","map":"$GATE","name":"Ayla","pawnID":"A"}
+{"at":"2026-10-10T18:06:00Z","characterID":"c2","currentHP":{"from":null,"to":8},"exhaustion":{"from":2,"to":1},"label":"Kip","line":"characterChanged","map":"$VAULT","name":"Kip","pawnID":"K"}
+{"at":"2026-10-10T18:07:00Z","distanceSquares":3,"label":"Kip","line":"pawnMoved","map":"$VAULT","pawnID":"K"}
+{"at":"2026-10-10T18:08:00Z","characterID":"c2","currentHP":{"from":8,"to":null},"label":"Kip","line":"characterChanged","map":"$VAULT","name":"Kip","pawnID":"K"}
+{"at":"2026-10-10T18:09:00Z","distanceSquares":2,"label":"Kip","line":"pawnMoved","map":"$VAULT","pawnID":"K"}
+{"at":"2026-10-10T18:10:00Z","characterID":"c1","exhaustion":{"from":0,"to":1},"label":"Ayla (Pawn)","line":"characterChanged","name":"Ayla","pawnID":"A"}
+{"at":"2026-10-10T18:20:00Z","characters":[{"characterID":"c1","currentHP":{"from":11,"to":24},"exhaustion":{"from":1,"to":0},"name":"Ayla"},{"characterID":"c2","currentHP":{"from":null,"to":null},"name":"Kip"}],"line":"longRest","partyID":"p","partyName":"Ashfall"}
+{"at":"2026-10-10T18:30:00Z","characters":[],"line":"longRest","partyID":"p","partyName":"Ashfall"}
+{"endedAt":"2026-10-10T19:00:00Z","line":"sessionEnded"}
+JSONL
+BEFORE=$(snapshot)
+OUT=$(python3 "$HELPER" read "$W" 2026-10-10T180000Z.jsonl) || fail "read characters: exit $?"
+E="d['events']"
+[ "$(field "$OUT" "[e['kind'] for e in $E]")" = "['map', 'moves', 'character', 'moves', 'character', 'character', 'map', 'character', 'moves', 'character', 'long_rest', 'long_rest']" ] || fail "characters: events: $OUT"
+[ "$(field "$OUT" "$E[2]")" = "{'kind': 'character', 'time': '20:02', 'name': 'Ayla', 'hp': {'from': 12, 'to': 19}, 'temp_hp': {'from': 0, 'to': 5}}" ] || fail "characters: name not label, only what moved: $OUT"
+[ "$(field "$OUT" "$E[4]['hp'], $E[5]['hp']")" = "({'from': 19, 'to': 15}, {'from': 15, 'to': 11})" ] || fail "characters: one event per line: $OUT"
+[ "$(field "$OUT" "$E[6]['name'], $E[7]")" = "('Vault', {'kind': 'character', 'time': '20:06', 'name': 'Kip', 'exhaustion': {'from': 2, 'to': 1}})" ] || fail "characters: a Map from characterChanged, null hit points left out: $OUT"
+# Kip's change with only unset hit points is no event, so the moves either side stay one group.
+[ "$(field "$OUT" "$E[8]")" = "{'kind': 'moves', 'time': '20:07', 'moves': [{'name': 'Kip', 'squares': 5}]}" ] || fail "characters: an empty change is no event: $OUT"
+[ "$(field "$OUT" "$E[9]")" = "{'kind': 'character', 'time': '20:10', 'name': 'Ayla', 'exhaustion': {'from': 0, 'to': 1}}" ] || fail "characters: no map key, no Map item: $OUT"
+[ "$(field "$OUT" "$E[10]")" = "{'kind': 'long_rest', 'time': '20:20', 'characters': [{'name': 'Ayla', 'hp': {'from': 11, 'to': 24}, 'exhaustion': {'from': 1, 'to': 0}}]}" ] || fail "long rest: Characters changed, Kip with nothing left out: $OUT"
+[ "$(field "$OUT" "$E[11]")" = "{'kind': 'long_rest', 'time': '20:30', 'characters': []}" ] || fail "long rest: one that changed no one is kept: $OUT"
+[ "$(snapshot)" = "$BEFORE" ] || fail "MapForge's files changed"
+
 # Refusals: not a Workspace, no such log, a log name that leaves the folder, no such Campaign.
 python3 "$HELPER" find "$TMP/nowhere" Campaigns/Ashfall >/dev/null 2>&1; [ $? -eq 2 ] || fail "no workspace: expected exit 2"
 python3 "$HELPER" read "$W" 2026-01-01T000000Z.jsonl >/dev/null 2>&1; [ $? -eq 3 ] || fail "no log: expected exit 3"
